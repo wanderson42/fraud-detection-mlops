@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Lint, formatting and tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    env:
+      POETRY_VIRTUALENVS_IN_PROJECT: "true"
+      POETRY_NO_INTERACTION: "true"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14.4"
+
+      - name: Install Poetry
+        run: python -m pip install "poetry==2.4.3"
+
+      - name: Validate project and lockfile
+        run: poetry check --lock
+
+      - name: Install dependencies and project
+        run: poetry install
+
+      - name: Check lint
+        run: poetry run ruff check .
+
+      - name: Check formatting
+        run: poetry run ruff format --check .
+
+      - name: Run tests
+        run: poetry run pytest -q

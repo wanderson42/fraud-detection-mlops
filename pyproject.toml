@@ -1,0 +1,45 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "fraud_detection_mlops"
+version = "0.0.1"
+description = "Reproducible MLOps for fraud detection using temporal transaction data."
+authors = [
+  { name = "Wanderson Ferreira" },
+]
+
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    
+]
+dependencies = [
+    "loguru",
+    "python-dotenv",
+    "tqdm",
+    "typer",
+    "pandas (>=3.0.6,<4.0.0)",
+    "pyarrow (>=25.0.1,<26.0.0)",
+    "duckdb (>=1.5.6,<2.0.0)",
+]
+requires-python = "~=3.14.0"
+
+
+[tool.ruff]
+line-length = 99
+src = ["fraud_detection_mlops"]
+
+[tool.ruff.lint]
+extend-select = ["I"]  # Add import sorting
+
+[tool.ruff.lint.isort]
+known-first-party = ["fraud_detection_mlops"]
+force-sort-within-sections = true
+
+[dependency-groups]
+dev = [
+    "pytest (>=9.1.1,<10.0.0)",
+    "ruff (>=0.16.10,<0.17.0)"
+]
