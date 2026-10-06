@@ -29,21 +29,21 @@ clean:
 ## Lint using ruff (use `make format` to do formatting)
 .PHONY: lint
 lint:
-	ruff format --check
-	ruff check
+	poetry run ruff format --check .
+	poetry run ruff check .
 
 ## Format source code with ruff
 .PHONY: format
 format:
-	ruff check --fix
-	ruff format
+	poetry run ruff check --fix .
+	poetry run ruff format .
 
 
 
 ## Run tests
 .PHONY: test
 test:
-	python -m pytest tests
+	poetry run pytest -q
 
 
 ## Set up Python interpreter environment
@@ -62,10 +62,15 @@ create_environment:
 #################################################################################
 
 
-## Make dataset
+## Extract the full Bronze snapshot
 .PHONY: data
-data: requirements
-	$(PYTHON_INTERPRETER) fraud_detection_mlops/dataset.py
+data:
+	poetry run python -m fraud_detection_mlops.dataset extract
+
+## Verify Bronze offline
+.PHONY: verify-data
+verify-data:
+	poetry run python -m fraud_detection_mlops.dataset verify
 
 
 #################################################################################
