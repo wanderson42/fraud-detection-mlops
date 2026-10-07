@@ -16,8 +16,13 @@ No mesmo dia, o autor construiu e verificou a **Silver `silver_v1` completa**:
 183 partições, 1.754.155 linhas e IDs distintos, com os 42 valores zero preservados.
 Os checks locais passaram, incluindo 70 testes. O
 [recibo da Silver](references/evidence/silver_build_2026-10-06.json) registra as
-saídas de `build` e `verify` e a execução responsável. A CI da Silver será
-registrada após o commit e o push; a CI citada acima pertence à Bronze.
+saídas de `build` e `verify` e a execução responsável. A
+[CI da Silver `acf1516`](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37563463479)
+foi aprovada. O autor informou aprovação local do tox: 70 testes em 1,57 s,
+com lint e formatação aprovados (execução completa: 4,61 s). A CI da integração tox
+ainda não foi informada. O autor informou a EDA do treino: 268.668 transações,
+1.505 fraudes e nove outputs verificados. O
+[recibo da EDA](references/evidence/eda_training_2026-10-07.json) registra a execução.
 
 | Etapa | Estado |
 | --- | --- |
@@ -25,7 +30,8 @@ registrada após o commit e o push; a CI citada acima pertence à Bronze.
 | Aquisição Bronze | Implementada; cobertura e integridade de arquivos validadas localmente |
 | Diagnóstico semântico da Bronze | Auditoria dos 183 arquivos informada pelo autor; 1.754.155 transações |
 | Contrato e Silver em Parquet/DuckDB | `silver_v1` construída e verificada localmente; 183 partições reconciliadas |
-| Features, treinamento e avaliação temporal | Planejados |
+| EDA da Silver e protocolo temporal | Executada localmente; nove outputs verificados, resumo e quatro tabelas informados pelo autor |
+| Features, treinamento e avaliação temporal | Planejados; janelas e métricas iniciais documentadas |
 | Streaming, feature store, serving e monitoramento | Evolução pretendida; desenho e validação pendentes |
 
 A base é simulada. Ainda não há modelo avaliado ou resultado de detecção em operação.
@@ -43,13 +49,16 @@ Python 3.14.4 e Poetry 2.4.3. Na raiz do checkout:
 ```bash
 poetry install
 poetry check --lock
-poetry run ruff check .
-poetry run ruff format --check .
-poetry run pytest -q
+poetry run tox -e py314
 ```
 
 As dependências são fixadas em `poetry.lock`. Os testes da CI usam respostas de rede
 simuladas e não baixam o dataset real.
+
+O tox cria `.tox/py314` e usa o Poetry para instalar as versões do lockfile nesse
+ambiente antes de executar Ruff e pytest. `make validate` reproduz o mesmo fluxo.
+Para testes rápidos, `poetry run pytest -q` continua disponível.
+Consulte [Testing](docs/TESTING.md) para entender o isolamento e os limites desta validação.
 
 Para adquirir todo o histórico e verificar sua integridade:
 
@@ -92,6 +101,26 @@ estão em [Data pipeline](docs/DATA_PIPELINE.md).
 Ainda não há armazenamento remoto de artefatos. Os termos conhecidos da fonte estão
 registrados no inventário e no documento do pipeline.
 
+## EDA e próxima avaliação
+
+Com a Silver completa, gerar as tabelas e o painel descritivo:
+
+```bash
+poetry run python -m fraud_detection_mlops.eda build
+```
+
+A primeira EDA explora somente o treino (1 a 28 de abril de 2018). O
+[protocolo temporal](docs/EVALUATION_PROTOCOL.md) reserva validação e teste, com gaps
+de sete dias para o feedback dos rótulos. O comando imprime caminhos de relatório
+e auditoria; preserve os outputs locais. A [referência da EDA](docs/EDA.md) explica
+as tabelas, os gráficos, a verificação e os limites. A execução
+`733686de23204cd6b9a5a1ec1cfbc2e7` foi informada pelo autor, com os
+[achados de treino](docs/EDA.md#achados-informados-pelo-autor-em-2026-10-07).
+
+> O desbalanceamento já mostra por que **acurácia não será nossa métrica principal**: prever todas as transações como genuínas produziria aproximadamente **99,44% de acurácia**, com **recall de fraude igual a zero**. Isso sustenta a escolha de Average Precision para avaliar o ranking.
+
+A justificativa e o cálculo estão no [protocolo de avaliação](docs/EVALUATION_PROTOCOL.md#por-que-acurácia-não-é-a-métrica-principal).
+
 ## Documentação
 
 | Leitura | Propósito |
@@ -101,8 +130,12 @@ registrados no inventário e no documento do pipeline.
 | [Notebook da Bronze](notebooks/stages/01_bronze_ingestion.ipynb) | Decisões, leitura do algoritmo e evidências da etapa |
 | [Contrato da Silver](docs/SILVER_CONTRACT.md) | Schema, política para zeros, aceitação e proveniência |
 | [Notebook da Silver](notebooks/stages/02_silver_data_contract.ipynb) | Diagnóstico completo, decisões e consulta da Silver |
+| [EDA](docs/EDA.md) | Análise descritiva da Silver, outputs e interpretação |
+| [Protocolo temporal](docs/EVALUATION_PROTOCOL.md) | Janelas, atraso de rótulos, população e métricas planejadas |
+| [Notebook da EDA](notebooks/stages/03_silver_eda.ipynb) | Leitura dos resultados locais e registro de hipóteses |
 | [Data pipeline](docs/DATA_PIPELINE.md) | Fonte, ELT, contratos e limites |
 | [Operations](docs/OPERATIONS.md) | Execução, diagnóstico e recuperação |
+| [Testing](docs/TESTING.md) | Integração tox–Poetry, ambiente isolado e checks compartilhados com a CI |
 | [Stakeholders](docs/STAKEHOLDERS.md) | Objetivo, entregas e próximos marcos em linguagem de negócio |
 
 Os notebooks podem ser lidos no GitHub. As células de código da Bronze são opcionais,
@@ -116,9 +149,12 @@ terão documentos próprios quando forem implementados.
 | `fraud_detection_mlops/bronze.py` | Aquisição, checksums, retomada e auditoria |
 | `fraud_detection_mlops/profiling.py` | Diagnóstico offline da Bronze para definir a Silver |
 | `fraud_detection_mlops/silver.py` | Conversão Parquet, manifesto, auditoria, verificação e consulta DuckDB |
+| `fraud_detection_mlops/eda.py` | Agregações de treino, gráficos, manifesto e auditoria da EDA |
+| `fraud_detection_mlops/temporal.py` | Validação do protocolo temporal versionado |
 | `fraud_detection_mlops/dataset.py` | CLI de extração e verificação |
 | `references/` | Inventário e recibos documentais |
 | `tests/` | Integridade, recuperação e integração Parquet/SQL |
+| `tox.toml` | Sequência de qualidade no ambiente Python 3.14 isolado |
 | `.github/workflows/ci.yml` | Qualidade automatizada |
 
 Os módulos de features, modelagem e gráficos permanecem scaffolds do template.

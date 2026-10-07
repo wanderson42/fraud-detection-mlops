@@ -3,8 +3,10 @@
 Data do marco: 2026-10-06. Bronze avaliada: `18242fc`.
 Diagnóstico completo posterior informado pelo autor; revisão desse código não
 informada. A Silver foi construída e verificada no ambiente do autor, com
-reconciliação completa dos registros. A revisão Git e a CI da Silver ainda não
-foram informadas.
+reconciliação completa dos registros. Revisão Silver: `acf1516`, com CI aprovada.
+O autor informou validação local da integração tox; sua nova CI ainda não foi
+informada. A EDA de treino foi informada pelo autor, com nove outputs verificados e quatro
+tabelas interpretadas; validação e teste final permanecem reservados.
 
 ## Problema e objetivo do portfólio
 
@@ -27,7 +29,7 @@ execuções parciais e registra auditorias.
 | Histórico completo de 183 dias | Verificação local informada pelo autor: `183/183; complete: True` |
 | Reutilização de dados | Execução completa reutilizou sete arquivos e baixou os 176 restantes |
 | Qualidade do código | 70 testes locais aprovados na etapa Silver; ambiente, lint, formatação e diff conferidos |
-| Automação de qualidade | CI aprovada para a implementação Bronze; evidência da nova CI Silver pendente |
+| Automação de qualidade | CI aprovada para a implementação Silver `acf1516`; CI da integração tox ainda pendente |
 | Rastreabilidade | Fonte fixada, inventário versionado, manifesto, auditorias e recibo documental |
 | Diagnóstico do histórico | 1.754.155 transações com IDs globalmente únicos; auditoria local informada pelo autor |
 | Frequência de fraude | 14.681 rótulos de fraude, aproximadamente 0,8369% da base; não é uma métrica de modelo |
@@ -54,6 +56,7 @@ etapa de análise e preparação temporal das features.
 
 | Marco planejado | Evidência necessária para considerá-lo validado |
 | --- | --- |
+| EDA do período de treino | Relatório real auditado, achados interpretados e hipóteses registradas |
 | Features e avaliação temporal | Janelas explícitas, testes contra vazamento e comparação com baseline |
 | Modelo de classificação | Métricas relevantes ao problema, escolha de limiar, limitações e Model Card |
 | Replay/streaming e operação | Processamento de eventos, controles de duplicidade e atraso, observabilidade e ensaios operacionais |
@@ -61,3 +64,14 @@ etapa de análise e preparação temporal das features.
 Streaming, feature store, serving e monitoramento fazem parte da evolução pretendida;
 a arquitetura e os critérios finais serão definidos por etapa. Documentos técnicos
 e evidências acompanham a implementação, conforme a [política](DOCUMENTATION_POLICY.md).
+
+## EDA informada e próxima Gold
+
+A [EDA](EDA.md) gera tabelas e gráficos a partir da Silver sem alterar transações.
+O [protocolo temporal](EVALUATION_PROTOCOL.md) estabelece janelas e atraso de rótulos
+antes de escolher o modelo. O autor informou 268.668 transações de treino, 1.505 fraudes (0,5602%) e quatro
+valores zero preservados, no [recibo](../references/evidence/eda_training_2026-10-07.json).
+A proporção de fraude aumenta entre os blocos semanais, motivando históricos
+temporais de cliente/terminal. Acurácia de 99,44% seria possível prevendo tudo como
+genuíno, sem detectar fraude; isso sustenta avaliar o ranking com Average Precision.
+Não há nova métrica de um modelo ajustado para comunicar.

@@ -10,12 +10,12 @@ Poetry 2.4.3. A fonte e os contratos estão em [Data pipeline](DATA_PIPELINE.md)
 ```bash
 poetry install
 poetry check --lock
-poetry run ruff check .
-poetry run ruff format --check .
-poetry run pytest -q
+poetry run tox -e py314
 ```
 
-A CI executa essas verificações. Os testes da extração simulam a rede e não baixam o
+A CI executa a mesma configuração tox. `make validate` é um atalho; testes rápidos
+continuam disponíveis com `poetry run pytest -q`. O fluxo de instalação e isolamento
+está em [Testing](TESTING.md). Os testes da extração simulam a rede e não baixam o
 dataset real. A verificação de uma Bronze real é um procedimento separado.
 
 ## Adquirir uma amostra e conferir reutilização
@@ -209,7 +209,28 @@ checksums para contornar verificações. Ao fechar o marco, registre o resultado
 real da conversão, a auditoria correspondente e o commit avaliado; o recibo do
 profiler não comprova que os Parquets foram construídos.
 
-A entrega local da Silver já teve construção e verificação aprovadas. Ao fazer
-commit e push, associe sua revisão ao recibo da execução e consulte a CI dessa
-revisão. Preserve o manifesto e a auditoria nativa com os Parquets; o recibo
+A entrega local da Silver teve construção e verificação aprovadas e foi publicada
+na revisão `acf1516`, com CI aprovada. Ao fechar outra alteração, associe a revisão
+avaliada e a CI correspondente ao seu recibo. Preserve o manifesto e a auditoria nativa com os Parquets; o recibo
 versionado é uma síntese da saída fornecida pelo autor.
+
+## Gerar e verificar a EDA de treino
+
+Após a instalação das novas dependências e com a Silver disponível:
+
+```bash
+make eda
+```
+
+O comando equivale a `poetry run python -m fraud_detection_mlops.eda build`.
+Use o `eda_path` impresso para verificar o relatório:
+
+```bash
+poetry run python -m fraud_detection_mlops.eda verify <eda_path>
+```
+
+Execute a CLI com `--help` para conferir opções. O runbook específico é
+[EDA](EDA.md); a interpretação usa o
+[notebook da etapa](../notebooks/stages/03_silver_eda.ipynb). Preserve os nove outputs,
+o manifesto e a auditoria local. Não comite `data/`. Compartilhe primeiro o resumo
+impresso e os checks; resultados científicos ainda dependem da leitura das tabelas.

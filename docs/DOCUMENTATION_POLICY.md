@@ -20,6 +20,9 @@ substanciais e documentos por responsabilidade em `docs/`.
 | `notebooks/experiments/` | Experimentos controlados e comparação reproduzível | Quando existirem benchmarks ou avaliações |
 | [Data pipeline](DATA_PIPELINE.md) | Origem, contratos, camadas, qualidade e proveniência | Mudança de fonte, schema, transformação ou armazenamento |
 | [Operations](OPERATIONS.md) | Comandos, diagnóstico, recuperação e verificações | Mudança operacional |
+| [EDA](EDA.md) | Exploração, interpretação e proveniência dos relatórios | Mudança da análise |
+| [Protocolo temporal](EVALUATION_PROTOCOL.md) | Janelas, atraso de rótulos, população e métricas | Antes de mudar uma avaliação |
+| [Testing](TESTING.md) | Isolamento tox–Poetry, checks, seleção de testes e limites | Mudança de validação ou CI |
 | `docs/INFRASTRUCTURE.md` | Arquitetura, configuração, persistência e resiliência | Quando a infraestrutura for implementada |
 | `docs/MODEL_CARD.md` | Uso do modelo, dados, avaliação, limitações e governança | Quando houver modelo avaliado |
 | [Stakeholders](STAKEHOLDERS.md) | Problema, entregas, evidências, limitações e próximos marcos | Mudança no resultado ou no escopo |

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "evidence_id": "tox_preparation_2026-10-07",
+  "documentation_policy": "documentation_v1",
+  "date": "2026-10-07",
+  "origin": "assistant_execution_in_preparation_environment",
+  "scope": "tox_isolation_and_existing_test_suite; author_execution_and_new_ci_pending",
+  "baseline_commit": "acf15169fed522751b974efae032d8683b64a036",
+  "implementation_commit": null,
+  "configuration_hashes": {
+    "tox.toml": "3287bf2edb33287e933b50d3c449b0ad19d932ee1e7ddf621deec7d15eb5358a",
+    "scripts/check_test_environment.py": "522f9c98162c7d11fed202404db4d2fdee95f5aebb3c252e21c5c9618d99e22a",
+    "pyproject.toml": "b0bb6f4ad141fc9e1d3e3356141218fe0bc01febbfb91e5e747b0717bf756e87",
+    "poetry.lock": "1635b6759a3387a07ba45a2aaaede4fcc22303a564a29f042bcaf9571f543ee7",
+    ".github/workflows/ci.yml": "7768b4b79388f0598556066fc2a2238c0e7085e97a2217ec84bf9111945d5dd6"
+  },
+  "environment": {
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "tox": "4.32.0",
+    "pytest": "9.1.1",
+    "ruff": "0.16.10"
+  },
+  "full_clean_validation": {
+    "command": "poetry run tox -r -e py314",
+    "status": "success",
+    "pytest_passed": 70,
+    "pytest_duration_seconds": 2.94,
+    "tox_duration_seconds": 7.28,
+    "ruff_check": "passed",
+    "ruff_format_check": "27 files already formatted",
+    "poetry_lock_check": "All set!",
+    "environment_relative_to_project": ".tox/py314"
+  },
+  "selected_tests": {
+    "command": "poetry run -- tox -e py314 -- tests/test_silver.py",
+    "status": "success",
+    "pytest_passed": 20,
+    "pytest_duration_seconds": 1.18
+  },
+  "isolation_failure_check": {
+    "procedure": "Run the environment guard with development .venv as VIRTUAL_ENV while Python comes from .tox/py314.",
+    "result": "Rejected with Poetry target mismatch before synchronization."
+  },
+  "existing_dependency_version_changes": {},
+  "added_locked_dependencies": {
+    "cachetools": "7.2.1",
+    "chardet": "7.6.0",
+    "distlib": "0.4.3",
+    "filelock": "4.0.12",
+    "platformdirs": "4.12.3",
+    "pyproject-api": "1.11.3",
+    "python-discovery": "1.6.1",
+    "tox": "4.32.0",
+    "virtualenv": "21.14.5"
+  },
+  "limits": [
+    "Validation executed in the preparation environment, not the author computer or GitHub CI for this change.",
+    "Editable checkout installation is tested; wheel distribution outside the checkout is not tested.",
+    "No full real-data ingestion or Silver rebuild was run as part of tox validation."
+  ]
+}

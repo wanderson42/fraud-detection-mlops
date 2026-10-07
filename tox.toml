@@ -1,0 +1,22 @@
+requires = ["tox>=4.32.0"]
+env_list = ["py314"]
+skip_missing_interpreters = false
+
+[env.py314]
+description = "Validate the Poetry lockfile, lint, formatting and tests on Python 3.14"
+base_python = ["python3.14"]
+# Poetry installs the editable project and locked dependencies into this environment.
+package = "skip"
+allowlist_externals = ["poetry"]
+pass_env = ["POETRY_CACHE_DIR"]
+set_env = { VIRTUAL_ENV = "{env_dir}", POETRY_VIRTUALENVS_CREATE = "false", POETRY_NO_INTERACTION = "1" }
+commands_pre = [
+    ["python", "scripts/check_test_environment.py"],
+    ["poetry", "check", "--lock"],
+    ["poetry", "sync", "--only", "main,dev"],
+]
+commands = [
+    ["python", "-m", "ruff", "check", "."],
+    ["python", "-m", "ruff", "format", "--check", "."],
+    ["python", "-m", "pytest", "-q", { replace = "posargs", default = ["tests"], extend = true }],
+]

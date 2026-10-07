@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 #################################################################################
 # GLOBALS                                                                       #
 #################################################################################
@@ -46,13 +47,19 @@ test:
 	poetry run pytest -q
 
 
+## Run the same isolated quality checks as CI
+.PHONY: validate
+validate:
+	poetry run tox -e py314
+
+
 ## Set up Python interpreter environment
 .PHONY: create_environment
 create_environment:
 	poetry env use $(PYTHON_VERSION)
 	@echo ">>> Poetry environment created. Activate with: "
 	@echo '$$(poetry env activate)'
-	@echo ">>> Or run commands with:\npoetry run <command>"
+	@printf '>>> Or run commands with:\npoetry run <command>\n'
 
 
 
@@ -66,6 +73,11 @@ create_environment:
 .PHONY: data
 data:
 	poetry run python -m fraud_detection_mlops.dataset extract
+
+## Generate descriptive EDA from the training window of verified Silver
+.PHONY: eda
+eda:
+	poetry run python -m fraud_detection_mlops.eda build
 
 ## Verify Bronze offline
 .PHONY: verify-data
@@ -89,4 +101,4 @@ endef
 export PRINT_HELP_PYSCRIPT
 
 help:
-	@$(PYTHON_INTERPRETER) -c "${PRINT_HELP_PYSCRIPT}" < $(MAKEFILE_LIST)
+	@poetry run python -c "${PRINT_HELP_PYSCRIPT}" < $(MAKEFILE_LIST)

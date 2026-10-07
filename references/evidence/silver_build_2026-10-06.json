@@ -10,8 +10,8 @@
   "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
   "contract_version": "silver_v1",
   "implementation": {
-    "git_commit": null,
-    "git_commit_note": "Implementation commit not yet provided.",
+    "git_commit": "acf15169fed522751b974efae032d8683b64a036",
+    "git_commit_note": "Published Silver implementation checked read-only through the GitHub connector.",
     "applied_patch": "silver-parquet.patch",
     "delivered_patch_sha256": "6fd1c41d12cbaa26772289e03526ecc1456f9b0d8b8c0cbfe44b114af11455e2",
     "patch_application": "git apply --check and git apply completed without reported errors"
@@ -76,12 +76,23 @@
     "zero_amounts_preserved": 42
   },
   "native_artifacts_inspected": false,
-  "ci_for_silver_commit": "not_yet_reported",
+  "ci_for_silver_commit": "success",
   "limits": [
     "Receipt transcribes terminal results; native manifest, audit and Parquet files were not supplied for inspection here.",
     "Paths are normalized relative to the project; personal absolute paths are omitted.",
     "Terminal log times are command log times, not native audit start/finish timestamps or measured durations.",
     "Coverage is the complete pinned simulated dataset; this does not establish real-world model performance.",
     "No model has been evaluated; temporal splits, predictive features and model evaluation remain future work."
-  ]
+  ],
+  "ci_evidence": {
+    "origin": "read_only_github_connector",
+    "run_id": 37563463479,
+    "head_sha": "acf15169fed522751b974efae032d8683b64a036",
+    "branch": "feat/silver-data-contract",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37563463479",
+    "scope": "Silver implementation before tox integration"
+  }
 }

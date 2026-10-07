@@ -4,8 +4,9 @@ Revisão da Bronze documentada: `18242fcc8e340bad52a394c7c3624b78bd809b6c`.
 Estado em 2026-10-06: aquisição Bronze implementada; integridade da aquisição completa
 validada no ambiente do autor. O diagnóstico completo foi informado pelo autor.
 A Silver foi construída e verificada localmente, com 183 partições e todas as
-contagens reconciliadas. A revisão Git da Silver ainda não foi informada; a Gold
-é a próxima camada.
+contagens reconciliadas. Revisão Silver: `acf15169fed522751b974efae032d8683b64a036`,
+com CI aprovada. A próxima investigação é a [EDA da Silver](EDA.md), com
+[protocolo temporal](EVALUATION_PROTOCOL.md) versionado; a Gold virá após sua interpretação.
 
 ## Fonte fixada
 
@@ -150,3 +151,14 @@ fraudes, 1.739.474 genuínas e 42 zeros. A auditoria responsável é
 `silver_f9fc5a5083f14d9fadf6892a531e1488.json`. O
 [recibo da execução](../references/evidence/silver_build_2026-10-06.json) distingue
 essa saída de terminal dos artefatos nativos, que permanecem locais.
+
+## EDA e fronteira da Gold
+
+A EDA preparada opera offline sobre as partições de treino da Silver, preservando
+os dados. Publica agregações, um painel visual, manifesto e auditoria em
+`data/interim/handbook/<source_commit>/eda_v1/<run_id>/`. São artefatos de análise,
+sem mudança no contrato `silver_v1`. O autor informou a execução de treino e
+a verificação de nove outputs, com [recibo](../references/evidence/eda_training_2026-10-07.json)
+e [interpretação](EDA.md#achados-informados-pelo-autor-em-2026-10-07).
+O [protocolo](EVALUATION_PROTOCOL.md) fixa as janelas e o atraso simulado dos rótulos;
+a Gold deverá implementar features e materializar os splits de modelagem.
