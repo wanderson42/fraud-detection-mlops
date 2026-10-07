@@ -5,10 +5,10 @@
   "scope": "training_eda_summary_and_four_aggregate_tables",
   "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
   "implementation": {
-    "git_commit": null,
+    "git_commit": "fc22a48af5e6d9a0f9648a62effa95d39e02de02",
     "delivered_patch": "silver-eda.patch",
     "author_quality_checks": "not_reported_for_eda",
-    "ci_for_eda_commit": "not_reported"
+    "ci_for_eda_commit": "success"
   },
   "execution": {
     "run_id": "733686de23204cd6b9a5a1ec1cfbc2e7",
@@ -421,5 +421,18 @@
     "source_data_are_simulated",
     "no_model_training_or_holdout_evaluation",
     "scenario_labels_are_final_audit_metadata_not_disjoint_causal_mechanisms"
-  ]
+  ],
+  "ci_evidence": {
+    "origin": "read_only_github_connector_query",
+    "head_sha": "fc22a48af5e6d9a0f9648a62effa95d39e02de02",
+    "branch": "feat/silver-eda",
+    "event": "push",
+    "run_id": 37634000505,
+    "job_id": 112835300248,
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37634000505",
+    "scope": "lockfile_installation_and_isolated_quality_checks_with_tox",
+    "pytest_count_from_ci_logs": null
+  }
 }

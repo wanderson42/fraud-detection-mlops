@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "assistant_execution_in_preparation_environment",
+  "scope": "controlled_data_validation_not_author_gold_execution",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "implementation_commit": null,
+  "baseline": {
+    "published_commit": "fc22a48af5e6d9a0f9648a62effa95d39e02de02",
+    "published_branch": "feat/silver-eda",
+    "git_tree": "6cf48399f704e7dfe1954a1b90a0e89d6e0d2cdb",
+    "files_verified_against_git_blob_sha1_before_preparation": 57,
+    "baseline_ci_run_id": 37634000505,
+    "baseline_ci_conclusion": "success",
+    "baseline_ci_url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37634000505",
+    "author_notebook_outputs_preserved": true
+  },
+  "implementation_sha256": {
+    "fraud_detection_mlops/features.py": "a22945066dd7e3716b6ea31b1c3ae272bd9220ff5d85ff5c1083cd1bc85bc14f",
+    "fraud_detection_mlops/gold.py": "baad86175c25c6a602b871f33343009d2d173d70b883fa5a64186e346ad0ba80",
+    "references/gold_contract_v1.json": "b90b9be97bb2e2e6cf2b819487b2b805882c6d6f22587ff4671a01e25db54796",
+    "references/temporal_protocol_v1.json": "7332129121d13eac68bf2e4776abe7aacf0b24b449e60f08ef8283b56954e4d4",
+    "tests/test_features.py": "6f293aec7aef80f7d8aeedeaa54343a70cf7eea93702775d5e3629f92c469be3",
+    "tests/test_gold.py": "20322f888cf725bbe7c370f19854caa2f1b744290fdecd36f9bc61cd82ac24cb",
+    "pyproject.toml": "25d4807ddbad336686ab04c26bbfa986dc46eba0b1b6d4bc98b2467fe208fa9a",
+    "poetry.lock": "58ef63b470260917a2b61fdd1097ad73c1385674e7452e553366d9ba4b996342",
+    "tox.toml": "3287bf2edb33287e933b50d3c449b0ad19d932ee1e7ddf621deec7d15eb5358a"
+  },
+  "environment": {
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "tox": "4.32.0",
+    "pandas": "3.0.6",
+    "pyarrow": "25.0.1",
+    "duckdb": "1.5.6",
+    "pytest": "9.1.1",
+    "ruff": "0.16.10"
+  },
+  "controlled_validation": {
+    "command": "poetry run tox -r -e py314",
+    "environment_created_afresh_in_this_preparation": true,
+    "passed": 104,
+    "pytest_seconds": 16.4,
+    "tox_total_seconds": 41.1,
+    "new_feature_and_gold_tests": 21,
+    "lint": "passed",
+    "format": "38 files already formatted",
+    "lockfile": "passed",
+    "poetry_environment_target_check": "passed",
+    "real_dataset_execution": false,
+    "coverage": [
+      "independent_datetime_mask_oracle_handcrafted_and_three_random_seeds",
+      "nanosecond_window_boundaries",
+      "equal_timestamp_peers_excluded",
+      "future_events_do_not_change_past_features",
+      "unavailable_labels_do_not_change_current_features",
+      "identifier_order_does_not_define_peer_history",
+      "zero_amounts_zero_means_and_empty_history",
+      "feedback_gap_transactions_used_as_context",
+      "future_days_not_exposed_to_feature_query",
+      "explicit_predictor_allowlist_and_source_labels_preserved",
+      "source_files_unchanged",
+      "idempotent_reuse",
+      "checksum_corruption",
+      "semantic_corruption_with_updated_checksums",
+      "failed_publication_cleanup_and_audit",
+      "concurrent_builder_lock",
+      "input_change_during_build",
+      "cli_build_and_verify"
+    ]
+  },
+  "gold_contract": {
+    "version": "gold_v1",
+    "features": 19,
+    "metadata_columns": 6,
+    "windows_days": [
+      1,
+      7
+    ],
+    "label_delay_days": 7,
+    "event_history": "[t-window,t)",
+    "known_label_history": "[t-delay-window,t-delay)",
+    "production_context_dates": [
+      "2018-04-01",
+      "2018-05-26"
+    ],
+    "expected_production_context_partitions": 56,
+    "expected_production_output_partitions": 42,
+    "production_row_counts": null,
+    "fitted_transformations": []
+  },
+  "dependency_changes": {
+    "changed_existing": {},
+    "added": {}
+  },
+  "pending": [
+    "author_applies_gold_patch",
+    "author_runs_full_validation",
+    "author_builds_and_verifies_gold_on_real_silver",
+    "author_reports_real_counts_and_runtime",
+    "author_commit_and_gold_ci",
+    "model_training_validation_selection_and_frozen_test_evaluation"
+  ],
+  "limitations": [
+    "controlled_fixtures_are_not_the_real_handbook_dataset",
+    "gold_real_data_runtime_and_memory_not_measured",
+    "initial_history_before_source_start_unavailable",
+    "event_time_causality_assumes_past_transactions_available",
+    "no_ingestion_arrival_times_or_late_event_replay_contract",
+    "verify_checks_output_invariants_but_does_not_recompute_all_features",
+    "model_loader_materializes_one_whole_split_in_memory",
+    "no_model_metrics_or_feature_store_online_parity",
+    "no_gold_implementation_commit_or_gold_ci_yet"
+  ]
+}

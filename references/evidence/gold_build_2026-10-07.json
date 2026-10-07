@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "author_terminal_output_provided_in_chat",
+  "scope": "gold_build_and_verify_on_author_local_silver",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "gold_version": "gold_v1",
+  "protocol_version": "temporal_v1",
+  "implementation": {
+    "git_commit": null,
+    "prepared_patch": "gold-temporal-features.patch",
+    "preparation_receipt": "references/evidence/gold_preparation_2026-10-07.json",
+    "published_baseline_commit": "fc22a48af5e6d9a0f9648a62effa95d39e02de02",
+    "executed_code_hashes_independently_verified": false,
+    "ci_for_gold_commit": "not_reported"
+  },
+  "execution": {
+    "reported_on": "2026-10-07",
+    "timezone": "America/Belem",
+    "timezone_origin": "author_local_timezone_from_chat_context",
+    "build_log_timestamp": "2026-10-07T13:10:17.885-03:00",
+    "verify_log_timestamp": "2026-10-07T13:10:33.196-03:00",
+    "timestamps_are_config_log_times_not_measured_start_or_finish": true,
+    "build_command_associated": "poetry run python -m fraud_detection_mlops.gold build",
+    "build_command_origin": "associated_from_requested_workflow_and_build_output",
+    "verify_command_reported": "poetry run python -m fraud_detection_mlops.gold verify",
+    "build_reported": {
+      "verified_partitions": 42,
+      "feature_count": 19,
+      "split_rows": {
+        "train": 268668,
+        "validation": 67255,
+        "test": 66954
+      },
+      "rows": 402877,
+      "status": "success",
+      "gold_path_relative": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/gold_v1",
+      "audit_path_relative": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/runs/gold_8b1564df49fc497080963986b05aa007.json"
+    },
+    "verify_reported": {
+      "verified_partitions": 42,
+      "feature_count": 19,
+      "split_rows": {
+        "train": 268668,
+        "validation": 67255,
+        "test": 66954
+      },
+      "rows": 402877,
+      "gold_path_relative": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/gold_v1"
+    },
+    "audit_run_id": "8b1564df49fc497080963986b05aa007",
+    "runtime_seconds": null,
+    "peak_memory_bytes": null,
+    "author_quality_checks_for_gold": "not_reported_in_this_execution"
+  },
+  "reconciliation_from_reported_counts": {
+    "split_rows_sum_matches_total": true,
+    "build_and_verify_counts_match": true,
+    "train_rows_match_previously_reported_eda_rows": true,
+    "expected_protocol_partition_count_matches_reported": true
+  },
+  "interpretation": {
+    "no_performance_based_row_filter_or_learned_feature_selection": true,
+    "candidate_predictors_are_a_prior_design_choice_not_model_validated": true,
+    "temporal_selection_and_predictor_allowlist_are_applied": true,
+    "all_silver_accepted_rows_in_protocol_windows_preserved_by_builder_contract": true,
+    "learned_transformations_and_model_evaluation_not_performed": true
+  },
+  "native_artifacts_inspected_by_assistant": false,
+  "limitations": [
+    "evidence_is_transcribed_author_terminal_output",
+    "native_gold_parquets_manifest_and_audit_not_uploaded_or_read",
+    "implementation_commit_and_executed_code_hashes_not_provided",
+    "author_tox_output_and_gold_ci_not_provided",
+    "counts_do_not_prove_predictive_value_or_online_feature_parity",
+    "runtime_cannot_be_derived_from_the_two_config_log_timestamps",
+    "no_model_metrics"
+  ],
+  "pending": [
+    "associate_author_quality_checks",
+    "associate_gold_implementation_commit_and_ci",
+    "baseline_training_and_validation_comparison",
+    "frozen_final_test_evaluation"
+  ]
+}

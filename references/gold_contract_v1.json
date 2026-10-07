@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "version": "gold_v1",
+  "source_layer": "silver_v1",
+  "protocol_version": "temporal_v1",
+  "window_days": [
+    1,
+    7
+  ],
+  "label_delay_days": 7,
+  "event_history": "[t-window,t)",
+  "known_label_history": "[t-delay-window,t-delay)",
+  "timestamp_ties": "exclude_all_events_at_current_timestamp",
+  "cold_start": "zero_with_support_counts_and_amount_ratio_valid_flag",
+  "row_policy": "preserve_every_transaction_in_protocol_windows",
+  "metadata_columns": {
+    "TRANSACTION_ID": "int64",
+    "TX_DATETIME": "datetime64[ns]",
+    "CUSTOMER_ID": "int64",
+    "TERMINAL_ID": "int64",
+    "LABEL_AVAILABLE_AT": "datetime64[ns]",
+    "TX_FRAUD": "int8"
+  },
+  "feature_columns": {
+    "TX_AMOUNT": "float64",
+    "TX_HOUR": "int8",
+    "TX_WEEKDAY": "int8",
+    "CUSTOMER_TX_COUNT_1D": "int64",
+    "CUSTOMER_AVG_AMOUNT_1D": "float64",
+    "CUSTOMER_AMOUNT_RATIO_1D": "float64",
+    "CUSTOMER_AMOUNT_RATIO_VALID_1D": "int8",
+    "CUSTOMER_TX_COUNT_7D": "int64",
+    "CUSTOMER_AVG_AMOUNT_7D": "float64",
+    "CUSTOMER_AMOUNT_RATIO_7D": "float64",
+    "CUSTOMER_AMOUNT_RATIO_VALID_7D": "int8",
+    "TERMINAL_TX_COUNT_1D": "int64",
+    "TERMINAL_KNOWN_LABEL_COUNT_1D": "int64",
+    "TERMINAL_KNOWN_FRAUD_COUNT_1D": "int64",
+    "TERMINAL_KNOWN_FRAUD_RATE_1D": "float64",
+    "TERMINAL_TX_COUNT_7D": "int64",
+    "TERMINAL_KNOWN_LABEL_COUNT_7D": "int64",
+    "TERMINAL_KNOWN_FRAUD_COUNT_7D": "int64",
+    "TERMINAL_KNOWN_FRAUD_RATE_7D": "float64"
+  },
+  "excluded_column": "TX_FRAUD_SCENARIO",
+  "fitted_transformations": []
+}

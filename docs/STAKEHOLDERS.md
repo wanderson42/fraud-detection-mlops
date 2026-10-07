@@ -4,8 +4,8 @@ Data do marco: 2026-10-06. Bronze avaliada: `18242fc`.
 Diagnóstico completo posterior informado pelo autor; revisão desse código não
 informada. A Silver foi construída e verificada no ambiente do autor, com
 reconciliação completa dos registros. Revisão Silver: `acf1516`, com CI aprovada.
-O autor informou validação local da integração tox; sua nova CI ainda não foi
-informada. A EDA de treino foi informada pelo autor, com nove outputs verificados e quatro
+O autor informou validação local da integração tox; a entrega tox e EDA foi
+publicada na revisão `fc22a48`, com CI aprovada. A EDA de treino foi informada pelo autor, com nove outputs verificados e quatro
 tabelas interpretadas; validação e teste final permanecem reservados.
 
 ## Problema e objetivo do portfólio
@@ -29,7 +29,7 @@ execuções parciais e registra auditorias.
 | Histórico completo de 183 dias | Verificação local informada pelo autor: `183/183; complete: True` |
 | Reutilização de dados | Execução completa reutilizou sete arquivos e baixou os 176 restantes |
 | Qualidade do código | 70 testes locais aprovados na etapa Silver; ambiente, lint, formatação e diff conferidos |
-| Automação de qualidade | CI aprovada para a implementação Silver `acf1516`; CI da integração tox ainda pendente |
+| Automação de qualidade | CI aprovada para Silver `acf1516` e para integração tox/EDA `fc22a48` |
 | Rastreabilidade | Fonte fixada, inventário versionado, manifesto, auditorias e recibo documental |
 | Diagnóstico do histórico | 1.754.155 transações com IDs globalmente únicos; auditoria local informada pelo autor |
 | Frequência de fraude | 14.681 rótulos de fraude, aproximadamente 0,8369% da base; não é uma métrica de modelo |
@@ -75,3 +75,16 @@ A proporção de fraude aumenta entre os blocos semanais, motivando históricos
 temporais de cliente/terminal. Acurácia de 99,44% seria possível prevendo tudo como
 genuíno, sem detectar fraude; isso sustenta avaliar o ranking com Average Precision.
 Não há nova métrica de um modelo ajustado para comunicar.
+
+## Gold construída e verificada pelo autor
+
+O pipeline preparado transforma a Silver em tabelas temporais de modelagem, com
+19 preditores e regras para histórico insuficiente. Preserva a população das
+janelas definidas e separa alvo/IDs das features. O risco histórico do terminal
+considera apenas rótulos disponíveis após sete dias. O [contrato](GOLD_CONTRACT.md)
+explica as decisões. O autor informou 42 partições verificadas, 19 preditores e
+402.877 linhas: 268.668 de treino, 67.255 de validação e 66.954 de teste, com
+[recibo](../references/evidence/gold_build_2026-10-07.json). A preparação passou
+104 testes controlados; checks do autor, commit e CI da Gold ainda não informados.
+Esses resultados não demonstram eficácia de detecção. O próximo marco será o baseline avaliado com
+métricas de ranking e seleção exclusivamente na validação.

@@ -2,7 +2,8 @@
 
 Estado: implementação testada em dados controlados. O autor informou a execução
 real de treino, a verificação dos nove outputs e o resumo com quatro tabelas. A
-CI e o commit da EDA ainda não foram informados.
+EDA e integração tox publicadas na revisão `fc22a48`, com
+[CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37634000505).
 EDA significa análise exploratória de dados. Esta etapa interpreta distribuições
 e padrões na Silver; não cria uma nova camada de dados nem treina um modelo.
 

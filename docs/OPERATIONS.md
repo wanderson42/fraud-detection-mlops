@@ -234,3 +234,51 @@ Execute a CLI com `--help` para conferir opções. O runbook específico é
 [notebook da etapa](../notebooks/stages/03_silver_eda.ipynb). Preserve os nove outputs,
 o manifesto e a auditoria local. Não comite `data/`. Compartilhe primeiro o resumo
 impresso e os checks; resultados científicos ainda dependem da leitura das tabelas.
+
+## Construir e verificar a Gold
+
+Com a Silver completa e os checks aprovados:
+
+```bash
+poetry run python -m fraud_detection_mlops.gold build
+poetry run python -m fraud_detection_mlops.gold verify
+```
+
+Atalhos: `make gold` e `make verify-gold`. O build trabalha offline, confere toda a
+Silver e gera features no contexto até 26 de maio. Pode usar memória para ordenar
+as janelas; temporários do DuckDB ficam no staging e são limpos ao terminar.
+Nenhum treinamento é executado. A saída esperada para o protocolo inicial contém
+42 partições e 19 preditores. Contagens reais de validação/teste serão reconciliadas
+com a Silver durante a execução, sem publicar distribuições de fraude dos holdouts.
+
+O destino é `data/processed/handbook/<source_commit>/gold_v1/`. Preserve o manifesto,
+os Parquets e a auditoria `runs/gold_<run_id>.json` adjacente à Gold.
+Use `build --help` e `verify --help` para conferir opções: `--output-root`,
+`--inventory`, `--silver-contract`, `--protocol` e `--contract`; o build também
+aceita `--silver-root`. Mantenha os mesmos contratos e raízes na verificação.
+
+Repetir o build confere e reutiliza uma Gold compatível. Se a escrita falhar,
+investigue a auditoria e corrija a causa antes de repetir. Uma Gold corrompida ou
+incompatível não é sobrescrita: preserve-a para investigação e reconstrua em outra
+`--output-root` ou retire explicitamente a versão inválida. Não altere checksums
+para contornar falhas. Após um encerramento abrupto, confirme que nenhum build
+está ativo antes de retirar `.gold_v1.lock` ou staging residual; preserve a auditoria.
+Erros anteriores ao lock, como contrato inválido, não geram auditoria nova.
+
+Para consultar somente as features de treino:
+
+```bash
+poetry run python - <<'PYCODE'
+from fraud_detection_mlops.gold import load_gold_split
+
+X, y, metadata = load_gold_split("train")
+print("Shapes:", X.shape, y.shape, metadata.shape)
+print("Features:", list(X.columns))
+PYCODE
+```
+
+Esse loader verifica toda a Gold antes de carregar o split solicitado. Use `X`
+como entrada do modelo; metadados contêm IDs e alvo para auditoria. Consultar
+`test` fica para a avaliação final após congelar modelo e parâmetros. Os detalhes
+estão no [contrato](GOLD_CONTRACT.md) e no
+[notebook da etapa](../notebooks/stages/04_gold_temporal_features.ipynb).

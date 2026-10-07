@@ -22,6 +22,7 @@ substanciais e documentos por responsabilidade em `docs/`.
 | [Operations](OPERATIONS.md) | Comandos, diagnóstico, recuperação e verificações | Mudança operacional |
 | [EDA](EDA.md) | Exploração, interpretação e proveniência dos relatórios | Mudança da análise |
 | [Protocolo temporal](EVALUATION_PROTOCOL.md) | Janelas, atraso de rótulos, população e métricas | Antes de mudar uma avaliação |
+| [Contrato da Gold](GOLD_CONTRACT.md) | Features, causalidade, cold start, splits e proveniência | Mudança de feature ou contrato de modelagem |
 | [Testing](TESTING.md) | Isolamento tox–Poetry, checks, seleção de testes e limites | Mudança de validação ou CI |
 | `docs/INFRASTRUCTURE.md` | Arquitetura, configuração, persistência e resiliência | Quando a infraestrutura for implementada |
 | `docs/MODEL_CARD.md` | Uso do modelo, dados, avaliação, limitações e governança | Quando houver modelo avaliado |

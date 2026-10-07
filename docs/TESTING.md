@@ -2,7 +2,8 @@
 
 Estado: integração implementada e validada no ambiente de preparação. O autor informou
 execução local aprovada: 70 testes em 1,57 s; tox completo em 4,61 s, com lint e
-formatação aprovados. O commit da integração e sua CI ainda não foram informados.
+formatação aprovados. A integração tox e a EDA foram publicadas no commit `fc22a48`, com
+[CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37634000505).
 Base publicada: `acf15169fed522751b974efae032d8683b64a036`, com
 [CI da Silver aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37563463479).
 
@@ -101,7 +102,8 @@ O [recibo](../references/evidence/tox_preparation_2026-10-07.json) registra a ex
 com ambiente recriado: 70 testes aprovados, lint/formatação/lockfile aprovados e
 checagem explícita do alvo Poetry. Também passou a seleção dos 20 testes da Silver,
 e a proteção rejeitou um alvo apontando para a `.venv` principal.
-A execução local do autor e a CI da integração tox continuam pendentes.
+A execução local do autor foi informada no terminal e a CI da integração tox/EDA
+foi conferida no commit `fc22a48`, conforme o estado registrado no início deste documento.
 
 ## Testes da EDA
 
@@ -110,3 +112,13 @@ de distribuições dos holdouts, preservação da Silver, reconciliação de agr
 falhas de escrita, alteração de inputs e corrupção dos outputs. O painel é renderizado
 sem display via Agg. O tox continua usando o mesmo lockfile, agora com Matplotlib.
 Esses testes não executam a EDA do histórico real de 183 dias.
+
+## Testes das features e da Gold
+
+Os testes de [features](../tests/test_features.py) comparam o SQL a um oracle
+independente baseado em máscaras de datetime, incluindo múltiplos clientes/terminais,
+limites em nanossegundos, peers, histórico zero e invariância ao futuro. Os testes
+[Gold](../tests/test_gold.py) conferem gaps como contexto, exclusão de preditores
+proibidos, preservação dos alvos e da origem, schema, reutilização, corrupções,
+semântica, lock e falhas de publicação. Nenhum modelo é treinado pelos testes.
+A execução sobre os 183 Parquets reais continua sendo uma validação local separada.

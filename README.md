@@ -19,8 +19,9 @@ Os checks locais passaram, incluindo 70 testes. O
 saídas de `build` e `verify` e a execução responsável. A
 [CI da Silver `acf1516`](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37563463479)
 foi aprovada. O autor informou aprovação local do tox: 70 testes em 1,57 s,
-com lint e formatação aprovados (execução completa: 4,61 s). A CI da integração tox
-ainda não foi informada. O autor informou a EDA do treino: 268.668 transações,
+com lint e formatação aprovados (execução completa: 4,61 s). A integração tox e a EDA foram publicadas na revisão
+[`fc22a48`](https://github.com/wanderson42/fraud-detection-mlops/commit/fc22a48af5e6d9a0f9648a62effa95d39e02de02),
+com [CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37634000505). O autor informou a EDA do treino: 268.668 transações,
 1.505 fraudes e nove outputs verificados. O
 [recibo da EDA](references/evidence/eda_training_2026-10-07.json) registra a execução.
 
@@ -31,7 +32,8 @@ ainda não foi informada. O autor informou a EDA do treino: 268.668 transações
 | Diagnóstico semântico da Bronze | Auditoria dos 183 arquivos informada pelo autor; 1.754.155 transações |
 | Contrato e Silver em Parquet/DuckDB | `silver_v1` construída e verificada localmente; 183 partições reconciliadas |
 | EDA da Silver e protocolo temporal | Executada localmente; nove outputs verificados, resumo e quatro tabelas informados pelo autor |
-| Features, treinamento e avaliação temporal | Planejados; janelas e métricas iniciais documentadas |
+| Gold com features e splits temporais | Construída e verificada no ambiente do autor: 42 partições, 19 preditores e 402.877 linhas |
+| Treinamento e avaliação temporal | Planejados; janelas e métricas iniciais documentadas |
 | Streaming, feature store, serving e monitoramento | Evolução pretendida; desenho e validação pendentes |
 
 A base é simulada. Ainda não há modelo avaliado ou resultado de detecção em operação.
@@ -92,7 +94,7 @@ O [inventário versionado](references/handbook_source.json) descreve 183 arquivo
 
 Extraímos e carregamos os bytes originais na Bronze local em
 `data/raw/handbook/<source_commit>/`. A Silver transforma essa base com contrato
-explícito e mantém todas as linhas aceitas. A Gold será construída depois.
+explícito e mantém todas as linhas aceitas. A Gold usa essa base verificada.
 A aquisição confere tamanho e Git blob SHA-1, registra SHA-256,
 atualiza um manifesto e audita cada execução iniciada. O contrato e as decisões
 estão em [Data pipeline](docs/DATA_PIPELINE.md).
@@ -121,6 +123,25 @@ as tabelas, os gráficos, a verificação e os limites. A execução
 
 A justificativa e o cálculo estão no [protocolo de avaliação](docs/EVALUATION_PROTOCOL.md#por-que-acurácia-não-é-a-métrica-principal).
 
+## Gold: features para modelagem
+
+Com a Silver completa e os checks aprovados:
+
+```bash
+poetry run python -m fraud_detection_mlops.gold build
+poetry run python -m fraud_detection_mlops.gold verify
+```
+
+A Gold gera 19 preditores e preserva todas as linhas nas janelas de treino,
+validação e teste. Históricos de cliente/terminal usam somente eventos anteriores;
+o risco do terminal considera rótulos disponíveis após sete dias. O
+[contrato Gold](docs/GOLD_CONTRACT.md) define janelas, empates de timestamp,
+primeiros eventos, schema, loader e limites. O autor informou construção e
+verificação reais: 268.668 linhas de treino, 67.255 de validação e 66.954 de teste,
+com [recibo da execução](references/evidence/gold_build_2026-10-07.json).
+A preparação passou 104 testes controlados. Checks locais do autor, commit e CI
+da Gold ainda não foram informados. Ainda não há modelo ajustado nem avaliação do teste final.
+
 ## Documentação
 
 | Leitura | Propósito |
@@ -133,6 +154,8 @@ A justificativa e o cálculo estão no [protocolo de avaliação](docs/EVALUATIO
 | [EDA](docs/EDA.md) | Análise descritiva da Silver, outputs e interpretação |
 | [Protocolo temporal](docs/EVALUATION_PROTOCOL.md) | Janelas, atraso de rótulos, população e métricas planejadas |
 | [Notebook da EDA](notebooks/stages/03_silver_eda.ipynb) | Leitura dos resultados locais e registro de hipóteses |
+| [Contrato da Gold](docs/GOLD_CONTRACT.md) | Features causais, splits, schema e comportamento sem histórico |
+| [Notebook da Gold](notebooks/stages/04_gold_temporal_features.ipynb) | Decisões, causalidade e leitura da preparação para modelagem |
 | [Data pipeline](docs/DATA_PIPELINE.md) | Fonte, ELT, contratos e limites |
 | [Operations](docs/OPERATIONS.md) | Execução, diagnóstico e recuperação |
 | [Testing](docs/TESTING.md) | Integração tox–Poetry, ambiente isolado e checks compartilhados com a CI |
@@ -151,10 +174,12 @@ terão documentos próprios quando forem implementados.
 | `fraud_detection_mlops/silver.py` | Conversão Parquet, manifesto, auditoria, verificação e consulta DuckDB |
 | `fraud_detection_mlops/eda.py` | Agregações de treino, gráficos, manifesto e auditoria da EDA |
 | `fraud_detection_mlops/temporal.py` | Validação do protocolo temporal versionado |
+| `fraud_detection_mlops/features.py` | Cálculo SQL das features com janelas causais e atraso de rótulos |
+| `fraud_detection_mlops/gold.py` | Publicação Parquet, auditoria, verificação e loader dos splits Gold |
 | `fraud_detection_mlops/dataset.py` | CLI de extração e verificação |
 | `references/` | Inventário e recibos documentais |
 | `tests/` | Integridade, recuperação e integração Parquet/SQL |
 | `tox.toml` | Sequência de qualidade no ambiente Python 3.14 isolado |
 | `.github/workflows/ci.yml` | Qualidade automatizada |
 
-Os módulos de features, modelagem e gráficos permanecem scaffolds do template.
+Os módulos de modelagem e o scaffold de gráficos do template permanecem para etapas futuras.

@@ -1,12 +1,14 @@
 # Pipeline de dados
 
 Revisão da Bronze documentada: `18242fcc8e340bad52a394c7c3624b78bd809b6c`.
-Estado em 2026-10-06: aquisição Bronze implementada; integridade da aquisição completa
+Estado em 2026-10-07: aquisição Bronze implementada; integridade da aquisição completa
 validada no ambiente do autor. O diagnóstico completo foi informado pelo autor.
 A Silver foi construída e verificada localmente, com 183 partições e todas as
 contagens reconciliadas. Revisão Silver: `acf15169fed522751b974efae032d8683b64a036`,
-com CI aprovada. A próxima investigação é a [EDA da Silver](EDA.md), com
-[protocolo temporal](EVALUATION_PROTOCOL.md) versionado; a Gold virá após sua interpretação.
+com CI aprovada. A EDA de treino foi informada pelo autor e publicada na revisão `fc22a48`,
+com CI aprovada. O autor informou construção e verificação da Gold real:
+42 partições, 19 preditores e 402.877 linhas; o [contrato](GOLD_CONTRACT.md) define
+suas features, splits e limites de evidência. Commit e CI da Gold ainda não informados.
 
 ## Fonte fixada
 
@@ -40,7 +42,7 @@ identidade. A transformação para Silver é feita a partir dessa base. Na fase 
 | --- | --- | --- |
 | Bronze | `data/raw/handbook/<source_commit>/` | Implementada: arquivos originais, manifesto e auditorias |
 | Silver | `data/interim/handbook/<source_commit>/silver_v1/` | Construída e verificada localmente: 183 Parquets, contrato, manifesto e reconciliação DuckDB |
-| Gold | `data/processed/` | Planejada: datasets e features para modelagem com regras temporais explícitas |
+| Gold | `data/processed/handbook/<source_commit>/gold_v1/` | Construção e verificação informadas pelo autor: 19 preditores, 42 partições e 402.877 linhas |
 
 Os nomes `raw`, `interim` e `processed` preservam a organização inicial do
 Cookiecutter Data Science. O [contrato da Silver](SILVER_CONTRACT.md) define schema,
@@ -161,4 +163,17 @@ sem mudança no contrato `silver_v1`. O autor informou a execução de treino e
 a verificação de nove outputs, com [recibo](../references/evidence/eda_training_2026-10-07.json)
 e [interpretação](EDA.md#achados-informados-pelo-autor-em-2026-10-07).
 O [protocolo](EVALUATION_PROTOCOL.md) fixa as janelas e o atraso simulado dos rótulos;
-a Gold deverá implementar features e materializar os splits de modelagem.
+a Gold implementa features e materializa os splits de modelagem na entrega de preparação.
+
+## Construção causal da Gold
+
+A [Gold](GOLD_CONTRACT.md) mantém o protocolo `temporal_v1` e computa features antes
+de filtrar os splits, usando também o histórico dos gaps. O contexto termina em
+26 de maio: os dados futuros reservados não alimentam a primeira Gold.
+Contagens/médias de cliente, razões de valor e volume de terminal usam passado
+estrito. Fraudes conhecidas do terminal usam uma janela deslocada em sete dias,
+com o mesmo denominador elegível. O alvo e os IDs ficam em metadados; o loader
+seleciona os 19 preditores pela allowlist. Não há transformações aprendidas nesta
+etapa. A construção e a verificação reais foram informadas pelo autor, com
+[recibo](../references/evidence/gold_build_2026-10-07.json). Integridade e contagens
+aprovadas não demonstram valor preditivo; isso exigirá avaliação do baseline.

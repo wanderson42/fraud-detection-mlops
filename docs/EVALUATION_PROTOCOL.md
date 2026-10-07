@@ -1,7 +1,8 @@
 # Protocolo inicial de avaliação temporal
 
 Versão: `temporal_v1`. Estado: protocolo inicial versionado e validador implementado;
-features, splits de modelagem, métricas e treinamento ainda não implementados.
+features e splits implementados na [Gold](GOLD_CONTRACT.md), com construção e
+verificação reais informadas pelo autor; métricas e treinamento ainda não implementados.
 Fonte: snapshot `6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a` do Handbook.
 Referência executável: [temporal_protocol_v1.json](../references/temporal_protocol_v1.json).
 
@@ -31,7 +32,7 @@ Assumimos `label_available_at = TX_DATETIME + 7 dias`. Esse timestamp é uma reg
 simulação operacional; não existe nos arquivos como data real de investigação.
 No começo da validação, todos os rótulos do treino já estão disponíveis. No começo
 do teste, os rótulos da validação também estão disponíveis. O gap de sete dias é
-conservador nos limites de dia; a Gold deverá testar a disponibilidade em cada evento.
+conservador nos limites de dia; a Gold aplica a disponibilidade estrita em cada evento.
 
 O ciclo inicial **não refaz o ajuste com a validação antes do teste**. Os candidatos
 são ajustados no mesmo treino; a validação seleciona suas configurações. O candidato
@@ -81,28 +82,30 @@ AP avalia o ranking em diferentes pontos de precisão e recall. A justificativa
 para sua escolha não fixa ainda um limiar de decisão nem demonstra a qualidade
 do futuro modelo.
 
-## Regras para a futura Gold
+## Regras da Gold e do futuro pipeline de modelagem
 
 `TRANSACTION_ID` é chave de auditoria. `CUSTOMER_ID` e `TERMINAL_ID` agrupam histórico;
 não entram como inteiros brutos no modelo inicial. `TX_FRAUD` é o alvo;
 `TX_FRAUD_SCENARIO` é metadado exclusivo da simulação. Nenhum dos dois será preditor.
 
-As features temporais devem usar exclusivamente eventos anteriores à transação.
-Para empates de timestamp, a política deverá ser explícita; IDs não comprovam a
-ordem real de chegada. Features baseadas em fraude histórica também devem respeitar
+As features temporais usam exclusivamente eventos anteriores à transação.
+Eventos com timestamp igual ao atual ficam fora do histórico; IDs não comprovam a
+ordem real de chegada. Features baseadas em fraude histórica respeitam
 a disponibilidade do rótulo. Imputação, escala, seleção de features e qualquer
 resampling serão ajustados apenas no treino. Resampling não altera validação/teste.
 
 A EDA usa apenas o treino e gera hipóteses; ela não seleciona automaticamente
 features nem fornece uma garantia de ausência de vazamento no futuro pipeline.
-Os testes da Gold deverão conferir causalidade, limites das janelas, atraso de
-rótulos e aplicação de transformações sem ajuste nos holdouts.
+Os testes da Gold conferem causalidade, limites das janelas e atraso de rótulos.
+Esta versão usa regras constantes, sem ajustar parâmetros nos holdouts. Os futuros
+pipelines de modelagem também deverão testar onde ocorre o ajuste das transformações.
 
 ## Validação e referências
 
 [temporal.py](../fraud_detection_mlops/temporal.py) valida versão, fonte, datas ISO,
-ordem, gaps mínimos de sete dias, cobertura e regras suportadas. O código não
-materializa ainda datasets de treino/validação/teste nem executa avaliações.
+ordem, gaps mínimos de sete dias, cobertura e regras suportadas. O validador não executa avaliações. A [Gold](GOLD_CONTRACT.md) materializa as
+features e os splits sem alterar este protocolo; construção e verificação reais
+foram informadas pelo autor no [recibo](../references/evidence/gold_build_2026-10-07.json).
 Alterar datas invalida o comparativo anterior; mudanças de política exigem nova
 versão do protocolo e implementação correspondente.
 
@@ -115,3 +118,13 @@ Referências primárias:
 As fontes motivam atraso, cronologia e métricas. As datas, a duração do treino e a
 população sem bloqueio são decisões próprias deste projeto. O atraso constante de
 sete dias é uma simplificação, não uma regra universal de sistemas antifraude reais.
+
+## Implementação Gold preparada
+
+A `gold_v1` implementa janelas de 1/7 dias e atraso fixo de sete dias, com passado
+estrito e exclusão de timestamps simultâneos. Isso concretiza as regras de features
+do protocolo sem ajustar modelo, transformações aprendidas ou parâmetros nos
+holdouts. O [contrato](GOLD_CONTRACT.md) especifica fallback sem histórico e os
+limites da disponibilidade por tempo de evento. A causalidade foi testada em bases
+controladas. O autor informou construção e verificação da Gold real; o valor
+preditivo dessas features ainda exige comparação de modelos na validação.

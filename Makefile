@@ -79,6 +79,16 @@ data:
 eda:
 	poetry run python -m fraud_detection_mlops.eda build
 
+## Build causal Gold features and temporal modeling splits
+.PHONY: gold
+gold:
+	poetry run python -m fraud_detection_mlops.gold build
+
+## Verify Gold integrity and feature invariants
+.PHONY: verify-gold
+verify-gold:
+	poetry run python -m fraud_detection_mlops.gold verify
+
 ## Verify Bronze offline
 .PHONY: verify-data
 verify-data:
