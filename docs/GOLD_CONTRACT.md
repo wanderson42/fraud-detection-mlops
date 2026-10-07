@@ -2,7 +2,9 @@
 
 Versão: `gold_v1`. Protocolo: `temporal_v1`. Estado: construção e verificação
 no dataset real informadas pelo autor em 2026-10-07; 104 testes controlados na
-preparação. Checks locais do autor, commit e CI da Gold ainda não informados.
+preparação. Publicada na revisão [`14ab57e`](https://github.com/wanderson42/fraud-detection-mlops/commit/14ab57e15f0931ffb6966b26d390a42b514762b7),
+com [CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37652509812)
+e 104 testes. Checks locais do autor permanecem sem saída de terminal informada.
 Contrato executável: [gold_contract_v1.json](../references/gold_contract_v1.json).
 A Gold prepara tabelas de modelagem; esta entrega não ajusta nem avalia um modelo.
 
@@ -180,8 +182,11 @@ O treino coincide com as 268.668 linhas da EDA anterior. Run de auditoria:
 `8b1564df49fc497080963986b05aa007`.
 O [recibo](../references/evidence/gold_build_2026-10-07.json) registra os valores
 transcritos e o caminho relativo da auditoria; os artefatos nativos permanecem
-locais e não foram inspecionados pelo assistente. O commit executado, os checks
-locais do autor e a CI da Gold aguardam associação. Não há métrica de modelo.
+locais e não foram inspecionados pelo assistente. A revisão publicada `14ab57e`
+foi associada ao relato e tem CI aprovada: 104 testes em 11,37 s. O notebook publicado
+contém verificação concordante e leitura do treino com `X` de 268.668 × 19. Seus
+outputs foram inspecionados e preservados. O hash do código no audit nativo e os
+checks locais do autor não foram conferidos. Não há métrica de modelo.
 
 ## Escolha dos candidatos e futura seleção por desempenho
 

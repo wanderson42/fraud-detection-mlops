@@ -85,6 +85,10 @@ considera apenas rótulos disponíveis após sete dias. O [contrato](GOLD_CONTRA
 explica as decisões. O autor informou 42 partições verificadas, 19 preditores e
 402.877 linhas: 268.668 de treino, 67.255 de validação e 66.954 de teste, com
 [recibo](../references/evidence/gold_build_2026-10-07.json). A preparação passou
-104 testes controlados; checks do autor, commit e CI da Gold ainda não informados.
+104 testes controlados. A revisão Gold `14ab57e` foi publicada com
+[CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37652509812):
+104 testes em 11,37 s, lint, formatação e lockfile aprovados. O notebook publicado
+mostra a verificação e a leitura das 268.668 linhas de treino. Checks locais do autor
+continuam sem saída de terminal informada.
 Esses resultados não demonstram eficácia de detecção. O próximo marco será o baseline avaliado com
 métricas de ranking e seleção exclusivamente na validação.

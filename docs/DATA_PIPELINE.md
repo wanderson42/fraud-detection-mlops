@@ -8,7 +8,8 @@ contagens reconciliadas. Revisão Silver: `acf15169fed522751b974efae032d8683b64a
 com CI aprovada. A EDA de treino foi informada pelo autor e publicada na revisão `fc22a48`,
 com CI aprovada. O autor informou construção e verificação da Gold real:
 42 partições, 19 preditores e 402.877 linhas; o [contrato](GOLD_CONTRACT.md) define
-suas features, splits e limites de evidência. Commit e CI da Gold ainda não informados.
+suas features, splits e limites de evidência. Revisão Gold: `14ab57e`, com
+[CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37652509812) e 104 testes.
 
 ## Fonte fixada
 

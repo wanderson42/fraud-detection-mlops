@@ -139,8 +139,12 @@ o risco do terminal considera rótulos disponíveis após sete dias. O
 primeiros eventos, schema, loader e limites. O autor informou construção e
 verificação reais: 268.668 linhas de treino, 67.255 de validação e 66.954 de teste,
 com [recibo da execução](references/evidence/gold_build_2026-10-07.json).
-A preparação passou 104 testes controlados. Checks locais do autor, commit e CI
-da Gold ainda não foram informados. Ainda não há modelo ajustado nem avaliação do teste final.
+A Gold foi publicada na revisão [`14ab57e`](https://github.com/wanderson42/fraud-detection-mlops/commit/14ab57e15f0931ffb6966b26d390a42b514762b7), com
+[CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37652509812):
+104 testes em 11,37 s, lint, formatação e lockfile aprovados. O notebook publicado
+preserva a verificação e a leitura do treino (`X`: 268.668 × 19). A CI usa fixtures
+controladas; a construção real foi executada pelo autor. Ainda não há modelo ajustado
+nem avaliação do teste final.
 
 ## Documentação
 

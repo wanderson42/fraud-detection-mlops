@@ -122,3 +122,17 @@ limites em nanossegundos, peers, histórico zero e invariância ao futuro. Os te
 proibidos, preservação dos alvos e da origem, schema, reutilização, corrupções,
 semântica, lock e falhas de publicação. Nenhum modelo é treinado pelos testes.
 A execução sobre os 183 Parquets reais continua sendo uma validação local separada.
+
+## CI da Gold publicada
+
+Revisão [`14ab57e`](https://github.com/wanderson42/fraud-detection-mlops/commit/14ab57e15f0931ffb6966b26d390a42b514762b7), branch `feat/gold-temporal-features`.
+A [execução 37652509812](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37652509812)
+foi conferida por metadados, steps e logs do job `112899214478`. O comando
+`poetry run tox -e py314` aprovou lockfile, alvo do ambiente, lint, formatação
+(38 arquivos) e 104 testes em 11,37 s; tox completo: 21,59 s.
+
+Esse resultado é evidência de CI com fixtures controladas, separado da construção
+real informada pelo autor. O [recibo](../references/evidence/gold_build_2026-10-07.json)
+associa revisão, execução local, outputs publicados do notebook e CI. Os artefatos
+nativos de dados não foram inspecionados. A saída do tox local do autor permanece
+sem relato próprio nesta etapa; nenhum treinamento é executado pela CI.
