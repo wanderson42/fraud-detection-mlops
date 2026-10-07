@@ -1,6 +1,7 @@
-# Operação da Bronze
+# Operação do pipeline de dados
 
-Escopo: CLI local da revisão `18242fcc8e340bad52a394c7c3624b78bd809b6c`.
+Escopo: aquisição e verificação Bronze da revisão `18242fcc8e340bad52a394c7c3624b78bd809b6c`,
+mais o diagnóstico e a construção da Silver `silver_v1`.
 Execute os comandos na raiz do checkout. Ambiente de referência: Python 3.14.4 e
 Poetry 2.4.3. A fonte e os contratos estão em [Data pipeline](DATA_PIPELINE.md).
 
@@ -107,3 +108,108 @@ Confira o diff, documentação, evidências e os checks técnicos aplicáveis an
 commit. Os dados permanecem locais. Após o push, consulte a execução da CI que
 corresponde ao novo commit. Siga a [política de documentação](DOCUMENTATION_POLICY.md)
 e registre resultados observados com a origem da evidência.
+
+## Diagnóstico preparatório da Silver
+
+Execute na raiz do checkout após instalar as dependências:
+
+```bash
+poetry run python -m fraud_detection_mlops.profiling
+```
+
+O comando verifica a integridade e a cobertura completa da Bronze antes de ler os
+pickles. Depois audita as partições sem transformar os arquivos e imprime um resumo.
+O relatório padrão fica em `data/interim/handbook/<source_commit>/profile.json`.
+A leitura termina antes da gravação; se ocorrer uma falha, um relatório antigo
+existente pode permanecer. Confira o sucesso do comando e o horário de geração.
+
+Opções: `--bronze-root`, `--inventory` e `--report-path`. O último permite preservar
+um relatório com outro nome. Consulte `profiling --help`. A execução mantém em memória
+os identificadores vistos para conferir duplicidade entre arquivos, e processa os
+DataFrames uma partição por vez.
+
+O diagnóstico completo foi informado pelo autor e interpretado no
+[contrato vigente](SILVER_CONTRACT.md). O rascunho foi preservado como histórico.
+Os testes e a CI validam o código com bases controladas; a auditoria real é uma
+execução local separada.
+
+## Construir e verificar a Silver
+
+Com a Bronze completa disponível, execute offline:
+
+```bash
+poetry run python -m fraud_detection_mlops.silver build
+poetry run python -m fraud_detection_mlops.silver verify
+```
+
+O build verifica a integridade da Bronze e recalcula o perfil antes da conversão.
+Pode demorar mais que o profiler, pois também grava, relê e confere os Parquets.
+Nenhum novo download é realizado. Os parâmetros disponíveis são `--bronze-root`
+(build), `--output-root`, `--inventory` e `--contract`. A raiz padrão de saída é
+`data/interim/handbook`; mantenha os mesmos parâmetros ao verificar e consultar.
+
+Resultado esperado para a fonte fixada:
+
+O autor confirmou todas as contagens abaixo na execução de 2026-10-06, com
+`build` e `verify` aprovados. O
+[recibo](../references/evidence/silver_build_2026-10-06.json) registra a auditoria
+`f9fc5a5083f14d9fadf6892a531e1488`; futuras execuções devem reconciliar novamente.
+
+| Campo | Esperado a partir do diagnóstico da Bronze |
+| --- | --- |
+| `verified_partitions` | 183 |
+| `rows` | 1.754.155 |
+| `distinct_transaction_ids` | 1.754.155 |
+| `fraud_count` | 14.681 |
+| `genuine_count` | 1.739.474 |
+| `zero_amounts` | 42 |
+
+O destino é `data/interim/handbook/<source_commit>/silver_v1/`, incluindo
+`manifest.json` e as partições Parquet. O build imprime `audit_path`; preserve essa
+auditoria junto com os dados. Repetir o build verifica e retorna `status: reused`
+sem regravar um dataset íntegro.
+
+Para consultar os arquivos com DuckDB, execute na raiz do projeto:
+
+```bash
+poetry run python - <<'PY'
+from fraud_detection_mlops.silver import connect_silver
+
+with connect_silver() as connection:
+    print(connection.execute('''
+        SELECT tx_date, count(*) AS transactions, sum(TX_FRAUD) AS frauds
+        FROM transactions
+        GROUP BY tx_date
+        ORDER BY tx_date
+        LIMIT 7
+    ''').fetchdf())
+PY
+```
+
+`connect_silver` confere a saída antes de criar uma view numa sessão em memória.
+Use o context manager para encerrar a conexão. A coluna SQL `tx_date` é derivada
+da partição; as nove colunas físicas são descritas no contrato.
+
+## Recuperação da Silver
+
+- Se a aceitação falhar, confira `acceptance_summary` e o erro na auditoria.
+  Investigue a Bronze ou o contrato; não contorne a falha removendo linhas.
+- Se uma escrita falhar, corrija a causa e repita o build. O destino só é publicado
+  depois da validação completa; falhas normais limpam os arquivos temporários.
+- Se houver corrupção na Silver existente, preserve uma cópia para investigação.
+  Reconstrua em outra `--output-root` ou retire explicitamente o diretório inválido
+  antes de reconstruir. O builder não sobrescreve uma saída corrompida.
+- Um encerramento abrupto pode deixar `.silver_v1.lock`, `.silver-staging-*` e uma
+  auditoria `running` no diretório do commit. Confirme que não há build ativo antes
+  de retirar o lock residual e o staging. Preserve a auditoria.
+
+Após recuperar, execute `verify`. Esse comando verifica a Silver e não a Bronze;
+use `dataset verify --require-complete` para a integridade da origem. Não edite
+checksums para contornar verificações. Ao fechar o marco, registre o resultado
+real da conversão, a auditoria correspondente e o commit avaliado; o recibo do
+profiler não comprova que os Parquets foram construídos.
+
+A entrega local da Silver já teve construção e verificação aprovadas. Ao fazer
+commit e push, associe sua revisão ao recibo da execução e consulte a CI dessa
+revisão. Preserve o manifesto e a auditoria nativa com os Parquets; o recibo
+versionado é uma síntese da saída fornecida pelo autor.

@@ -1,8 +1,11 @@
 # Pipeline de dados
 
-Revisão de implementação documentada: `18242fcc8e340bad52a394c7c3624b78bd809b6c`.
+Revisão da Bronze documentada: `18242fcc8e340bad52a394c7c3624b78bd809b6c`.
 Estado em 2026-10-06: aquisição Bronze implementada; integridade da aquisição completa
-validada no ambiente do autor. Silver e Gold são próximas etapas.
+validada no ambiente do autor. O diagnóstico completo foi informado pelo autor.
+A Silver foi construída e verificada localmente, com 183 partições e todas as
+contagens reconciliadas. A revisão Git da Silver ainda não foi informada; a Gold
+é a próxima camada.
 
 ## Fonte fixada
 
@@ -29,18 +32,18 @@ Uma mudança de fonte exige inventário revisado e produz um snapshot por novo c
 ## Organização ELT
 
 A estratégia é extrair e carregar os bytes originais na Bronze, preservando sua
-identidade. A transformação será feita a partir dessa base. Na fase atual, a carga
+identidade. A transformação para Silver é feita a partir dessa base. Na fase atual, a carga
 é no filesystem local; a Bronze não é ainda uma tabela de banco de dados.
 
 | Camada | Caminho | Estado e contrato |
 | --- | --- | --- |
 | Bronze | `data/raw/handbook/<source_commit>/` | Implementada: arquivos originais, manifesto e auditorias |
-| Silver | `data/interim/` | Planejada: dados validados em Parquet, consultáveis via DuckDB |
+| Silver | `data/interim/handbook/<source_commit>/silver_v1/` | Construída e verificada localmente: 183 Parquets, contrato, manifesto e reconciliação DuckDB |
 | Gold | `data/processed/` | Planejada: datasets e features para modelagem com regras temporais explícitas |
 
 Os nomes `raw`, `interim` e `processed` preservam a organização inicial do
-Cookiecutter Data Science. O contrato exato de paths e schema da Silver será definido
-após a inspeção dos dados.
+Cookiecutter Data Science. O [contrato da Silver](SILVER_CONTRACT.md) define schema,
+paths e regras de aceitação, fundamentados na inspeção dos 183 arquivos.
 
 ## Contrato da Bronze
 
@@ -114,9 +117,11 @@ A verificação offline informou `Verified: 183/183; complete: True`.
 Há 39 testes locais aprovados e uma CI aprovada para a revisão documentada.
 As categorias e suas origens estão no [recibo](../references/evidence/bronze_2026-10-06.json).
 
-Antes de escrever a Silver, vamos inspecionar colunas, tipos, nulos, unicidade dos
-identificadores, rótulos de fraude, datas e consistência entre partições. Somente
-esse diagnóstico poderá sustentar o contrato semântico e a transformação Parquet.
+A auditoria completa posterior informou 1.754.155 transações, com IDs únicos,
+14.681 fraudes e 42 valores zero. Os demais controles implementados não encontraram
+violações. A decisão da Silver é preservar os zeros, tipar as nove colunas e manter
+todas as linhas. O [recibo do perfil](../references/evidence/silver_profile_2026-10-06.json)
+registra resultados informados pelo autor, sem antecipar a aceitação dos Parquets.
 
 ## Referência e termos
 
@@ -124,3 +129,24 @@ esse diagnóstico poderá sustentar o contrato semântico e a transformação Pa
 O repositório de dados consultado não apresenta uma licença separada para o dataset;
 o inventário registra essa situação. Os arquivos de dados não são incluídos no Git.
 Revise os termos da fonte antes de redistribuir os dados.
+
+## Diagnóstico e construção da Silver
+
+A primeira partição foi inspecionada pelo autor: 9.488 linhas, nove colunas, sem nulos
+nem duplicatas observadas no dia. Quatro colunas guardam inteiros com dtype `object`.
+O resultado inicial não validava todo o histórico. A auditoria completa foi então
+informada pelo autor e fundamenta o [contrato vigente](SILVER_CONTRACT.md), com evidências no
+[notebook da etapa](../notebooks/stages/02_silver_data_contract.ipynb).
+
+O builder reutiliza o profiler e verifica o snapshot completo antes de converter.
+Ele associa cada Parquet ao SHA-256 do pickle lido, confirma a leitura de volta e
+reconcilia contagens por SQL antes de publicar o diretório completo. Auditorias
+registram os hashes dos módulos e o ambiente; o commit Git avaliado será ligado
+ao resultado real no fechamento da entrega. O procedimento está no runbook.
+
+O autor informou `build` com `status: success` e verificação independente da Silver
+com as mesmas contagens: 183 partições, 1.754.155 linhas e IDs distintos, 14.681
+fraudes, 1.739.474 genuínas e 42 zeros. A auditoria responsável é
+`silver_f9fc5a5083f14d9fadf6892a531e1488.json`. O
+[recibo da execução](../references/evidence/silver_build_2026-10-06.json) distingue
+essa saída de terminal dos artefatos nativos, que permanecem locais.

@@ -1,6 +1,10 @@
 # Síntese para stakeholders
 
-Data do marco: 2026-10-06. Implementação avaliada: `18242fc`.
+Data do marco: 2026-10-06. Bronze avaliada: `18242fc`.
+Diagnóstico completo posterior informado pelo autor; revisão desse código não
+informada. A Silver foi construída e verificada no ambiente do autor, com
+reconciliação completa dos registros. A revisão Git e a CI da Silver ainda não
+foram informadas.
 
 ## Problema e objetivo do portfólio
 
@@ -22,9 +26,13 @@ execuções parciais e registra auditorias.
 | --- | --- |
 | Histórico completo de 183 dias | Verificação local informada pelo autor: `183/183; complete: True` |
 | Reutilização de dados | Execução completa reutilizou sete arquivos e baixou os 176 restantes |
-| Qualidade do código | 39 testes locais aprovados; checks de ambiente, lint e formatação aprovados |
-| Automação de qualidade | CI aprovada para o commit da implementação |
+| Qualidade do código | 70 testes locais aprovados na etapa Silver; ambiente, lint, formatação e diff conferidos |
+| Automação de qualidade | CI aprovada para a implementação Bronze; evidência da nova CI Silver pendente |
 | Rastreabilidade | Fonte fixada, inventário versionado, manifesto, auditorias e recibo documental |
+| Diagnóstico do histórico | 1.754.155 transações com IDs globalmente únicos; auditoria local informada pelo autor |
+| Frequência de fraude | 14.681 rótulos de fraude, aproximadamente 0,8369% da base; não é uma métrica de modelo |
+| Política de qualidade da Silver | Preservar os 42 valores zero; tipos explícitos e reconciliação de todas as linhas |
+| Silver completa | 183 partições Parquet construídas e verificadas; todas as contagens reconciliadas com a Bronze |
 
 As evidências e suas origens constam no [recibo da Bronze](../references/evidence/bronze_2026-10-06.json).
 Os resultados locais foram informados pelo autor; a CI foi conferida por consulta
@@ -34,13 +42,18 @@ Os resultados locais foram informados pelo autor; a CI foi conferida por consult
 
 O projeto tem uma base reproduzível para iniciar a preparação dos dados e permite
 investigar como seus arquivos foram obtidos. Essa validação cobre a aquisição e a
-integridade dos arquivos; a qualidade das transações ainda será investigada.
+integridade dos arquivos. O diagnóstico posterior também investigou schema, nulos,
+unicidade, datas, rótulos e valores, com resultados no
+[recibo do perfil](../references/evidence/silver_profile_2026-10-06.json).
+A construção e a verificação da Silver foram concluídas pelo autor. O
+[recibo da execução](../references/evidence/silver_build_2026-10-06.json) registra
+esse marco e sua auditoria. A base está disponível para consultas e a próxima
+etapa de análise e preparação temporal das features.
 
 ## Próximos marcos e evidências necessárias
 
 | Marco planejado | Evidência necessária para considerá-lo validado |
 | --- | --- |
-| Silver em Parquet | Contrato de schema, qualidade de dados, reconciliação de registros e consultas DuckDB |
 | Features e avaliação temporal | Janelas explícitas, testes contra vazamento e comparação com baseline |
 | Modelo de classificação | Métricas relevantes ao problema, escolha de limiar, limitações e Model Card |
 | Replay/streaming e operação | Processamento de eventos, controles de duplicidade e atraso, observabilidade e ensaios operacionais |
