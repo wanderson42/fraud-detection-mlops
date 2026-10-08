@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "stage": "final_evaluation_execution",
+  "recorded_on": "2026-10-08",
+  "implementation_commit": "e0fddc0b4958f120f91b54f07880e9f442030f67",
+  "evidence_source": "author_terminal_output_and_uploaded_daily_csv",
+  "status": "success",
+  "model_id": "hist_gradient_boosting",
+  "model_uri": "runs:/d3be86000fd24dc8a053dbcab778d4b6/model",
+  "feature_count": 19,
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "freeze_sha256": "6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120",
+  "holdout": {
+    "start": "2018-05-20",
+    "end_exclusive": "2018-05-27",
+    "rows": 66954
+  },
+  "evaluation_path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/final_evaluation_v1/6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120",
+  "comparison": {
+    "hist_gradient_boosting": {
+      "rows": 66954,
+      "fraud_count": 597,
+      "fraud_rate": 0.00891656958508827,
+      "average_precision": 0.6407032568368243,
+      "roc_auc": 0.8903558284512971,
+      "daily_customer_precision_at_100": 0.5499999999999999
+    },
+    "constant_score_control": {
+      "rows": 66954,
+      "fraud_count": 597,
+      "fraud_rate": 0.00891656958508827,
+      "average_precision": 0.00891656958508827,
+      "roc_auc": 0.5,
+      "daily_customer_precision_at_100": 0.018571428571428572
+    }
+  },
+  "gate": {
+    "criteria": {
+      "average_precision": {
+        "minimum": 0.5,
+        "passed": true,
+        "value": 0.6407032568368243
+      },
+      "daily_customer_precision_at_100": {
+        "minimum": 0.45,
+        "passed": true,
+        "value": 0.5499999999999999
+      }
+    },
+    "decision": "eligible_for_laboratory_serving_review",
+    "passed": true,
+    "production_promotion": false,
+    "scope": "offline_candidate_for_laboratory_serving"
+  },
+  "test_evaluated": true,
+  "refit": false,
+  "reused": false,
+  "freeze_verification": {
+    "require_committed": true,
+    "status": "success",
+    "test_evaluated": false,
+    "interpretation": "Historical pre-test receipt; evaluation outputs record subsequent test consumption."
+  },
+  "output_verification": {
+    "verified_outputs": 5,
+    "status": "success",
+    "performed_by": "author_locally",
+    "scores_recomputed_from_saved_predictions": true
+  },
+  "tracking": {
+    "run_id": "bf1f9faeb59442bba17708030d72263d",
+    "report_sha256": "09b17e08600d8841fa08d760d44368364d054e4f2e3b7ee6ca454e8ffbfe54e5",
+    "freeze_sha256": "6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120"
+  },
+  "review": {
+    "aggregate_metrics": "reviewed_from_author_output",
+    "daily_metrics": "reviewed_uploaded_csv_and_reconciled_with_terminal_summary",
+    "generated_model_card": "pending_direct_artifact_review",
+    "curated_model_card": "docs/MODEL_CARD.md",
+    "hypothesis_test_performed": false,
+    "confidence_intervals_reported": false,
+    "formal_superiority_claim": false
+  },
+  "verification_scope": [
+    "Model and data integrity checks were performed by the author locally.",
+    "Report hash is transcribed from tracking output; not independently recomputed by the assistant.",
+    "Uploaded daily CSV was directly read and reconciled. Saved predictions, native manifest, state log and generated Model Card bytes remain unavailable.",
+    "No claim of a new author CI/tox execution is made in this record.",
+    "Uploaded CSV checksum is computed from its bytes; its native manifest linkage was not independently verified."
+  ],
+  "daily_source": {
+    "name": "daily(1).csv",
+    "sha256": "fbbedfb10eb4beb1b72ebfa00a38a5bb6e252378513a6fff13a7e928ef5bf57a",
+    "size_bytes": 1935
+  },
+  "daily_analysis": {
+    "days": 7,
+    "transactions": 66954,
+    "fraud_transactions": 597,
+    "hgb": {
+      "alerts": 700,
+      "fraudulent_customer_days": 527,
+      "detected_fraudulent_customer_days": 385,
+      "missed_fraudulent_customer_days": 142,
+      "nonfraudulent_alert_customer_days": 315,
+      "daily_precision_mean": 0.5499999999999999,
+      "daily_recall_mean": 0.7301533682938982,
+      "customer_day_weighted_recall": 0.7305502846299811,
+      "daily_ap_mean": 0.6416715484651431,
+      "daily_ap_min": 0.5667699858837967,
+      "daily_ap_max": 0.7058684598170628,
+      "daily_precision_min": 0.47,
+      "daily_precision_max": 0.61
+    },
+    "control": {
+      "detected_fraudulent_customer_days": 13,
+      "daily_precision_mean": 0.018571428571428572,
+      "daily_recall_mean": 0.024689586558753366,
+      "customer_day_weighted_recall": 0.024667931688804556
+    }
+  },
+  "daily_hgb": [
+    {
+      "date": "2018-05-20",
+      "customers": 3722,
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 60,
+      "precision_at_100": 0.6,
+      "model_id": "hist_gradient_boosting",
+      "transactions": 9743,
+      "fraud_count": 90,
+      "fraud_rate": 0.009237401211125937,
+      "average_precision": 0.6926265553023141,
+      "fraudulent_customers": 77,
+      "missed_fraudulent_customers": 17,
+      "customer_recall_at_100": 0.7792207792207793
+    },
+    {
+      "date": "2018-05-21",
+      "customers": 3728,
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 47,
+      "precision_at_100": 0.47,
+      "model_id": "hist_gradient_boosting",
+      "transactions": 9688,
+      "fraud_count": 83,
+      "fraud_rate": 0.00856729975227085,
+      "average_precision": 0.6138053483918544,
+      "fraudulent_customers": 75,
+      "missed_fraudulent_customers": 28,
+      "customer_recall_at_100": 0.6266666666666667
+    },
+    {
+      "date": "2018-05-22",
+      "customers": 3706,
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 55,
+      "precision_at_100": 0.55,
+      "model_id": "hist_gradient_boosting",
+      "transactions": 9472,
+      "fraud_count": 80,
+      "fraud_rate": 0.008445945945945946,
+      "average_precision": 0.6354720901801539,
+      "fraudulent_customers": 74,
+      "missed_fraudulent_customers": 19,
+      "customer_recall_at_100": 0.7432432432432432
+    },
+    {
+      "date": "2018-05-23",
+      "customers": 3718,
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 61,
+      "precision_at_100": 0.61,
+      "model_id": "hist_gradient_boosting",
+      "transactions": 9399,
+      "fraud_count": 90,
+      "fraud_rate": 0.009575486753909991,
+      "average_precision": 0.6649884767725782,
+      "fraudulent_customers": 83,
+      "missed_fraudulent_customers": 22,
+      "customer_recall_at_100": 0.7349397590361446
+    },
+    {
+      "date": "2018-05-24",
+      "customers": 3692,
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 59,
+      "precision_at_100": 0.59,
+      "model_id": "hist_gradient_boosting",
+      "transactions": 9376,
+      "fraud_count": 92,
+      "fraud_rate": 0.009812286689419795,
+      "average_precision": 0.7058684598170628,
+      "fraudulent_customers": 75,
+      "missed_fraudulent_customers": 16,
+      "customer_recall_at_100": 0.7866666666666666
+    },
+    {
+      "date": "2018-05-25",
+      "customers": 3716,
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 53,
+      "precision_at_100": 0.53,
+      "model_id": "hist_gradient_boosting",
+      "transactions": 9617,
+      "fraud_count": 77,
+      "fraud_rate": 0.008006654881979828,
+      "average_precision": 0.6121699229082415,
+      "fraudulent_customers": 72,
+      "missed_fraudulent_customers": 19,
+      "customer_recall_at_100": 0.7361111111111112
+    },
+    {
+      "date": "2018-05-26",
+      "customers": 3710,
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 50,
+      "precision_at_100": 0.5,
+      "model_id": "hist_gradient_boosting",
+      "transactions": 9659,
+      "fraud_count": 85,
+      "fraud_rate": 0.008800082824308934,
+      "average_precision": 0.5667699858837967,
+      "fraudulent_customers": 71,
+      "missed_fraudulent_customers": 21,
+      "customer_recall_at_100": 0.704225352112676
+    }
+  ]
+}

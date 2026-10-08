@@ -2,7 +2,8 @@
 
 Atualizado em 2026-10-08. Estado atual: pipeline offline, baseline temporal,
 diagnóstico e três ablações executados localmente pelo autor. A referência foi
-conservada; teste final e operação por eventos ainda são etapas futuras.
+conservada e a avaliação final passou o gate de laboratório. Operação por eventos
+continua futura; as métricas diárias do teste foram revisadas.
 Todas as metas e prioridades estão no [mural do projeto](ROADMAP.md).
 
 ## A decisão que pretendemos apoiar
@@ -73,14 +74,19 @@ o laboratório, mas não valida seu desempenho contra golpes reais.
 
 A janela de validação tem sete dias, com clientes repetidos. A vantagem observada
 não comprova superioridade estatística ou estabilidade em outros períodos. Não há
-avaliação final do teste, confirmação de calibração, deployment ou demonstração de
+confirmação de calibração, deployment ou demonstração de
 latência e disponibilidade do serviço. Todos os rótulos acabam disponíveis após
 um atraso assumido; revisão seletiva e seus efeitos ainda não são modelados.
 
 ## Próximos marcos orientados pelo risco
 
-A próxima entrega é revisar o congelamento das escolhas e os critérios antes
-da avaliação final. O [mural de metas](ROADMAP.md) concentra a sequência de
+A avaliação final foi executada e verificada pelo autor: AP 0,640703 e precisão
+diária por cliente @100 de 55%, sem refit. A [Model Card](MODEL_CARD.md) concentra
+a interpretação, os limites e a evidência; o gate permite revisão de serving de
+laboratório, sem promoção em produção. O CSV diário apresentou recall médio de
+73,02%, com precisão entre 47% e 61%. No total, 142 ocorrências de cliente com
+fraude por dia ficaram fora das filas; pessoas podem reaparecer em outros dias.
+O [mural de metas](ROADMAP.md) concentra a sequência de
 serving, replay, orquestração, monitoramento e atualização controlada, além dos
 critérios para Kubernetes e infraestrutura em cloud. A utilidade operacional
 precisa de evidência própria em cada marco.
@@ -93,7 +99,8 @@ precisa de evidência própria em cada marco.
 | Exploração e preparação temporal | [EDA](../references/evidence/eda_training_2026-10-07.json) e [Gold](../references/evidence/gold_build_2026-10-07.json) |
 | Modelos e comparação | [Baseline](../references/evidence/baseline_validation_2026-10-07.json) e [tracking histórico](../references/evidence/mlflow_execution_2026-10-07.json) |
 | Diagnóstico | [Execução informada](../references/evidence/diagnostics_execution_2026-10-07.json) |
-| Ablações e últimos checks locais | [Execução informada](../references/evidence/controlled_ablation_execution_2026-10-08.json) |
+| Ablações | [Decisão e resultados registrados](EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08) |
+| Avaliação final | [Execução informada](../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](MODEL_CARD.md) |
 
 A [política de documentação](DOCUMENTATION_POLICY.md) define como separar relatos
 locais, preparação e CI. [Arquitetura](ARCHITECTURE.md) descreve responsabilidades;

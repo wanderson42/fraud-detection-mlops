@@ -33,13 +33,15 @@ substanciais e documentos por responsabilidade em `docs/`.
 | [Arquitetura](ARCHITECTURE.md) | Responsabilidades, organização e controle de complexidade | Mudança estrutural |
 | [Testing](TESTING.md) | Isolamento tox–Poetry, checks, seleção de testes e limites | Mudança de validação ou CI |
 | `docs/INFRASTRUCTURE.md` | Arquitetura, configuração, persistência e resiliência | Quando a infraestrutura for implementada |
-| `docs/MODEL_CARD.md` | Uso do modelo, dados, avaliação, limitações e governança | Quando houver modelo avaliado |
+| [Model Card](MODEL_CARD.md) | Uso do modelo, dados, avaliação, limitações e governança | Nova avaliação ou mudança de uso; distinguir a síntese curada do arquivo operacional da run |
 | [Stakeholders](STAKEHOLDERS.md) | Problema, entregas, evidências, limitações e próximos marcos | Mudança no resultado ou no escopo |
 | `references/evidence/` | Recibos estruturados de evidência, ligados à revisão avaliada | Fechamento de um marco validado |
 | `references/frozen_candidate_v1.json` | Recibo das escolhas, modelo e insumos da avaliação final | Criar na execução real e versionar antes de abrir o teste; não substituir para escolher outro candidato |
 
-Os caminhos de infraestrutura, model card e experimentos acima são destinos
-planejados. Criamos os artefatos quando houver conteúdo concreto.
+A Model Card foi criada com a avaliação final relatada pelo autor. Infraestrutura
+e diretórios de experimentos entram quando houver conteúdo concreto. A Model Card
+gerada na run permanece no armazenamento operacional; a síntese em `docs/` aponta
+para sua evidência e conserva o escopo da revisão.
 
 ## Regra editorial
 

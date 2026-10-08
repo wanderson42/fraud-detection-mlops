@@ -14,8 +14,10 @@ A fonte é simulada; a utilidade e os limites estão no [contexto](PROBLEM_CONTE
 
 **Onde estamos:** pipeline offline, tracking e primeiro ciclo de experimentação
 validados localmente. As três ablações não passaram o gate; conservamos a referência
-de 19 features. **O teste final permanece reservado.** Serving, streaming, CD e CT
-ainda precisam de implementação e evidência própria.
+de 19 features. **A avaliação final foi executada e verificada pelo autor:**
+AP 0,640703 e precisão diária @100 de 55%, com gate de laboratório aprovado.
+O holdout foi consumido; as métricas diárias foram revisadas. Serving, streaming, CD e
+CT ainda precisam de implementação e evidência própria.
 
 **HGB = Histogram-based Gradient Boosting**, ou boosting de árvores baseado em
 histogramas. Neste projeto é o `HistGradientBoostingClassifier` do scikit-learn.
@@ -34,10 +36,10 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Qualidade do software e CI | Implementado; suíte validada localmente | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. Último relato do autor: 164 testes aprovados. Cada revisão precisa dos seus checks. [Testing](TESTING.md). |
 | Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](BASELINE.md), [MLflow](MLFLOW.md) e [diagnóstico](DIAGNOSTICS.md). |
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
-| Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` e teste reservado. [Evidência](../references/evidence/freeze_execution_2026-10-08.json). |
-| Avaliação final | Implementado; **execução real pendente** | Candidato fixo, controle constante, métricas, gate de laboratório, Model Card e run MLflow de avaliação. [Procedimento](EVALUATION_PROTOCOL.md#executar-a-avaliação-final). |
+| Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../references/evidence/freeze_execution_2026-10-08.json). |
+| Avaliação final | Executado e verificado localmente; CSV diário revisado | AP 0,640703 e precisão diária @100 de 55%; critérios atingidos, sem refit ou promoção em produção. [Evidência](../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](MODEL_CARD.md). |
 | Análise estatística e testes de hipóteses | Planejado; protocolo confirmatório pendente | Definir hipótese, efeito relevante, unidade de inferência e dependência temporal/por entidade antes de novas comparações. Obter mais evidência temporal separada do desenvolvimento; registrar tamanho de efeito e incerteza apropriada. A exclusão de um dia da ablação é sensibilidade, não intervalo de confiança. |
-| Contrato de inferência e Docker | Planejado | Definir entradas, saídas, versão e estado das features; conferir paridade com scores offline. Empacotar recursos de `references/`, executar fora do checkout e demonstrar health check, erros e persistência. |
+| Contrato de inferência e Docker | Contrato inicial definido; implementação próxima | Receber 19 features calculadas, devolver score identificado e rejeitar entradas inválidas. [Contrato proposto](ARCHITECTURE.md#primeiro-contrato-de-inferência--definido-implementação-pendente). Demonstrar paridade, execução fora do checkout, health/readiness, imagem mensurada e recuperação. |
 | Orquestração com Prefect | Planejado; escolha do projeto | Prefect auto-hospedado para encadear os módulos Python, registrar dependências e falhas, testar retries e retomada sem duplicação. Manter lógica independente do orquestrador e medir recursos. O consumidor de streaming terá contrato próprio. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
 | Streaming por replay histórico e paridade de features | Planejado | Reproduzir eventos em ordem temporal com relógio explícito, feedback após o atraso e estado causal. Definir duplicidade, empates, atrasos e recuperação; comparar features/scores offline e online. O replay será identificado como simulação. |
@@ -51,18 +53,20 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Aplicar, validar e versionar o executor da avaliação final. O recibo de
-   congelamento e os critérios já estão no Git e serão conservados.
-2. Executar e verificar a avaliação; revisar resultados diários, decisão e Model Card.
-   O gate exige AP ≥ 0,50 e precisão diária @100 ≥ 0,45, sem promoção em produção.
-   A execução real permanece pendente; não há resultado de teste nesta preparação.
-3. Documentar a evidência real e definir o contrato de inferência e Docker.
-   A política de alertas online
-   terá contrato e validação próprios, pois hoje usamos o dia completo retrospectivamente.
+1. Consolidar no Git a avaliação e a revisão do CSV diário; conferir localmente
+   `model_card.md` da execução original. Não é necessário repetir o teste ou treinar.
+2. Implementar o primeiro contrato de pontuação e conferir paridade por round-trip
+   de serialização usando scores já salvos, sem qualquer escolha de modelagem.
+3. Preparar um artefato de serving identificado e somente leitura; demonstrar carga
+   fora do checkout, `/health`, `/ready` e falhas de contrato antes do Docker.
+4. Construir e medir a imagem: dependências de runtime explícitas, usuário sem root,
+   ausência de dados/credenciais na imagem, recursos e latência observados. A política
+   de investigação online e o cálculo de históricos terão validação própria.
 
-Uma nova decisão de modelagem antes do congelamento exige protocolo próprio e
-atualização deste mural. Após consultar o teste final, ele deixa de ser um holdout
-intocado; novas escolhas precisam de outra avaliação temporal definida previamente.
+A revisão diária foi concluída sobre o CSV fornecido; a entrega técnica de
+serving precisará de evidência própria.
+Mudanças futuras de modelo exigem outro protocolo e outra janela previamente
+preservada; este teste final já foi consumido.
 
 ## Sequência operacional e controle de custo
 
@@ -85,7 +89,8 @@ assunto, preferimos APIs nativas e removemos caminhos de escrita aposentados.
 
 ## Evidências e referências
 
-- [Ablações e checks locais: execução informada em 2026-10-08](../references/evidence/controlled_ablation_execution_2026-10-08.json).
+- [Ablações: decisão e resultados registrados em 2026-10-08](EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08).
+- [Avaliação final informada pelo autor](../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](MODEL_CARD.md).
 - [Protocolo temporal](EVALUATION_PROTOCOL.md): dados, rótulos e métricas.
 - [Stakeholders](STAKEHOLDERS.md): interpretação e utilidade dos resultados.
 - [Google Cloud: MLOps, CI/CD/CT e operação de sistemas de ML](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning).

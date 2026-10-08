@@ -45,13 +45,13 @@ implementada por `HistGradientBoostingClassifier`, do scikit-learn.
 | Diagnóstico e ablações | SHAP/permutação e três ablações concluídas; nenhum candidato passou o gate; conservamos as 19 features |
 | Qualidade de software | Poetry, tox, Ruff, pytest e workflow de CI; último relato do autor: 164 testes aprovados em 21,11 s |
 | Congelamento | Concluído e versionado em `623dc86`; 19 features, modelo e critérios fixados antes do teste |
-| Avaliação final | Executor implementado; **execução real pendente e teste ainda reservado** |
+| Avaliação final | Executada e verificada pelo autor: AP **0,640703**, precisão diária @100 **55%**; gate de laboratório aprovado |
 | Operação | Serving, replay, orquestração, armazenamento remoto, monitoramento, CD e CT ainda planejados |
 
 As execuções reais foram informadas pelo autor e registradas em
 [`references/evidence/`](references/evidence/). A
-[última evidência](references/evidence/controlled_ablation_execution_2026-10-08.json)
-separa checks de software, resultados de ablação e limites da revisão. Aprovação
+[evidência da avaliação final](references/evidence/final_evaluation_execution_2026-10-08.json)
+registra métricas, decisão e limites da conferência. Aprovação
 local e CI de cada revisão são evidências distintas.
 
 O [mural](docs/ROADMAP.md) reúne todas as metas, prioridade e critérios de conclusão,
@@ -162,7 +162,8 @@ A Gold foi publicada na revisão [`14ab57e`](https://github.com/wanderson42/frau
 104 testes em 11,37 s, lint, formatação e lockfile aprovados. O notebook publicado
 preserva a verificação e a leitura do treino (`X`: 268.668 × 19). A CI usa fixtures
 controladas; a construção real foi executada pelo autor. O baseline ajustado está
-descrito abaixo; o teste final permanece reservado.
+descrito abaixo; o teste foi preservado durante essa preparação e avaliado
+posteriormente, conforme a Model Card.
 
 ## Baseline temporal
 
@@ -175,7 +176,8 @@ poetry run python -m fraud_detection_mlops.modeling.train run
 ```
 
 O experimento compara controle constante, regressão logística com escala ajustada
-no treino e gradient boosting. A seleção usa AP da validação; o teste fica reservado.
+no treino e gradient boosting. A seleção usa AP da validação e não acessa o teste.
+A avaliação final posterior está registrada na Model Card.
 Novas execuções usam `baseline_v2`, pipelines skops e três runs MLflow independentes.
 A política de modelagem permanece igual. Não é necessário repetir o baseline
 histórico para atualizar o código. Use o `baseline_path` retornado para verificar:
@@ -217,14 +219,15 @@ queda de AP. Features não foram removidas. O
 [protocolo de experimentação](docs/EXPERIMENT_PROTOCOL.md) define três ablações,
 orçamento de três fits e critérios práticos antes das próximas execuções.
 O autor executou e verificou `21ccedf10d944092ba874153c1d21257` sobre `de41ee0`:
-18 artefatos verificados, três candidatos registrados no MLflow e teste reservado.
+18 artefatos verificados, três candidatos registrados no MLflow e teste preservado
+naquele marco.
 Nenhuma ablação atingiu os dois ganhos mínimos do gate. Com 700 vagas semanais,
 a referência priorizou 378 ocorrências fraudulentas de cliente/dia; as ablações,
 374, 373 e 372. A precisão operacional piorou em todas as exclusões de dia.
 A [revisão dos resultados](docs/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08)
-e o [recibo](references/evidence/controlled_ablation_execution_2026-10-08.json)
-registram a decisão de conservar a referência. O catálogo foi encerrado, sem
-promoção em produção ou hipótese confirmatória. O teste final permanece reservado.
+registra a decisão de conservar a referência. O catálogo foi encerrado, sem
+promoção em produção ou hipótese confirmatória. A avaliação final veio depois
+do congelamento dessa decisão.
 
 ## Congelar antes de avaliar o teste
 
@@ -246,11 +249,18 @@ Depois de validar e versionar a implementação:
 poetry run python -m fraud_detection_mlops.modeling.evaluation run
 ```
 
-O comando consulta o teste reservado e gera scores, métricas diárias, decisão e
+O comando original consulta o teste reservado e gera scores, métricas diárias, decisão e
 Model Card. Uma nova chamada reutiliza o resultado verificado. O
 [procedimento e a recuperação](docs/EVALUATION_PROTOCOL.md#executar-a-avaliação-final)
 explicam a fronteira do teste; o
 [notebook da etapa](notebooks/stages/09_final_evaluation.ipynb) orienta a revisão.
+
+O autor executou e verificou o teste: AP 0,640703 e precisão diária @100 de 55%,
+sem refit. Ambos os critérios foram atingidos. A [Model Card](docs/MODEL_CARD.md)
+registra o resultado e os limites. A revisão diária identificou recall médio
+de **73,02%**, com precisão variando entre **47% e 61%**.
+**Este holdout foi consumido.** Melhorias futuras exigem outra janela e protocolo.
+Para conferir esse resultado, use `evaluation verify` sobre os artefatos salvos.
 
 ## Documentação
 
@@ -261,15 +271,15 @@ próxima entrega. Os detalhes têm uma referência principal por assunto:
 | --- | --- |
 | Por que existe e para quem serve? | [Contexto](docs/PROBLEM_CONTEXT.md) e [stakeholders](docs/STAKEHOLDERS.md) |
 | Quais dados e regras usamos? | [Dicionário](docs/DATA_DICTIONARY.md), [pipeline](docs/DATA_PIPELINE.md), contratos [Silver](docs/SILVER_CONTRACT.md) e [Gold](docs/GOLD_CONTRACT.md) |
-| Como avaliamos e o que aprendemos? | [EDA](docs/EDA.md), [avaliação temporal](docs/EVALUATION_PROTOCOL.md), [baseline](docs/BASELINE.md), [diagnóstico](docs/DIAGNOSTICS.md) e [experimentos](docs/EXPERIMENT_PROTOCOL.md) |
+| Como avaliamos e o que aprendemos? | [Model Card](docs/MODEL_CARD.md), [EDA](docs/EDA.md), [avaliação temporal](docs/EVALUATION_PROTOCOL.md), [baseline](docs/BASELINE.md), [diagnóstico](docs/DIAGNOSTICS.md) e [experimentos](docs/EXPERIMENT_PROTOCOL.md) |
 | Como executar, recuperar e validar? | [Operations](docs/OPERATIONS.md), [MLflow](docs/MLFLOW.md), [execução das ablações](docs/EXPERIMENT_EXECUTION.md) e [Testing](docs/TESTING.md) |
 | Como organizar e manter o projeto? | [Arquitetura](docs/ARCHITECTURE.md) e [política documental](docs/DOCUMENTATION_POLICY.md) |
 
 O [notebook principal](notebooks/fraud_detection_mlops.ipynb) apresenta a narrativa
 e aponta para os [notebooks de cada etapa](notebooks/stages/), legíveis no GitHub.
 Outputs publicados preservam sua origem; células pendentes não recebem resultados
-pré-fabricados. Model Card e infraestrutura terão documentação quando houver
-conteúdo concreto, conforme o mural.
+pré-fabricados. A Model Card resume o modelo avaliado; infraestrutura terá
+documentação quando houver implementação concreta, conforme o mural.
 
 ## Organização do código
 

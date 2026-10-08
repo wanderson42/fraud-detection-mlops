@@ -3,7 +3,8 @@
 Versão: `temporal_v1`. Estado: protocolo inicial versionado e validador implementado;
 features e splits implementados na [Gold](GOLD_CONTRACT.md), com construção e
 verificação reais informadas pelo autor. O [baseline](BASELINE.md) implementa treino
-e métricas de validação, com execução real informada pelo autor e teste final reservado.
+e métricas de validação. A avaliação final foi executada e verificada pelo autor;
+o resultado e a fronteira consumida estão [registrados abaixo](#resultado-final-informado--2026-10-08).
 Fonte: snapshot `6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a` do Handbook.
 Referência executável: [temporal_protocol_v1.json](../references/temporal_protocol_v1.json).
 
@@ -172,7 +173,7 @@ validação, promoção em produção ou avaliação do teste final.
 ## Congelamento antes da avaliação final
 
 Estado: congelamento real informado pelo autor e publicado em `623dc86`;
-avaliação do teste ainda pendente. O contrato executável é
+avaliação final executada e verificada pelo autor em 2026-10-08. O contrato executável é
 [final_evaluation_protocol_v1.json](../references/final_evaluation_protocol_v1.json).
 O executor `modeling.freeze` reutiliza a referência **HistGradientBoostingClassifier
 (HGB)** da baseline `f6d7aca720f74316b4183f97b6d866ab`, conservada após o catálogo
@@ -255,8 +256,9 @@ teste é registrada nos artefatos da avaliação, sem reescrever o recibo histó
 
 ## Executar a avaliação final
 
-Estado: executor implementado e validado com dados controlados; **execução real e
-resultados de teste pendentes**. O módulo `modeling.evaluation` usa somente o
+Estado: executor implementado; **execução sobre a fonte simulada concluída e
+verificada pelo autor**. As métricas diárias foram revisadas no CSV fornecido.
+O módulo `modeling.evaluation` usa somente o
 candidato congelado. Não aceita um novo modelo, limiar, catálogo ou janela na CLI.
 As escolhas do [contrato](../references/final_evaluation_protocol_v1.json) e os
 critérios AP ≥ 0,50 e precisão diária @100 ≥ 0,45 permanecem iguais.
@@ -339,5 +341,41 @@ bytes, não substituem controle de acesso ou assinatura de artefatos.
 
 O [notebook da etapa](../notebooks/stages/09_final_evaluation.ipynb) permite revisar
 o contrato, executar ou reutilizar a avaliação e inspecionar resultados diários.
-Seus outputs reais serão gerados pelo autor. Após essa execução, documentaremos
-o resultado e revisaremos a Model Card antes de iniciar o contrato de inferência.
+Seus outputs são gerados pelo autor. As saídas de terminal já permitiram consolidar
+a avaliação abaixo. O CSV diário fornecido foi revisado; a revisão dos bytes
+da Model Card gerada continua pendente.
+
+## Resultado final informado — 2026-10-08
+
+Na revisão `e0fddc0b4958f120f91b54f07880e9f442030f67`, o autor verificou o recibo
+com `--require-committed`, executou a avaliação e verificou os cinco outputs.
+Foram avaliadas 66.954 transações, com 597 fraudes (prevalência 0,892%).
+O modelo original foi conservado, sem refit ou calibração.
+
+| Métrica | HGB | Controle constante | Gate |
+| --- | ---: | ---: | --- |
+| Average Precision | 0,640703 | 0,008917 | ≥ 0,50: aprovado |
+| ROC AUC | 0,890356 | 0,500000 | Informativa |
+| Precisão diária por cliente @100 | 0,550000 | 0,018571 | ≥ 0,45: aprovado |
+
+Decisão: `eligible_for_laboratory_serving_review`, com `production_promotion: false`.
+A run de avaliação é `bf1f9faeb59442bba17708030d72263d`.
+A [evidência](../references/evidence/final_evaluation_execution_2026-10-08.json)
+transcreve as saídas do autor; não equivale a uma consulta independente aos seus
+artefatos locais. A [Model Card](MODEL_CARD.md) concentra a interpretação.
+
+**Fronteira consumida:** esta janela deixa de ser um holdout intocado. Não a usamos
+para orientar outra seleção, ablação, calibração ou ajuste de hiperparâmetros.
+Uma nova etapa de modelagem exigirá outras janelas e protocolo próprio.
+
+A revisão do CSV diário reconciliou as 66.954 transações e 597 fraudes. Nas filas,
+385 de 527 ocorrências de cliente com fraude por dia foram identificadas, com
+recall médio diário de 73,02%; 142 ocorrências ficaram fora. A precisão variou
+de 47% a 61%. A [Model Card](MODEL_CARD.md#revisão-diária-da-fila-de-investigação)
+concentra a tabela, unidades e interpretação, sem alterar o gate.
+A conferência direta dos bytes da Model Card gerada e do vínculo do CSV ao
+manifesto nativo continua pendente. Docker e serving só serão declarados validados
+quando tiverem seus checks.
+
+A consolidação documental não altera código, lockfile, contratos ou recibo
+congelado. Os artefatos operacionais existentes e suas runs permanecem preservados.
