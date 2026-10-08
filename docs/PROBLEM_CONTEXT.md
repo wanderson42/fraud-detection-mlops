@@ -13,6 +13,33 @@ O ponto de partida é fraude em cartões simulada pelo Handbook. O que já exist
 é uma avaliação offline de ranking e um pipeline rastreável. Replay, inferência
 online, monitoramento e política de promoção são próximos marcos concretos.
 
+## Antes dos modelos: cliente, transação e terminal
+
+Uma transação representa um pagamento de determinado valor, realizado por um
+cliente em um terminal, numa data e hora [7]. `CUSTOMER_ID` identifica o cliente;
+`TRANSACTION_ID` identifica cada pagamento. A mesma pessoa pode realizar várias
+transações, legítimas ou fraudulentas. Uma ocorrência de fraude não transforma
+automaticamente todo o seu histórico em fraude: o cliente pode ser a vítima.
+
+**Terminal é o ponto de aceitação do pagamento representado nos dados.** Uma
+maquininha de cartão é um exemplo intuitivo. No simulador, `TERMINAL_ID` identifica
+esse ponto associado ao comerciante [7]. A fonte não informa o canal
+de compra, o equipamento físico ou uma relação entre lojas e várias maquininhas.
+Portanto, não deduzimos essas características a partir do ID.
+
+Vários clientes podem usar o mesmo terminal, e um cliente pode usar diferentes
+terminais. Isso permite olhar para dois históricos: o comportamento habitual do
+cliente e o que aconteceu naquele ponto de pagamento. No cenário de terminal
+comprometido do gerador, esse histórico compartilhado pode ajudar a contextualizar
+novas transações. Ele não prova que todo usuário daquele terminal sofreu fraude.
+
+O rótulo `TX_FRAUD` informa se a transação foi marcada como genuína (`0`) ou
+fraudulenta (`1`) pelo simulador [7]. O **score** é a saída do modelo usada para
+ordenar risco; um **alerta** é um caso encaminhado à revisão conforme uma política.
+Score, alerta e fraude confirmada são conceitos diferentes. No nosso ciclo atual,
+o score não foi calibrado como probabilidade, e os alertas agrupam transações por
+cliente/dia. O [dicionário](DATA_DICTIONARY.md) detalha as colunas e features.
+
 ## Uma história que antecede os modelos atuais
 
 Esta é uma seleção de marcos publicados, não uma cronologia completa de adoção
@@ -92,9 +119,10 @@ admissível. Campos ausentes da fonte, como IP/dispositivo, não foram retirados
 pelo extrator.
 
 Houve escolhas prévias de desenho, como janelas de 1/7 dias e representação de
-calendário. Não houve comparação por retreinamento para medir o efeito de remover
-features, que caracterizaria uma ablação. A futura comparação deverá registrar
-essas escolhas e seu custo antes de ampliá-las.
+calendário. Depois, o primeiro catálogo comparou três ablações por retreinamento;
+nenhuma passou o gate definido, e as 19 features foram conservadas. O
+[protocolo de experimentação](EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08)
+registra hipóteses, orçamento, efeitos observados e limites dessa decisão.
 
 Uma transação é nossa unidade de observação; ela não é necessariamente uma réplica
 estatística independente. Clientes repetidos, terminais compartilhados e janelas
@@ -104,10 +132,27 @@ estatística deverá definir os agrupamentos e blocos temporais relevantes.
 
 ## Onde nosso modelo se encaixa
 
-O Handbook apresenta um sistema com controles no terminal, regras de bloqueio,
-regras de score, modelo orientado por dados e investigadores [6]. Seu desenho
-combina decisões rápidas com verificações humanas posteriores. A capacidade de
-revisão é limitada, e as investigações fornecem feedback para o sistema.
+Um **Sistema de Detecção de Fraudes**, ou FDS (*Fraud Detection System*), reúne
+controles e investigação. No desenho didático do Handbook [6], há cinco camadas:
+
+| Camada | Papel | Momento nesse desenho |
+| --- | --- | --- |
+| Terminal | Verificações de segurança, como PIN e situação do cartão | Antes da autorização, em milissegundos |
+| Regras de bloqueio da transação | Recusar pedidos que atendam a condições definidas por especialistas | Antes da autorização, em milissegundos |
+| Regras de pontuação | Atribuir risco por condições conhecidas, incluindo histórico | Após autorização, em tempo quase real |
+| Modelo orientado por dados, ou DDM | Aprender padrões e produzir scores para gerar alertas | Após autorização, em tempo quase real |
+| Investigadores | Revisar casos, confirmar rótulos e devolver feedback | Investigação offline |
+
+São papéis conceituais do Handbook, não uma arquitetura obrigatória ou um SLA
+universal. A [figura original e sua explicação](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_2_Background/FDS.html)
+mostram como regras e modelo apoiam a investigação. Neste projeto, o HGB ocupa
+o papel do DDM; Bronze, Silver e Gold organizam os dados que o alimentam.
+
+**Autorizar um pagamento não confirma sua legitimidade.** Nesse desenho, uma
+investigação posterior pode motivar o bloqueio do cartão e evitar novas ocorrências.
+O feedback é o resultado verificado da revisão; uma investigação pode esclarecer
+outras transações do mesmo cartão [6]. No laboratório, simulamos sua disponibilidade
+após sete dias, sem contato real com clientes ou decisões humanas.
 
 Nosso escopo começa na camada de dados/modelo que **ordena risco e apoia a triagem**.
 O pipeline atual não implementa autorização de pagamentos, bloqueio de contas,
@@ -170,8 +215,10 @@ dias diferentes. O HGB priorizou 42 ocorrências fraudulentas adicionais ao mesm
 orçamento. É um ganho observado de seleção na validação simulada; não é estimativa
 de perdas evitadas, prova estatística de superioridade ou resultado de produção.
 
-O próximo experimento deverá investigar os sinais que sustentam esse ranking,
-registrar hipóteses e ganhos relevantes antes de tuning e preservar o teste final.
+Diagnóstico e ablações foram concluídos, e a referência foi congelada pelo autor
+antes da avaliação final. O [protocolo de avaliação](EVALUATION_PROTOCOL.md#congelamento-antes-da-avaliação-final)
+define as escolhas e os critérios do laboratório. O teste permanece reservado;
+novas escolhas de modelo ou tuning precisarão de outro ciclo previamente definido.
 Uma semana de validação não demonstra estabilidade em outros períodos.
 
 ## Para que este projeto pode ser útil
@@ -199,7 +246,8 @@ substitui a definição do processo que pretendemos apoiar.
 
 As fontes fundamentam o contexto; não certificam nossos resultados. Números do
 projeto derivam das evidências locais informadas pelo autor. Texto próprio, sem
-reprodução de figuras ou trechos extensos. Consulta do contexto em 2026-10-07.
+reprodução de figuras ou trechos extensos. Contexto consultado em 2026-10-07;
+definições do simulador e camadas do FDS conferidas em 2026-10-08.
 
 1. **Ghosh, S.; Reilly, D. L. (1994).** *Credit card fraud detection with a neural-network.* HICSS. [DOI](https://doi.org/10.1109/HICSS.1994.323314). Marco histórico de uso de redes neurais.
 2. **Sculley, D. et al. (2015).** *Hidden Technical Debt in Machine Learning Systems.* NeurIPS. [Artigo](https://papers.neurips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf). Manutenção e controle de dependências.
