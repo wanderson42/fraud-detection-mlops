@@ -2,7 +2,8 @@
 
 Versão: `temporal_v1`. Estado: protocolo inicial versionado e validador implementado;
 features e splits implementados na [Gold](GOLD_CONTRACT.md), com construção e
-verificação reais informadas pelo autor; métricas e treinamento ainda não implementados.
+verificação reais informadas pelo autor. O [baseline](BASELINE.md) implementa treino
+e métricas de validação na preparação; execução real pendente e teste final reservado.
 Fonte: snapshot `6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a` do Handbook.
 Referência executável: [temporal_protocol_v1.json](../references/temporal_protocol_v1.json).
 
@@ -47,7 +48,7 @@ Após consultar o teste, não ajustamos o modelo e voltamos a chamar esse mesmo 
 de evidência independente. Uma mudança exige novo protocolo e nova janela preservada.
 O histórico posterior será consumido em ordem cronológica quando essa etapa existir.
 
-## População e métricas planejadas
+## População e métricas
 
 A primeira versão considera **todas as transações**, inclusive de clientes já
 associados a fraude. A Silver não aplica bloqueios. O Handbook também apresenta uma
@@ -63,7 +64,8 @@ outro contrato. Portanto, não faremos comparações diretas com suas métricas 
   `min(100, clientes observados no dia)`; agregação pela média das precisões diárias.
   Esse contrato usa clientes da simulação e não inclui bloqueio de comprometidos.
 
-Métricas, regras de score e cálculo operacional estão **planejados**, sem resultados.
+Métricas, regras de score e cálculo operacional estão implementados no [baseline](BASELINE.md),
+com testes controlados e **sem resultados reais de modelo** nesta entrega.
 Precisão, recall e matriz de confusão dependerão de um limiar escolhido exclusivamente
 na validação. Não fixamos uma meta percentual arbitrária nesta etapa nem tratamos
 acurácia elevada como demonstração de detecção de fraude. A semente inicial será 42.
@@ -128,3 +130,28 @@ holdouts. O [contrato](GOLD_CONTRACT.md) especifica fallback sem histórico e os
 limites da disponibilidade por tempo de evento. A causalidade foi testada em bases
 controladas. O autor informou construção e verificação da Gold real; o valor
 preditivo dessas features ainda exige comparação de modelos na validação.
+
+## Primeiro experimento de validação
+
+O contrato `baseline_v1` compara um controle constante e dois candidatos com os
+mesmos 19 preditores. Todos são ajustados no treino; scaler e pesos de classe
+não usam a validação. Ela seleciona AP entre os candidatos elegíveis. O runner
+não cria scores nem métricas de teste, e não faz refit. A integridade de toda a
+Gold continua sendo verificada. Configurações, desempate e limitações ficam no
+[baseline](BASELINE.md). Métricas de validação são evidência de seleção, não
+estimativas independentes do teste final.
+
+## Evolução estatística planejada
+
+Antes de selecionar features ou otimizar hiperparâmetros, versionaremos hipóteses,
+métrica principal, ganho mínimo relevante e orçamento de experimentos. Comparações
+usarão os mesmos exemplos/janelas e tratarão dependência temporal e clientes
+repetidos; tamanho do efeito e intervalos acompanharão testes de hipóteses quando
+seus pressupostos forem adequados. Uma semana de validação limita evidências de
+estabilidade. Resultados exploratórios não serão apresentados como confirmação.
+
+Permutação/SHAP terão propósito diagnóstico; ablações precisarão retreinamento
+controlado. O quality gate combinará integridade, desempenho, estabilidade e custo,
+sem estabelecer limiares depois de observar o candidato. Essas políticas são
+planejadas, não implementadas nesta integração MLflow. O protocolo `temporal_v1`
+e o teste reservado permanecem inalterados.

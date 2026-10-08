@@ -136,3 +136,38 @@ real informada pelo autor. O [recibo](../references/evidence/gold_build_2026-10-
 associa revisão, execução local, outputs publicados do notebook e CI. Os artefatos
 nativos de dados não foram inspecionados. A saída do tox local do autor permanece
 sem relato próprio nesta etapa; nenhum treinamento é executado pela CI.
+
+## Testes do baseline temporal
+
+Os [testes de métricas](../tests/test_modeling_metrics.py) conferem AP/ROC conhecidas,
+score máximo e qualquer fraude por cliente/dia, empate por ID, limite de cem,
+denominador menor e média diária sem ponderação. Casos inválidos são rejeitados;
+ROC com uma classe tem política explícita.
+
+Os [testes do runner](../tests/test_baseline.py) executam modelos reais em fixtures
+pequenas, incluindo escala ajustada apenas no treino, exclusão do teste do loader,
+constância do dummy e invariância dos scores aos rótulos dos holdouts. Também
+conferem artefatos separados, round trip, reutilização do código de métricas na
+verificação, ausência de desserialização em verify, corrupção com hashes alterados,
+falha de escrita, falha de convergência, mudanças de input e CLI. O baseline exige
+ambas as classes no treino e na validação antes do fit.
+O [recibo](../references/evidence/baseline_preparation_2026-10-07.json) registra
+os checks da preparação; não é evidência de métricas do histórico real.
+
+## Integração MLflow e skops
+
+[Oito testes adicionais](../tests/test_tracking.py) exercitam SQLite, pacotes MLflow
+skops e pipelines reais. Conferem três runs principais independentes, recarga sklearn
+/pyfunc, assinatura, ausência de refit/teste, originais preservados, repetição sem
+duplicatas, migração explicitamente confiável, ambiente, corrupção, tipos desconhecidos,
+falha parcial e retomada, e bloqueio concorrente. Reutilizam a fixture temporal do
+baseline; resultados sintéticos não são métricas do portfólio.
+
+A integração acrescenta testes de riscos concretos. Não adotamos contagem ou cobertura
+como meta isolada. O [runbook](MLFLOW.md) registra limites e depreciações externas.
+
+O autor informou 135 testes aprovados em 12,91 s e tox em 18,52 s, com lint,
+formatação de 47 arquivos e `git diff --check` aprovados. Os nove avisos de
+depreciação vêm de MLflow/SQLAlchemy e não foram ocultados. A publicação e a
+verificação reais também concluíram com sucesso. [Recibo local](../references/evidence/mlflow_execution_2026-10-07.json).
+Esta evidência é distinta da preparação e não representa CI consultada.

@@ -33,10 +33,13 @@ com [CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/r
 | Contrato e Silver em Parquet/DuckDB | `silver_v1` construída e verificada localmente; 183 partições reconciliadas |
 | EDA da Silver e protocolo temporal | Executada localmente; nove outputs verificados, resumo e quatro tabelas informados pelo autor |
 | Gold com features e splits temporais | Construída e verificada no ambiente do autor: 42 partições, 19 preditores e 402.877 linhas |
-| Treinamento e avaliação temporal | Planejados; janelas e métricas iniciais documentadas |
+| Baseline e comparação na validação | Execução real informada pelo autor; AP 0,623949 do gradient boosting; teste reservado |
+| MLflow e skops | Três modelos publicados e verificados localmente pelo autor; sem refit ou avaliação do teste |
+| Avaliação final do teste | Reservada para depois do congelamento das escolhas |
 | Streaming, feature store, serving e monitoramento | Evolução pretendida; desenho e validação pendentes |
 
-A base é simulada. Ainda não há modelo avaliado ou resultado de detecção em operação.
+A base é simulada. Há comparação de modelos na validação; ainda não há avaliação
+final do teste ou resultado comprovado de detecção em operação.
 
 O diagnóstico completo informou IDs globalmente únicos, 14.681 fraudes, 42 valores
 monetários zero e nenhuma violação nos demais controles implementados. Os zeros
@@ -143,8 +146,40 @@ A Gold foi publicada na revisão [`14ab57e`](https://github.com/wanderson42/frau
 [CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37652509812):
 104 testes em 11,37 s, lint, formatação e lockfile aprovados. O notebook publicado
 preserva a verificação e a leitura do treino (`X`: 268.668 × 19). A CI usa fixtures
-controladas; a construção real foi executada pelo autor. Ainda não há modelo ajustado
-nem avaliação do teste final.
+controladas; a construção real foi executada pelo autor. O baseline ajustado está
+descrito abaixo; o teste final permanece reservado.
+
+## Baseline temporal
+
+Depois de instalar o lockfile atualizado e verificar a Gold:
+
+```bash
+poetry install
+make validate
+poetry run python -m fraud_detection_mlops.modeling.train run
+```
+
+O experimento compara controle constante, regressão logística com escala ajustada
+no treino e gradient boosting. A seleção usa AP da validação; o teste fica reservado.
+Use o `baseline_path` retornado para verificar a execução:
+
+```bash
+poetry run python -m fraud_detection_mlops.modeling.train verify "<baseline_path>"
+```
+
+O [baseline](docs/BASELINE.md) define candidatos, métricas, artefatos e limites.
+O autor informou execução e verificação reais: AP 0,623949 do gradient boosting,
+contra 0,435001 da regressão e 0,008624 do controle. [Evidência](references/evidence/baseline_validation_2026-10-07.json).
+A Gold e seu protocolo permanecem com as mesmas versões. Uma semana de validação
+não comprova estabilidade, superioridade estatística ou desempenho em produção.
+
+## Tracking local e modelos skops
+
+A [etapa MLflow](docs/MLFLOW.md) publica os três pipelines já treinados em runs
+separadas, sem refit ou avaliação do teste. SQLite e artefatos ficam sob `data/tracking`.
+O pacote do modelo usa skops, com scores conferidos após recarga e assinatura das
+19 features. `make mlflow-ui` abre a interface em <http://127.0.0.1:5001>.
+O runbook explica a conversão dos joblib locais, publicação, verificação e retomada.
 
 ## Documentação
 
@@ -160,6 +195,10 @@ nem avaliação do teste final.
 | [Notebook da EDA](notebooks/stages/03_silver_eda.ipynb) | Leitura dos resultados locais e registro de hipóteses |
 | [Contrato da Gold](docs/GOLD_CONTRACT.md) | Features causais, splits, schema e comportamento sem histórico |
 | [Notebook da Gold](notebooks/stages/04_gold_temporal_features.ipynb) | Decisões, causalidade e leitura da preparação para modelagem |
+| [Baseline](docs/BASELINE.md) | Candidatos fixos, treinamento no treino e comparação na validação |
+| [MLflow](docs/MLFLOW.md) | Tracking, migração skops, assinatura, recarga e recuperação |
+| [Notebook MLflow](notebooks/stages/06_mlflow_tracking.ipynb) | Decisões e verificação da publicação local |
+| [Notebook do baseline](notebooks/stages/05_temporal_baseline.ipynb) | Leitura de uma execução explícita e interpretação das métricas |
 | [Data pipeline](docs/DATA_PIPELINE.md) | Fonte, ELT, contratos e limites |
 | [Operations](docs/OPERATIONS.md) | Execução, diagnóstico e recuperação |
 | [Testing](docs/TESTING.md) | Integração tox–Poetry, ambiente isolado e checks compartilhados com a CI |
@@ -180,10 +219,13 @@ terão documentos próprios quando forem implementados.
 | `fraud_detection_mlops/temporal.py` | Validação do protocolo temporal versionado |
 | `fraud_detection_mlops/features.py` | Cálculo SQL das features com janelas causais e atraso de rótulos |
 | `fraud_detection_mlops/gold.py` | Publicação Parquet, auditoria, verificação e loader dos splits Gold |
+| `fraud_detection_mlops/modeling/tracking.py` | Publicação do baseline em MLflow/skops e recarga verificada |
+| `fraud_detection_mlops/modeling/train.py` | Treinamento, publicação e verificação do experimento de validação |
+| `fraud_detection_mlops/modeling/metrics.py` | AP, ROC AUC e precisão diária por cliente |
 | `fraud_detection_mlops/dataset.py` | CLI de extração e verificação |
 | `references/` | Inventário e recibos documentais |
 | `tests/` | Integridade, recuperação e integração Parquet/SQL |
 | `tox.toml` | Sequência de qualidade no ambiente Python 3.14 isolado |
 | `.github/workflows/ci.yml` | Qualidade automatizada |
 
-Os módulos de modelagem e o scaffold de gráficos do template permanecem para etapas futuras.
+O módulo de predição/serving e o scaffold de gráficos do template permanecem para etapas futuras.

@@ -282,3 +282,32 @@ como entrada do modelo; metadados contêm IDs e alvo para auditoria. Consultar
 `test` fica para a avaliação final após congelar modelo e parâmetros. Os detalhes
 estão no [contrato](GOLD_CONTRACT.md) e no
 [notebook da etapa](../notebooks/stages/04_gold_temporal_features.ipynb).
+
+## Treinar e verificar o baseline temporal
+
+O [runbook do baseline](BASELINE.md#execução-e-artefatos) é a referência principal.
+Instale o lockfile atualizado com `poetry install`, confira `make validate` e rode:
+
+```bash
+poetry run python -m fraud_detection_mlops.modeling.train run
+poetry run python -m fraud_detection_mlops.modeling.train verify "<baseline_path>"
+```
+
+`make baseline` executa o treinamento e a comparação na validação. Preserve o
+`run_id`, `baseline_path` e `audit_path` retornados. Uma repetição cria outra
+execução independente. Falhas geram auditoria e limpam o staging; não há promoção
+parcial dos modelos. Os dois splits entram em memória; quatro threads limitam
+as rotinas numéricas. Não há avaliação de teste neste comando.
+
+Uma falha de convergência ou de integridade exige investigação do audit. Não
+contorne avisos nem altere checksums. `verify` recalcula métricas a partir dos
+scores e não carrega o joblib como objeto executável. Não comite os artefatos
+sob `data/`. Compartilhe inicialmente a saída completa de run/verify, associando
+posteriormente revisão, checks locais e CI aos resultados reais.
+
+## Publicar modelos e abrir MLflow
+
+O [runbook MLflow](MLFLOW.md#publicar-a-execução-existente) contém os comandos,
+a confiança necessária na migração joblib, verificação e recuperação. A publicação
+não retreina. `make mlflow-ui` abre a UI na porta 5001 depois da primeira publicação.
+Preserve `data/tracking` como armazenamento persistente, não cache.

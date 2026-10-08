@@ -84,6 +84,16 @@ eda:
 gold:
 	poetry run python -m fraud_detection_mlops.gold build
 
+## Fit baseline candidates on train and compare validation rankings
+.PHONY: baseline
+baseline:
+	poetry run python -m fraud_detection_mlops.modeling.train run
+
+## Open local MLflow UI on port 5001 after publishing a baseline
+.PHONY: mlflow-ui
+mlflow-ui:
+	poetry run python -m fraud_detection_mlops.modeling.tracking ui
+
 ## Verify Gold integrity and feature invariants
 .PHONY: verify-gold
 verify-gold:

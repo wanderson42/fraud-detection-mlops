@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "assistant_execution_in_preparation_environment",
+  "scope": "real_estimators_on_controlled_fixtures_not_author_gold_training",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "implementation_commit": null,
+  "baseline": {
+    "published_commit": "9e6f03cfca8f50573fbdabb2f113ebd23e52bdfd",
+    "published_branch": "feat/gold-temporal-features",
+    "git_tree": "f7e337d7d409f960c4230302d5d21fa03ad16173",
+    "all_65_published_files_verified_against_git_blob_sha1": true,
+    "gold_implementation_commit": "14ab57e15f0931ffb6966b26d390a42b514762b7",
+    "gold_ci_run_id": 37652509812,
+    "gold_ci_conclusion": "success",
+    "author_outputs_in_existing_notebooks_preserved": true
+  },
+  "implementation_sha256": {
+    "fraud_detection_mlops/modeling/train.py": "2cdcb5f8d3e2bb66152e452353b91e4a7349f6a019b5380719bd1b45258f11b1",
+    "fraud_detection_mlops/modeling/metrics.py": "fd8905db53aaa8623b93df0d415ae99fc03985e319936dc4aecbf6c1bdc73a9e",
+    "references/baseline_protocol_v1.json": "053e31caae9fe7b5752f8829e1d4213eda4e912c2f424e7185a5c724b92de23c",
+    "tests/test_baseline.py": "adfd58d4c223290cd0451995cb0dd52134f752c1fa78484c201a77f696de0cef",
+    "tests/test_modeling_metrics.py": "98edffef0863a0581d57426113394665d3848b1f7db6aa03b0876b79d107f1a2",
+    "references/gold_contract_v1.json": "b90b9be97bb2e2e6cf2b819487b2b805882c6d6f22587ff4671a01e25db54796",
+    "references/temporal_protocol_v1.json": "7332129121d13eac68bf2e4776abe7aacf0b24b449e60f08ef8283b56954e4d4",
+    "pyproject.toml": "9ad5f1031b52ef80b148a4df1cf495c0a602e147886cc197f8e007bff6e0792c",
+    "poetry.lock": "571e16e141fe9b622abb42615013d4f5303082d467773cc0af1f1d25a32de49f",
+    "tox.toml": "3287bf2edb33287e933b50d3c449b0ad19d932ee1e7ddf621deec7d15eb5358a"
+  },
+  "environment": {
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "tox": "4.32.0",
+    "sklearn": "1.9.1",
+    "scipy": "1.18.1",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "pyarrow": "25.0.1",
+    "duckdb": "1.5.6",
+    "joblib": "1.6.0",
+    "threadpoolctl": "3.7.0",
+    "pytest": "9.1.1",
+    "ruff": "0.16.10"
+  },
+  "controlled_validation": {
+    "command": "poetry run tox -r -e py314",
+    "environment_created_afresh_in_this_preparation": true,
+    "passed": 127,
+    "new_baseline_and_metric_tests": 23,
+    "pytest_seconds": 23.38,
+    "tox_total_seconds": 39.56,
+    "lint": "passed",
+    "format": "43 files already formatted",
+    "lockfile": "passed",
+    "poetry_environment_target_check": "passed",
+    "real_dataset_training": false,
+    "model_metrics_from_test_fixtures_are_not_portfolio_results": true,
+    "coverage": [
+      "known_ap_and_roc_auc",
+      "customer_max_score_and_any_fraud_daily_label",
+      "top100_id_tie_break_and_macro_daily_mean",
+      "score_validation",
+      "one_class_metrics_policy",
+      "train_and_validation_require_both_classes",
+      "scaler_fit_exclusively_on_train",
+      "no_test_training_loader_path",
+      "holdout_labels_do_not_change_fitted_scores",
+      "dummy_prior_has_no_ranking_signal",
+      "separate_model_pipelines_and_artifacts",
+      "source_preserved",
+      "persisted_pipeline_score_round_trip",
+      "verify_no_model_deserialization",
+      "metric_tampering_detected_even_with_updated_checksum",
+      "failure_audit_and_cleanup",
+      "convergence_warning_prevents_publication",
+      "input_mutation_prevents_publication",
+      "cli_run_and_verify"
+    ]
+  },
+  "experiment_contract": {
+    "version": "baseline_v1",
+    "fit_split": "train",
+    "evaluation_split": "validation",
+    "test_evaluated": false,
+    "feature_count": 19,
+    "models": [
+      "dummy_prior",
+      "logistic_regression",
+      "hist_gradient_boosting"
+    ],
+    "selection_eligible": [
+      "logistic_regression",
+      "hist_gradient_boosting"
+    ],
+    "selection_metric": "average_precision",
+    "tie_break": "model_id_ascending",
+    "thread_limit": 4,
+    "refit_before_test": false,
+    "decision_threshold": null
+  },
+  "dependency_changes": {
+    "changed_existing": {},
+    "added": {
+      "cloudpickle": "3.1.2",
+      "joblib": "1.6.0",
+      "narwhals": "2.26.0",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "threadpoolctl": "3.7.0"
+    }
+  },
+  "pending": [
+    "author_applies_patch",
+    "author_installs_updated_lockfile_and_runs_quality_checks",
+    "author_trains_and_verifies_validation_run_on_real_gold",
+    "interpretation_of_real_validation_metrics",
+    "author_commit_and_baseline_ci",
+    "freeze_model_and_operating_policy_before_final_test"
+  ],
+  "limitations": [
+    "no_real_gold_model_training_in_preparation",
+    "no_real_model_metrics",
+    "test_holdout_not_scored",
+    "scores_not_calibrated_probabilities",
+    "no_threshold_or_production_promotion",
+    "fixed_configs_not_hyperparameter_optima",
+    "single_validation_window_not_statistical_significance_or_temporal_stability",
+    "train_and_validation_materialized_in_memory",
+    "peak_memory_not_measured",
+    "verify_does_not_retrain_or_deserialize_pipelines_or_reverify_gold_source",
+    "no_mlflow_server_or_online_serving_added",
+    "future_author_commit_not_anticipated"
+  ]
+}

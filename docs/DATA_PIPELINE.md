@@ -178,3 +178,12 @@ seleciona os 19 preditores pela allowlist. Não há transformações aprendidas 
 etapa. A construção e a verificação reais foram informadas pelo autor, com
 [recibo](../references/evidence/gold_build_2026-10-07.json). Integridade e contagens
 aprovadas não demonstram valor preditivo; isso exigirá avaliação do baseline.
+
+## Experimentos sobre a Gold
+
+O [baseline](BASELINE.md) consome os splits de treino e validação da Gold sem
+alterá-los. Ajusta pipelines com os 19 preditores, persiste modelo/transformações,
+scores de validação, métricas e manifesto em
+`data/processed/handbook/<source_commit>/baseline_v1/<run_id>/`.
+Esses outputs são artefatos de experimento; não mudam as versões Bronze/Silver/Gold.
+O teste tem integridade conferida, mas não entra no fit ou na avaliação do runner.
