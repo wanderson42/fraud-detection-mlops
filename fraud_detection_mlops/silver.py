@@ -18,12 +18,13 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import typer
 
-from fraud_detection_mlops.bronze import DEFAULT_INVENTORY, _write_json, load_inventory
+from fraud_detection_mlops.artifacts import sha256, write_json
+from fraud_detection_mlops.bronze import DEFAULT_INVENTORY, load_inventory
 from fraud_detection_mlops.profiling import (
     DEFAULT_BRONZE,
     INTEGER_COLUMNS,
     PROJECT_ROOT,
-    _is_int64,
+    is_int64,
     profile_bronze,
 )
 
@@ -52,10 +53,6 @@ app = typer.Typer(no_args_is_help=True)
 
 class SilverError(ValueError):
     """A dataset cannot satisfy the supported Silver contract."""
-
-
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _contract(path: Path) -> dict:
@@ -113,7 +110,7 @@ def normalize_dataframe(frame: pd.DataFrame) -> pd.DataFrame:
     # Older pickles retain an object column Index; pandas 3/Arrow infer strings.
     result.columns = pd.Index(list(DTYPES))
     for name in INTEGER_COLUMNS:
-        if not result[name].map(_is_int64).all():
+        if not result[name].map(is_int64).all():
             raise SilverError(f"Lossy integer conversion: {name}")
         values = result[name].map(int)
         if name in ("TX_FRAUD", "TX_FRAUD_SCENARIO") and not values.between(0, 3).all():
@@ -167,8 +164,8 @@ def _verify_directory(
         or manifest.get("layer") != "silver"
         or manifest.get("source") != inventory["source"]
         or manifest.get("contract_version") != "silver_v1"
-        or manifest.get("contract_sha256") != _sha256(contract_path)
-        or manifest.get("inventory_sha256") != _sha256(inventory_path)
+        or manifest.get("contract_sha256") != sha256(contract_path)
+        or manifest.get("inventory_sha256") != sha256(inventory_path)
     ):
         raise SilverError("Silver manifest source, contract or inventory mismatch")
     records = manifest.get("files")
@@ -191,9 +188,7 @@ def _verify_directory(
         ):
             raise SilverError(f"Input identity mismatch: {item['filename']}")
         path = directory / record["path"]
-        if path.stat().st_size != record.get("size_bytes") or _sha256(path) != record.get(
-            "sha256"
-        ):
+        if path.stat().st_size != record.get("size_bytes") or sha256(path) != record.get("sha256"):
             raise SilverError(f"Parquet integrity mismatch: {path.name}")
         parquet = pq.ParquetFile(path)
         if not parquet.schema_arrow.equals(
@@ -278,10 +273,10 @@ def build_silver(
             "status": "running",
             "started_at_utc": datetime.now(UTC).isoformat(),
             "source": inventory["source"],
-            "inventory_sha256": _sha256(inventory_path),
-            "contract_sha256": _sha256(contract_path),
+            "inventory_sha256": sha256(inventory_path),
+            "contract_sha256": sha256(contract_path),
             "contract_version": contract["version"],
-            "builder_sha256": _sha256(Path(__file__)),
+            "builder_sha256": sha256(Path(__file__)),
             "partitions_written": 0,
             "environment": {
                 "python": sys.version.split()[0],
@@ -290,7 +285,7 @@ def build_silver(
                 "duckdb": duckdb.__version__,
             },
         }
-        _write_json(audit_path, audit)
+        write_json(audit_path, audit)
         try:
             # Recompute acceptance from the complete snapshot, never from a stale report.
             profile = profile_bronze(bronze_root, inventory_path)
@@ -337,7 +332,7 @@ def build_silver(
                                 "path": _relative_path(item["date"]),
                                 "rows": len(frame),
                                 "size_bytes": path.stat().st_size,
-                                "sha256": _sha256(path),
+                                "sha256": sha256(path),
                                 "input_filename": item["filename"],
                                 "input_size_bytes": item["size_bytes"],
                                 "input_git_blob_sha1": item["git_blob_sha1"],
@@ -345,7 +340,7 @@ def build_silver(
                             }
                         )
                         audit["partitions_written"] += 1
-                    _write_json(
+                    write_json(
                         staging / "manifest.json",
                         {
                             "schema_version": 1,
@@ -377,7 +372,7 @@ def build_silver(
             raise
         finally:
             audit["finished_at_utc"] = datetime.now(UTC).isoformat()
-            _write_json(audit_path, audit)
+            write_json(audit_path, audit)
     return {**result, "status": audit["status"], "audit_path": str(audit_path)}
 
 

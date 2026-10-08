@@ -89,7 +89,7 @@ gold:
 baseline:
 	poetry run python -m fraud_detection_mlops.modeling.train run
 
-## Open local MLflow UI on port 5001 after publishing a baseline
+## Open local MLflow UI on port 5001 for existing or newly trained models
 .PHONY: mlflow-ui
 mlflow-ui:
 	poetry run python -m fraud_detection_mlops.modeling.tracking ui

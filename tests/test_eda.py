@@ -89,9 +89,7 @@ def test_training_only_eda_reconciles_boundary_rows_preserves_zeros_and_verifies
     output, inventory, protocol = inputs
     source_dir = output / ("a" * 40) / "silver_v1"
     before = {
-        str(p): (eda._sha256(p), p.stat().st_mtime_ns)
-        for p in source_dir.rglob("*")
-        if p.is_file()
+        str(p): (eda.sha256(p), p.stat().st_mtime_ns) for p in source_dir.rglob("*") if p.is_file()
     }
     result = eda.build_eda(output, inventory_path=inventory, protocol_path=protocol)
     assert result["rows"] == 6
@@ -119,11 +117,9 @@ def test_training_only_eda_reconciles_boundary_rows_preserves_zeros_and_verifies
     assert eda.verify_eda(path)["verified_outputs"] == 9
     audit = json.loads(Path(result["audit_path"]).read_text())
     assert audit["status"] == "success"
-    assert audit["protocol_sha256"] == eda._sha256(protocol)
+    assert audit["protocol_sha256"] == eda.sha256(protocol)
     assert before == {
-        str(p): (eda._sha256(p), p.stat().st_mtime_ns)
-        for p in source_dir.rglob("*")
-        if p.is_file()
+        str(p): (eda.sha256(p), p.stat().st_mtime_ns) for p in source_dir.rglob("*") if p.is_file()
     }
 
 

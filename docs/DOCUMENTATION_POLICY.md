@@ -15,6 +15,7 @@ substanciais e documentos por responsabilidade em `docs/`.
 | Artefato | Conteúdo | Quando atualizar |
 | --- | --- | --- |
 | [README](../README.md) | Objetivo, estado atual, arquitetura, Quick Start e navegação | Mudança de uso, arquitetura ou marco validado |
+| [Contexto e propósito](PROBLEM_CONTEXT.md) | História, referências, problema operacional, usos e limites da simulação | Mudança de escopo ou atualização do contexto e das fontes |
 | [Notebook principal](../notebooks/fraud_detection_mlops.ipynb) | Sínteses, decisões e resultados que mudam a história do projeto | Conclusão de uma etapa substancial |
 | `notebooks/stages/` | Investigação, decisões, contratempos e evidências de uma etapa | Na branch responsável pela etapa |
 | `notebooks/experiments/` | Experimentos controlados e comparação reproduzível | Quando existirem benchmarks ou avaliações |
@@ -23,8 +24,10 @@ substanciais e documentos por responsabilidade em `docs/`.
 | [EDA](EDA.md) | Exploração, interpretação e proveniência dos relatórios | Mudança da análise |
 | [Protocolo temporal](EVALUATION_PROTOCOL.md) | Janelas, atraso de rótulos, população e métricas | Antes de mudar uma avaliação |
 | [Contrato da Gold](GOLD_CONTRACT.md) | Features, causalidade, cold start, splits e proveniência | Mudança de feature ou contrato de modelagem |
-| [MLflow](MLFLOW.md) | Tracking, persistência, assinatura e retomada | Mudança da integração ou resultados locais |
+| [MLflow](MLFLOW.md) | Tracking nativo, persistência, assinatura e armazenamento | Mudança da integração ou resultados locais |
 | [Baseline](BASELINE.md) | Candidatos, métricas, ajuste, artefatos e fronteira de avaliação | Mudança de experimento ou resultado real |
+| [Diagnóstico](DIAGNOSTICS.md) | Inspeção da validação, orçamento, interpretação e limites estatísticos | Mudança da análise ou resultados reais |
+| [Arquitetura](ARCHITECTURE.md) | Responsabilidades, organização e controle de complexidade | Mudança estrutural |
 | [Testing](TESTING.md) | Isolamento tox–Poetry, checks, seleção de testes e limites | Mudança de validação ou CI |
 | `docs/INFRASTRUCTURE.md` | Arquitetura, configuração, persistência e resiliência | Quando a infraestrutura for implementada |
 | `docs/MODEL_CARD.md` | Uso do modelo, dados, avaliação, limitações e governança | Quando houver modelo avaliado |
@@ -49,6 +52,9 @@ planejados. Criamos os artefatos quando houver conteúdo concreto.
    acompanhar seu estado real de implementação.
 6. O texto técnico usa português; nomes de módulos, comandos e identificadores
    preservam o formato do código. Termos necessários são explicados no primeiro uso.
+7. A narrativa relaciona decisões técnicas ao processo de investigação. Estatísticas
+   externas indicam ano, região e instrumento de pagamento; a simulação não herda
+   resultados ou cobertura desses contextos. Referências ficam no documento responsável.
 
 ## Estados e evidências
 

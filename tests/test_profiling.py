@@ -70,7 +70,7 @@ def test_duplicate_rows_missing_values_and_wrong_partition_are_observations():
 
 @pytest.mark.parametrize("value", [1.5, float("inf"), float("nan"), 2**63, -(2**63) - 1])
 def test_invalid_int64_values_are_detected_before_silver_conversion(value):
-    assert not profiling._is_int64(value)
+    assert not profiling.is_int64(value)
 
 
 def test_unexpected_schema_requires_review_instead_of_partial_report():

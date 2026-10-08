@@ -1,1 +1,1 @@
-from fraud_detection_mlops import config  # noqa: F401
+"""Reproducible fraud detection pipelines."""

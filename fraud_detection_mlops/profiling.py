@@ -17,8 +17,8 @@ from fraud_detection_mlops.bronze import (
     load_inventory,
     verify_bronze,
 )
+from fraud_detection_mlops.config import PROJECT_ROOT
 
-PROJECT_ROOT = DEFAULT_INVENTORY.parents[1]
 DEFAULT_BRONZE = PROJECT_ROOT / "data/raw/handbook"
 INTEGER_COLUMNS = (
     "TRANSACTION_ID",
@@ -33,7 +33,7 @@ EXPECTED_COLUMNS = {*INTEGER_COLUMNS, "TX_DATETIME", "TX_AMOUNT"}
 app = typer.Typer()
 
 
-def _is_int64(value) -> bool:
+def is_int64(value) -> bool:
     return (
         pd.notna(value)
         and math.isfinite(value)
@@ -49,7 +49,7 @@ def profile_dataframe(frame: pd.DataFrame, day: str, origin: str, seen_ids: set)
     if frame.columns.duplicated().any():
         raise ValueError(f"Duplicate column names in partition {day}")
     numbers = {column: pd.to_numeric(frame[column], errors="coerce") for column in INTEGER_COLUMNS}
-    integer_valid = {column: values.map(_is_int64) for column, values in numbers.items()}
+    integer_valid = {column: values.map(is_int64) for column, values in numbers.items()}
     dates = pd.to_datetime(frame["TX_DATETIME"], errors="coerce")
     if dates.dt.tz is not None:
         raise ValueError(f"Timezone-aware timestamps require contract review: {day}")

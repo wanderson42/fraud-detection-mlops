@@ -215,18 +215,18 @@ def test_missing_file_downgrades_coverage_even_if_redownload_fails(source, monke
 
 
 def test_download_promoted_before_manifest_failure_can_be_recovered(source, monkeypatch):
-    original_write = bronze._write_json
+    original_write = bronze.write_json
 
     def fail_manifest(path, value):
         if path.name == "manifest.json":
             raise OSError("disk failure")
         return original_write(path, value)
 
-    monkeypatch.setattr(bronze, "_write_json", fail_manifest)
+    monkeypatch.setattr(bronze, "write_json", fail_manifest)
     with pytest.raises(bronze.BronzeError, match="disk failure"):
         extract(source, end_date="2018-04-01")
     assert (source["snapshot"] / "2018-04-01.pkl").is_file()
-    monkeypatch.setattr(bronze, "_write_json", original_write)
+    monkeypatch.setattr(bronze, "write_json", original_write)
     monkeypatch.setattr(bronze, "urlopen", no_network)
     result = extract(source, end_date="2018-04-01")
     assert result["skipped_count"] == 1
@@ -329,20 +329,6 @@ def test_cli_acquisition_verification_and_failure_exit_status(source, monkeypatc
     assert result.exit_code == 1
     result = runner.invoke(app, ["extract", *options, "--start-date", "invalid"])
     assert result.exit_code == 1
-
-
-def test_atomic_metadata_failure_preserves_previous_document(tmp_path, monkeypatch):
-    path = tmp_path / "manifest.json"
-    bronze._write_json(path, {"previous": True})
-
-    def fail_replace(*args):
-        raise OSError("replace failed")
-
-    monkeypatch.setattr(Path, "replace", fail_replace)
-    with pytest.raises(OSError, match="replace failed"):
-        bronze._write_json(path, {"new": True})
-    assert json.loads(path.read_text()) == {"previous": True}
-    assert not list(tmp_path.glob("*.tmp"))
 
 
 def test_different_source_commit_creates_separate_snapshot(source):

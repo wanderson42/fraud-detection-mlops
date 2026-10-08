@@ -74,7 +74,7 @@ simuladas, pois este contrato trata de arquivos.
 | `load_inventory`, `select_files` | Validar origem, paths, datas e intervalo solicitado |
 | `_download`, `_file_checksums` | Baixar temporariamente e conferir os bytes antes de aceitar |
 | `_load_manifest`, `_checkpoint` | Validar metadados e atualizar a cobertura após cada sucesso |
-| `_snapshot_lock`, `_write_json` | Controlar concorrência local e substituir JSONs atomicamente |
+| `_snapshot_lock`, `artifacts.write_json` | Controlar concorrência local e substituir JSONs atomicamente |
 | `extract_bronze` | Coordenar aquisição, reutilização, retomada e auditoria |
 | `verify_bronze` | Conferir offline arquivos, metadados, checksums e cobertura |
 
@@ -184,6 +184,6 @@ aprovadas não demonstram valor preditivo; isso exigirá avaliação do baseline
 O [baseline](BASELINE.md) consome os splits de treino e validação da Gold sem
 alterá-los. Ajusta pipelines com os 19 preditores, persiste modelo/transformações,
 scores de validação, métricas e manifesto em
-`data/processed/handbook/<source_commit>/baseline_v1/<run_id>/`.
+`data/processed/handbook/<source_commit>/baseline_v2/<run_id>/`.
 Esses outputs são artefatos de experimento; não mudam as versões Bronze/Silver/Gold.
 O teste tem integridade conferida, mas não entra no fit ou na avaliação do runner.

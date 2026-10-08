@@ -295,19 +295,31 @@ poetry run python -m fraud_detection_mlops.modeling.train verify "<baseline_path
 
 `make baseline` executa o treinamento e a comparação na validação. Preserve o
 `run_id`, `baseline_path` e `audit_path` retornados. Uma repetição cria outra
-execução independente. Falhas geram auditoria e limpam o staging; não há promoção
-parcial dos modelos. Os dois splits entram em memória; quatro threads limitam
+execução independente. Falhas geram auditoria e limpam o staging; não há
+promoção automática. Runs de candidatos já concluídas podem permanecer no MLflow,
+sem que isso represente uma execução completa do baseline. Os dois splits entram em memória; quatro threads limitam
 as rotinas numéricas. Não há avaliação de teste neste comando.
 
 Uma falha de convergência ou de integridade exige investigação do audit. Não
 contorne avisos nem altere checksums. `verify` recalcula métricas a partir dos
-scores e não carrega o joblib como objeto executável. Não comite os artefatos
+scores e não carrega nenhum modelo como objeto executável; aceita v1 e v2. Não comite os artefatos
 sob `data/`. Compartilhe inicialmente a saída completa de run/verify, associando
 posteriormente revisão, checks locais e CI aos resultados reais.
 
-## Publicar modelos e abrir MLflow
+## Tracking nativo e UI
 
-O [runbook MLflow](MLFLOW.md#publicar-a-execução-existente) contém os comandos,
-a confiança necessária na migração joblib, verificação e recuperação. A publicação
-não retreina. `make mlflow-ui` abre a UI na porta 5001 depois da primeira publicação.
+O [runbook MLflow](MLFLOW.md#execução-atual) contém os comandos atuais.
+O treinamento publica os novos pipelines diretamente; a migração histórica foi
+removida. `make mlflow-ui` abre a mesma UI na porta 5001, incluindo runs antigas.
 Preserve `data/tracking` como armazenamento persistente, não cache.
+Aplique a refatoração e valide os testes antes de decidir por um novo treinamento;
+os modelos reais existentes continuam disponíveis.
+
+## Diagnosticar a baseline existente
+
+Use o [runbook de diagnóstico](DIAGNOSTICS.md#executar-e-conferir) com o caminho
+explícito da baseline e a URI MLflow do HGB. `diagnostics run` gera as métricas
+diárias, permutação por AP e SHAP; `diagnostics verify` confere os outputs salvos.
+O comando não retreina e não abre as partições Gold de treino/teste. Scores diferentes
+dos registrados interrompem a execução. Preserve a auditoria para investigação;
+não altere checksums nem treine novamente apenas para contornar uma falha de recarga.

@@ -1,8 +1,32 @@
 # Fraud Detection MLOps
 
-Projeto de portfólio para construir um pipeline reproduzível de detecção de fraude
-com dados temporais do Fraud Detection Handbook. Estrutura inicial criada com
-[Cookiecutter Data Science](https://cookiecutter-data-science.drivendata.org/).
+Laboratório reproduzível de MLOps para **priorização de investigação de fraude**,
+com dados temporais simulados do Fraud Detection Handbook, feedback atrasado e
+evidências auditáveis. Desenvolvido por Wanderson Ferreira.
+
+> Com capacidade limitada de investigação, quais clientes devemos priorizar usando
+> somente a informação disponível naquele momento, e como manter essa decisão
+> confiável quando dados e padrões mudam?
+
+## Por que este projeto existe
+
+Fraude envolve uma decisão sob restrições: investigar custa tempo, alertas incorretos
+consomem capacidade e uma confirmação pode chegar depois da transação. O modelo
+precisa apoiar esse processo. O Handbook fornece a base conceitual e uma simulação
+controlada; nosso trabalho liga essa base a contratos de dados, avaliação temporal,
+experimentos rastreáveis e à futura operação por eventos.
+
+A contribuição do portfólio é tornar essas decisões reproduzíveis e discutíveis:
+qual informação estava disponível, quem entra no orçamento de revisão, como o
+resultado muda e qual evidência permitiria promover um modelo. Benchmarks ajudam
+na comparação; nossa avaliação também precisa explicar a política de investigação
+e os limites da simulação.
+
+O [contexto do problema](docs/PROBLEM_CONTEXT.md) apresenta marcos de 1994 aos
+relatórios recentes de pagamentos, fontes primárias, relevância para o Brasil,
+usos possíveis e limites de generalização. A implementação atual é um pipeline
+offline validado localmente, com baseline e diagnóstico. Streaming, serving,
+monitoramento e avaliação final ainda têm marcos próprios.
 
 ## Estado do projeto
 
@@ -35,6 +59,7 @@ com [CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/r
 | Gold com features e splits temporais | Construída e verificada no ambiente do autor: 42 partições, 19 preditores e 402.877 linhas |
 | Baseline e comparação na validação | Execução real informada pelo autor; AP 0,623949 do gradient boosting; teste reservado |
 | MLflow e skops | Três modelos publicados e verificados localmente pelo autor; sem refit ou avaliação do teste |
+| Diagnóstico da baseline | Execução e verificação locais informadas; sete outputs e tabelas de erros, permutação e SHAP |
 | Avaliação final do teste | Reservada para depois do congelamento das escolhas |
 | Streaming, feature store, serving e monitoramento | Evolução pretendida; desenho e validação pendentes |
 
@@ -48,6 +73,9 @@ O [recibo do diagnóstico](references/evidence/silver_profile_2026-10-06.json)
 registra a saída local e os 50 testes aprovados informados nessa etapa.
 
 ## Quick Start
+
+A estrutura inicial usou [Cookiecutter Data Science](https://cookiecutter-data-science.drivendata.org/),
+com responsabilidades ajustadas ao escopo descrito na [arquitetura](docs/ARCHITECTURE.md).
 
 Python 3.14.4 e Poetry 2.4.3. Na raiz do checkout:
 
@@ -161,7 +189,9 @@ poetry run python -m fraud_detection_mlops.modeling.train run
 
 O experimento compara controle constante, regressão logística com escala ajustada
 no treino e gradient boosting. A seleção usa AP da validação; o teste fica reservado.
-Use o `baseline_path` retornado para verificar a execução:
+Novas execuções usam `baseline_v2`, pipelines skops e três runs MLflow independentes.
+A política de modelagem permanece igual. Não é necessário repetir o baseline
+histórico para atualizar o código. Use o `baseline_path` retornado para verificar:
 
 ```bash
 poetry run python -m fraud_detection_mlops.modeling.train verify "<baseline_path>"
@@ -179,12 +209,31 @@ A [etapa MLflow](docs/MLFLOW.md) publica os três pipelines já treinados em run
 separadas, sem refit ou avaliação do teste. SQLite e artefatos ficam sob `data/tracking`.
 O pacote do modelo usa skops, com scores conferidos após recarga e assinatura das
 19 features. `make mlflow-ui` abre a interface em <http://127.0.0.1:5001>.
-O runbook explica a conversão dos joblib locais, publicação, verificação e retomada.
+O [runbook](docs/MLFLOW.md) descreve a publicação nativa durante o treinamento.
+A migração histórica foi concluída e retirada do código ativo; seus artefatos
+continuam preservados. A [arquitetura](docs/ARCHITECTURE.md) registra a organização
+e os critérios para controlar a complexidade.
+
+O [diagnóstico da baseline](docs/DIAGNOSTICS.md) usa o HGB já publicado para analisar
+erros diários, importância por permutação e SHAP na validação. O orçamento padrão
+é de cinco embaralhamentos por feature e 1.000 exemplos uniformes para SHAP.
+O autor executou e verificou o diagnóstico `961bb0c32fb84433af922908ea58e76b`:
+sete outputs, 142 testes locais aprovados e notebook atualizado. O
+[recibo](references/evidence/diagnostics_execution_2026-10-07.json) registra as tabelas
+compartilhadas e seus limites. Ao mesmo orçamento de 100 clientes por dia, HGB
+priorizou 378 ocorrências fraudulentas de cliente/dia, contra 336 da regressão,
+nos sete dias de validação. Não são pessoas únicas nem perdas financeiras evitadas.
+
+O [diagnóstico interpretado](docs/DIAGNOSTICS.md#resultados-reais-informados-pelo-autor)
+relaciona esses resultados às regras do simulador e distingue importância SHAP de
+queda de AP. Features não foram removidas; hipóteses e critérios para os próximos
+experimentos serão definidos antes de tuning, mantendo o teste final reservado.
 
 ## Documentação
 
 | Leitura | Propósito |
 | --- | --- |
+| [Contexto e propósito](docs/PROBLEM_CONTEXT.md) | História, problema operacional, relevância atual, referências e limites da simulação |
 | [Política de documentação](docs/DOCUMENTATION_POLICY.md) | Regras editoriais, evidências, versionamento e fechamento de entregas |
 | [Notebook principal](notebooks/fraud_detection_mlops.ipynb) | Narrativa técnica curada e síntese dos marcos |
 | [Notebook da Bronze](notebooks/stages/01_bronze_ingestion.ipynb) | Decisões, leitura do algoritmo e evidências da etapa |
@@ -196,9 +245,12 @@ O runbook explica a conversão dos joblib locais, publicação, verificação e 
 | [Contrato da Gold](docs/GOLD_CONTRACT.md) | Features causais, splits, schema e comportamento sem histórico |
 | [Notebook da Gold](notebooks/stages/04_gold_temporal_features.ipynb) | Decisões, causalidade e leitura da preparação para modelagem |
 | [Baseline](docs/BASELINE.md) | Candidatos fixos, treinamento no treino e comparação na validação |
-| [MLflow](docs/MLFLOW.md) | Tracking, migração skops, assinatura, recarga e recuperação |
-| [Notebook MLflow](notebooks/stages/06_mlflow_tracking.ipynb) | Decisões e verificação da publicação local |
+| [MLflow](docs/MLFLOW.md) | Tracking nativo, assinatura, recarga e armazenamento |
+| [Arquitetura](docs/ARCHITECTURE.md) | Responsabilidades, testes e controle de complexidade |
+| [Notebook MLflow](notebooks/stages/06_mlflow_tracking.ipynb) | Tracking atual e registros estáticos da execução histórica real |
 | [Notebook do baseline](notebooks/stages/05_temporal_baseline.ipynb) | Leitura de uma execução explícita e interpretação das métricas |
+| [Diagnóstico da baseline](docs/DIAGNOSTICS.md) | Erros diários, permutação por AP e SHAP na validação |
+| [Notebook do diagnóstico](notebooks/stages/07_baseline_diagnostics.ipynb) | Leitura dos artefatos locais e registro de hipóteses |
 | [Data pipeline](docs/DATA_PIPELINE.md) | Fonte, ELT, contratos e limites |
 | [Operations](docs/OPERATIONS.md) | Execução, diagnóstico e recuperação |
 | [Testing](docs/TESTING.md) | Integração tox–Poetry, ambiente isolado e checks compartilhados com a CI |
@@ -219,13 +271,19 @@ terão documentos próprios quando forem implementados.
 | `fraud_detection_mlops/temporal.py` | Validação do protocolo temporal versionado |
 | `fraud_detection_mlops/features.py` | Cálculo SQL das features com janelas causais e atraso de rótulos |
 | `fraud_detection_mlops/gold.py` | Publicação Parquet, auditoria, verificação e loader dos splits Gold |
-| `fraud_detection_mlops/modeling/tracking.py` | Publicação do baseline em MLflow/skops e recarga verificada |
+| `fraud_detection_mlops/artifacts.py` | JSON atômico e SHA256 compartilhados |
+| `fraud_detection_mlops/modeling/baseline.py` | Política fixa e verificação de artefatos v1/v2 |
+| `fraud_detection_mlops/modeling/persistence.py` | Pipelines skops e recarga |
+| `fraud_detection_mlops/modeling/tracking.py` | Logging nativo MLflow e CLI de UI/verificação |
 | `fraud_detection_mlops/modeling/train.py` | Treinamento, publicação e verificação do experimento de validação |
 | `fraud_detection_mlops/modeling/metrics.py` | AP, ROC AUC e precisão diária por cliente |
+| `fraud_detection_mlops/modeling/diagnostics.py` | Inspeção do modelo existente, usando somente a validação |
 | `fraud_detection_mlops/dataset.py` | CLI de extração e verificação |
 | `references/` | Inventário e recibos documentais |
 | `tests/` | Integridade, recuperação e integração Parquet/SQL |
 | `tox.toml` | Sequência de qualidade no ambiente Python 3.14 isolado |
 | `.github/workflows/ci.yml` | Qualidade automatizada |
 
-O módulo de predição/serving e o scaffold de gráficos do template permanecem para etapas futuras.
+Os scaffolds vazios foram removidos. Serving será implementado quando houver
+um contrato de inferência; a EDA já produz gráficos reais. Os testes de modelagem
+espelham `modeling/` e compartilham fixtures por `conftest.py`.

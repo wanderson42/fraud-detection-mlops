@@ -3,7 +3,7 @@
 Versão: `temporal_v1`. Estado: protocolo inicial versionado e validador implementado;
 features e splits implementados na [Gold](GOLD_CONTRACT.md), com construção e
 verificação reais informadas pelo autor. O [baseline](BASELINE.md) implementa treino
-e métricas de validação na preparação; execução real pendente e teste final reservado.
+e métricas de validação, com execução real informada pelo autor e teste final reservado.
 Fonte: snapshot `6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a` do Handbook.
 Referência executável: [temporal_protocol_v1.json](../references/temporal_protocol_v1.json).
 
@@ -65,7 +65,7 @@ outro contrato. Portanto, não faremos comparações diretas com suas métricas 
   Esse contrato usa clientes da simulação e não inclui bloqueio de comprometidos.
 
 Métricas, regras de score e cálculo operacional estão implementados no [baseline](BASELINE.md),
-com testes controlados e **sem resultados reais de modelo** nesta entrega.
+com testes controlados e resultados reais de validação documentados pelo autor.
 Precisão, recall e matriz de confusão dependerão de um limiar escolhido exclusivamente
 na validação. Não fixamos uma meta percentual arbitrária nesta etapa nem tratamos
 acurácia elevada como demonstração de detecção de fraude. A semente inicial será 42.
@@ -155,3 +155,12 @@ controlado. O quality gate combinará integridade, desempenho, estabilidade e cu
 sem estabelecer limiares depois de observar o candidato. Essas políticas são
 planejadas, não implementadas nesta integração MLflow. O protocolo `temporal_v1`
 e o teste reservado permanecem inalterados.
+
+## Diagnóstico exploratório implementado
+
+O [diagnóstico](DIAGNOSTICS.md) implementa permutação por AP, SHAP em amostra uniforme
+e erros diários dos candidatos na validação. Usa o modelo existente, sem fit, refit,
+seleção automática de features, hipótese confirmatória ou acesso ao teste.
+Repetições de permutação medem variação entre embaralhamentos; não fornecem p-valores
+ou intervalos de confiança para superioridade. A política estatística e os quality
+gates continuam sendo o próximo passo antes de ablações/tuning.

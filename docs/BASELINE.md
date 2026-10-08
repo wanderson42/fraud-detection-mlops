@@ -1,8 +1,11 @@
 # Baseline temporal de classificação
 
-Versão: `baseline_v1`. Base publicada: Gold `14ab57e` e documentação `9e6f03c`.
-Estado: construção e verificação nos dados reais informadas pelo autor, com outputs
-no notebook enviado. Commit e CI do baseline ainda não foram informados. Evidência:
+Persistência atual: `baseline_v2`; política científica: `baseline_protocol_v1.json`.
+O baseline real `baseline_v1` foi preservado. Baseline/tracking publicados em
+[`6ba10b5`](https://github.com/wanderson42/fraud-detection-mlops/commit/6ba10b53464500a70cfba53dc696bfbca0119492), com
+[CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37706499277).
+A simplificação atual foi preparada sobre essa revisão e tem validação própria.
+Evidência do resultado real anterior:
 [recibo da validação](../references/evidence/baseline_validation_2026-10-07.json). Contrato: [baseline_protocol_v1.json](../references/baseline_protocol_v1.json).
 
 ## Pergunta e desenho do primeiro experimento
@@ -91,25 +94,28 @@ poetry run python -m fraud_detection_mlops.modeling.train run
 ```
 
 Atalho: `make baseline`. O comando imprime progresso por candidato e, ao terminar,
-o resultado com `baseline_path`, `run_id`, comparação e `audit_path`.
+o resultado com `baseline_path`, `run_id`, comparação, `audit_path` e URIs MLflow.
+A publicação nativa dos três candidatos faz parte da execução padrão; consulte
+[MLflow](MLFLOW.md). Não existe mais uma etapa posterior de migração.
 Para verificar, use o caminho exato da execução, sem escolher automaticamente a
 última pasta:
 
 ```bash
 poetry run python -m fraud_detection_mlops.modeling.train verify \
-  "data/processed/handbook/<source_commit>/baseline_v1/<run_id>"
+  "data/processed/handbook/<source_commit>/baseline_v2/<run_id>"
 ```
 
 Opções comuns: `--inventory`, `--silver-contract`, `--protocol`, `--gold-contract`
-e `--config`. `run` também aceita `--gold-root` e `--output-root`. Mantenha os
+e `--config`. `run` também aceita `--gold-root`, `--output-root`,
+`--tracking-root` e `--no-track` para investigação explicitamente sem tracking. Mantenha os
 contratos da construção ao verificar. Não há opção de avaliação do teste nesta CLI.
 
 Cada execução nova tem UUID e permanece independente. Dentro de
-`data/processed/handbook/<source_commit>/baseline_v1/<run_id>/`:
+`data/processed/handbook/<source_commit>/baseline_v2/<run_id>/`:
 
 | Artefato | Conteúdo |
 | --- | --- |
-| `models/<model_id>/model.joblib` | Um único pipeline ajustado por modelo, incluindo o scaler quando necessário |
+| `models/<model_id>/model.skops` | Um único pipeline ajustado por modelo, incluindo o scaler quando necessário |
 | `models/<model_id>/validation_predictions.parquet` | Metadados da validação, alvo e score; sem exemplos de teste |
 | `models/<model_id>/metrics.json` | Configuração, métricas, resultados diários, features, linhas e tempos de fit/predict |
 | `report.json` | Comparação, candidato selecionado, controle, regras de seleção e `test_evaluated: false` |
@@ -121,23 +127,24 @@ com erro e removem o staging; não publicam comparação parcial como sucesso.
 Repetir o comando cria outro experimento, sem sobrescrever o anterior. Execuções
 concorrentes têm pastas próprias, mas compartilham os recursos da máquina.
 
-Os dados e modelos ficam sob `data/`, já ignorado pelo Git. Esta primeira etapa
-rastreia experimentos localmente com recibos e manifestos. A integração com MLflow está implementada na [etapa MLflow/skops](MLFLOW.md), preservando esta
-execução. Orquestração terá escopo próprio.
+Os dados e modelos ficam sob `data/`, já ignorado pelo Git. A execução atual
+rastreia modelos pelo MLflow nativo e liga as URIs ao manifesto local. A migração
+histórica foi retirada do código ativo; seus artefatos permanecem preservados.
+Orquestração terá escopo próprio.
 
 ## Verificação, ambiente e limites
 
 `verify` confere os dez outputs, schema dos scores, identidades, cobertura de datas,
 populações idênticas entre candidatos e relações de disponibilidade. Recalcula
 métricas a partir do Parquet, reconcilia o relatório e o desempate. Não desserializa
-`model.joblib`, não refaz o treinamento nem consulta os Parquets Gold originais.
+modelos, não refaz o treinamento nem consulta os Parquets Gold originais.
+Também verifica artefatos históricos `baseline_v1` com joblib sem carregá-los.
 Verificação de checksum não é autenticação de origem nem prova de valor preditivo.
 
 O runner carrega ambos os splits em memória, ajusta os três pipelines e confere
-scores após carregar seus próprios artefatos recém-gravados. Persistência joblib
-exige confiança no artefato e compatibilidade do ambiente. Use o lockfile e não
-carregue modelos recebidos de fontes desconhecidas. A CLI `verify` lê somente bytes
-e Parquets, sem executar objetos persistidos. O modelo ainda não tem interface de
+scores após carregar seus próprios artefatos skops recém-gravados e o modelo nativo
+MLflow. Use o lockfile; os tipos permitidos são revisados explicitamente.
+A CLI de baseline `verify` lê somente bytes e Parquets, sem executar modelos. O modelo ainda não tem interface de
 serving nem validação de inferência online.
 
 Uma `ConvergenceWarning` interrompe o experimento; não registramos regressão sem
@@ -184,3 +191,7 @@ O autor informou 127 testes aprovados em 6,71 s e tox em 8,44 s (`make validate`
 com lockfile, lint, formatação e `git diff --check` aprovados. Isso é evidência local,
 não CI consultada. Os arquivos nativos de modelos, scores, manifesto e auditoria
 não foram enviados; o recibo deriva das saídas fornecidas e do notebook executado.
+
+O [diagnóstico da validação](DIAGNOSTICS.md) inspeciona o HGB já publicado no MLflow,
+conferindo scores antes da permutação e do SHAP. Mantém o modelo e o teste final
+congelados. É análise exploratória para orientar ablações e hipóteses estatísticas.

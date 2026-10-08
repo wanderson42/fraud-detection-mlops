@@ -2,7 +2,6 @@
 
 from contextlib import contextmanager
 from datetime import UTC, date, datetime, timedelta
-import hashlib
 import json
 from pathlib import Path
 import sys
@@ -16,7 +15,9 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import typer
 
-from fraud_detection_mlops.bronze import DEFAULT_INVENTORY, _write_json, load_inventory
+from fraud_detection_mlops.artifacts import sha256, write_json
+from fraud_detection_mlops.bronze import DEFAULT_INVENTORY, load_inventory
+from fraud_detection_mlops.config import PROJECT_ROOT
 from fraud_detection_mlops.features import (
     DAY_NS,
     DTYPES,
@@ -27,7 +28,6 @@ from fraud_detection_mlops.features import (
     WINDOW_DAYS,
     compute_features,
 )
-from fraud_detection_mlops.profiling import PROJECT_ROOT
 from fraud_detection_mlops.silver import DEFAULT_CONTRACT, DEFAULT_OUTPUT, verify_silver
 from fraud_detection_mlops.temporal import DEFAULT_PROTOCOL, load_protocol
 
@@ -45,10 +45,6 @@ app = typer.Typer(no_args_is_help=True)
 
 class GoldError(ValueError):
     """A modeling dataset fails the supported Gold contract."""
-
-
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _contract(path: Path) -> dict:
@@ -161,9 +157,7 @@ def _verify_directory(directory: Path, inventory: dict, protocol: dict, identiti
         all_paths = []
         for (split, day), item in zip(_days(protocol), records, strict=True):
             path = directory / item["path"]
-            if path.stat().st_size != item.get("size_bytes") or _sha256(path) != item.get(
-                "sha256"
-            ):
+            if path.stat().st_size != item.get("size_bytes") or sha256(path) != item.get("sha256"):
                 raise GoldError(f"Gold integrity mismatch: {item['path']}")
             parquet = pq.ParquetFile(path)
             if (
@@ -204,10 +198,10 @@ def _inputs(inventory_path: Path, silver_contract: Path, protocol_path: Path, go
     inventory = load_inventory(inventory_path)
     protocol = load_protocol(protocol_path, inventory)
     identities = {
-        "inventory_sha256": _sha256(inventory_path),
-        "silver_contract_sha256": _sha256(silver_contract),
-        "protocol_sha256": _sha256(protocol_path),
-        "gold_contract_sha256": _sha256(gold_contract),
+        "inventory_sha256": sha256(inventory_path),
+        "silver_contract_sha256": sha256(silver_contract),
+        "protocol_sha256": sha256(protocol_path),
+        "gold_contract_sha256": sha256(gold_contract),
     }
     return inventory, protocol, identities
 
@@ -269,8 +263,8 @@ def build_gold(
             "started_at_utc": datetime.now(UTC).isoformat(),
             "source": inventory["source"],
             **identities,
-            "builder_sha256": _sha256(Path(__file__)),
-            "features_sha256": _sha256(Path(__file__).with_name("features.py")),
+            "builder_sha256": sha256(Path(__file__)),
+            "features_sha256": sha256(Path(__file__).with_name("features.py")),
             "environment": {
                 "python": sys.version.split()[0],
                 "duckdb": duckdb.__version__,
@@ -278,14 +272,14 @@ def build_gold(
                 "pyarrow": pa.__version__,
             },
         }
-        _write_json(audit_path, audit)
+        write_json(audit_path, audit)
         try:
             verified = verify_silver(
                 silver_root, inventory_path=inventory_path, contract_path=silver_contract
             )
             source_dir = Path(verified["silver_path"])
             manifest_path = source_dir / "manifest.json"
-            source_hash = _sha256(manifest_path)
+            source_hash = sha256(manifest_path)
             source_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             context = _context_records(source_manifest, protocol)
             audit["silver_manifest_sha256"] = source_hash
@@ -357,18 +351,17 @@ def build_gold(
                                     "date": day,
                                     "rows": len(frame),
                                     "size_bytes": path.stat().st_size,
-                                    "sha256": _sha256(path),
+                                    "sha256": sha256(path),
                                 }
                             )
                             split_rows[split] += len(frame)
                     if (
-                        _sha256(manifest_path) != source_hash
+                        sha256(manifest_path) != source_hash
                         or any(
-                            _sha256(source_dir / item["path"]) != item["sha256"]
-                            for item in context
+                            sha256(source_dir / item["path"]) != item["sha256"] for item in context
                         )
                         or any(
-                            _sha256(path) != identities[name]
+                            sha256(path) != identities[name]
                             for name, path in {
                                 "inventory_sha256": inventory_path,
                                 "silver_contract_sha256": silver_contract,
@@ -378,7 +371,7 @@ def build_gold(
                         )
                     ):
                         raise GoldError("Inputs changed during Gold build")
-                    _write_json(
+                    write_json(
                         staging / "manifest.json",
                         {
                             "schema_version": 1,
@@ -409,7 +402,7 @@ def build_gold(
             raise
         finally:
             audit["finished_at_utc"] = datetime.now(UTC).isoformat()
-            _write_json(audit_path, audit)
+            write_json(audit_path, audit)
     return {**result, "status": audit["status"], "audit_path": str(audit_path)}
 
 

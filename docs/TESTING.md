@@ -139,12 +139,12 @@ sem relato próprio nesta etapa; nenhum treinamento é executado pela CI.
 
 ## Testes do baseline temporal
 
-Os [testes de métricas](../tests/test_modeling_metrics.py) conferem AP/ROC conhecidas,
+Os [testes de métricas](../tests/modeling/test_metrics.py) conferem AP/ROC conhecidas,
 score máximo e qualquer fraude por cliente/dia, empate por ID, limite de cem,
 denominador menor e média diária sem ponderação. Casos inválidos são rejeitados;
 ROC com uma classe tem política explícita.
 
-Os [testes do runner](../tests/test_baseline.py) executam modelos reais em fixtures
+Os [testes do runner](../tests/modeling/test_train.py) executam modelos reais em fixtures
 pequenas, incluindo escala ajustada apenas no treino, exclusão do teste do loader,
 constância do dummy e invariância dos scores aos rótulos dos holdouts. Também
 conferem artefatos separados, round trip, reutilização do código de métricas na
@@ -154,20 +154,55 @@ ambas as classes no treino e na validação antes do fit.
 O [recibo](../references/evidence/baseline_preparation_2026-10-07.json) registra
 os checks da preparação; não é evidência de métricas do histórico real.
 
-## Integração MLflow e skops
+## Tracking nativo e organização
 
-[Oito testes adicionais](../tests/test_tracking.py) exercitam SQLite, pacotes MLflow
-skops e pipelines reais. Conferem três runs principais independentes, recarga sklearn
-/pyfunc, assinatura, ausência de refit/teste, originais preservados, repetição sem
-duplicatas, migração explicitamente confiável, ambiente, corrupção, tipos desconhecidos,
-falha parcial e retomada, e bloqueio concorrente. Reutilizam a fixture temporal do
-baseline; resultados sintéticos não são métricas do portfólio.
+Os [testes de tracking](../tests/modeling/test_tracking.py) exercitam MLflow/SQLite
+reais em dados sintéticos: três runs principais independentes, recarga de pipelines,
+métricas, assinatura, exclusão do teste, falha de recarga, falha parcial e rejeição
+de uma run pai ativa. Não há mais testes de conversão, retomada ou lock de migração.
+Os [testes de persistência](../tests/modeling/test_persistence.py) rejeitam tipos
+não revisados e alterações nos scores após recarga. A verificação de
+[recibos v1](../tests/modeling/test_baseline.py) usa bytes opacos sintéticos e não
+carrega modelos históricos. Não representa validação dos artefatos reais do autor.
 
-A integração acrescenta testes de riscos concretos. Não adotamos contagem ou cobertura
-como meta isolada. O [runbook](MLFLOW.md) registra limites e depreciações externas.
+As fixtures compartilhadas ficam em `tests/modeling/conftest.py`; o pytest usa
+`--import-mode=importlib`. [Arquitetura](ARCHITECTURE.md). Testes protegem riscos
+concretos, sem contagem ou cobertura como meta. O ambiente tox continua sendo
+instalado de forma editável; não comprova um wheel independente do checkout.
 
-O autor informou 135 testes aprovados em 12,91 s e tox em 18,52 s, com lint,
-formatação de 47 arquivos e `git diff --check` aprovados. Os nove avisos de
-depreciação vêm de MLflow/SQLAlchemy e não foram ocultados. A publicação e a
-verificação reais também concluíram com sucesso. [Recibo local](../references/evidence/mlflow_execution_2026-10-07.json).
-Esta evidência é distinta da preparação e não representa CI consultada.
+A migração anterior teve 135 testes locais aprovados pelo autor, em 12,91 s, e tox
+em 18,52 s, com nove depreciações visíveis. [Recibo histórico](../references/evidence/mlflow_execution_2026-10-07.json).
+O [CI de 6ba10b5](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37706499277)
+também passou. A simplificação atual tem uma evidência separada; não herda esses
+resultados nem representa nova avaliação do baseline real.
+
+## Preparação da simplificação
+
+A preparação passou em Python 3.14.4: 135 testes em 21,98 s; tox em 27,66 s,
+com lint, 54 arquivos formatados e lockfile aprovados. As 16 depreciações externas
+ficaram visíveis. [Recibo](../references/evidence/native_tracking_preparation_2026-10-07.json).
+O ambiente isolado exigiu restaurar a permissão de execução do binário Ruff após
+instalação; isso não alterou o código do projeto. As evidências são de fixtures,
+sem retreinamento do baseline real e sem nova CI ou execução local do autor.
+
+## Diagnóstico da baseline
+
+Os [sete testes de diagnóstico](../tests/modeling/test_diagnostics.py) cobrem a
+agregação operacional por cliente e os empates, determinismo da amostra, separação
+dos casos ilustrativos da média SHAP e reconstrução dos scores. A integração confere
+o formato novo e o export histórico, inclusive `MLmodel` sem `run_id`; modelos joblib
+históricos permanecem sem carregamento. Os Parquets Gold de treino/teste são retirados
+temporariamente da fixture para comprovar que o diagnóstico não precisa deles.
+
+Também conferem baseline imutável, ausência de fit e de novas runs MLflow, rejeição
+de candidato/scores incorretos, auditoria de falha, aditividade e corrupção de outputs.
+Usam os explicadores e modelos reais em dados sintéticos pequenos. Os gráficos são
+inspecionados na preparação; não usamos comparação de pixels como teste.
+[Recibo da preparação](../references/evidence/diagnostics_preparation_2026-10-07.json).
+
+O autor também informou `make validate` aprovado na etapa de diagnóstico:
+**142 testes em 13,65 s**, tox em 17,32 s, 57 arquivos formatados e 29 avisos
+de dependências externas visíveis. Lockfile e lint aprovados, `git diff --check`
+sem erros relatados. O [recibo local](../references/evidence/diagnostics_execution_2026-10-07.json)
+distingue essa saída dos comandos `run`/`verify` e das tabelas obtidas sobre a
+validação real. Não foi informado um novo identificador de CI para esse marco.

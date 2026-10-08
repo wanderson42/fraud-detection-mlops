@@ -260,7 +260,7 @@ def test_verify_catches_semantic_tampering_even_if_checksum_is_updated(source, c
     frame = frame.astype(gold.DTYPES)
     frame.to_parquet(path, index=False, engine="pyarrow", compression="zstd")
     record["size_bytes"] = path.stat().st_size
-    record["sha256"] = gold._sha256(path)
+    record["sha256"] = gold.sha256(path)
     (directory / "manifest.json").write_text(json.dumps(manifest))
     with pytest.raises(gold.GoldError, match="semantic"):
         verify(source)

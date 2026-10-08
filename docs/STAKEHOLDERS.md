@@ -1,121 +1,101 @@
 # Síntese para stakeholders
 
-Data do marco: 2026-10-06. Bronze avaliada: `18242fc`.
-Diagnóstico completo posterior informado pelo autor; revisão desse código não
-informada. A Silver foi construída e verificada no ambiente do autor, com
-reconciliação completa dos registros. Revisão Silver: `acf1516`, com CI aprovada.
-O autor informou validação local da integração tox; a entrega tox e EDA foi
-publicada na revisão `fc22a48`, com CI aprovada. A EDA de treino foi informada pelo autor, com nove outputs verificados e quatro
-tabelas interpretadas; validação e teste final permanecem reservados.
+Atualizado em 2026-10-07. Estado atual: pipeline offline, baseline temporal e
+inspeção da validação executados localmente pelo autor. Teste final e operação
+por eventos ainda são etapas futuras.
 
-## Problema e objetivo do portfólio
+## A decisão que pretendemos apoiar
 
-Construir uma solução reproduzível de detecção de fraude em transações, acompanhando
-os dados desde sua aquisição até a futura avaliação e operação do modelo. O projeto
-pretende demonstrar classificação com regras temporais, engenharia de dados e
-práticas de MLOps.
+Uma equipe com capacidade limitada precisa escolher quais clientes investigar.
+Queremos avaliar como o ranking usa o histórico disponível, quais fraudes ficam
+fora dos alertas e como conferir a origem de cada experimento. Isso aproxima a
+modelagem de uma rotina de triagem, com orçamento e evidências explícitos.
 
-A base utilizada é simulada. O baseline foi comparado na validação; não há
-estimativa de perdas financeiras evitadas ou resultado comprovado em operação real.
+O projeto parte de cartões simulados pelo Handbook. O modelo é uma parte de um
+processo que também envolve regras, autenticação e investigação. A história dessa
+área e sua relevância atual estão no [contexto do problema](PROBLEM_CONTEXT.md),
+com fontes primárias e distinção entre cartões, pagamentos europeus e Pix.
 
-## Entrega atual
+## Quem pode usar o laboratório
 
-Uma base histórica foi adquirida de uma versão fixa da fonte, preservando os arquivos
-originais. O processo verifica integridade, reutiliza arquivos existentes, retoma
-execuções parciais e registra auditorias.
+| Público | Utilidade pretendida | Evidência que torna a utilidade concreta |
+| --- | --- | --- |
+| Profissionais em formação | Aprender causalidade temporal, feedback atrasado e operação de ML | Reproduzir o pipeline e investigar falhas controladas |
+| Quem avalia o portfólio | Avaliar decisões e capacidade de construir sistemas de ML | Contratos, experimentos, testes e limites revisáveis |
+| Equipes de dados e engenharia | Examinar uma referência de práticas em ambiente controlado | Adaptar e validar contratos e ensaios com seus requisitos |
+| Analistas de investigação, como público futuro | Entender a fila de prioridades e seus erros | Política operacional, explicações e métricas de revisão; integração ainda pendente |
 
-| Resultado | Evidência e alcance |
+A utilidade demonstrada hoje é a reprodução e análise offline. Usar o modelo em
+uma instituição exigiria dados autorizados, sinais do domínio, validação externa,
+requisitos operacionais e uma política de ação própria.
+
+## O que foi entregue
+
+| Capacidade | Resultado observado e origem |
 | --- | --- |
-| Histórico completo de 183 dias | Verificação local informada pelo autor: `183/183; complete: True` |
-| Reutilização de dados | Execução completa reutilizou sete arquivos e baixou os 176 restantes |
-| Qualidade do código | 70 testes locais aprovados na etapa Silver; ambiente, lint, formatação e diff conferidos |
-| Automação de qualidade | CI aprovada para Silver `acf1516` e para integração tox/EDA `fc22a48` |
-| Rastreabilidade | Fonte fixada, inventário versionado, manifesto, auditorias e recibo documental |
-| Diagnóstico do histórico | 1.754.155 transações com IDs globalmente únicos; auditoria local informada pelo autor |
-| Frequência de fraude | 14.681 rótulos de fraude, aproximadamente 0,8369% da base; não é uma métrica de modelo |
-| Política de qualidade da Silver | Preservar os 42 valores zero; tipos explícitos e reconciliação de todas as linhas |
-| Silver completa | 183 partições Parquet construídas e verificadas; todas as contagens reconciliadas com a Bronze |
+| Dados rastreáveis | Fonte fixada e 183 arquivos íntegros; execução local informada |
+| Base consultável | 1.754.155 linhas na Silver, com 14.681 fraudes e 42 valores zero preservados |
+| Preparação temporal | Gold verificada: 19 preditores, 42 partições; treino, validação e teste separados |
+| Comparação reproduzível | AP da validação: HGB 0,623949; regressão 0,435001; controle 0,008624 |
+| Modelos identificáveis | Três pipelines MLflow/skops publicados e verificados pelo autor |
+| Inspeção do resultado | Sete outputs de diagnóstico verificados; erros diários, permutação e SHAP informados |
+| Qualidade de implementação | Último relato local: 142 testes aprovados, lint, formatação e lockfile aprovados |
 
-As evidências e suas origens constam no [recibo da Bronze](../references/evidence/bronze_2026-10-06.json).
-Os resultados locais foram informados pelo autor; a CI foi conferida por consulta
-à execução na plataforma. Os artefatos locais de dados não foram publicados no Git.
+Os testes usam dados controlados. O sucesso deles não demonstra eficácia antifraude;
+a execução real sobre a simulação é uma evidência separada. Os arquivos nativos
+permanecem locais e não foram enviados nesta etapa.
 
-## Significado do marco
+## O que os números significam para a investigação
 
-O projeto tem uma base reproduzível para iniciar a preparação dos dados e permite
-investigar como seus arquivos foram obtidos. Essa validação cobre a aquisição e a
-integridade dos arquivos. O diagnóstico posterior também investigou schema, nulos,
-unicidade, datas, rótulos e valores, com resultados no
-[recibo do perfil](../references/evidence/silver_profile_2026-10-06.json).
-A construção e a verificação da Silver foram concluídas pelo autor. O
-[recibo da execução](../references/evidence/silver_build_2026-10-06.json) registra
-esse marco e sua auditoria. A base está disponível para consultas e a próxima
-etapa de análise e preparação temporal das features.
+Na validação de sete dias, reservamos cem posições de clientes por dia. A regressão
+priorizou 336 ocorrências fraudulentas de cliente/dia; o HGB priorizou 378, ao mesmo
+orçamento total de 700 posições. Isso corresponde a precisão média de 48% e 54%.
+O HGB deixou 133 ocorrências fraudulentas fora dos alertas, contra 175 da regressão.
 
-## Próximos marcos e evidências necessárias
+O ganho observado foi de **42 ocorrências fraudulentas adicionais priorizadas**.
+Não são necessariamente 42 pessoas diferentes: um cliente pode aparecer em vários
+dias. Também não estimamos perdas evitadas, recuperação financeira ou transações
+bloqueadas. O ranking usa o dia completo, retrospectivamente; não representa ainda
+uma fila de decisões online. A [interpretação do diagnóstico](DIAGNOSTICS.md#resultados-reais-informados-pelo-autor)
+explica o cálculo, as importâncias e as hipóteses.
 
-| Marco planejado | Evidência necessária para considerá-lo validado |
+## Limites que afetam a leitura do resultado
+
+A simulação contém regras conhecidas, inclusive um limiar artificial de valor que
+marca fraude. A dependência do modelo desses sinais é informativa para verificar
+o laboratório, mas não valida seu desempenho contra golpes reais.
+
+A janela de validação tem sete dias, com clientes repetidos. A vantagem observada
+não comprova superioridade estatística ou estabilidade em outros períodos. Não há
+avaliação final do teste, confirmação de calibração, deployment ou demonstração de
+latência e disponibilidade do serviço. Todos os rótulos acabam disponíveis após
+um atraso assumido; revisão seletiva e seus efeitos ainda não são modelados.
+
+## Próximos marcos orientados pelo risco
+
+| Marco | Problema que resolve | Evidência necessária |
+| --- | --- | --- |
+| Hipóteses e comparação controlada | Evitar escolher features e parâmetros por tentativa sem critério | Protocolo prévio, tamanho de efeito, dependência temporal e orçamento |
+| Avaliação final | Separar desenvolvimento de confirmação | Escolhas congeladas antes do teste; critérios de aprovação e limitações |
+| Orquestração e empacotamento | Executar e recuperar etapas de forma consistente | Fluxo com dependências, falhas/retries e ambiente reproduzível |
+| Replay de eventos e inferência | Conferir estado e disponibilidade da informação durante a decisão | Paridade offline/online, duplicidade, atrasos e política de fila |
+| Monitoramento e promoção | Reconhecer falhas e impedir atualização inadequada | Métricas de serviço/dados/desempenho atrasado, quality gates e rollback |
+
+Prefect, Docker, armazenamento de objetos, dashboards e monitoramento entram quando
+um desses marcos exigir sua capacidade. Kubernetes e Terraform dependem de um
+escopo de implantação justificado. O critério de sucesso é demonstrar o controle
+operacional e científico correspondente, com complexidade proporcional.
+
+## Evidências e leituras
+
+| Marco | Registro principal |
 | --- | --- |
-| Tracking dos modelos reais | Três runs independentes, scores reconciliados e artefatos persistentes |
-| Diagnóstico e comparação estatística | Hipóteses registradas, tamanho de efeito, incerteza e dependência temporal tratados |
-| Otimização e avaliação final | Escolhas congeladas antes do teste, critérios de aprovação e limitações documentados |
-| Replay/streaming e operação | Processamento de eventos, controles de duplicidade e atraso, observabilidade e ensaios operacionais |
+| Aquisição e contrato dos dados | [Bronze](../references/evidence/bronze_2026-10-06.json), [perfil](../references/evidence/silver_profile_2026-10-06.json) e [Silver](../references/evidence/silver_build_2026-10-06.json) |
+| Exploração e preparação temporal | [EDA](../references/evidence/eda_training_2026-10-07.json) e [Gold](../references/evidence/gold_build_2026-10-07.json) |
+| Modelos e comparação | [Baseline](../references/evidence/baseline_validation_2026-10-07.json) e [tracking histórico](../references/evidence/mlflow_execution_2026-10-07.json) |
+| Diagnóstico e últimos checks locais | [Execução informada](../references/evidence/diagnostics_execution_2026-10-07.json) |
 
-Streaming, feature store, serving e monitoramento fazem parte da evolução pretendida;
-a arquitetura e os critérios finais serão definidos por etapa. Documentos técnicos
-e evidências acompanham a implementação, conforme a [política](DOCUMENTATION_POLICY.md).
-
-## EDA informada e próxima Gold
-
-A [EDA](EDA.md) gera tabelas e gráficos a partir da Silver sem alterar transações.
-O [protocolo temporal](EVALUATION_PROTOCOL.md) estabelece janelas e atraso de rótulos
-antes de escolher o modelo. O autor informou 268.668 transações de treino, 1.505 fraudes (0,5602%) e quatro
-valores zero preservados, no [recibo](../references/evidence/eda_training_2026-10-07.json).
-A proporção de fraude aumenta entre os blocos semanais, motivando históricos
-temporais de cliente/terminal. Acurácia de 99,44% seria possível prevendo tudo como
-genuíno, sem detectar fraude; isso sustenta avaliar o ranking com Average Precision.
-Nesse marco de EDA não foram avaliados modelos; o resultado posterior está abaixo.
-
-## Gold construída e verificada pelo autor
-
-O pipeline preparado transforma a Silver em tabelas temporais de modelagem, com
-19 preditores e regras para histórico insuficiente. Preserva a população das
-janelas definidas e separa alvo/IDs das features. O risco histórico do terminal
-considera apenas rótulos disponíveis após sete dias. O [contrato](GOLD_CONTRACT.md)
-explica as decisões. O autor informou 42 partições verificadas, 19 preditores e
-402.877 linhas: 268.668 de treino, 67.255 de validação e 66.954 de teste, com
-[recibo](../references/evidence/gold_build_2026-10-07.json). A preparação passou
-104 testes controlados. A revisão Gold `14ab57e` foi publicada com
-[CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37652509812):
-104 testes em 11,37 s, lint, formatação e lockfile aprovados. O notebook publicado
-mostra a verificação e a leitura das 268.668 linhas de treino. Checks locais do autor
-continuam sem saída de terminal informada.
-Esses resultados da engenharia de dados não demonstram eficácia de detecção. O baseline abaixo foi avaliado com
-métricas de ranking e seleção exclusivamente na validação.
-
-## Desenho do baseline
-
-O experimento compara uma referência sem sinal e dois classificadores:
-linear e não linear. Os modelos são ajustados no treino e comparados na validação
-pela capacidade de ordenar transações por risco. O teste final permanece reservado.
-Escala e pesos de classe são ajustados apenas no treino, com população preservada.
-O [baseline](BASELINE.md) e seu notebook documentam configurações e interpretação.
-O resultado real informado pelo autor está abaixo; revisão publicada e CI desse
-código ainda não foram informadas.
-
-## Baseline real e tracking
-
-O autor informou treinamento e verificação reais: o gradient boosting atingiu AP
-0,623949, com precisão média de 54% nos cem clientes priorizados por dia; regressão
-logística: AP 0,435001 e 48%. A validação contém 580 fraudes em 67.255 transações,
-em sete dias. [Resultados e limites](BASELINE.md#resultado-real-informado-pelo-autor).
-Esse ganho observado não representa superioridade estatística nem produção validada.
-
-O autor publicou e verificou os três pipelines reais em MLflow/skops, sem refit
-ou avaliação do teste. [Evidência local](../references/evidence/mlflow_execution_2026-10-07.json).
-Os 135 testes passaram em 12,91 s; tox completo em 18,52 s. Os nove avisos de
-depreciação são externos aos contratos do projeto e permaneceram visíveis.
-Modelos e pré-processamento ficam juntos em runs próprias. Não há promoção automática;
-commit, CI e validação da UI real ainda não foram informados.
-O próximo trabalho de modelagem investigará erros e importância de features, com
-protocolo estatístico definido antes da otimização e do quality gate.
+A [política de documentação](DOCUMENTATION_POLICY.md) define como separar relatos
+locais, preparação e CI. [Arquitetura](ARCHITECTURE.md) descreve responsabilidades;
+[Operations](OPERATIONS.md) descreve execução e recuperação. Cada recibo preserva
+a origem e os limites de seu marco, sem atribuir resultados a revisões futuras.

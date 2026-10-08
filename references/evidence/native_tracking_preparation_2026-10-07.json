@@ -1,0 +1,84 @@
+{
+  "artifact_version": "baseline_v2",
+  "base_commit": "6ba10b53464500a70cfba53dc696bfbca0119492",
+  "changes": {
+    "application_python_lines_after": 3026,
+    "application_python_lines_before": 3321,
+    "legacy_runner_copy_added": false,
+    "migration_runner_removed": true,
+    "package_import_side_effects_removed": true,
+    "pytest_import_mode": "importlib",
+    "shared_fixtures": "tests/modeling/conftest.py",
+    "tracking_notebook": "single_notebook_06_current_api_and_static_historical_outputs",
+    "tracking_python_lines_after": 161,
+    "tracking_python_lines_before": 505
+  },
+  "checks": {
+    "format": "54 files already formatted",
+    "git_diff_check": "passed",
+    "lint": "passed",
+    "passed": 135,
+    "poetry": "2.4.3",
+    "poetry_check_lock": "passed",
+    "pytest_seconds": 21.98,
+    "python": "3.14.4",
+    "runner": "poetry run tox -e py314",
+    "tox": "4.32.0",
+    "tox_seconds": 27.66,
+    "warnings": 16
+  },
+  "ci_run_id": null,
+  "code_fingerprints": {
+    "fraud_detection_mlops/__init__.py": "ea70c909d7aec685ecf8ec026ebbec0fe6a4200cda39b17cf8231d6d431ede6b",
+    "fraud_detection_mlops/artifacts.py": "735dacf0a1bce824ae3e84097e2dbb062e25b2f96b06ff046a2c2e8d222d2443",
+    "fraud_detection_mlops/bronze.py": "85a89c0a3aaa8f0ff82c2467d17d07454e4eaba98c9f283be234d2cb44dee03a",
+    "fraud_detection_mlops/config.py": "d7748a15a6bfec489a39cab0e711d5c35528e1af488c1f97254209ac8721b3d0",
+    "fraud_detection_mlops/dataset.py": "b9700376e106c3744184877ea643005c492309cef9f0c8f3806a25ddbb168174",
+    "fraud_detection_mlops/eda.py": "19c3363feb0064372f4461ebbc0180ead3150f8019d1b13466c11737e4249a5f",
+    "fraud_detection_mlops/features.py": "a22945066dd7e3716b6ea31b1c3ae272bd9220ff5d85ff5c1083cd1bc85bc14f",
+    "fraud_detection_mlops/gold.py": "a4003f2b47c85c6fde0fe9e357ff09efc78b08577b257a7c9392d6f26e6a1793",
+    "fraud_detection_mlops/modeling/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fraud_detection_mlops/modeling/baseline.py": "2e8e855d72f21bed033a93c7523c024a3cb235b3ede2fee364c4c35850c59132",
+    "fraud_detection_mlops/modeling/metrics.py": "fd8905db53aaa8623b93df0d415ae99fc03985e319936dc4aecbf6c1bdc73a9e",
+    "fraud_detection_mlops/modeling/persistence.py": "f36c17bda57b312c75ba69b7ce5f1994e996aa951b97f90220bd3c3e8eca809a",
+    "fraud_detection_mlops/modeling/tracking.py": "acd69c39f2538fdc2cb8010cd8bedba173d2231802ee2d4fc07e3a16b0fff32c",
+    "fraud_detection_mlops/modeling/train.py": "f9e039dcee2bb64e80a5e4c81edd743905a8dfe7a2ce4667e7f30f5e7f57c03c",
+    "fraud_detection_mlops/profiling.py": "cf3a80da2d155cba9a7734f8ebf5c9f5fd8d1bddc745dc50eed7f4737af913a8",
+    "fraud_detection_mlops/silver.py": "4a66f29f001f1346bf0ef56935712d14cc3935e2496b3594ac1a9adf1e9d157f",
+    "fraud_detection_mlops/temporal.py": "613d22a0db9efa73022783bfa0149500e32bfa11408277e3dd563c1269bb2e3d"
+  },
+  "dependencies": {
+    "mlflow": "3.17.0",
+    "removed_packages": [
+      "loguru",
+      "tqdm",
+      "win32-setctime"
+    ],
+    "retained_locked_versions": 133,
+    "scikit-learn": "1.9.1",
+    "skops": "0.16.0",
+    "updated_package_versions": []
+  },
+  "implementation_commit": null,
+  "limitations": [
+    "fixture_results_are_not_real_model_metrics",
+    "native_author_data_and_mlflow_store_not_available_for_independent_execution",
+    "current_ci_and_author_local_execution_not_yet_available",
+    "wheel_installation_outside_checkout_not_validated",
+    "sandbox_tox_ruff_binary_required_executable_bit_repair_after_installation; no_project_code_change_for_this_environment_issue"
+  ],
+  "origin": "assistant_isolated_fixture_execution",
+  "poetry_lock_sha256": "9ab028712ad2324237473472f4009a6bc8acd563cdbbeb4fde4f9adea105a8ef",
+  "prepared_on": "2026-10-07",
+  "preserved": {
+    "author_data_models_database_and_runs": "not_modified_by_patch",
+    "existing_scientific_contracts_and_evidence_bytes": true,
+    "historical_tracking_results_preserved_as_static_markdown": true,
+    "other_historical_notebook_code_cells_and_outputs": true,
+    "real_baseline_retrained": false,
+    "test_evaluated": false
+  },
+  "schema_version": 1,
+  "scientific_policy": "baseline_protocol_v1.json",
+  "scope": "native_tracking_refactor_and_test_organization"
+}

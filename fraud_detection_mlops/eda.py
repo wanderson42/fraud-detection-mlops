@@ -1,7 +1,6 @@
 """Produce descriptive training-only tables and figures over verified Silver files."""
 
 from datetime import UTC, datetime
-import hashlib
 import json
 from pathlib import Path
 import sys
@@ -17,15 +16,12 @@ from matplotlib.figure import Figure
 import pandas as pd
 import typer
 
-from fraud_detection_mlops.bronze import DEFAULT_INVENTORY, _write_json, load_inventory
+from fraud_detection_mlops.artifacts import sha256, write_json
+from fraud_detection_mlops.bronze import DEFAULT_INVENTORY, load_inventory
 from fraud_detection_mlops.silver import DEFAULT_CONTRACT, DEFAULT_OUTPUT, verify_silver
 from fraud_detection_mlops.temporal import DEFAULT_PROTOCOL, load_protocol
 
 app = typer.Typer(no_args_is_help=True)
-
-
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def summarize_training(connection: duckdb.DuckDBPyConnection) -> tuple[dict, dict]:
@@ -175,7 +171,7 @@ def build_eda(
     )
     directory = Path(verified["silver_path"])
     manifest_path = directory / "manifest.json"
-    manifest_hash = _sha256(manifest_path)
+    manifest_hash = sha256(manifest_path)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     window = protocol["windows"]["train"]
     selected = [
@@ -194,12 +190,12 @@ def build_eda(
         "status": "running",
         "started_at_utc": datetime.now(UTC).isoformat(),
         "source": inventory["source"],
-        "protocol_sha256": _sha256(protocol_path),
+        "protocol_sha256": sha256(protocol_path),
         "silver_manifest_sha256": manifest_hash,
-        "eda_sha256": _sha256(Path(__file__)),
-        "temporal_sha256": _sha256(Path(__file__).with_name("temporal.py")),
-        "inventory_sha256": _sha256(inventory_path),
-        "contract_sha256": _sha256(contract_path),
+        "eda_sha256": sha256(Path(__file__)),
+        "temporal_sha256": sha256(Path(__file__).with_name("temporal.py")),
+        "inventory_sha256": sha256(inventory_path),
+        "contract_sha256": sha256(contract_path),
         "environment": {
             "python": sys.version.split()[0],
             "pandas": pd.__version__,
@@ -207,7 +203,7 @@ def build_eda(
             "matplotlib": matplotlib.__version__,
         },
     }
-    _write_json(audit_path, audit)
+    write_json(audit_path, audit)
     try:
         # Only selected train files are exposed to exploratory SQL. Full Silver verification
         # above checks integrity/schema/counts, not holdout distributions for feature choices.
@@ -231,7 +227,7 @@ def build_eda(
             serial_summary = json.loads(
                 pd.DataFrame([summary]).to_json(orient="records", date_format="iso")
             )[0]
-            _write_json(
+            write_json(
                 staging / "report.json",
                 {
                     "schema_version": 1,
@@ -250,18 +246,16 @@ def build_eda(
                 },
             )
             if (
-                _sha256(manifest_path) != manifest_hash
-                or _sha256(protocol_path) != audit["protocol_sha256"]
-                or any(_sha256(directory / item["path"]) != item["sha256"] for item in selected)
+                sha256(manifest_path) != manifest_hash
+                or sha256(protocol_path) != audit["protocol_sha256"]
+                or any(sha256(directory / item["path"]) != item["sha256"] for item in selected)
             ):
                 raise ValueError("Inputs changed during EDA")
             outputs = [
-                {"path": path.name, "size_bytes": path.stat().st_size, "sha256": _sha256(path)}
+                {"path": path.name, "size_bytes": path.stat().st_size, "sha256": sha256(path)}
                 for path in sorted(staging.iterdir())
             ]
-            _write_json(
-                staging / "manifest.json", {**audit, "status": "success", "files": outputs}
-            )
+            write_json(staging / "manifest.json", {**audit, "status": "success", "files": outputs})
             verify_eda(staging)
             staging.rename(destination)
         audit["status"] = "success"
@@ -278,7 +272,7 @@ def build_eda(
         raise
     finally:
         audit["finished_at_utc"] = datetime.now(UTC).isoformat()
-        _write_json(audit_path, audit)
+        write_json(audit_path, audit)
     return {**audit["result"], "status": audit["status"], "audit_path": str(audit_path)}
 
 
@@ -309,7 +303,7 @@ def verify_eda(run_path: Path) -> dict:
         raise ValueError("Incomplete or unsupported EDA bundle")
     for record in records:
         path = run_path / record["path"]
-        if path.stat().st_size != record["size_bytes"] or _sha256(path) != record["sha256"]:
+        if path.stat().st_size != record["size_bytes"] or sha256(path) != record["sha256"]:
             raise ValueError(f"EDA integrity mismatch: {path.name}")
     return {"eda_path": str(run_path), "verified_outputs": len(records), "status": "success"}
 

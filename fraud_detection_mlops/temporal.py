@@ -4,7 +4,7 @@ from datetime import date, timedelta
 import json
 from pathlib import Path
 
-from fraud_detection_mlops.profiling import PROJECT_ROOT
+from fraud_detection_mlops.config import PROJECT_ROOT
 
 DEFAULT_PROTOCOL = PROJECT_ROOT / "references/temporal_protocol_v1.json"
 

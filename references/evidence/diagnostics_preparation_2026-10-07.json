@@ -1,0 +1,67 @@
+{
+  "base_state": "mlops_simplification_v2_with_consolidated_notebook_06",
+  "ci_run_id": null,
+  "dependency_changes": {
+    "added_locked_packages": {
+      "llvmlite": "0.50.0",
+      "numba": "0.68.0",
+      "setuptools": "84.0.0",
+      "shap": "0.52.0",
+      "slicer": "0.0.8",
+      "tqdm": "4.70.1"
+    },
+    "existing_locked_versions_changed": [],
+    "shap": "0.52.0"
+  },
+  "feature_selection": false,
+  "hypothesis_test": false,
+  "implementation_commit": null,
+  "limitations": [
+    "real_author_gold_models_database_not_available_for_diagnostic_execution",
+    "no_real_diagnostic_results_or_confirmation_of_superiority",
+    "no_production_latency_or_memory_benchmark",
+    "notebooks_unexecuted_and_no_fabricated_outputs",
+    "no_public_commit_or_new_ci_associated_with_this_preparation"
+  ],
+  "origin": "assistant_controlled_synthetic_fixtures",
+  "quality_checks": {
+    "format": "57 files already formatted",
+    "lint": "passed",
+    "lockfile": "passed",
+    "new_diagnostic_tests": 7,
+    "passed": 142,
+    "poetry": "2.4.3",
+    "pytest_seconds": 20.87,
+    "python": "3.14.4",
+    "runner": "tox py314",
+    "tox_seconds": 27.47,
+    "warning_origins": [
+      "MLflow_SQLAlchemy_noload",
+      "MLflow_codecs_open",
+      "SHAP_Matplotlib_colormap_deprecations"
+    ],
+    "warnings": 29,
+    "warnings_not_suppressed": true
+  },
+  "recorded_at_utc": "2026-10-08T01:37:07.653254+00:00",
+  "recorded_on": "2026-10-07",
+  "refit": false,
+  "related_docs": "docs/DIAGNOSTICS.md",
+  "schema_version": 1,
+  "scope": "validation_only_baseline_diagnostic_preparation",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "test_evaluated": false,
+  "verified_behaviors": [
+    "existing_native_and_historical_skops_models_without_refit_or_joblib_loading",
+    "validation_diagnostics_succeed_with_gold_train_and_test_files_unavailable",
+    "source_baseline_file_hashes_unchanged_and_no_new_mlflow_runs",
+    "full_validation_score_parity_before_permutation",
+    "uniform_sample_deterministic_and_illustrative_cases_excluded_from_extra_global_weight",
+    "shap_additivity_in_raw_log_odds_and_score_reconstruction",
+    "wrong_candidate_and_scores_fail_before_importance",
+    "customer_day_aggregation_ties_and_no_positive_customer_day",
+    "corrupted_outputs_rejected_and_failed_staging_removed",
+    "two_figures_visually_inspected_on_synthetic_fixtures"
+  ],
+  "version": "diagnostics_v1"
+}

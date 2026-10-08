@@ -15,8 +15,11 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from uuid import uuid4
 
+from fraud_detection_mlops.artifacts import write_json
+from fraud_detection_mlops.config import PROJECT_ROOT
+
 SOURCE_REPOSITORY = "Fraud-Detection-Handbook/simulated-data-raw"
-DEFAULT_INVENTORY = Path(__file__).resolve().parents[1] / "references" / "handbook_source.json"
+DEFAULT_INVENTORY = PROJECT_ROOT / "references/handbook_source.json"
 CHUNK_SIZE = 64 * 1024
 RETRYABLE_HTTP_STATUSES = {429, 500, 502, 503, 504}
 
@@ -37,23 +40,6 @@ def _read_json(path: Path) -> dict:
     if not isinstance(value, dict):
         raise BronzeError(f"Expected a JSON object in {path}")
     return value
-
-
-def _write_json(path: Path, value: dict) -> None:
-    """Replace metadata atomically, keeping the previous document on write failure."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=path.parent, suffix=".tmp", delete=False
-        ) as stream:
-            temporary = Path(stream.name)
-            json.dump(value, stream, indent=2, sort_keys=True)
-            stream.write("\n")
-        temporary.replace(path)
-    finally:
-        if temporary is not None:
-            temporary.unlink(missing_ok=True)
 
 
 def load_inventory(path: Path = DEFAULT_INVENTORY) -> dict:
@@ -210,7 +196,7 @@ def _checkpoint(snapshot: Path, manifest: dict, records: dict, expected_count: i
     manifest["expected_file_count"] = expected_count
     manifest["stored_file_count"] = len(records)
     manifest["complete"] = len(records) == expected_count
-    _write_json(snapshot / "manifest.json", manifest)
+    write_json(snapshot / "manifest.json", manifest)
 
 
 def extract_bronze(
@@ -245,7 +231,7 @@ def extract_bronze(
             "parameters": {"timeout_seconds": timeout, "max_attempts": attempts},
             "files": [],
         }
-        _write_json(audit_path, audit)
+        write_json(audit_path, audit)
         try:
             manifest = _load_manifest(snapshot, inventory)
             records = {record["filename"]: record for record in manifest["files"]}
@@ -286,7 +272,7 @@ def extract_bronze(
                 }
                 _checkpoint(snapshot, manifest, records, len(inventory["files"]))
                 audit["files"].append({"filename": filename, "status": status, **checksums})
-                _write_json(audit_path, audit)
+                write_json(audit_path, audit)
                 if progress is not None:
                     progress(filename, status)
             audit["status"] = "success"
@@ -301,7 +287,7 @@ def extract_bronze(
             audit["finished_at"] = _now()
             audit["downloaded_count"] = sum(f["status"] == "downloaded" for f in audit["files"])
             audit["skipped_count"] = sum(f["status"] == "skipped" for f in audit["files"])
-            _write_json(audit_path, audit)
+            write_json(audit_path, audit)
     return {**audit, "snapshot_path": str(snapshot), "audit_path": str(audit_path)}
 
 
