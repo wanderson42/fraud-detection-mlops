@@ -10,6 +10,10 @@ Evidência do resultado real anterior:
 
 ## Pergunta e desenho do primeiro experimento
 
+**HGB = Histogram-based Gradient Boosting**, ou boosting de árvores baseado em
+histogramas. Usamos `HistGradientBoostingClassifier`, do scikit-learn: um ensemble
+de árvores ajustadas sequencialmente. Os parâmetros desta referência estão abaixo.
+
 Quanto os 19 candidatos da Gold ajudam a ordenar transações futuras por risco?
 O primeiro experimento usa a Gold e o [protocolo temporal](EVALUATION_PROTOCOL.md)
 sem alterar janelas, população ou features. Treino: 1 a 28 de abril de 2018;

@@ -1,14 +1,17 @@
 # Execução das ablações controladas
 
-O executor de `experiment_v1` está implementado. A execução nos dados reais ainda
-precisa ser realizada pelo autor; testes sintéticos não constituem evidência de
-melhoria do modelo. Este documento complementa o protocolo já definido em
+O executor de `experiment_v1` está implementado. O autor concluiu e verificou
+`21ccedf10d944092ba874153c1d21257` sobre `de41ee0`; o catálogo foi encerrado com
+a referência preservada. A [revisão dos resultados](EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08)
+distingue testes de software, execução local e decisão de desenvolvimento.
+Este documento complementa o protocolo definido em
 [EXPERIMENT_PROTOCOL.md](EXPERIMENT_PROTOCOL.md) e o catálogo em
 [experiment_protocol_v1.json](../references/experiment_protocol_v1.json).
 
 ## Escopo e decisão
 
-São três novos ajustes de HGB, sequenciais, com os mesmos hiperparâmetros e no
+São três novos ajustes de HGB (**Histogram-based Gradient Boosting**, boosting
+de árvores baseado em histogramas), sequenciais, com os mesmos hiperparâmetros e no
 máximo quatro threads. Cada candidato usa todas as linhas de treino e validação,
 com um subconjunto ordenado das 19 features da Gold. A Gold física permanece
 inalterada. Os identificadores vêm do campo `id` do protocolo; tabelas e
@@ -41,14 +44,12 @@ O catálogo foi motivado pelo diagnóstico na mesma validação; o estudo é exp
 
 ## Aplicação e preparação
 
-Este patch incremental pressupõe o patch anterior de protocolo já aplicado.
-Ele adiciona o executor, a análise pareada e testes; não altera dependências nem
-substitui notebooks executados. O notebook 08 existente continua sendo o lugar
-de registrar e interpretar este estudo. Não é necessário repetir a baseline.
+A implementação e o protocolo estão no checkout publicado em `de41ee0`.
+O notebook 08 registra o catálogo e a interpretação; a baseline histórica é
+reutilizada. Validar o ambiente antes de iniciar um estudo novo:
 
 ```bash
-git apply --check ~/Downloads/controlled-ablation-incremental.patch
-git apply ~/Downloads/controlled-ablation-incremental.patch
+poetry install
 make validate
 git diff --check
 ```
@@ -77,7 +78,7 @@ métricas de teste. Mudanças nas versões de scikit-learn, NumPy ou pandas em r
 O comando imprime `Experiment: <caminho>` logo no início. Guarde esse caminho:
 
 ```bash
-EXPERIMENT_PATH="/caminho/impresso/experiment_v1/<run_id>"
+EXPERIMENT_PATH="$PWD/data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/experiment_v1/21ccedf10d944092ba874153c1d21257"
 poetry run python -m fraud_detection_mlops.modeling.experiments verify "$EXPERIMENT_PATH"
 ```
 
@@ -138,6 +139,7 @@ influence = pd.read_csv(experiment / "leave_one_day_out.csv")
 display(summary, daily, influence)
 ```
 
-Revise ganhos e perdas diários, clientes perdidos, influência de cada dia e custo
-antes de congelar um candidato. Nenhum resultado real é pré-preenchido por este
-patch. A avaliação final e decisões de implantação exigem etapas próprias.
+A [revisão concluída](EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08)
+conserva a referência. Os resultados históricos em Markdown vêm dos arquivos
+compartilhados pelo autor; não são outputs fabricados de células executadas.
+A avaliação final e decisões de implantação exigem etapas próprias.

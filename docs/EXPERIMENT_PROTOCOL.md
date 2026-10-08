@@ -1,22 +1,26 @@
 # Protocolo de experimentação controlada
 
 Versão: `experiment_v1`. Preparado em 2026-10-08 sobre a revisão `1975fa3`.
-**Estado: política definida para revisão e congelamento no Git; runner ainda não implementado.**
+**Estado: executor implementado; três ablações executadas e verificadas pelo autor sobre `de41ee0`.**
 Referência estruturada: [experiment_protocol_v1.json](../references/experiment_protocol_v1.json).
-Nenhuma ablação foi executada nesta entrega. O teste final permanece reservado.
+A revisão dos arquivos compartilhados concluiu pela conservação da referência;
+nenhum candidato passou o gate. O teste final permanece reservado.
+O JSON conserva o estado registrado no congelamento da política; resultados e
+decisões de cada run ficam em `report.json` e no recibo, sem modificar a política após os fits.
 
 ## Pergunta e referência
 
 Podemos melhorar a priorização de investigação com menos preditores do terminal,
 mantendo o mesmo treino, a mesma população e a capacidade de 100 clientes por dia?
 
-A referência é o HGB já treinado, não uma nova baseline. Sua execução é
+A referência é o HGB (**Histogram-based Gradient Boosting**, boosting de árvores
+baseado em histogramas; `HistGradientBoostingClassifier`) já treinado. Sua execução é
 `f6d7aca720f74316b4183f97b6d866ab`, com modelo
 `runs:/d3be86000fd24dc8a053dbcab778d4b6/model`. Na validação, AP foi
 **0,6239485133** e a média diária de precisão nos 100 clientes foi **0,54**.
 As evidências estão no [baseline](BASELINE.md) e no [diagnóstico](DIAGNOSTICS.md).
 
-Antes de comparar candidatos, o runner deverá verificar os artefatos de referência
+Antes de comparar candidatos, o runner verifica os artefatos de referência
 e reconciliar seus scores com as mesmas transações da validação. Incompatibilidade
 de ambiente, schema ou scores interrompe a comparação; não justifica retreinar
 silenciosamente a referência. Gold, lockfile e revisão efetivamente usados serão
@@ -67,17 +71,18 @@ escolhas oportunistas; não transforma essa semana em confirmação independente
 
 Uma falha deve ficar registrada. Recuperar uma execução incompleta não amplia o
 catálogo: candidatos concluídos e verificados são reutilizados. Não escolher um
-vencedor de um catálogo parcialmente concluído. O orçamento conta três ajustes
-concluídos; tentativas interrompidas e seu custo também serão reportados.
+vencedor de um catálogo parcialmente concluído. Cada ajuste iniciado consome uma das três posições do orçamento; o estado registra
+as tentativas, inclusive interrupções antes do checkpoint. O [runbook](EXPERIMENT_EXECUTION.md)
+explica esse limite e a reutilização dos candidatos com checkpoints válidos.
 
 ## Comparação e análise estatística deste ciclo
 
-Scores e rótulos serão alinhados por `TRANSACTION_ID`, com igualdade de IDs,
+Scores e rótulos são alinhados por `TRANSACTION_ID`, com igualdade de IDs,
 datas, clientes e população. Usar o mesmo contrato de ranking diário do
 [protocolo temporal](EVALUATION_PROTOCOL.md): máximo score por cliente, rótulo
 positivo se houver fraude no dia, desempate pelo ID e até 100 clientes.
 
-O relatório deverá apresentar:
+O relatório apresenta:
 
 1. AP calculada sobre todas as transações da validação e sua diferença para a
    referência; ROC AUC e prevalência como contexto.
@@ -140,23 +145,87 @@ Se a melhoria depender de um dia ou vier com degradação operacional preocupant
 registrar a dúvida e preservar a referência. Qualquer novo critério numérico
 exige uma versão futura; não reescrever o gate para favorecer o resultado observado.
 
-## Tracking e implementação seguinte
+## Tracking implementado
 
-A próxima entrega implementará esse catálogo sobre os componentes existentes,
-com uma run MLflow por candidato. Registrar protocolo e seu SHA-256, revisão,
+O executor usa os componentes existentes, com uma run MLflow por candidato.
+Registra protocolo e seu SHA-256, revisão,
 lockfile, manifesto Gold, URI da referência, features exatas, parâmetros,
 métricas, scores de validação e tempos de execução.
 
-Persistir o pipeline completo em skops, com assinatura correspondente ao subconjunto
-de features, e conferir scores após recarga. O relatório comparativo deve apontar
-para essas runs; não criar outro sistema de tracking ou repetir recibos extensos.
-O notebook da etapa lerá os artefatos gerados e preservará outputs reais.
+O pipeline completo é persistido em skops, com assinatura do subconjunto de
+features e scores conferidos após recarga. O relatório aponta para as três runs.
+O [runbook](EXPERIMENT_EXECUTION.md) descreve execução, verificação e retomada.
+O notebook da etapa distingue células executáveis de resultados históricos em
+Markdown; esta atualização não fabrica outputs de execução.
 
 O contrato temporal permanece `temporal_v1`; a seleção de colunas pertence à política
 do experimento, sem exigir `gold_v2`. A promoção futura terá uma política própria:
 teste final, Model Card, contrato de inferência, paridade entre processamento
 offline e online, monitoramento e rollback. CI aprovada é qualidade de software;
 o gate de modelo precisará de evidência científica e operacional.
+
+## Resultados e decisão — 2026-10-08
+
+O autor executou `21ccedf10d944092ba874153c1d21257` sobre a revisão
+`de41ee00246b6170cc65bdf63df1808ec35277bd`. O comando `verify` informou
+sucesso e 18 artefatos. Foram compartilhados `summary.csv`, `daily.csv`,
+`leave_one_day_out.csv` e `report.json`; os três últimos foram reconciliados
+nesta revisão. O [recibo](../references/evidence/controlled_ablation_execution_2026-10-08.json)
+registra origem, ambiente, identidades e limites da conferência.
+
+| Modelo | Features | AP global | ΔAP | Precisão diária @100 | Cliente/dia fraudulento priorizado | Não priorizado |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Referência | 19 | 0,623949 | — | 54,00% | 378 | 133 |
+| Sem volume do terminal | 17 | 0,610552 | −0,013396 | 53,43% | 374 | 137 |
+| Sem contagens de fraude | 17 | 0,626240 | +0,002291 | 53,29% | 373 | 138 |
+| Sem ambos os grupos | 15 | 0,628595 | +0,004647 | 53,14% | 372 | 139 |
+
+Todos usam as mesmas 67.255 transações, 580 transações fraudulentas, sete dias e
+700 vagas. Há 511 ocorrências fraudulentas de cliente/dia; uma pessoa pode aparecer
+em vários dias. As diferenças de 4, 5 e 6 ocorrências não são pessoas únicas,
+fraudes monetárias evitadas ou estimativas de perda financeira.
+
+**Revisão diária.** A remoção de volume perde precisão em quatro dias, empata em
+dois e ganha em um. As outras duas ablações perdem em três dias, empatam nos
+outros quatro e não ganham em nenhum. No candidato de 15 features, as seis
+ocorrências adicionais não priorizadas concentram-se em 9 de maio (duas),
+11 de maio (três) e 12 de maio (uma). São diferenças no total de positivos
+priorizados, não uma comparação individual de quais clientes mudaram de fila.
+
+**Influência temporal.** A tabela abaixo mostra as sete exclusões de dia para
+cada candidato. Os valores são mínimos e máximos observados, não intervalos de
+confiança. O ΔAP de cada exclusão usa todas as transações dos seis dias restantes.
+
+| Ablação | Amplitude de ΔAP ao excluir um dia | Amplitude de Δprecisão @100 (p.p.) |
+| --- | ---: | ---: |
+| Sem volume do terminal | −0,018622 a −0,005339 | −0,833 a −0,333 |
+| Sem contagens de fraude | −0,001457 a +0,004918 | −0,833 a −0,500 |
+| Sem ambos os grupos | +0,000464 a +0,007544 | −1,000 a −0,500 |
+
+A perda operacional permanece nas 21 exclusões. A remoção de volume perde AP nas
+sete; a remoção de contagens muda o sinal da diferença de AP em duas exclusões.
+O candidato de 15 features conserva ΔAP positivo nas sete exclusões, sempre
+abaixo de +0,01. Seu ganho cai de +0,004647 na semana completa para +0,000470 ao
+excluir 6 de maio e +0,000464 ao excluir 11 de maio. O sinal persiste, mas a
+magnitude depende do período incluído. Essa influência não demonstra causalidade.
+
+**Decisão:** manter a referência HGB com 19 features e encerrar o catálogo de
+`experiment_v1`. Nenhum candidato atingiu simultaneamente os ganhos de +0,01 em
+AP e +0,02 em precisão operacional. Os limiares e o catálogo permanecem os
+congelados antes dos scores. Uma importância negativa por permutação motivou
+hipóteses; o retreinamento não sustentou a remoção sob este gate.
+
+A execução não fez refit com validação, não avaliou o teste, não executou teste de
+hipótese ou intervalo de confiança e não promoveu modelo em produção. A evidência
+justifica a decisão de desenvolvimento nesta janela simulada, sem comprovar
+superioridade estatística ou estabilidade futura. Custos de fit e predição não
+foram revisados aqui; nenhuma economia computacional foi atribuída à ablação.
+
+O próximo marco é congelar e documentar o candidato de avaliação, seu contrato de
+inferência e critérios de aceitação antes de abrir o teste final. Uma expansão
+exploratória exige outro protocolo; não se amplia este catálogo para perseguir
+um ganho na mesma validação. Preservar scores, modelos, manifestos, estado e
+auditoria nativos junto aos arquivos da execução local.
 
 ## Referências e limites
 
@@ -168,5 +237,5 @@ o gate de modelo precisará de evidência científica e operacional.
 
 O Handbook fundamenta a cronologia; as três ablações, o orçamento e os limiares
 são escolhas próprias. Resultados do simulador não demonstram desempenho em
-instituições financeiras reais. Este protocolo é um contrato declarativo; os
-checks automatizados e as comparações serão implementados na próxima entrega.
+instituições financeiras reais. O contrato declarativo, os checks automatizados
+e as comparações estão implementados; a execução local foi informada pelo autor.

@@ -15,8 +15,8 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def write_json(path: Path, value: dict) -> None:
-    """Replace metadata atomically; retain the previous document on failure."""
+def write_json(path: Path, value: dict, *, overwrite: bool = True) -> None:
+    """Publish JSON atomically; optionally refuse to replace an existing document."""
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = None
     try:
@@ -26,7 +26,10 @@ def write_json(path: Path, value: dict) -> None:
             temporary = Path(stream.name)
             json.dump(value, stream, indent=2, sort_keys=True)
             stream.write("\n")
-        temporary.replace(path)
+        if overwrite:
+            temporary.replace(path)
+        else:
+            path.hardlink_to(temporary)
     finally:
         if temporary is not None:
             temporary.unlink(missing_ok=True)

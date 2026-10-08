@@ -131,3 +131,14 @@ experiments: ## Execute controlled ablations; requires BASELINE_PATH and committ
 experiments_verify: ## Verify ablation outputs offline; requires EXPERIMENT_PATH
 	@test -n "$(EXPERIMENT_PATH)" || (echo "Set EXPERIMENT_PATH"; exit 1)
 	poetry run python -m fraud_detection_mlops.modeling.experiments verify "$(EXPERIMENT_PATH)"
+
+.PHONY: freeze verify-freeze
+## Freeze the existing reference; requires BASELINE_PATH and EXPERIMENT_PATH
+freeze:
+	@test -n "$(BASELINE_PATH)" || (echo "Set BASELINE_PATH"; exit 1)
+	@test -n "$(EXPERIMENT_PATH)" || (echo "Set EXPERIMENT_PATH"; exit 1)
+	poetry run python -m fraud_detection_mlops.modeling.freeze build "$(BASELINE_PATH)" --experiment-path "$(EXPERIMENT_PATH)"
+
+## Verify the frozen receipt and bound files offline
+verify-freeze:
+	poetry run python -m fraud_detection_mlops.modeling.freeze verify

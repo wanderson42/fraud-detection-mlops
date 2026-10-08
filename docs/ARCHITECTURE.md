@@ -3,6 +3,9 @@
 O código se organiza por responsabilidades que já existem. O pacote continua na
 raiz do checkout; não criamos pastas vazias para infraestrutura futura.
 
+Esta é a arquitetura implementada. Metas, prioridade e critérios das entregas
+futuras têm uma referência única no [mural do projeto](ROADMAP.md).
+
 | Código | Responsabilidade | Testes |
 | --- | --- | --- |
 | `artifacts.py` | Escrita JSON atômica e SHA256 em memória limitada | `tests/test_artifacts.py` |
@@ -14,11 +17,20 @@ raiz do checkout; não criamos pastas vazias para infraestrutura futura.
 | `modeling/persistence.py` | Persistência skops e contrato de recarga | `tests/modeling/test_persistence.py` |
 | `modeling/tracking.py` | API nativa MLflow e CLI de UI/verificação | `tests/modeling/test_tracking.py` |
 | `modeling/diagnostics.py` | Diagnóstico da validação com modelo existente, permutação e SHAP | `tests/modeling/test_diagnostics.py` |
+| `modeling/comparison.py` | Comparação pareada e gate de desenvolvimento | `tests/modeling/test_comparison.py` e `test_experiments.py` |
+| `modeling/experiments.py` | Ablações limitadas, checkpoints e retomada | `tests/modeling/test_experiments.py` |
+| `modeling/freeze.py` | Recibo da referência e política final, com paridade na validação | `tests/modeling/test_freeze.py` |
 
 As fixtures compartilhadas de modelagem ficam em `tests/modeling/conftest.py`.
 Arquivos de teste não importam uns aos outros. O pytest usa `importlib`; tox e CI
 continuam executando a mesma suíte com as versões do lockfile. Os cenários de
 integração usam dados sintéticos pequenos, diretórios temporários e SQLite local.
+
+O espelhamento é por responsabilidade: `silver.py` fica na raiz do pacote e seu
+teste na raiz de `tests/`; `modeling/train.py` corresponde a
+`tests/modeling/test_train.py`. Não é necessário repetir o nome do pacote dentro
+de `tests/` nem criar um arquivo de teste para cada arquivo Python. Uma integração
+pode cobrir vários módulos; [Testing](TESTING.md) descreve a organização e os riscos.
 
 ## Decisões desta refatoração
 
@@ -46,6 +58,12 @@ integração usam dados sintéticos pequenos, diretórios temporários e SQLite 
    deve ser pequena e necessária para as evidências que decidimos preservar.
 6. Revisar dependências e documentação junto com o código. Recursos novos precisam
    justificar seu custo de manutenção no portfólio.
+
+Os runners de dados e de experimentos concentram verificação, publicação e
+recuperação; merecem atenção conforme evoluírem. Separar um componente é útil
+quando ele tiver contrato próprio, duplicação ou acoplamento que dificulte uma
+mudança. Dividir arquivos apenas por tamanho acrescentaria navegação sem resolver
+esses problemas. Novas integrações devem preservar interfaces pequenas.
 
 O layout atual e os caminhos padrão suportam execução a partir do checkout.
 O tox instala o projeto de forma editável; essa validação não comprova um wheel

@@ -152,9 +152,10 @@ real dependeria de evidências externas, dados autorizados e avaliação operaci
 
 ## Evidência que já podemos discutir
 
-Na validação de 6 a 12 de maio, a baseline real tem AP de 0,623949 para HGB e
+Na validação de 6 a 12 de maio, a baseline real tem AP de 0,623949 para HGB
+(**Histogram-based Gradient Boosting**, boosting de árvores baseado em histogramas) e
 0,435001 para regressão logística. A precisão média nos 100 clientes diários é
-54% e 48%, respectivamente. O [diagnóstico](DIAGNOSTICS.md#resultados-reais-informados-pelo-autor)
+54% e 48%, respectivamente. O [diagnóstico](DIAGNOSTICS.md#resultados)
 permite expressar esse resultado como capacidade de triagem:
 
 | Resultado em sete dias | Regressão logística | HGB |

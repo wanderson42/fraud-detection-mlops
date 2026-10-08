@@ -21,7 +21,7 @@ não são copiados para a Gold. Essa projeção não apaga os campos da origem.
 | Preservar Bronze/Silver | Manter os dados de origem e seus campos, com integridade e contrato |
 | Definir candidatos Gold | Escolher previamente famílias de sinais e janelas de 1/7 dias, conforme disponibilidade temporal |
 | Separar metadados e alvo | Usar IDs para vínculo/agrupamento e rótulos para avaliação ou histórico já conhecido |
-| Fazer ablação | Retreinar variantes com grupos de features retirados e medir o efeito sob protocolo controlado; ainda não executado |
+| Fazer ablação | Retreinar variantes com grupos de features retirados e medir o efeito sob protocolo controlado; primeiro catálogo concluído, com referência preservada conforme o [protocolo](EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08) |
 
 O Handbook também apresenta janelas de 30 dias e indicadores binários de noite
 e fim de semana. A nossa primeira Gold usa 1/7 dias, hora e dia da semana, além
@@ -214,6 +214,26 @@ aparecer em dias distintos. Comparações estatísticas precisarão tratar tempo
 agrupamentos, sem considerar cada transação ou cliente/dia como réplica independente
 por padrão. A escolha de cliente, terminal ou bloco temporal como unidade de
 inferência dependerá da hipótese. Sete dias não demonstram estabilidade extensa.
+
+## Siglas da modelagem e da operação
+
+| Sigla | Significado | Uso neste projeto |
+| --- | --- | --- |
+| HGB | Histogram-based Gradient Boosting | Boosting de árvores baseado em histogramas; estimador `HistGradientBoostingClassifier` e referência conservada após as ablações |
+| AP | Average Precision | Métrica principal do ranking transacional; agrega precisões na curva precisão-recall |
+| ROC AUC | Area Under the Receiver Operating Characteristic Curve | Métrica complementar de discriminação |
+| SHAP | SHapley Additive exPlanations | Contribuições para os scores; não demonstram causalidade ou ganho ao remover uma feature |
+| EDA | Exploratory Data Analysis | Análise exploratória com fronteiras temporais explícitas |
+| ELT | Extract, Load, Transform | Aquisição dos bytes brutos antes das transformações Silver/Gold |
+| CI | Continuous Integration | Checks automatizados de software e ambiente |
+| CD | Continuous Delivery | Entrega controlada e verificável de versões; ainda planejada |
+| CT | Continuous Training | Treinamento recorrente com feedback, avaliação e gates; ainda planejado |
+
+No HGB, árvores são ajustadas sequencialmente para melhorar a função de perda;
+os valores das features são agrupados em bins para calcular divisões. Ele já é
+um ensemble. A definição do estimador está na
+[documentação do scikit-learn](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html);
+a política e os parâmetros adotados estão no [baseline](BASELINE.md).
 
 ## Fontes de verdade e manutenção
 

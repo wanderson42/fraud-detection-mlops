@@ -66,9 +66,10 @@ outro contrato. Portanto, não faremos comparações diretas com suas métricas 
 
 Métricas, regras de score e cálculo operacional estão implementados no [baseline](BASELINE.md),
 com testes controlados e resultados reais de validação documentados pelo autor.
-Precisão, recall e matriz de confusão dependerão de um limiar escolhido exclusivamente
-na validação. Não fixamos uma meta percentual arbitrária nesta etapa nem tratamos
-acurácia elevada como demonstração de detecção de fraude. A semente inicial será 42.
+Precisão, recall e matriz de confusão por transação dependeriam de um limiar escolhido
+exclusivamente na validação. A política atual prioriza 100 clientes por dia, sem
+limiar probabilístico. Acurácia elevada não demonstra detecção de fraude. A semente
+inicial será 42. Os critérios práticos para o laboratório ficam explícitos abaixo.
 
 ## Por que acurácia não é a métrica principal
 
@@ -145,10 +146,12 @@ estimativas independentes do teste final.
 
 O [protocolo de experimentação](EXPERIMENT_PROTOCOL.md) e seu
 [contrato declarativo](../references/experiment_protocol_v1.json) fixam três
-ablações, orçamento e ganhos práticos antes dos novos fits. O runner ainda será
-implementado; este documento mantém as janelas e regras de `temporal_v1`.
+ablações, orçamento e ganhos práticos antes dos novos fits. O executor foi
+implementado e o autor concluiu o catálogo sobre `de41ee0`. A
+[revisão dos resultados](EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08)
+conservou a referência de 19 features; este documento mantém `temporal_v1`.
 
-A comparação será pareada por transação, com diferenças diárias e sete análises
+A comparação é pareada por transação, com diferenças diárias e sete análises
 de influência, excluindo um dia por vez sem refit. Essa análise não é um teste de
 superioridade nem um intervalo de confiança. Clientes, terminais e históricos
 compartilhados impedem tratar as transações ou os sete dias como réplicas IID.
@@ -162,5 +165,87 @@ e erros diários dos candidatos na validação. Usa o modelo existente, sem fit,
 seleção automática de features, hipótese confirmatória ou acesso ao teste.
 Repetições de permutação medem variação entre embaralhamentos; não fornecem p-valores
 ou intervalos de confiança para superioridade. O catálogo e o gate de
-desenvolvimento estão definidos no protocolo de experimentação; sua implementação
-é o próximo passo antes de ablações/tuning.
+desenvolvimento foram implementados e aplicados no catálogo fechado. Nenhuma
+ablação foi elegível. A decisão conserva a referência, sem retreino sobre a
+validação, promoção em produção ou avaliação do teste final.
+
+## Congelamento antes da avaliação final
+
+Estado: implementação preparada e testada com dados controlados; congelamento real
+e avaliação do teste pendentes. O contrato executável é
+[final_evaluation_protocol_v1.json](../references/final_evaluation_protocol_v1.json).
+O executor `modeling.freeze` reutiliza a referência **HistGradientBoostingClassifier
+(HGB)** da baseline `f6d7aca720f74316b4183f97b6d866ab`, conservada após o catálogo
+de ablações `21ccedf10d944092ba874153c1d21257`.
+
+O recibo `references/frozen_candidate_v1.json` será criado na execução local. Ele
+fixa o modelo MLflow/skops e seus hashes, parâmetros, ordem dos 19 preditores,
+ambiente, origem da Gold e as escolhas abaixo. Não cria uma nova run ou uma cópia
+permanente do modelo; não refaz ajuste, calibração ou seleção.
+
+| Escolha congelada | Contrato |
+| --- | --- |
+| Ajuste e preditores | Treino original; todas as 19 features, na ordem da Gold; HGB sem pré-processador |
+| Score | Ranking não calibrado; não interpretado como probabilidade de perda financeira |
+| População | Todas as transações; sem exclusão de clientes comprometidos |
+| Alertas | Máximo score por cliente/dia; top 100; empate por ID crescente |
+| Relógio | Dia completo retrospectivo; não é uma decisão online por evento |
+| Histórico de fraude | Disponibilidade do rótulo após sete dias, conforme a Gold |
+| Holdout | 20–26/05/2018; 66.954 transações esperadas; nenhuma escolha ajustada sobre ele |
+
+O build confere baseline, ablações e manifesto da Gold, lê **somente as partições
+de validação** e reproduz seus scores com o modelo existente. Não chama a verificação
+completa da Gold, que consulta todos os splits. Reutilizar o recibo mantém seus bytes;
+alterar arquivos vinculados ou a política impede sua verificação.
+
+### Critérios práticos do laboratório
+
+A avaliação final deverá satisfazer **ambos**:
+
+- Average Precision global de pelo menos **0,50**.
+- Média diária da precisão nos 100 clientes priorizados de pelo menos **0,45**.
+
+São metas deliberadas do projeto, definidas após a validação e **antes de acessar
+o teste**. A referência obteve AP ≈ 0,624 e precisão diária @100 ≈ 0,54 na validação;
+as metas toleram deterioração limitada para seguir à demonstração de serving.
+Não decorrem de um cálculo de custo de fraude, retorno financeiro ou significância
+estatística. Não reutilizam o gate de ganhos relativos das ablações.
+
+Satisfazer esses critérios habilita apenas a discussão de um candidato offline
+para **serving de laboratório**. Produção exigirá critérios de serviço, segurança,
+custos e risco operacional. Falhar exige registrar a falha, conservar os critérios
+e não ajustar o modelo sobre esse teste. Outra escolha precisará de nova janela
+preservada e protocolo previamente definido.
+
+A futura avaliação reportará AP, ROC AUC, precisão diária @100, métricas por dia e
+controle de score constante. Uma única semana e entidades dependentes não sustentam
+p-valores, intervalos de confiança ou alegação formal de superioridade neste ciclo.
+
+### Procedimento local em dois commits
+
+Primeiro, aplique o patch, rode `make validate` e versione a implementação e o
+contrato. O guard existente exige código, contratos e lockfile comprometidos no Git
+antes do build. Depois, com as variáveis apontando para os artefatos já verificados:
+
+```bash
+SOURCE_COMMIT=6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a
+BASELINE_PATH="data/processed/handbook/$SOURCE_COMMIT/baseline_v1/f6d7aca720f74316b4183f97b6d866ab"
+EXPERIMENT_PATH="data/processed/handbook/$SOURCE_COMMIT/experiment_v1/21ccedf10d944092ba874153c1d21257"
+
+poetry run python -m fraud_detection_mlops.modeling.freeze build \
+  "$BASELINE_PATH" --experiment-path "$EXPERIMENT_PATH"
+poetry run python -m fraud_detection_mlops.modeling.freeze verify
+
+git add references/frozen_candidate_v1.json
+git commit -m "docs: record frozen candidate before final evaluation"
+poetry run python -m fraud_detection_mlops.modeling.freeze verify --require-committed
+```
+
+O comando `verify` confere o recibo e os hashes dos arquivos vinculados. Ele não
+consulta o store MLflow nem recarrega o modelo; essa conferência ocorre no build
+e deverá ocorrer novamente na futura avaliação final. `--require-committed`
+também exige o recibo no Git e os insumos do guard sem divergência de HEAD.
+
+Não altere ou remova o recibo para fazer uma nova seleção. Ele identifica a decisão
+deste ciclo. O executor da avaliação final será a próxima entrega, depois de o
+autor informar o congelamento real. Neste marco, `test_evaluated` permanece `false`.

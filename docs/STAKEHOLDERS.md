@@ -1,8 +1,9 @@
 # Síntese para stakeholders
 
-Atualizado em 2026-10-07. Estado atual: pipeline offline, baseline temporal e
-inspeção da validação executados localmente pelo autor. Teste final e operação
-por eventos ainda são etapas futuras.
+Atualizado em 2026-10-08. Estado atual: pipeline offline, baseline temporal,
+diagnóstico e três ablações executados localmente pelo autor. A referência foi
+conservada; teste final e operação por eventos ainda são etapas futuras.
+Todas as metas e prioridades estão no [mural do projeto](ROADMAP.md).
 
 ## A decisão que pretendemos apoiar
 
@@ -31,6 +32,10 @@ requisitos operacionais e uma política de ação própria.
 
 ## O que foi entregue
 
+**HGB = Histogram-based Gradient Boosting**, ou boosting de árvores baseado em
+histogramas. É o modelo `HistGradientBoostingClassifier` descrito no
+[baseline](BASELINE.md), conservado após o primeiro ciclo de ablações.
+
 | Capacidade | Resultado observado e origem |
 | --- | --- |
 | Dados rastreáveis | Fonte fixada e 183 arquivos íntegros; execução local informada |
@@ -39,7 +44,8 @@ requisitos operacionais e uma política de ação própria.
 | Comparação reproduzível | AP da validação: HGB 0,623949; regressão 0,435001; controle 0,008624 |
 | Modelos identificáveis | Três pipelines MLflow/skops publicados e verificados pelo autor |
 | Inspeção do resultado | Sete outputs de diagnóstico verificados; erros diários, permutação e SHAP informados |
-| Qualidade de implementação | Último relato local: 142 testes aprovados, lint, formatação e lockfile aprovados |
+| Experimentos limitados | Três ablações verificadas; nenhuma elegível; referência de 19 features conservada |
+| Qualidade de implementação | Último relato local: 152 testes aprovados, lint, formatação e lockfile aprovados |
 
 Os testes usam dados controlados. O sucesso deles não demonstra eficácia antifraude;
 a execução real sobre a simulação é uma evidência separada. Os arquivos nativos
@@ -56,7 +62,7 @@ O ganho observado foi de **42 ocorrências fraudulentas adicionais priorizadas**
 Não são necessariamente 42 pessoas diferentes: um cliente pode aparecer em vários
 dias. Também não estimamos perdas evitadas, recuperação financeira ou transações
 bloqueadas. O ranking usa o dia completo, retrospectivamente; não representa ainda
-uma fila de decisões online. A [interpretação do diagnóstico](DIAGNOSTICS.md#resultados-reais-informados-pelo-autor)
+uma fila de decisões online. A [interpretação do diagnóstico](DIAGNOSTICS.md#resultados)
 explica o cálculo, as importâncias e as hipóteses.
 
 ## Limites que afetam a leitura do resultado
@@ -73,18 +79,11 @@ um atraso assumido; revisão seletiva e seus efeitos ainda não são modelados.
 
 ## Próximos marcos orientados pelo risco
 
-| Marco | Problema que resolve | Evidência necessária |
-| --- | --- | --- |
-| Hipóteses e comparação controlada | Evitar escolher features e parâmetros por tentativa sem critério | Protocolo prévio, tamanho de efeito, dependência temporal e orçamento |
-| Avaliação final | Separar desenvolvimento de confirmação | Escolhas congeladas antes do teste; critérios de aprovação e limitações |
-| Orquestração e empacotamento | Executar e recuperar etapas de forma consistente | Fluxo com dependências, falhas/retries e ambiente reproduzível |
-| Replay de eventos e inferência | Conferir estado e disponibilidade da informação durante a decisão | Paridade offline/online, duplicidade, atrasos e política de fila |
-| Monitoramento e promoção | Reconhecer falhas e impedir atualização inadequada | Métricas de serviço/dados/desempenho atrasado, quality gates e rollback |
-
-Prefect, Docker, armazenamento de objetos, dashboards e monitoramento entram quando
-um desses marcos exigir sua capacidade. Kubernetes e Terraform dependem de um
-escopo de implantação justificado. O critério de sucesso é demonstrar o controle
-operacional e científico correspondente, com complexidade proporcional.
+A próxima entrega é revisar o congelamento das escolhas e os critérios antes
+da avaliação final. O [mural de metas](ROADMAP.md) concentra a sequência de
+serving, replay, orquestração, monitoramento e atualização controlada, além dos
+critérios para Kubernetes e infraestrutura em cloud. A utilidade operacional
+precisa de evidência própria em cada marco.
 
 ## Evidências e leituras
 
@@ -93,7 +92,8 @@ operacional e científico correspondente, com complexidade proporcional.
 | Aquisição e contrato dos dados | [Bronze](../references/evidence/bronze_2026-10-06.json), [perfil](../references/evidence/silver_profile_2026-10-06.json) e [Silver](../references/evidence/silver_build_2026-10-06.json) |
 | Exploração e preparação temporal | [EDA](../references/evidence/eda_training_2026-10-07.json) e [Gold](../references/evidence/gold_build_2026-10-07.json) |
 | Modelos e comparação | [Baseline](../references/evidence/baseline_validation_2026-10-07.json) e [tracking histórico](../references/evidence/mlflow_execution_2026-10-07.json) |
-| Diagnóstico e últimos checks locais | [Execução informada](../references/evidence/diagnostics_execution_2026-10-07.json) |
+| Diagnóstico | [Execução informada](../references/evidence/diagnostics_execution_2026-10-07.json) |
+| Ablações e últimos checks locais | [Execução informada](../references/evidence/controlled_ablation_execution_2026-10-08.json) |
 
 A [política de documentação](DOCUMENTATION_POLICY.md) define como separar relatos
 locais, preparação e CI. [Arquitetura](ARCHITECTURE.md) descreve responsabilidades;

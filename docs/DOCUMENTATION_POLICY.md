@@ -15,6 +15,7 @@ substanciais e documentos por responsabilidade em `docs/`.
 | Artefato | Conteúdo | Quando atualizar |
 | --- | --- | --- |
 | [README](../README.md) | Objetivo, estado atual, arquitetura, Quick Start e navegação | Mudança de uso, arquitetura ou marco validado |
+| [Mural de metas](ROADMAP.md) | Backlog principal, prioridades, estados e critérios de conclusão | Mudança de escopo ou conclusão de um marco |
 | [Contexto e propósito](PROBLEM_CONTEXT.md) | História, referências, problema operacional, usos e limites da simulação | Mudança de escopo ou atualização do contexto e das fontes |
 | [Notebook principal](../notebooks/fraud_detection_mlops.ipynb) | Sínteses, decisões e resultados que mudam a história do projeto | Conclusão de uma etapa substancial |
 | `notebooks/stages/` | Investigação, decisões, contratempos e evidências de uma etapa | Na branch responsável pela etapa |
@@ -27,6 +28,7 @@ substanciais e documentos por responsabilidade em `docs/`.
 | [MLflow](MLFLOW.md) | Tracking nativo, persistência, assinatura e armazenamento | Mudança da integração ou resultados locais |
 | [Baseline](BASELINE.md) | Candidatos, métricas, ajuste, artefatos e fronteira de avaliação | Mudança de experimento ou resultado real |
 | [Protocolo de experimentação](EXPERIMENT_PROTOCOL.md) | Hipóteses, orçamento, análise estatística e gate de desenvolvimento | Congelar no Git antes de executar candidatos; mudanças exigem nova versão |
+| [Execução das ablações](EXPERIMENT_EXECUTION.md) | Comandos e recuperação específicos do executor | Mudança do procedimento |
 | [Diagnóstico](DIAGNOSTICS.md) | Inspeção da validação, orçamento, interpretação e limites estatísticos | Mudança da análise ou resultados reais |
 | [Arquitetura](ARCHITECTURE.md) | Responsabilidades, organização e controle de complexidade | Mudança estrutural |
 | [Testing](TESTING.md) | Isolamento tox–Poetry, checks, seleção de testes e limites | Mudança de validação ou CI |
@@ -34,6 +36,7 @@ substanciais e documentos por responsabilidade em `docs/`.
 | `docs/MODEL_CARD.md` | Uso do modelo, dados, avaliação, limitações e governança | Quando houver modelo avaliado |
 | [Stakeholders](STAKEHOLDERS.md) | Problema, entregas, evidências, limitações e próximos marcos | Mudança no resultado ou no escopo |
 | `references/evidence/` | Recibos estruturados de evidência, ligados à revisão avaliada | Fechamento de um marco validado |
+| `references/frozen_candidate_v1.json` | Recibo das escolhas, modelo e insumos da avaliação final | Criar na execução real e versionar antes de abrir o teste; não substituir para escolher outro candidato |
 
 Os caminhos de infraestrutura, model card e experimentos acima são destinos
 planejados. Criamos os artefatos quando houver conteúdo concreto.
@@ -56,6 +59,17 @@ planejados. Criamos os artefatos quando houver conteúdo concreto.
 7. A narrativa relaciona decisões técnicas ao processo de investigação. Estatísticas
    externas indicam ano, região e instrumento de pagamento; a simulação não herda
    resultados ou cobertura desses contextos. Referências ficam no documento responsável.
+
+Metas e estados futuros são mantidos no mural; outros documentos apontam para ele.
+Um documento novo exige pergunta, público ou contrato distintos. Rascunhos
+substituídos saem da navegação e da árvore ativa quando a decisão e a evidência
+estiverem preservadas; o Git mantém o histórico. Recibos não são duplicados em
+células executáveis ou em longas cronologias de cada guia.
+
+Siglas são expandidas na primeira ocorrência em cada documento ou notebook que as
+usa em sua narrativa. **HGB** significa **Histogram-based Gradient Boosting**;
+o [dicionário](DATA_DICTIONARY.md#siglas-da-modelagem-e-da-operação) reúne os termos.
+Identificadores executáveis e arquivos de políticas congeladas conservam seus nomes.
 
 ## Estados e evidências
 

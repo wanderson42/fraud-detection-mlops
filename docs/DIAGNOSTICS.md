@@ -7,6 +7,10 @@ hipóteses para os próximos experimentos; não seleciona features automaticamen
 
 ## Escopo e custo
 
+**HGB = Histogram-based Gradient Boosting** (boosting de árvores baseado em
+histogramas), implementado por `HistGradientBoostingClassifier`. É a referência
+descrita no [baseline](BASELINE.md).
+
 Um módulo, `modeling/diagnostics.py`, usa as APIs nativas de scikit-learn e SHAP.
 Não refaz a Bronze/Silver/Gold nem ajusta modelos. Lê os scores dos três candidatos
 e somente as features da validação: 67.255 transações na execução real existente.

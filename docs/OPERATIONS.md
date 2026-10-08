@@ -318,7 +318,8 @@ os modelos reais existentes continuam disponíveis.
 ## Diagnosticar a baseline existente
 
 Use o [runbook de diagnóstico](DIAGNOSTICS.md#executar-e-conferir) com o caminho
-explícito da baseline e a URI MLflow do HGB. `diagnostics run` gera as métricas
+explícito da baseline e a URI MLflow do HGB (**Histogram-based Gradient Boosting**,
+boosting de árvores baseado em histogramas). `diagnostics run` gera as métricas
 diárias, permutação por AP e SHAP; `diagnostics verify` confere os outputs salvos.
 O comando não retreina e não abre as partições Gold de treino/teste. Scores diferentes
 dos registrados interrompem a execução. Preserve a auditoria para investigação;

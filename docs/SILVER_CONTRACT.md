@@ -13,6 +13,13 @@ distintos, 14.681 fraudes, 1.739.474 genuínas e 42 zeros preservados.
 
 ## Evidência e decisões
 
+A inspeção inicial de `2018-04-01.pkl` informou 9.488 linhas e nove colunas,
+sem nulos ou duplicatas nessa partição. Os quatro campos `object` inspecionados
+continham inteiros Python. O [recibo da amostra](../references/evidence/silver_first_partition_2026-10-06.json)
+e o [notebook da etapa](../notebooks/stages/02_silver_data_contract.ipynb) preservam
+esse diagnóstico inicial. O rascunho anterior foi substituído por este contrato;
+suas propostas históricas permanecem no Git.
+
 A auditoria informou 1.754.155 linhas e o mesmo número de IDs distintos, 14.681
 fraudes e 1.739.474 transações genuínas. Não foram encontrados nulos, duplicatas,
 valores negativos, inconsistências de datas/contadores ou rótulos inválidos nas

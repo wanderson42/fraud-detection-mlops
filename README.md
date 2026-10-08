@@ -8,6 +8,8 @@ evidências auditáveis. Desenvolvido por Wanderson Ferreira.
 > somente a informação disponível naquele momento, e como manter essa decisão
 > confiável quando dados e padrões mudam?
 
+**[Mural de metas e próximos passos](docs/ROADMAP.md)** · [Contexto do problema](docs/PROBLEM_CONTEXT.md) · [Notebook principal](notebooks/fraud_detection_mlops.ipynb)
+
 ## Por que este projeto existe
 
 Fraude envolve uma decisão sob restrições: investigar custa tempo, alertas incorretos
@@ -30,48 +32,32 @@ monitoramento e avaliação final ainda têm marcos próprios.
 
 ## Estado do projeto
 
-Marco de 2026-10-06: **Bronze completa, com 183/183 arquivos verificados no ambiente
-do autor**, 39 testes locais aprovados e
-[CI aprovada para a implementação `18242fc`](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37514553686).
-As origens e os limites das evidências estão no
-[recibo da etapa](references/evidence/bronze_2026-10-06.json).
+Atualizado em 2026-10-08. Temos um **pipeline offline reproduzível e um primeiro
+ciclo de experimentação concluído**. A referência conservada é HGB
+(**Histogram-based Gradient Boosting**, boosting de árvores baseado em histogramas),
+implementada por `HistGradientBoostingClassifier`, do scikit-learn.
 
-No mesmo dia, o autor construiu e verificou a **Silver `silver_v1` completa**:
-183 partições, 1.754.155 linhas e IDs distintos, com os 42 valores zero preservados.
-Os checks locais passaram, incluindo 70 testes. O
-[recibo da Silver](references/evidence/silver_build_2026-10-06.json) registra as
-saídas de `build` e `verify` e a execução responsável. A
-[CI da Silver `acf1516`](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37563463479)
-foi aprovada. O autor informou aprovação local do tox: 70 testes em 1,57 s,
-com lint e formatação aprovados (execução completa: 4,61 s). A integração tox e a EDA foram publicadas na revisão
-[`fc22a48`](https://github.com/wanderson42/fraud-detection-mlops/commit/fc22a48af5e6d9a0f9648a62effa95d39e02de02),
-com [CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37634000505). O autor informou a EDA do treino: 268.668 transações,
-1.505 fraudes e nove outputs verificados. O
-[recibo da EDA](references/evidence/eda_training_2026-10-07.json) registra a execução.
-
-| Etapa | Estado |
+| Capacidade | Evidência atual |
 | --- | --- |
-| Ambiente Poetry e CI | Implementados e validados |
-| Aquisição Bronze | Implementada; cobertura e integridade de arquivos validadas localmente |
-| Diagnóstico semântico da Bronze | Auditoria dos 183 arquivos informada pelo autor; 1.754.155 transações |
-| Contrato e Silver em Parquet/DuckDB | `silver_v1` construída e verificada localmente; 183 partições reconciliadas |
-| EDA da Silver e protocolo temporal | Executada localmente; nove outputs verificados, resumo e quatro tabelas informados pelo autor |
-| Gold com features e splits temporais | Construída e verificada no ambiente do autor: 42 partições, 19 preditores e 402.877 linhas |
-| Baseline e comparação na validação | Execução real informada pelo autor; AP 0,623949 do gradient boosting; teste reservado |
-| MLflow e skops | Três modelos publicados e verificados localmente pelo autor; sem refit ou avaliação do teste |
-| Diagnóstico da baseline | Execução e verificação locais informadas; sete outputs e tabelas de erros, permutação e SHAP |
-| Experimentos controlados | Protocolo `experiment_v1` definido; runner e ablações ainda pendentes |
-| Avaliação final do teste | Reservada para depois do congelamento das escolhas |
-| Streaming, feature store, serving e monitoramento | Evolução pretendida; desenho e validação pendentes |
+| Bronze e Silver | 183 arquivos/partições, 1.754.155 transações, 14.681 fraudes e 42 valores zero preservados; construção e verificação locais |
+| EDA e Gold temporal | EDA de treino; 19 preditores, 42 partições e 402.877 linhas distribuídas entre treino, validação e teste |
+| Baseline e MLflow/skops | Três modelos comparados e publicados; referência com AP 0,623949 e precisão diária @100 de 54% na validação |
+| Diagnóstico e ablações | SHAP/permutação e três ablações concluídas; nenhum candidato passou o gate; conservamos as 19 features |
+| Qualidade de software | Poetry, tox, Ruff, pytest e workflow de CI; último relato local: 152 testes aprovados em 17,72 s |
+| Congelamento | Implementação preparada; recibo real pendente; referência e critérios fixados antes do teste |
+| Avaliação final | **Teste reservado**; implementação e execução após o recibo no Git |
+| Operação | Serving, replay, orquestração, armazenamento remoto, monitoramento, CD e CT ainda planejados |
 
-A base é simulada. Há comparação de modelos na validação; ainda não há avaliação
-final do teste ou resultado comprovado de detecção em operação.
+As execuções reais foram informadas pelo autor e registradas em
+[`references/evidence/`](references/evidence/). A
+[última evidência](references/evidence/controlled_ablation_execution_2026-10-08.json)
+separa checks de software, resultados de ablação e limites da revisão. Aprovação
+local e CI de cada revisão são evidências distintas.
 
-O diagnóstico completo informou IDs globalmente únicos, 14.681 fraudes, 42 valores
-monetários zero e nenhuma violação nos demais controles implementados. Os zeros
-foram preservados conforme o [contrato da Silver](docs/SILVER_CONTRACT.md).
-O [recibo do diagnóstico](references/evidence/silver_profile_2026-10-06.json)
-registra a saída local e os 50 testes aprovados informados nessa etapa.
+O [mural](docs/ROADMAP.md) reúne todas as metas, prioridade e critérios de conclusão,
+incluindo testes de hipóteses, Prefect, Docker, streaming, Prometheus/Grafana e
+as condições para kind/Terraform. A base é simulada; o resultado de validação não
+comprova desempenho em operação. [Interpretação para stakeholders](docs/STAKEHOLDERS.md).
 
 ## Quick Start
 
@@ -225,48 +211,51 @@ compartilhadas e seus limites. Ao mesmo orçamento de 100 clientes por dia, HGB
 priorizou 378 ocorrências fraudulentas de cliente/dia, contra 336 da regressão,
 nos sete dias de validação. Não são pessoas únicas nem perdas financeiras evitadas.
 
-O [diagnóstico interpretado](docs/DIAGNOSTICS.md#resultados-reais-informados-pelo-autor)
+O [diagnóstico interpretado](docs/DIAGNOSTICS.md#resultados)
 relaciona esses resultados às regras do simulador e distingue importância SHAP de
 queda de AP. Features não foram removidas. O
 [protocolo de experimentação](docs/EXPERIMENT_PROTOCOL.md) define três ablações,
 orçamento de três fits e critérios práticos antes das próximas execuções.
-Usaremos a referência existente e análise pareada de influência dos sete dias;
-testes formais de superioridade precisam de mais evidência temporal. O runner
-ainda será implementado, e o teste final permanece reservado.
+O autor executou e verificou `21ccedf10d944092ba874153c1d21257` sobre `de41ee0`:
+18 artefatos verificados, três candidatos registrados no MLflow e teste reservado.
+Nenhuma ablação atingiu os dois ganhos mínimos do gate. Com 700 vagas semanais,
+a referência priorizou 378 ocorrências fraudulentas de cliente/dia; as ablações,
+374, 373 e 372. A precisão operacional piorou em todas as exclusões de dia.
+A [revisão dos resultados](docs/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08)
+e o [recibo](references/evidence/controlled_ablation_execution_2026-10-08.json)
+registram a decisão de conservar a referência. O catálogo foi encerrado, sem
+promoção em produção ou hipótese confirmatória. O teste final permanece reservado.
+
+## Congelar antes de avaliar o teste
+
+O executor `modeling.freeze` conserva o HGB existente e suas 19 features, confere
+paridade na validação e cria `references/frozen_candidate_v1.json`. Versione primeiro
+a implementação e depois o recibo, conforme o
+[procedimento](docs/EVALUATION_PROTOCOL.md#procedimento-local-em-dois-commits).
+O congelamento real está pendente; esta etapa não abre o teste ou treina modelos.
+
+A política propõe AP ≥ 0,50 e precisão diária @100 ≥ 0,45 para seguir ao serving
+de laboratório. São critérios práticos definidos antes do teste, sem estimativa
+financeira ou autorização para produção. A avaliação final virá após o congelamento.
 
 ## Documentação
 
-| Leitura | Propósito |
-| --- | --- |
-| [Dicionário de dados](docs/DATA_DICTIONARY.md) | Campos Bronze/Silver, preditores Gold, fórmulas e metadados |
-| [Contexto e propósito](docs/PROBLEM_CONTEXT.md) | História, problema operacional, relevância atual, referências e limites da simulação |
-| [Política de documentação](docs/DOCUMENTATION_POLICY.md) | Regras editoriais, evidências, versionamento e fechamento de entregas |
-| [Notebook principal](notebooks/fraud_detection_mlops.ipynb) | Narrativa técnica curada e síntese dos marcos |
-| [Notebook da Bronze](notebooks/stages/01_bronze_ingestion.ipynb) | Decisões, leitura do algoritmo e evidências da etapa |
-| [Contrato da Silver](docs/SILVER_CONTRACT.md) | Schema, política para zeros, aceitação e proveniência |
-| [Notebook da Silver](notebooks/stages/02_silver_data_contract.ipynb) | Diagnóstico completo, decisões e consulta da Silver |
-| [EDA](docs/EDA.md) | Análise descritiva da Silver, outputs e interpretação |
-| [Protocolo temporal](docs/EVALUATION_PROTOCOL.md) | Janelas, atraso de rótulos, população e métricas planejadas |
-| [Notebook da EDA](notebooks/stages/03_silver_eda.ipynb) | Leitura dos resultados locais e registro de hipóteses |
-| [Contrato da Gold](docs/GOLD_CONTRACT.md) | Features causais, splits, schema e comportamento sem histórico |
-| [Notebook da Gold](notebooks/stages/04_gold_temporal_features.ipynb) | Decisões, causalidade e leitura da preparação para modelagem |
-| [Baseline](docs/BASELINE.md) | Candidatos fixos, treinamento no treino e comparação na validação |
-| [MLflow](docs/MLFLOW.md) | Tracking nativo, assinatura, recarga e armazenamento |
-| [Arquitetura](docs/ARCHITECTURE.md) | Responsabilidades, testes e controle de complexidade |
-| [Notebook MLflow](notebooks/stages/06_mlflow_tracking.ipynb) | Tracking atual e registros estáticos da execução histórica real |
-| [Notebook do baseline](notebooks/stages/05_temporal_baseline.ipynb) | Leitura de uma execução explícita e interpretação das métricas |
-| [Diagnóstico da baseline](docs/DIAGNOSTICS.md) | Erros diários, permutação por AP e SHAP na validação |
-| [Notebook do diagnóstico](notebooks/stages/07_baseline_diagnostics.ipynb) | Leitura dos artefatos locais e registro de hipóteses |
-| [Protocolo de experimentação](docs/EXPERIMENT_PROTOCOL.md) | Hipóteses, catálogo de ablações, análise pareada e gate de desenvolvimento |
-| [Notebook do protocolo](notebooks/stages/08_controlled_experiments.ipynb) | Leitura do catálogo congelado; execuções e resultados ainda pendentes |
-| [Data pipeline](docs/DATA_PIPELINE.md) | Fonte, ELT, contratos e limites |
-| [Operations](docs/OPERATIONS.md) | Execução, diagnóstico e recuperação |
-| [Testing](docs/TESTING.md) | Integração tox–Poetry, ambiente isolado e checks compartilhados com a CI |
-| [Stakeholders](docs/STAKEHOLDERS.md) | Objetivo, entregas e próximos marcos em linguagem de negócio |
+Comece pelo **[mural de metas](docs/ROADMAP.md)** para localizar o estado atual e a
+próxima entrega. Os detalhes têm uma referência principal por assunto:
 
-Os notebooks podem ser lidos no GitHub. As células de código da Bronze são opcionais,
-não têm outputs pré-fabricados e não fazem downloads. Infraestrutura e Model Card
-terão documentos próprios quando forem implementados.
+| Pergunta | Referências |
+| --- | --- |
+| Por que existe e para quem serve? | [Contexto](docs/PROBLEM_CONTEXT.md) e [stakeholders](docs/STAKEHOLDERS.md) |
+| Quais dados e regras usamos? | [Dicionário](docs/DATA_DICTIONARY.md), [pipeline](docs/DATA_PIPELINE.md), contratos [Silver](docs/SILVER_CONTRACT.md) e [Gold](docs/GOLD_CONTRACT.md) |
+| Como avaliamos e o que aprendemos? | [EDA](docs/EDA.md), [avaliação temporal](docs/EVALUATION_PROTOCOL.md), [baseline](docs/BASELINE.md), [diagnóstico](docs/DIAGNOSTICS.md) e [experimentos](docs/EXPERIMENT_PROTOCOL.md) |
+| Como executar, recuperar e validar? | [Operations](docs/OPERATIONS.md), [MLflow](docs/MLFLOW.md), [execução das ablações](docs/EXPERIMENT_EXECUTION.md) e [Testing](docs/TESTING.md) |
+| Como organizar e manter o projeto? | [Arquitetura](docs/ARCHITECTURE.md) e [política documental](docs/DOCUMENTATION_POLICY.md) |
+
+O [notebook principal](notebooks/fraud_detection_mlops.ipynb) apresenta a narrativa
+e aponta para os [notebooks de cada etapa](notebooks/stages/), legíveis no GitHub.
+Outputs publicados preservam sua origem; células pendentes não recebem resultados
+pré-fabricados. Model Card e infraestrutura terão documentação quando houver
+conteúdo concreto, conforme o mural.
 
 ## Organização do código
 
@@ -286,6 +275,9 @@ terão documentos próprios quando forem implementados.
 | `fraud_detection_mlops/modeling/train.py` | Treinamento, publicação e verificação do experimento de validação |
 | `fraud_detection_mlops/modeling/metrics.py` | AP, ROC AUC e precisão diária por cliente |
 | `fraud_detection_mlops/modeling/diagnostics.py` | Inspeção do modelo existente, usando somente a validação |
+| `fraud_detection_mlops/modeling/experiments.py` | Execução limitada das ablações, checkpoints e verificação offline |
+| `fraud_detection_mlops/modeling/comparison.py` | Efeitos pareados, exclusão de dias e gate de desenvolvimento |
+| `fraud_detection_mlops/modeling/freeze.py` | Congelamento da referência existente, sem ajuste ou leitura do teste |
 | `fraud_detection_mlops/dataset.py` | CLI de extração e verificação |
 | `references/` | Inventário e recibos documentais |
 | `tests/` | Integridade, recuperação e integração Parquet/SQL |

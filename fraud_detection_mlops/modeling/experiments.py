@@ -185,6 +185,12 @@ def reference_model(policy, manifest, features, scores, root):
         ):
             raise ExperimentError("Reference model ownership or fixed parameters mismatch")
         persistence.check_scores(model.predict_proba(features), scores)
+        return {
+            "mlflow_run_id": owner,
+            "model_sha256": sha256(path / metadata.flavors["sklearn"]["pickled_model"]),
+            "mlmodel_sha256": sha256(path / "MLmodel"),
+            "serialization_format": "skops",
+        }
 
 
 def verified_checkpoint(part, definition, features, reference, policy, identity):
