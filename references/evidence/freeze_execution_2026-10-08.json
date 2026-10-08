@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "stage": "freeze_execution",
+  "status": "success",
+  "evidence_source": "author_terminal_output_and_committed_receipt",
+  "recorded_on": "2026-10-08",
+  "implementation_commit": "93e6958",
+  "receipt_commit": "623dc86",
+  "freeze_path": "references/frozen_candidate_v1.json",
+  "freeze_sha256": "6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120",
+  "model_id": "hist_gradient_boosting",
+  "feature_count": 19,
+  "require_committed": true,
+  "test_evaluated": false,
+  "refit": false,
+  "author_validation": {
+    "tests_passed": 164,
+    "warnings": 66,
+    "pytest_wall_seconds": 21.11,
+    "tox_wall_seconds": 24.42
+  },
+  "verification_scope": "Receipt fetched from GitHub; model and Gold verification were performed by the author locally. This record does not claim assistant access to those artifacts."
+}

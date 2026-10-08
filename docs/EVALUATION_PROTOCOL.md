@@ -171,14 +171,16 @@ validação, promoção em produção ou avaliação do teste final.
 
 ## Congelamento antes da avaliação final
 
-Estado: implementação preparada e testada com dados controlados; congelamento real
-e avaliação do teste pendentes. O contrato executável é
+Estado: congelamento real informado pelo autor e publicado em `623dc86`;
+avaliação do teste ainda pendente. O contrato executável é
 [final_evaluation_protocol_v1.json](../references/final_evaluation_protocol_v1.json).
 O executor `modeling.freeze` reutiliza a referência **HistGradientBoostingClassifier
 (HGB)** da baseline `f6d7aca720f74316b4183f97b6d866ab`, conservada após o catálogo
 de ablações `21ccedf10d944092ba874153c1d21257`.
 
-O recibo `references/frozen_candidate_v1.json` será criado na execução local. Ele
+O [recibo](../references/frozen_candidate_v1.json) foi criado e verificado localmente,
+incluindo `--require-committed`. Seu SHA256 é
+`6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120`. Ele
 fixa o modelo MLflow/skops e seus hashes, parâmetros, ordem dos 19 preditores,
 ambiente, origem da Gold e as escolhas abaixo. Não cria uma nova run ou uma cópia
 permanente do modelo; não refaz ajuste, calibração ou seleção.
@@ -247,5 +249,95 @@ e deverá ocorrer novamente na futura avaliação final. `--require-committed`
 também exige o recibo no Git e os insumos do guard sem divergência de HEAD.
 
 Não altere ou remova o recibo para fazer uma nova seleção. Ele identifica a decisão
-deste ciclo. O executor da avaliação final será a próxima entrega, depois de o
-autor informar o congelamento real. Neste marco, `test_evaluated` permanece `false`.
+deste ciclo. O executor abaixo usa esse recibo; ele permanece como registro da
+decisão anterior ao teste, com `test_evaluated: false`. A consulta posterior ao
+teste é registrada nos artefatos da avaliação, sem reescrever o recibo histórico.
+
+## Executar a avaliação final
+
+Estado: executor implementado e validado com dados controlados; **execução real e
+resultados de teste pendentes**. O módulo `modeling.evaluation` usa somente o
+candidato congelado. Não aceita um novo modelo, limiar, catálogo ou janela na CLI.
+As escolhas do [contrato](../references/final_evaluation_protocol_v1.json) e os
+critérios AP ≥ 0,50 e precisão diária @100 ≥ 0,45 permanecem iguais.
+
+Primeiro, aplique o patch, valide e **versione a implementação**. A conferência
+existente exige código, contratos, lockfile e recibo sem divergência de HEAD antes
+do acesso ao teste. Não há mudança nos arquivos de código já vinculados ao recibo;
+o executor é um módulo novo. Depois, na raiz do projeto:
+
+```bash
+poetry run python -m fraud_detection_mlops.modeling.freeze verify --require-committed
+poetry run python -m fraud_detection_mlops.modeling.evaluation run
+```
+
+O comando verifica o ambiente e os bytes do modelo MLflow/skops antes da carga,
+confere sua assinatura e parâmetros e lê somente os sete Parquets do teste.
+Reutiliza o schema e as verificações semânticas da Gold, incluindo rótulos,
+históricos válidos e atraso de feedback, e exige 66.954 IDs distintos. Não chama o
+loader de treino, não refaz features e não ajusta estimadores.
+
+O controle usa score constante `0,5`, sem fit. Seu valor constante não é uma
+probabilidade estimada: serve para conferir ranking sem discriminação. AP equivale
+à prevalência quando há positivos; o empate da fila segue ID crescente, conforme
+o contrato. Isso não é a reprodução de uma política aleatória de alertas.
+
+O resultado fica em
+`data/processed/handbook/<source_commit>/final_evaluation_v1/<freeze_sha256>/`:
+
+| Artefato | Responsabilidade |
+| --- | --- |
+| `frozen_candidate.json` | Cópia exata do recibo versionado antes do teste |
+| `test_predictions.parquet` | IDs, timestamps, rótulos e score do único candidato avaliado |
+| `report.json` | Métricas globais e diárias do HGB/controle; critérios fixos e decisão |
+| `daily.csv` | AP, prevalência, precisão, recall de clientes e fraudes fora dos alertas por dia |
+| `model_card.md` | Uso pretendido, identificação, resultados e limitações do candidato |
+| `manifest.json` | Hashes dos cinco outputs, insumos, implementação e ambiente de execução |
+| `state.json` | Primeiro início, tentativas, acesso ao teste e falha ou conclusão |
+| `mlflow.json` | Identificador da run de avaliação e hash do relatório publicado |
+
+Copie o caminho retornado pelo comando para verificar o resultado:
+
+```bash
+EVALUATION_PATH="data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/final_evaluation_v1/6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120"
+poetry run python -m fraud_detection_mlops.modeling.evaluation verify "$EVALUATION_PATH"
+```
+
+O `verify` é offline: confere hashes e recalcula métricas, tabela diária, decisão
+e Model Card a partir dos scores salvos. Não consulta Gold ou MLflow. Essa
+verificação não demonstra novamente a origem de cada score; a identificação do
+modelo e dos dados é conferida pelo executor e registrada no manifesto.
+
+### Decisão, publicação e recuperação
+
+Uma execução íntegra retorna `status: success` mesmo quando o modelo **não passa**
+o gate. O resultado substantivo está em `gate.passed` e `gate.decision`:
+`eligible_for_laboratory_serving_review` ou `do_not_advance`. Nenhum dos estados
+promove modelo em produção ou modifica os critérios. O controle não participa da
+seleção. Uma falha do gate é um resultado a documentar.
+
+Há uma run nativa no experimento MLflow `fraud-final-evaluation-v1`, com métricas
+e artefatos da avaliação. As runs históricas dos modelos permanecem intactas; a
+run nova referencia o URI congelado e não publica outro modelo treinado.
+
+O diretório é determinado pelo hash do recibo. Uma segunda chamada verifica o
+resultado pronto, retorna `reused: true` e reutiliza a run MLflow. Uma falha de
+publicação após gerar o resultado pode ser retomada sem voltar a pontuar o teste.
+Publicação parcial reutiliza a mesma run, identificada por recibo e relatório.
+
+Antes da primeira leitura analítica, o executor registra `test_access_started`.
+Uma interrupção não apaga esse fato. Antes de haver um resultado completo, a
+retomada pode recalcular os mesmos scores, mas exige os mesmos insumos e código;
+isso é recuperação operacional, não outra avaliação independente. Mesmo após
+falha, não trate o teste acessado como intocado. Não apague o estado para retunar
+o candidato ou tentar outra seleção sobre essa janela.
+
+Um lock de sistema evita chamadas concorrentes para o mesmo recibo e é liberado
+pelo sistema ao encerrar o processo. Esse procedimento local tem como alvo Linux;
+não é um lock distribuído entre máquinas ou stores remotos. Os checksums identificam
+bytes, não substituem controle de acesso ou assinatura de artefatos.
+
+O [notebook da etapa](../notebooks/stages/09_final_evaluation.ipynb) permite revisar
+o contrato, executar ou reutilizar a avaliação e inspecionar resultados diários.
+Seus outputs reais serão gerados pelo autor. Após essa execução, documentaremos
+o resultado e revisaremos a Model Card antes de iniciar o contrato de inferência.

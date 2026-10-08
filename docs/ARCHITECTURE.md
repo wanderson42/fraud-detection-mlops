@@ -20,6 +20,7 @@ futuras têm uma referência única no [mural do projeto](ROADMAP.md).
 | `modeling/comparison.py` | Comparação pareada e gate de desenvolvimento | `tests/modeling/test_comparison.py` e `test_experiments.py` |
 | `modeling/experiments.py` | Ablações limitadas, checkpoints e retomada | `tests/modeling/test_experiments.py` |
 | `modeling/freeze.py` | Recibo da referência e política final, com paridade na validação | `tests/modeling/test_freeze.py` |
+| `modeling/evaluation.py` | Avaliação do holdout congelado, decisão e publicação nativa | `tests/modeling/test_evaluation.py` |
 
 As fixtures compartilhadas de modelagem ficam em `tests/modeling/conftest.py`.
 Arquivos de teste não importam uns aos outros. O pytest usa `importlib`; tox e CI

@@ -142,3 +142,13 @@ freeze:
 ## Verify the frozen receipt and bound files offline
 verify-freeze:
 	poetry run python -m fraud_detection_mlops.modeling.freeze verify
+
+.PHONY: evaluate-final verify-final
+## Evaluate the committed frozen candidate on the reserved test
+evaluate-final:
+	poetry run python -m fraud_detection_mlops.modeling.evaluation run
+
+## Verify saved final evaluation offline; requires EVALUATION_PATH
+verify-final:
+	@test -n "$(EVALUATION_PATH)" || (echo "Set EVALUATION_PATH"; exit 1)
+	poetry run python -m fraud_detection_mlops.modeling.evaluation verify "$(EVALUATION_PATH)"

@@ -31,14 +31,14 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Meta | Estado | Entrega que permite concluir |
 | --- | --- | --- |
 | Dados reproduzíveis: Bronze, Silver e Gold | Validado localmente | Fonte fixada, integridade, contratos, reconciliação, features causais e separação temporal. [Pipeline](DATA_PIPELINE.md), [dicionário](DATA_DICTIONARY.md) e [Gold](GOLD_CONTRACT.md). |
-| Qualidade do software e CI | Implementado; suíte validada localmente | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. Último relato: 152 testes aprovados. Cada revisão precisa dos seus checks. [Testing](TESTING.md). |
+| Qualidade do software e CI | Implementado; suíte validada localmente | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. Último relato do autor: 164 testes aprovados. Cada revisão precisa dos seus checks. [Testing](TESTING.md). |
 | Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](BASELINE.md), [MLflow](MLFLOW.md) e [diagnóstico](DIAGNOSTICS.md). |
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
-| Congelamento da referência | Implementado; execução real pendente | Recibo sem refit, paridade na validação, identidade MLflow/skops e critérios práticos versionados. Registrar o recibo no Git antes do teste. [Procedimento](EVALUATION_PROTOCOL.md#congelamento-antes-da-avaliação-final). |
-| Avaliação final | **Próximo, após congelamento real** | Implementar e executar uma avaliação do teste reservado; registrar métricas, decisão, limitações e Model Card. Não usar o teste para seleção ou ajuste. |
+| Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` e teste reservado. [Evidência](../references/evidence/freeze_execution_2026-10-08.json). |
+| Avaliação final | Implementado; **execução real pendente** | Candidato fixo, controle constante, métricas, gate de laboratório, Model Card e run MLflow de avaliação. [Procedimento](EVALUATION_PROTOCOL.md#executar-a-avaliação-final). |
 | Análise estatística e testes de hipóteses | Planejado; protocolo confirmatório pendente | Definir hipótese, efeito relevante, unidade de inferência e dependência temporal/por entidade antes de novas comparações. Obter mais evidência temporal separada do desenvolvimento; registrar tamanho de efeito e incerteza apropriada. A exclusão de um dia da ablação é sensibilidade, não intervalo de confiança. |
 | Contrato de inferência e Docker | Planejado | Definir entradas, saídas, versão e estado das features; conferir paridade com scores offline. Empacotar recursos de `references/`, executar fora do checkout e demonstrar health check, erros e persistência. |
-| Orquestração com Prefect | Planejado | Encadear as CLIs reutilizáveis, registrar dependências e falhas, testar retries e retomada sem duplicar dados/runs. Medir duração e recursos. O tox continua responsável pelos checks de software. |
+| Orquestração com Prefect | Planejado; escolha do projeto | Prefect auto-hospedado para encadear os módulos Python, registrar dependências e falhas, testar retries e retomada sem duplicação. Manter lógica independente do orquestrador e medir recursos. O consumidor de streaming terá contrato próprio. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
 | Streaming por replay histórico e paridade de features | Planejado | Reproduzir eventos em ordem temporal com relógio explícito, feedback após o atraso e estado causal. Definir duplicidade, empates, atrasos e recuperação; comparar features/scores offline e online. O replay será identificado como simulação. |
 | Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
@@ -51,14 +51,13 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Aplicar, validar e versionar a implementação e o contrato de congelamento.
-   Conferir as metas propostas para o laboratório antes de qualquer acesso ao teste.
-2. Executar o build do recibo e versioná-lo: modelo existente, 19 features,
-   ambiente e política retrospectiva de 100 clientes por dia. Execução real pendente.
-3. Implementar, executar e documentar o teste reservado após o recibo no Git.
-   Não é necessário treinar uma nova baseline. O gate de laboratório exige AP ≥ 0,50
-   e precisão diária @100 ≥ 0,45; não autoriza promoção em produção.
-4. Definir o contrato de inferência e iniciar Docker; a política de alertas online
+1. Aplicar, validar e versionar o executor da avaliação final. O recibo de
+   congelamento e os critérios já estão no Git e serão conservados.
+2. Executar e verificar a avaliação; revisar resultados diários, decisão e Model Card.
+   O gate exige AP ≥ 0,50 e precisão diária @100 ≥ 0,45, sem promoção em produção.
+   A execução real permanece pendente; não há resultado de teste nesta preparação.
+3. Documentar a evidência real e definir o contrato de inferência e Docker.
+   A política de alertas online
    terá contrato e validação próprios, pois hoje usamos o dia completo retrospectivamente.
 
 Uma nova decisão de modelagem antes do congelamento exige protocolo próprio e

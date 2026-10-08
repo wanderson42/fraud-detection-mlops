@@ -1,9 +1,9 @@
 # Validação com pytest, Poetry e tox
 
 A suíte protege contratos e falhas do sistema. **Último relato local do autor:
-152 testes aprovados em 17,72 s; tox em 20,68 s**, com lint, formatação e lockfile
-aprovados. Houve 52 avisos de dependências; aprovação não significa ausência de
-avisos. [Evidência da etapa](../references/evidence/controlled_ablation_execution_2026-10-08.json).
+164 testes aprovados em 21,11 s; tox em 24,42 s**, na etapa de congelamento.
+Houve 66 avisos nas categorias de dependências já identificadas; aprovação não
+significa ausência de avisos. [Evidência](../references/evidence/freeze_execution_2026-10-08.json).
 Isso é evidência local, separada de uma execução de CI para cada revisão.
 
 ## Responsabilidades e comandos
@@ -91,6 +91,7 @@ testes de serviço, replay e implantação entram com suas funcionalidades.
 | MLflow e diagnóstico | Runs independentes, falha parcial, assinatura, modelo congelado, SHAP e separação de casos ilustrativos |
 | Ablações e comparação | População pareada, referência correta, política versionada, retomada sem refit/duplicação e exclusão de dias |
 | Congelamento | Git antes da execução, alterações de insumos, política válida, recibo sem sobrescrita e paridade com MLflow/skops |
+| Avaliação final | Modelo fixo, leitura exclusiva do teste, gate com dois critérios, acesso registrado, retries sem duplicação e recomputação offline |
 
 As features são comparadas a um cálculo independente por máscaras temporais,
 não só ao próprio SQL. A integração de modelagem usa estimadores e MLflow/SQLite
@@ -105,10 +106,22 @@ Após preparar baseline/ablações, o teste remove os Parquets sintéticos de tr
 teste e proíbe novos fits. O congelamento precisa funcionar somente com validação.
 Esse teste não produz resultados reais do portfólio.
 
-Na preparação deste patch, o tox no Python 3.14.4 aprovou **164 testes**, com 66
+Na preparação do congelamento, o tox no Python 3.14.4 aprovou **164 testes**, com 66
 avisos nas mesmas categorias de terceiros já observadas. A
 [evidência de preparação](../references/evidence/freeze_preparation_2026-10-08.json)
-separa essa execução controlada do congelamento real, ainda pendente.
+separa essa execução controlada do congelamento real, concluído posteriormente.
+
+O autor concluiu depois o congelamento real; a evidência está vinculada acima.
+Os testes novos da avaliação final usam dados controlados e não consultam seu teste
+real. A integração usa um HGB e MLflow/skops reais, remove os Parquets sintéticos
+de treino/validação antes da avaliação e proíbe novos fits. Confere o gate,
+reutilização da run de avaliação e preservação da run do modelo. Esses checks
+não demonstram eficácia antifraude ou funcionamento de uma política online.
+
+Na preparação da avaliação final, a suíte completa com 16 casos novos aprovou
+**180 testes em 32,77 s; tox em 38,74 s**, com 71 avisos nas mesmas categorias
+de terceiros. [Evidência de preparação](../references/evidence/final_evaluation_preparation_2026-10-08.json).
+Esse resultado é separado da execução do holdout real, ainda pendente.
 
 `verify` usa os contratos próprios de cada etapa. Testar sua implementação em
 fixtures não substitui executar a verificação sobre os artefatos reais.

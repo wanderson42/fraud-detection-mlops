@@ -133,7 +133,7 @@ estatística deverá definir os agrupamentos e blocos temporais relevantes.
 ## Onde nosso modelo se encaixa
 
 Um **Sistema de Detecção de Fraudes**, ou FDS (*Fraud Detection System*), reúne
-controles e investigação. No desenho didático do Handbook [6], há cinco camadas:
+controles e investigação. No desenho esquemático-o Handbook [6], há cinco camadas:
 
 | Camada | Papel | Momento nesse desenho |
 | --- | --- | --- |
@@ -143,10 +143,17 @@ controles e investigação. No desenho didático do Handbook [6], há cinco cama
 | Modelo orientado por dados, ou DDM | Aprender padrões e produzir scores para gerar alertas | Após autorização, em tempo quase real |
 | Investigadores | Revisar casos, confirmar rótulos e devolver feedback | Investigação offline |
 
-São papéis conceituais do Handbook, não uma arquitetura obrigatória ou um SLA
-universal. A [figura original e sua explicação](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_2_Background/FDS.html)
-mostram como regras e modelo apoiam a investigação. Neste projeto, o HGB ocupa
-o papel do DDM; Bronze, Silver e Gold organizam os dados que o alimentam.
+São papéis conceituais do Handbook, não uma arquitetura obrigatória ou um SLA universal. A figura abaixo mostra como regras e modelo apoiam a investigação. O referido diagrama ilustra as camadas de controle em um FDS. O foco neste projeto decorre no modelo orientado por dados (DDM), que auxilia os investigadores ao gerar alertas sobre as **transações mais suspeitas**.
+
+![Diagrama de detecção de fraude](https://fraud-detection-handbook.github.io/fraud-detection-handbook/_images/FDS.jpg)
+
+
+
+
+
+
+
+Neste projeto, o HGB ocupa o papel do DDM; Bronze, Silver e Gold organizam os dados que o alimentam.
 
 **Autorizar um pagamento não confirma sua legitimidade.** Nesse desenho, uma
 investigação posterior pode motivar o bloqueio do cartão e evitar novas ocorrências.

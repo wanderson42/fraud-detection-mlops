@@ -43,9 +43,9 @@ implementada por `HistGradientBoostingClassifier`, do scikit-learn.
 | EDA e Gold temporal | EDA de treino; 19 preditores, 42 partições e 402.877 linhas distribuídas entre treino, validação e teste |
 | Baseline e MLflow/skops | Três modelos comparados e publicados; referência com AP 0,623949 e precisão diária @100 de 54% na validação |
 | Diagnóstico e ablações | SHAP/permutação e três ablações concluídas; nenhum candidato passou o gate; conservamos as 19 features |
-| Qualidade de software | Poetry, tox, Ruff, pytest e workflow de CI; último relato local: 152 testes aprovados em 17,72 s |
-| Congelamento | Implementação preparada; recibo real pendente; referência e critérios fixados antes do teste |
-| Avaliação final | **Teste reservado**; implementação e execução após o recibo no Git |
+| Qualidade de software | Poetry, tox, Ruff, pytest e workflow de CI; último relato do autor: 164 testes aprovados em 21,11 s |
+| Congelamento | Concluído e versionado em `623dc86`; 19 features, modelo e critérios fixados antes do teste |
+| Avaliação final | Executor implementado; **execução real pendente e teste ainda reservado** |
 | Operação | Serving, replay, orquestração, armazenamento remoto, monitoramento, CD e CT ainda planejados |
 
 As execuções reais foram informadas pelo autor e registradas em
@@ -232,11 +232,25 @@ O executor `modeling.freeze` conserva o HGB existente e suas 19 features, confer
 paridade na validação e cria `references/frozen_candidate_v1.json`. Versione primeiro
 a implementação e depois o recibo, conforme o
 [procedimento](docs/EVALUATION_PROTOCOL.md#procedimento-local-em-dois-commits).
-O congelamento real está pendente; esta etapa não abre o teste ou treina modelos.
+O autor concluiu o congelamento e a verificação com `--require-committed`.
+O [recibo versionado](references/frozen_candidate_v1.json) identifica essa decisão.
 
 A política propõe AP ≥ 0,50 e precisão diária @100 ≥ 0,45 para seguir ao serving
 de laboratório. São critérios práticos definidos antes do teste, sem estimativa
-financeira ou autorização para produção. A avaliação final virá após o congelamento.
+financeira ou autorização para produção. O executor da avaliação final usa o
+recibo e publica uma run MLflow própria, preservando os modelos históricos.
+
+Depois de validar e versionar a implementação:
+
+```bash
+poetry run python -m fraud_detection_mlops.modeling.evaluation run
+```
+
+O comando consulta o teste reservado e gera scores, métricas diárias, decisão e
+Model Card. Uma nova chamada reutiliza o resultado verificado. O
+[procedimento e a recuperação](docs/EVALUATION_PROTOCOL.md#executar-a-avaliação-final)
+explicam a fronteira do teste; o
+[notebook da etapa](notebooks/stages/09_final_evaluation.ipynb) orienta a revisão.
 
 ## Documentação
 
@@ -278,6 +292,7 @@ conteúdo concreto, conforme o mural.
 | `fraud_detection_mlops/modeling/experiments.py` | Execução limitada das ablações, checkpoints e verificação offline |
 | `fraud_detection_mlops/modeling/comparison.py` | Efeitos pareados, exclusão de dias e gate de desenvolvimento |
 | `fraud_detection_mlops/modeling/freeze.py` | Congelamento da referência existente, sem ajuste ou leitura do teste |
+| `fraud_detection_mlops/modeling/evaluation.py` | Teste final do candidato congelado, decisão fixa e publicação da avaliação |
 | `fraud_detection_mlops/dataset.py` | CLI de extração e verificação |
 | `references/` | Inventário e recibos documentais |
 | `tests/` | Integridade, recuperação e integração Parquet/SQL |
