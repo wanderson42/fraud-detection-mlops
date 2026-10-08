@@ -141,20 +141,19 @@ Gold continua sendo verificada. Configurações, desempate e limitações ficam 
 [baseline](BASELINE.md). Métricas de validação são evidência de seleção, não
 estimativas independentes do teste final.
 
-## Evolução estatística planejada
+## Experimentos e análise estatística
 
-Antes de selecionar features ou otimizar hiperparâmetros, versionaremos hipóteses,
-métrica principal, ganho mínimo relevante e orçamento de experimentos. Comparações
-usarão os mesmos exemplos/janelas e tratarão dependência temporal e clientes
-repetidos; tamanho do efeito e intervalos acompanharão testes de hipóteses quando
-seus pressupostos forem adequados. Uma semana de validação limita evidências de
-estabilidade. Resultados exploratórios não serão apresentados como confirmação.
+O [protocolo de experimentação](EXPERIMENT_PROTOCOL.md) e seu
+[contrato declarativo](../references/experiment_protocol_v1.json) fixam três
+ablações, orçamento e ganhos práticos antes dos novos fits. O runner ainda será
+implementado; este documento mantém as janelas e regras de `temporal_v1`.
 
-Permutação/SHAP terão propósito diagnóstico; ablações precisarão retreinamento
-controlado. O quality gate combinará integridade, desempenho, estabilidade e custo,
-sem estabelecer limiares depois de observar o candidato. Essas políticas são
-planejadas, não implementadas nesta integração MLflow. O protocolo `temporal_v1`
-e o teste reservado permanecem inalterados.
+A comparação será pareada por transação, com diferenças diárias e sete análises
+de influência, excluindo um dia por vez sem refit. Essa análise não é um teste de
+superioridade nem um intervalo de confiança. Clientes, terminais e históricos
+compartilhados impedem tratar as transações ou os sete dias como réplicas IID.
+Uma análise confirmatória exigirá mais períodos e outro protocolo previamente
+fixado. O gate de desenvolvimento não autoriza promoção em produção.
 
 ## Diagnóstico exploratório implementado
 
@@ -162,5 +161,6 @@ O [diagnóstico](DIAGNOSTICS.md) implementa permutação por AP, SHAP em amostra
 e erros diários dos candidatos na validação. Usa o modelo existente, sem fit, refit,
 seleção automática de features, hipótese confirmatória ou acesso ao teste.
 Repetições de permutação medem variação entre embaralhamentos; não fornecem p-valores
-ou intervalos de confiança para superioridade. A política estatística e os quality
-gates continuam sendo o próximo passo antes de ablações/tuning.
+ou intervalos de confiança para superioridade. O catálogo e o gate de
+desenvolvimento estão definidos no protocolo de experimentação; sua implementação
+é o próximo passo antes de ablações/tuning.

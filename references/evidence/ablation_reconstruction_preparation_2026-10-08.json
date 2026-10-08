@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "kind": "preparation_validation_not_real_experiment_execution",
+  "date_utc": "2026-10-08",
+  "delivery": "incremental_schema_fix_against_author_supplied_policy",
+  "source_revision": "1975fa379bfb3fa16b41c51c7857df3c73741307",
+  "prerequisite": "Previously applied experiment-protocol.patch",
+  "validation": {
+    "command": "tox -e py314",
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "lint": "passed",
+    "format": "passed",
+    "tests_passed": 152,
+    "tests_failed": 0,
+    "dependency_deprecation_warnings": 52,
+    "pytest_seconds": 31.98,
+    "tox_seconds": 38.53
+  },
+  "real_data_execution": false,
+  "historical_baseline_refitted": false,
+  "test_holdout_evaluated": false,
+  "notes": [
+    "This receipt supersedes the prior reconstruction validation, which used an incompatible reconstructed policy.",
+    "The corrected code and tests use the author supplied id catalog, full combined candidate identifier and absolute gain keys.",
+    "The author supplied policy remains unchanged; no fallback aliases, replacement catalog or threshold changes were introduced.",
+    "Synthetic fixtures exercise paired metadata, gate decisions, partial publication failure, recovery of finished runs, frozen code guard and offline integrity verification.",
+    "Executed notebooks are not replaced; no historical user baseline was refitted and no real test holdout was scored."
+  ],
+  "implementation_sha256": {
+    "fraud_detection_mlops/modeling/experiments.py": "bbf9a894114988005babd25e5a329c7bbc3d470d13d5403f4d91ce3b15ff699c",
+    "fraud_detection_mlops/modeling/comparison.py": "f83bdfc48f13f6f00d6e510fbd1ee843efe090a8058aafeab3b5dc1a6c86da06",
+    "fraud_detection_mlops/modeling/persistence.py": "81c69dec6bc92b6f079dd81e6a1cae10eede7def83deb49f2d0b2e51a5ce1809",
+    "fraud_detection_mlops/modeling/tracking.py": "02bb096f81e4e14c48fc6b7d4d10c8bae7056b58596954d13666c2f83d6d9770",
+    "tests/modeling/test_experiments.py": "ec05d35e01f730ccfed8515717a3512c068ec234033211528ae1ce3d2b66cfdd",
+    "tests/modeling/test_comparison.py": "245cd46667a96dab2ca1cd078fc81b1659668a1aa7b8aa9cc18aee6b98018751"
+  },
+  "policy_source": "Author pasted references/experiment_protocol_v1.json on 2026-10-08",
+  "policy_sha256": "9823236160304650e821a2ee09c796e6db6a3b5118b6a370198426ae545e53f2",
+  "failure_reproduction": {
+    "command": "pytest -q tests/modeling/test_comparison.py tests/modeling/test_experiments.py",
+    "tests_failed": 9,
+    "tests_passed": 1,
+    "reason": "Prior reconstruction expected candidate_id, combined and incompatible gate gain keys."
+  }
+}

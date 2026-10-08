@@ -122,3 +122,12 @@ export PRINT_HELP_PYSCRIPT
 
 help:
 	@poetry run python -c "${PRINT_HELP_PYSCRIPT}" < $(MAKEFILE_LIST)
+
+.PHONY: experiments experiments_verify
+experiments: ## Execute controlled ablations; requires BASELINE_PATH and committed inputs
+	@test -n "$(BASELINE_PATH)" || (echo "Set BASELINE_PATH"; exit 1)
+	poetry run python -m fraud_detection_mlops.modeling.experiments run "$(BASELINE_PATH)"
+
+experiments_verify: ## Verify ablation outputs offline; requires EXPERIMENT_PATH
+	@test -n "$(EXPERIMENT_PATH)" || (echo "Set EXPERIMENT_PATH"; exit 1)
+	poetry run python -m fraud_detection_mlops.modeling.experiments verify "$(EXPERIMENT_PATH)"

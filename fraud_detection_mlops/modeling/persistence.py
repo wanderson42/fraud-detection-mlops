@@ -21,7 +21,10 @@ class PersistenceError(ValueError):
     """A persisted pipeline does not satisfy the feature or score contract."""
 
 
-def load_pipeline(path: Path) -> Pipeline:
+def load_pipeline(path: Path, *, feature_columns=FEATURE_COLUMNS) -> Pipeline:
+    columns = list(feature_columns)
+    if not columns or columns != [c for c in FEATURE_COLUMNS if c in columns]:
+        raise PersistenceError("Expected an ordered subset of Gold features")
     unknown = set(sio.get_untrusted_types(file=path)) - TRUSTED_TYPES
     if unknown:
         raise PersistenceError(f"Unreviewed skops types: {sorted(unknown)}")
@@ -29,7 +32,7 @@ def load_pipeline(path: Path) -> Pipeline:
     if (
         type(model) is not Pipeline
         or list(model.classes_) != [0, 1]
-        or list(model.feature_names_in_) != FEATURE_COLUMNS
+        or list(model.feature_names_in_) != columns
     ):
         raise PersistenceError("Unexpected pipeline classes or feature columns")
     return model
@@ -47,4 +50,5 @@ def check_scores(probabilities, scores) -> None:
 
 def save_pipeline(model: Pipeline, path: Path, features, scores) -> None:
     sio.dump(model, path)
-    check_scores(load_pipeline(path).predict_proba(features), scores)
+    restored = load_pipeline(path, feature_columns=list(features.columns))
+    check_scores(restored.predict_proba(features), scores)

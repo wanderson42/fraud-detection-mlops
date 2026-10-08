@@ -60,6 +60,7 @@ com [CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/r
 | Baseline e comparação na validação | Execução real informada pelo autor; AP 0,623949 do gradient boosting; teste reservado |
 | MLflow e skops | Três modelos publicados e verificados localmente pelo autor; sem refit ou avaliação do teste |
 | Diagnóstico da baseline | Execução e verificação locais informadas; sete outputs e tabelas de erros, permutação e SHAP |
+| Experimentos controlados | Protocolo `experiment_v1` definido; runner e ablações ainda pendentes |
 | Avaliação final do teste | Reservada para depois do congelamento das escolhas |
 | Streaming, feature store, serving e monitoramento | Evolução pretendida; desenho e validação pendentes |
 
@@ -226,13 +227,18 @@ nos sete dias de validação. Não são pessoas únicas nem perdas financeiras e
 
 O [diagnóstico interpretado](docs/DIAGNOSTICS.md#resultados-reais-informados-pelo-autor)
 relaciona esses resultados às regras do simulador e distingue importância SHAP de
-queda de AP. Features não foram removidas; hipóteses e critérios para os próximos
-experimentos serão definidos antes de tuning, mantendo o teste final reservado.
+queda de AP. Features não foram removidas. O
+[protocolo de experimentação](docs/EXPERIMENT_PROTOCOL.md) define três ablações,
+orçamento de três fits e critérios práticos antes das próximas execuções.
+Usaremos a referência existente e análise pareada de influência dos sete dias;
+testes formais de superioridade precisam de mais evidência temporal. O runner
+ainda será implementado, e o teste final permanece reservado.
 
 ## Documentação
 
 | Leitura | Propósito |
 | --- | --- |
+| [Dicionário de dados](docs/DATA_DICTIONARY.md) | Campos Bronze/Silver, preditores Gold, fórmulas e metadados |
 | [Contexto e propósito](docs/PROBLEM_CONTEXT.md) | História, problema operacional, relevância atual, referências e limites da simulação |
 | [Política de documentação](docs/DOCUMENTATION_POLICY.md) | Regras editoriais, evidências, versionamento e fechamento de entregas |
 | [Notebook principal](notebooks/fraud_detection_mlops.ipynb) | Narrativa técnica curada e síntese dos marcos |
@@ -251,6 +257,8 @@ experimentos serão definidos antes de tuning, mantendo o teste final reservado.
 | [Notebook do baseline](notebooks/stages/05_temporal_baseline.ipynb) | Leitura de uma execução explícita e interpretação das métricas |
 | [Diagnóstico da baseline](docs/DIAGNOSTICS.md) | Erros diários, permutação por AP e SHAP na validação |
 | [Notebook do diagnóstico](notebooks/stages/07_baseline_diagnostics.ipynb) | Leitura dos artefatos locais e registro de hipóteses |
+| [Protocolo de experimentação](docs/EXPERIMENT_PROTOCOL.md) | Hipóteses, catálogo de ablações, análise pareada e gate de desenvolvimento |
+| [Notebook do protocolo](notebooks/stages/08_controlled_experiments.ipynb) | Leitura do catálogo congelado; execuções e resultados ainda pendentes |
 | [Data pipeline](docs/DATA_PIPELINE.md) | Fonte, ELT, contratos e limites |
 | [Operations](docs/OPERATIONS.md) | Execução, diagnóstico e recuperação |
 | [Testing](docs/TESTING.md) | Integração tox–Poetry, ambiente isolado e checks compartilhados com a CI |

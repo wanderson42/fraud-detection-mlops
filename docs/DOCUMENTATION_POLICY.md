@@ -26,6 +26,7 @@ substanciais e documentos por responsabilidade em `docs/`.
 | [Contrato da Gold](GOLD_CONTRACT.md) | Features, causalidade, cold start, splits e proveniência | Mudança de feature ou contrato de modelagem |
 | [MLflow](MLFLOW.md) | Tracking nativo, persistência, assinatura e armazenamento | Mudança da integração ou resultados locais |
 | [Baseline](BASELINE.md) | Candidatos, métricas, ajuste, artefatos e fronteira de avaliação | Mudança de experimento ou resultado real |
+| [Protocolo de experimentação](EXPERIMENT_PROTOCOL.md) | Hipóteses, orçamento, análise estatística e gate de desenvolvimento | Congelar no Git antes de executar candidatos; mudanças exigem nova versão |
 | [Diagnóstico](DIAGNOSTICS.md) | Inspeção da validação, orçamento, interpretação e limites estatísticos | Mudança da análise ou resultados reais |
 | [Arquitetura](ARCHITECTURE.md) | Responsabilidades, organização e controle de complexidade | Mudança estrutural |
 | [Testing](TESTING.md) | Isolamento tox–Poetry, checks, seleção de testes e limites | Mudança de validação ou CI |

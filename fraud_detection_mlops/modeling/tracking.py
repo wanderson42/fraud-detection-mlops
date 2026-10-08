@@ -43,10 +43,12 @@ def local_tracking(root: Path):
         mlflow.set_tracking_uri(previous)
 
 
-def download_pipeline(uri: str, destination: Path):
+def download_pipeline(uri: str, destination: Path, *, feature_columns=FEATURE_COLUMNS):
     """Download and review a native sklearn/skops pipeline for prediction or inspection."""
     path = Path(mlflow.artifacts.download_artifacts(artifact_uri=uri, dst_path=str(destination)))
     metadata = mlflow.models.Model.load(path / "MLmodel")
+    if feature_columns is None:
+        feature_columns = metadata.signature.inputs.input_names() if metadata.signature else []
     sklearn_flavor = metadata.flavors.get("sklearn", {})
     pyfunc = metadata.flavors.get("python_function", {})
     model_file = path / sklearn_flavor.get("pickled_model", "")
@@ -57,41 +59,56 @@ def download_pipeline(uri: str, destination: Path):
         or pyfunc.get("loader_module") != "mlflow.sklearn"
         or pyfunc.get("predict_fn") != "predict_proba"
         or metadata.signature is None
-        or metadata.signature.inputs.input_names() != FEATURE_COLUMNS
+        or metadata.signature.inputs.input_names() != list(feature_columns)
     ):
         raise TrackingError("Unexpected MLflow model format, loader or signature")
-    return load_pipeline(model_file), path
+    return load_pipeline(model_file, feature_columns=feature_columns), path
 
 
-def load_tracked_model(uri: str, destination: Path):
+def load_tracked_model(uri: str, destination: Path, *, feature_columns=FEATURE_COLUMNS):
     """Review the pipeline before invoking the native pyfunc loader."""
-    _, path = download_pipeline(uri, destination)
+    _, path = download_pipeline(uri, destination, feature_columns=feature_columns)
     return mlflow.pyfunc.load_model(str(path))
 
 
-def log_candidate(model, features, scores, *, name, parameters, metrics, tags, root):
+def log_candidate(
+    model,
+    features,
+    scores,
+    *,
+    name,
+    parameters,
+    metrics,
+    tags,
+    root,
+    experiment_name=EXPERIMENT,
+    artifacts=(),
+):
     """One main run per fitted pipeline; a reload failure makes the run FAILED."""
     if mlflow.active_run() is not None:
         raise TrackingError("Finish the active MLflow run before logging independent candidates")
     root.mkdir(parents=True, exist_ok=True)
     with local_tracking(root):
         client = MlflowClient()
-        experiment = client.get_experiment_by_name(EXPERIMENT)
+        experiment = client.get_experiment_by_name(experiment_name)
         experiment_id = (
             experiment.experiment_id
             if experiment is not None
             else client.create_experiment(
-                EXPERIMENT, artifact_location=(root / "artifacts").resolve().as_uri()
+                experiment_name, artifact_location=(root / "artifacts").resolve().as_uri()
             )
         )
         with mlflow.start_run(
-            experiment_id=experiment_id, run_name=f"{name}-{tags['baseline_run_id'][:8]}"
+            experiment_id=experiment_id,
+            run_name=f"{name}-{tags.get('experiment_run_id', tags['baseline_run_id'])[:8]}",
         ) as run:
             mlflow.log_params(parameters)
             mlflow.log_metrics(metrics)
             mlflow.set_tags(
                 {**tags, "model_id": name, "model_format": "skops", "test_evaluated": "false"}
             )
+            for artifact in artifacts:
+                mlflow.log_artifact(str(artifact))
             logged = mlflow.sklearn.log_model(
                 model,
                 name="model",
@@ -105,8 +122,11 @@ def log_candidate(model, features, scores, *, name, parameters, metrics, tags, r
                 ],
             )
             with TemporaryDirectory(prefix="fraud-mlflow-check-") as temporary:
-                restored = load_tracked_model(logged.model_uri, Path(temporary))
+                restored = load_tracked_model(
+                    logged.model_uri, Path(temporary), feature_columns=list(features.columns)
+                )
                 check_scores(restored.predict(features), scores)
+            mlflow.set_tag("logged_model_uri", logged.model_uri)
             return {"run_id": run.info.run_id, "model_uri": logged.model_uri}
 
 
@@ -117,8 +137,9 @@ def verify_model(uri: str, root: Path = DEFAULT_TRACKING) -> dict:
     if not uri.startswith(("runs:/", "models:/")):
         raise TrackingError("Use a runs:/ or models:/ URI from your local tracking store")
     with local_tracking(root), TemporaryDirectory(prefix="fraud-mlflow-check-") as temporary:
-        load_tracked_model(uri, Path(temporary))
-    return {"model_uri": uri, "feature_count": len(FEATURE_COLUMNS), "status": "success"}
+        model, path = download_pipeline(uri, Path(temporary), feature_columns=None)
+        mlflow.pyfunc.load_model(str(path))
+    return {"model_uri": uri, "feature_count": len(model.feature_names_in_), "status": "success"}
 
 
 @app.command("verify")
