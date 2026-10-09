@@ -7,6 +7,11 @@ from sklearn.pipeline import Pipeline
 import skops.io as sio
 
 from fraud_detection_mlops.features import FEATURE_COLUMNS
+from fraud_detection_mlops.modeling.interface import (
+    ModelContractError,
+    validate_pipeline,
+    validate_probabilities,
+)
 
 # Reviewed objects required by the pinned HistGradientBoosting implementation.
 TRUSTED_TYPES = {
@@ -29,21 +34,21 @@ def load_pipeline(path: Path, *, feature_columns=FEATURE_COLUMNS) -> Pipeline:
     if unknown:
         raise PersistenceError(f"Unreviewed skops types: {sorted(unknown)}")
     model = sio.load(path, trusted=sorted(TRUSTED_TYPES))
-    if (
-        type(model) is not Pipeline
-        or list(model.classes_) != [0, 1]
-        or list(model.feature_names_in_) != columns
-    ):
-        raise PersistenceError("Unexpected pipeline classes or feature columns")
+    try:
+        validate_pipeline(model, columns)
+    except ModelContractError as exc:
+        raise PersistenceError(str(exc)) from exc
     return model
 
 
 def check_scores(probabilities, scores) -> None:
-    values = np.asarray(probabilities)
-    if (
-        values.shape != (len(scores), 2)
-        or not np.isfinite(values).all()
-        or not np.allclose(values[:, 1], scores, rtol=1e-12, atol=1e-12)
+    try:
+        values = validate_probabilities(probabilities, len(scores))
+    except ModelContractError as exc:
+        raise PersistenceError(str(exc)) from exc
+    expected = np.asarray(scores)
+    if expected.shape != (len(values),) or not np.allclose(
+        values[:, 1], expected, rtol=1e-12, atol=1e-12
     ):
         raise PersistenceError("Persisted pipeline changed validation scores")
 

@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-08",
+  "kind": "author_reported_local_execution_with_shared_artifact_review",
+  "implementation_revision": "de41ee00246b6170cc65bdf63df1808ec35277bd",
+  "experiment_version": "experiment_v1",
+  "run_id": "21ccedf10d944092ba874153c1d21257",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "local_artifact_path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/experiment_v1/21ccedf10d944092ba874153c1d21257",
+  "identity": {
+    "baseline_manifest_sha256": "31e1ad433a5df9c42ee17b8ecfa9e8659e815d0d82b84ad39c10a483f10309e7",
+    "gold_manifest_sha256": "a3540ae4d52ff241f8ac512d9f195ee33c8d01299b7fd736a3180eb3d9508f9d",
+    "protocol_sha256": "9823236160304650e821a2ee09c796e6db6a3b5118b6a370198426ae545e53f2",
+    "reference_model_uri": "runs:/d3be86000fd24dc8a053dbcab778d4b6/model"
+  },
+  "environment": {
+    "mlflow": "3.17.0",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "pyarrow": "25.0.1",
+    "python": "3.14.4",
+    "scikit-learn": "1.9.1",
+    "skops": "0.16.0"
+  },
+  "reported_local_verification": {
+    "command": "poetry run python -m fraud_detection_mlops.modeling.experiments verify \"$EXPERIMENT_PATH\"",
+    "status": "success",
+    "verified_outputs": 18,
+    "reported_by": "Wanderson Ferreira"
+  },
+  "reported_implementation_checks": {
+    "command": "make validate",
+    "tests_passed": 152,
+    "warnings": 52,
+    "pytest_seconds": 17.72,
+    "tox_seconds": 20.68,
+    "origin": "Author terminal output before commit de41ee0; not a new CI observation"
+  },
+  "reviewed_source_files": [
+    {
+      "path": "daily.csv",
+      "size_bytes": 4924,
+      "sha256": "1c3e13c230dc80ba9e067377dad0575d9cdcf87946c9ae2945fe08584e326155"
+    },
+    {
+      "path": "leave_one_day_out.csv",
+      "size_bytes": 2816,
+      "sha256": "bff6ab01919d71402617938f9a7f658503e5e67dc371b2aac78d6817e57ec7af"
+    },
+    {
+      "path": "report.json",
+      "size_bytes": 4977,
+      "sha256": "6d91ca9530c4cddeeae988ec47b3fc8c267493fc95a67dc01658fbb1f7ad4f1b"
+    }
+  ],
+  "aggregate_ap_source": "Author-uploaded summary.csv inspected in the preceding review; global candidate AP is transcribed, not recalculated from daily AP.",
+  "independent_artifact_review": {
+    "daily_rows": 21,
+    "leave_one_day_out_rows": 21,
+    "validation_days": 7,
+    "checks": [
+      "Same observed dates and daily populations across all three candidates",
+      "Daily precision, recall and missed fraudulent customer-days reconcile",
+      "Weekly population matches report: 67255 transactions and 580 fraudulent transactions",
+      "Reference daily values reconstructed from candidate deltas agree across candidates",
+      "Mean daily reference precision equals report value 0.54",
+      "Each leave-one-day-out precision delta matches the mean of its six remaining daily deltas",
+      "Report retains the reference and declares test/refit/hypothesis tests/confidence intervals false"
+    ],
+    "result": "passed",
+    "native_models_or_prediction_parquets_inspected": false,
+    "manifest_or_native_audit_independently_verified": false
+  },
+  "reference": {
+    "average_precision": 0.6239485132514692,
+    "daily_customer_precision_at_100": 0.5399999999999999,
+    "fraud_count": 580,
+    "fraud_rate": 0.008623894134265111,
+    "roc_auc": 0.8849532601528257,
+    "rows": 67255,
+    "feature_count": 19,
+    "fraudulent_customer_days": 511,
+    "alerts": 700,
+    "fraudulent_customer_days_prioritized": 378,
+    "fraudulent_customer_days_missed": 133
+  },
+  "comparisons": [
+    {
+      "candidate_id": "without_terminal_fraud_counts",
+      "feature_count": 17,
+      "average_precision": 0.6262396761736648,
+      "delta_ap": 0.0022911629221956664,
+      "daily_customer_precision_at_100": 0.5328571428571428,
+      "delta_precision_at_100": -0.0071428571428571175,
+      "eligible_for_review": false,
+      "fraudulent_customer_days_prioritized": 373,
+      "fraudulent_customer_days_missed": 138,
+      "delta_prioritized_vs_reference": -5,
+      "daily_precision_wins": 0,
+      "daily_precision_ties": 4,
+      "daily_precision_losses": 3,
+      "daily_precision_losses_detail": [
+        {
+          "date": "2018-05-09",
+          "delta_customer_days": -2
+        },
+        {
+          "date": "2018-05-11",
+          "delta_customer_days": -2
+        },
+        {
+          "date": "2018-05-12",
+          "delta_customer_days": -1
+        }
+      ],
+      "leave_one_day_out": {
+        "ap_delta_min": -0.0014574916988218112,
+        "ap_delta_max": 0.004918333973299549,
+        "ap_positive_exclusions": 5,
+        "ap_negative_exclusions": 2,
+        "precision_delta_min": -0.008333333333333415,
+        "precision_delta_max": -0.0050000000000000044,
+        "precision_negative_exclusions": 7
+      }
+    },
+    {
+      "candidate_id": "without_terminal_volume",
+      "feature_count": 17,
+      "average_precision": 0.6105524679965838,
+      "delta_ap": -0.013396045254885358,
+      "daily_customer_precision_at_100": 0.5342857142857144,
+      "delta_precision_at_100": -0.005714285714285561,
+      "eligible_for_review": false,
+      "fraudulent_customer_days_prioritized": 374,
+      "fraudulent_customer_days_missed": 137,
+      "delta_prioritized_vs_reference": -4,
+      "daily_precision_wins": 1,
+      "daily_precision_ties": 2,
+      "daily_precision_losses": 4,
+      "daily_precision_losses_detail": [
+        {
+          "date": "2018-05-06",
+          "delta_customer_days": -1
+        },
+        {
+          "date": "2018-05-09",
+          "delta_customer_days": -1
+        },
+        {
+          "date": "2018-05-10",
+          "delta_customer_days": -1
+        },
+        {
+          "date": "2018-05-11",
+          "delta_customer_days": -2
+        }
+      ],
+      "leave_one_day_out": {
+        "ap_delta_min": -0.01862226265336564,
+        "ap_delta_max": -0.005338946961445767,
+        "ap_positive_exclusions": 0,
+        "ap_negative_exclusions": 7,
+        "precision_delta_min": -0.008333333333333304,
+        "precision_delta_max": -0.0033333333333332993,
+        "precision_negative_exclusions": 7
+      }
+    },
+    {
+      "candidate_id": "without_terminal_volume_and_fraud_counts",
+      "feature_count": 15,
+      "average_precision": 0.6285952746939832,
+      "delta_ap": 0.00464676144251408,
+      "daily_customer_precision_at_100": 0.5314285714285714,
+      "delta_precision_at_100": -0.008571428571428563,
+      "eligible_for_review": false,
+      "fraudulent_customer_days_prioritized": 372,
+      "fraudulent_customer_days_missed": 139,
+      "delta_prioritized_vs_reference": -6,
+      "daily_precision_wins": 0,
+      "daily_precision_ties": 4,
+      "daily_precision_losses": 3,
+      "daily_precision_losses_detail": [
+        {
+          "date": "2018-05-09",
+          "delta_customer_days": -2
+        },
+        {
+          "date": "2018-05-11",
+          "delta_customer_days": -3
+        },
+        {
+          "date": "2018-05-12",
+          "delta_customer_days": -1
+        }
+      ],
+      "leave_one_day_out": {
+        "ap_delta_min": 0.00046437493487350157,
+        "ap_delta_max": 0.007544344726412633,
+        "ap_positive_exclusions": 7,
+        "ap_negative_exclusions": 0,
+        "precision_delta_min": -0.01000000000000012,
+        "precision_delta_max": -0.0050000000000001155,
+        "precision_negative_exclusions": 7
+      }
+    }
+  ],
+  "development_gate": {
+    "minimum_absolute_ap_gain": 0.01,
+    "minimum_absolute_daily_customer_precision_at_100_gain": 0.02
+  },
+  "decision": {
+    "eligible_ranking": [],
+    "candidate_for_review": null,
+    "fallback": "retain_reference",
+    "promotion_status": "not_promoted",
+    "freeze_review_required": true,
+    "formal_superiority_claim": false
+  },
+  "decision_review": {
+    "outcome": "retain_reference_19_features_for_the_current_development_cycle",
+    "catalog_status": "closed",
+    "thresholds_changed_after_results": false,
+    "production_promotion": false
+  },
+  "scope": {
+    "test_evaluated": false,
+    "refit_on_validation": false,
+    "hypothesis_test": false,
+    "confidence_intervals": false
+  },
+  "tracking": {
+    "without_terminal_fraud_counts": {
+      "model_uri": "models:/m-d611cf66509d482d9b391954b2a89039",
+      "run_id": "aa4f2271267649dbb1ba7fa48ea12f6c"
+    },
+    "without_terminal_volume": {
+      "model_uri": "models:/m-13da1fdfb46f48ccbdaaa826f531d7a5",
+      "run_id": "8310bfa190274385ae5d61138ff364a3"
+    },
+    "without_terminal_volume_and_fraud_counts": {
+      "model_uri": "models:/m-0c6ad041e33d42c7ac4f79a5cca9c708",
+      "run_id": "3ea7dd9dac5a449fbe8781c28605ad97"
+    }
+  },
+  "limitations": [
+    "One exploratory validation week with shared customers, terminals and histories; exclusion ranges are not confidence intervals.",
+    "Customer-day occurrences can refer to the same person on multiple days. Counts are not distinct people or avoided financial losses.",
+    "Simulated data and a retrospective full-day ranking; production and streaming performance have not been established.",
+    "Receipt records shared results and review; native models, predictions, manifest, state and audit remain local and must be preserved."
+  ]
+}

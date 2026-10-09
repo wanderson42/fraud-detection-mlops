@@ -6,10 +6,8 @@ import json
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
-from time import perf_counter
 from typing import Annotated
 from uuid import uuid4
-import warnings
 
 import duckdb
 import numpy as np
@@ -17,7 +15,6 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 import sklearn
-from sklearn.exceptions import ConvergenceWarning
 from threadpoolctl import threadpool_limits
 import typer
 
@@ -34,6 +31,16 @@ from fraud_detection_mlops.modeling.baseline import (
     BaselineError,
     make_model,
     verify_baseline,
+)
+from fraud_detection_mlops.modeling.interface import (
+    VERSION as MODEL_INTERFACE_VERSION,
+)
+from fraud_detection_mlops.modeling.interface import (
+    ModelContractError,
+    ModelSpec,
+    build_model,
+    fit_and_score,
+    validate_labels,
 )
 from fraud_detection_mlops.modeling.metrics import evaluate_ranking
 from fraud_detection_mlops.silver import DEFAULT_CONTRACT
@@ -60,25 +67,49 @@ def load_split(directory: Path, manifest: dict, split: str) -> tuple:
     return frame[FEATURE_COLUMNS].astype("float64"), metadata.TX_FRAUD.copy(), metadata
 
 
-def fit_candidate(name, X_train, y_train, X_val, y_val, metadata):
-    model = make_model(name)
-    with warnings.catch_warnings():
-        warnings.simplefilter("error", ConvergenceWarning)
-        start = perf_counter()
-        model.fit(X_train, y_train)
-        fit_seconds = perf_counter() - start
-    if list(model.classes_) != [0, 1]:
-        raise BaselineError("Expected binary model classes [0, 1]")
-    start = perf_counter()
-    scores = model.predict_proba(X_val)[:, 1]
-    timings = {"fit_seconds": fit_seconds, "predict_seconds": perf_counter() - start}
+def fit_candidate(
+    name,
+    X_train,
+    y_train,
+    X_val,
+    y_val,
+    metadata,
+    *,
+    model_spec: ModelSpec | None = None,
+    parameters=None,
+    random_state=42,
+):
+    """Common integration point; temporal authorization stays with the caller's policy."""
+    validate_labels(y_val, X_val, require_both=False)
+    if (
+        not isinstance(y_val, pd.Series)
+        or not y_val.index.equals(X_val.index)
+        or not metadata.index.equals(X_val.index)
+        or len(metadata) != len(X_val)
+        or ("TX_FRAUD" in metadata and not metadata.TX_FRAUD.equals(y_val))
+    ):
+        raise ModelContractError("Evaluation labels, features and metadata are not aligned")
+    if model_spec is None:
+        if parameters is not None or random_state != 42:
+            raise ModelContractError("Fixed baseline parameters require an explicit model spec")
+        model = make_model(name)
+    else:
+        if model_spec.model_id != name:
+            raise ModelContractError("Candidate identity differs from its model spec")
+        model = build_model(model_spec, parameters=parameters, random_state=random_state)
+    model, scores, timings = fit_and_score(model, X_train, y_train, X_val)
     return model, scores, evaluate_ranking(y_val, scores, metadata), timings
 
 
 def save_candidate(part, model, X_val, scores, metadata, measurement):
     part.mkdir(parents=True)
     persistence.save_pipeline(model, part / "model.skops", X_val, scores)
-    predictions = metadata.assign(SCORE=scores).astype(PREDICTION_DTYPES)
+    predictions = (
+        metadata[list(METADATA_DTYPES)]
+        .assign(SCORE=scores)
+        .astype(PREDICTION_DTYPES)
+        .reset_index(drop=True)
+    )
     predictions.to_parquet(
         part / "validation_predictions.parquet",
         engine="pyarrow",
@@ -161,6 +192,7 @@ def run_baseline(
         **identities,
         "test_evaluated": False,
         "tracking": {},
+        "model_interface_version": MODEL_INTERFACE_VERSION,
         "implementation_sha256": {
             str(p.relative_to(PROJECT_ROOT)): sha256(p)
             for p in [
@@ -308,6 +340,7 @@ def run_baseline(
                     "created_at_utc": datetime.now(UTC).isoformat(),
                     "tracking": audit["tracking"],
                     "model_format": "skops",
+                    "model_interface_version": MODEL_INTERFACE_VERSION,
                 },
             )
             result = verify_baseline(

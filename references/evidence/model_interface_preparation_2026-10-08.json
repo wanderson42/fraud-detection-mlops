@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "stage": "model_interface_v1",
+  "recorded_date": "2026-10-08",
+  "origin": "assistant_preparation_in_isolated_workspace",
+  "base": {
+    "upstream_revision": "e1d58df85ca2ae9921f4e01719497cb995912cae",
+    "prerequisite_applied_patch": "mlops-scope-and-statistical-roadmap.patch",
+    "prerequisite_patch_sha256": "9cfeb8d6a48c9f3a93e143e8bad7834d59d2d1f97b45bd9859242bc3177439ef",
+    "implementation_revision": "uncommitted_incremental_patch_identified_by_file_hashes"
+  },
+  "implementation_sha256": {
+    "fraud_detection_mlops/modeling/interface.py": "703d10f65284098855aca36704c5ae8038f6b31ca151fb6153d85672039b247a",
+    "fraud_detection_mlops/modeling/models.py": "afc236c7b08354eb9bf6d38517332e57ac5dde7be83940fe6c3ceea458bf75bb",
+    "fraud_detection_mlops/modeling/baseline.py": "68c94a6b422f1366ea9f0aa3b87f40e6d8abe42999128cd6a2b123550bbcdaca",
+    "fraud_detection_mlops/modeling/train.py": "bc3408cd11e91dfaf92ae70ed744be6e6758d2e3610b6a6b35d13cab27cbf5fd",
+    "fraud_detection_mlops/modeling/persistence.py": "9854ece03cac53b1cdf1357639824223baedcf0f9616b32a4b5c51999b7f1bb4",
+    "fraud_detection_mlops/modeling/tracking.py": "79bf74c83030f51117ae678fe9f0960a705b3225dcdc44596160725eb497d5a0",
+    "examples/model_contribution.py": "2aad5a72f1cd06f2219b079de8b75718e82f3c1fb90d31673a36d130e929958e",
+    "tests/modeling/test_interface.py": "0929217021f46bb15c0e4a46f43315f85b227a29dbc1b876a5e23280372d0b5f"
+  },
+  "environment": {
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "tox": "4.32.0",
+    "ruff": "0.16.10",
+    "scikit-learn": "1.9.1",
+    "mlflow": "3.17.0",
+    "skops": "0.16.0",
+    "pandas": "3.0.6"
+  },
+  "checks": {
+    "tox": {
+      "command": "poetry run tox -e py314",
+      "status": "passed",
+      "tests": 201,
+      "warnings": 74,
+      "pytest_wall_seconds": 36.96,
+      "tox_wall_seconds": 43.43
+    },
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "poetry_check_lock": "passed",
+    "poetry_sync": "no_dependency_updates",
+    "git_diff_check": "passed",
+    "interface_cases": 21,
+    "synthetic_integration": {
+      "model_id": "gaussian_nb_example",
+      "training_rows": 80,
+      "evaluation_rows": 20,
+      "artifact_formats": [
+        "parquet",
+        "skops"
+      ],
+      "tracking": "native_MLflow_with_single_main_run",
+      "model_reloaded_and_scores_reconciled": true,
+      "baseline_catalog_expanded": false,
+      "promotion_status": "not_promoted"
+    }
+  },
+  "preserved": {
+    "dependencies_and_lockfile": true,
+    "frozen_protocols_and_candidate_receipt": true,
+    "existing_notebook_cells_outputs_metadata": true,
+    "historical_baseline_parameter_and_prediction_parity": "checked_on_synthetic_data_against_fixed_protocol"
+  },
+  "limitations": [
+    "Preparation evidence is not an execution by the author or GitHub CI.",
+    "No real Handbook model was fitted and no consumed holdout was read.",
+    "The contribution smoke check does not demonstrate antifraud performance.",
+    "Only complete scikit-learn Pipelines and reviewed skops types are supported.",
+    "Optuna and the new temporal study remain pending.",
+    "Third-party deprecation warnings remain visible; no warning filters were added."
+  ]
+}

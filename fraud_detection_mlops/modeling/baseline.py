@@ -7,11 +7,7 @@ from pathlib import Path
 import numpy as np
 import pyarrow as pa
 import pyarrow.parquet as pq
-from sklearn.dummy import DummyClassifier
-from sklearn.ensemble import HistGradientBoostingClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
 
 from fraud_detection_mlops.artifacts import sha256
 from fraud_detection_mlops.bronze import DEFAULT_INVENTORY, load_inventory
@@ -24,39 +20,18 @@ from fraud_detection_mlops.features import (
 )
 from fraud_detection_mlops.gold import DEFAULT_GOLD_CONTRACT
 from fraud_detection_mlops.modeling.metrics import evaluate_ranking
+from fraud_detection_mlops.modeling.models import (
+    BASELINE_CLASSIFIERS,
+    BASELINE_PARAMETERS,
+    registered_model,
+)
 from fraud_detection_mlops.silver import DEFAULT_CONTRACT
 from fraud_detection_mlops.temporal import DEFAULT_PROTOCOL, load_protocol
 
 DEFAULT_CONFIG = PROJECT_ROOT / "references/baseline_protocol_v1.json"
 
-MODEL_PARAMETERS = {
-    "dummy_prior": {"strategy": "prior", "random_state": 42},
-    "logistic_regression": {
-        "C": 1.0,
-        "l1_ratio": 0.0,
-        "solver": "lbfgs",
-        "max_iter": 1000,
-        "class_weight": "balanced",
-        "random_state": 42,
-    },
-    "hist_gradient_boosting": {
-        "learning_rate": 0.1,
-        "max_iter": 100,
-        "max_leaf_nodes": 15,
-        "min_samples_leaf": 50,
-        "l2_regularization": 1.0,
-        "early_stopping": False,
-        "categorical_features": None,
-        "class_weight": "balanced",
-        "random_state": 42,
-    },
-}
-
-CLASSIFIERS = {
-    "dummy_prior": DummyClassifier,
-    "logistic_regression": LogisticRegression,
-    "hist_gradient_boosting": HistGradientBoostingClassifier,
-}
+MODEL_PARAMETERS = BASELINE_PARAMETERS
+CLASSIFIERS = BASELINE_CLASSIFIERS
 
 PREDICTION_DTYPES = {**METADATA_DTYPES, "SCORE": "float64"}
 
@@ -103,13 +78,10 @@ def load_configuration(path: Path) -> dict:
 
 
 def make_model(model_id: str) -> Pipeline:
-    if model_id not in CLASSIFIERS:
-        raise BaselineError(f"Unknown baseline model: {model_id}")
-    steps = []
-    if model_id == "logistic_regression":
-        steps.append(("scale", StandardScaler()))
-    steps.append(("classifier", CLASSIFIERS[model_id](**MODEL_PARAMETERS[model_id])))
-    return Pipeline(steps)
+    try:
+        return registered_model(model_id)
+    except KeyError as exc:
+        raise BaselineError(f"Unknown registered model: {model_id}") from exc
 
 
 def load_inputs(inventory_path, silver_contract, protocol_path, gold_contract, config_path):

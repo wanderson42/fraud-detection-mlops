@@ -14,10 +14,13 @@ from mlflow import MlflowClient
 from mlflow.models import infer_signature
 import mlflow.pyfunc
 import mlflow.sklearn
+import numpy as np
 import typer
 
 from fraud_detection_mlops.config import PROJECT_ROOT
 from fraud_detection_mlops.features import FEATURE_COLUMNS
+from fraud_detection_mlops.modeling.interface import VERSION as MODEL_INTERFACE_VERSION
+from fraud_detection_mlops.modeling.interface import predict_scores
 from fraud_detection_mlops.modeling.persistence import TRUSTED_TYPES, check_scores, load_pipeline
 
 DEFAULT_TRACKING = PROJECT_ROOT / "data/tracking"
@@ -87,6 +90,14 @@ def log_candidate(
     """One main run per fitted pipeline; a reload failure makes the run FAILED."""
     if mlflow.active_run() is not None:
         raise TrackingError("Finish the active MLflow run before logging independent candidates")
+    source_run_id = tags.get("experiment_run_id") or tags.get("baseline_run_id")
+    if not isinstance(source_run_id, str) or not source_run_id:
+        raise TrackingError("Expected the source experiment or baseline run identity")
+    checked_scores = predict_scores(model, features)
+    if np.asarray(scores).shape != checked_scores.shape or not np.allclose(
+        checked_scores, scores, rtol=1e-12, atol=1e-12
+    ):
+        raise TrackingError("Recorded scores differ from the contributed model")
     root.mkdir(parents=True, exist_ok=True)
     with local_tracking(root):
         client = MlflowClient()
@@ -100,12 +111,18 @@ def log_candidate(
         )
         with mlflow.start_run(
             experiment_id=experiment_id,
-            run_name=f"{name}-{tags.get('experiment_run_id', tags['baseline_run_id'])[:8]}",
+            run_name=f"{name}-{source_run_id[:8]}",
         ) as run:
             mlflow.log_params(parameters)
             mlflow.log_metrics(metrics)
             mlflow.set_tags(
-                {**tags, "model_id": name, "model_format": "skops", "test_evaluated": "false"}
+                {
+                    **tags,
+                    "model_id": name,
+                    "model_format": "skops",
+                    "test_evaluated": "false",
+                    "model_interface_version": MODEL_INTERFACE_VERSION,
+                }
             )
             for artifact in artifacts:
                 mlflow.log_artifact(str(artifact))
