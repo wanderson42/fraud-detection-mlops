@@ -8,6 +8,12 @@ o resultado e a fronteira consumida estão [registrados abaixo](#resultado-final
 Fonte: snapshot `6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a` do Handbook.
 Referência executável: [temporal_protocol_v1.json](../../references/temporal_protocol_v1.json).
 
+**Estado atual — 2026-10-09:** avaliações de maio e de 02–15/09 executadas pelo
+autor; diagnóstico e reamostragem nativa revisados; escopo exploratório concluído.
+O [resultado e seus limites](#resultado-nativo-da-reamostragem-e-fechamento) são a
+síntese vigente. As seções anteriores de preparação preservam o desenho histórico;
+16–30/09 permanece reservado para replay. A próxima ação é a exportação da referência.
+
 ## Objetivo e janelas
 
 Fixar as regras antes da escolha de features/modelos, preservar o teste final e
@@ -701,8 +707,11 @@ a diferença entre períodos não identifica, por si só, uma degradação signi
 
 Não houve refit, novas runs, confirmação de candidato, reabertura do teste de
 maio ou promoção. **02–15/09 foi consumida; 16–30/09 continua reservada para replay.**
-Teste temporal formal e intervalo de generalização continuam pendentes. O próximo
-passo é diagnosticar dependência e fechar a análise de incerteza antes de Docker.
+Na revisão inicial desse resultado, o diagnóstico e a análise de incerteza eram
+os próximos passos. Ambos foram executados e revisados posteriormente, fechando
+o [escopo exploratório](#resultado-nativo-da-reamostragem-e-fechamento). Cobertura
+de generalização não foi estabelecida; confirmação de candidato permanece
+condicional a outro desenho e janela preservada.
 
 ### Diagnóstico de dependência e análise de incerteza
 
@@ -742,12 +751,11 @@ Há poucos pares por defasagem, e sete dias de atraso de rótulo não determinam
 tamanho de bloco. O diagnóstico não escolhe automaticamente reamostragem ou blocos,
 não calcula informação efetiva e não executa um teste temporal formal.
 
-Após revisar o JSON nativo, definir o alvo e justificar o tratamento da dependência
-temporal e de entidades; avaliar sensibilidade ao método e a precisão alcançada.
-O fechamento entrega intervalos com pressupostos/alcance declarados ou uma razão
-documentada de insuficiência para o alvo escolhido. Análises escolhidas após
-inspecionar setembro mantêm caráter exploratório. Uma confirmação de superioridade
-de outro modelo exige candidato elegível e outra janela preservada.
+O JSON nativo foi revisado e fundamentou o alvo e a grade exploratória descritos
+na seção seguinte. O fechamento registra quantis de reamostragem e a insuficiência
+para cobertura de generalização validada. Análises escolhidas após inspecionar
+setembro mantêm caráter exploratório. Uma confirmação de superioridade de outro
+modelo exige candidato elegível e outra janela preservada.
 
 ### Sensibilidade de reamostragem e fechamento do escopo
 
@@ -819,9 +827,10 @@ O comando verifica o bundle, usa as previsões salvas e escreve no diretório ir
 hashes da implementação, ambiente, identidade, hash das previsões e a grade inteira.
 Não consulta modelo, Silver, replay ou tracking e não altera a avaliação original.
 
-O fechamento desta janela exige execução nativa com a AP e todas as configurações
-registradas, revisão das faixas e das indefinições, e preservação de relatório e
-proveniência. A entrega conclui **a análise exploratória e seus limites**; não
+Os critérios de fechamento foram atendidos pela execução nativa e sua revisão:
+AP e todas as configurações registradas, faixas e indefinições conferidas, relatório
+e proveniência preservados no recibo abaixo. A entrega conclui **a análise
+exploratória e seus limites**; não
 transforma a hipótese de regime local em cobertura demonstrada para o futuro.
 Essa incerteza mais ampla fica condicionada a desenho/dados que sustentem a
 inferência. Comparação confirmatória de outro modelo exige candidato elegível,

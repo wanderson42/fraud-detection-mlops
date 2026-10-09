@@ -222,8 +222,9 @@ justifica a decisão de desenvolvimento nesta janela simulada, sem comprovar
 superioridade estatística ou estabilidade futura. Custos de fit e predição não
 foram revisados aqui; nenhuma economia computacional foi atribuída à ablação.
 
-O próximo marco é congelar e documentar o candidato de avaliação, seu contrato de
-inferência e critérios de aceitação antes de abrir o teste final. Uma expansão
+Após este ciclo, a referência foi congelada e avaliada, com critérios fixados
+antes do teste; os resultados posteriores estão na [Model Card](MODEL_CARD.md).
+Uma expansão
 exploratória exige outro protocolo; não se amplia este catálogo para perseguir
 um ganho na mesma validação. Preservar scores, modelos, manifestos, estado e
 auditoria nativos junto aos arquivos da execução local.

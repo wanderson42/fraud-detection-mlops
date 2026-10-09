@@ -19,7 +19,9 @@ O primeiro experimento usa a Gold e o [protocolo temporal](EVALUATION_PROTOCOL.m
 sem alterar janelas, população ou features. Treino: 1 a 28 de abril de 2018;
 validação: 6 a 12 de maio. O teste de 20 a 26 de maio ficou reservado durante
 esta etapa; foi consumido depois pela avaliação final, registrada na
-[Model Card](MODEL_CARD.md). Setembro é a reserva atual de outro protocolo.
+[Model Card](MODEL_CARD.md). A referência também foi avaliada em 02–15/09,
+com diagnóstico e reamostragem exploratória concluídos; 16–30/09 permanece
+reservado para replay. [Resultado e limites](EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
 
 | Referência | Implementação | Propósito |
 | --- | --- | --- |

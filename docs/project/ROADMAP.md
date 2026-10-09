@@ -163,10 +163,12 @@ O volume de transações não equivale à informação independente. Resultados 
 são históricos; uma queda de AP isolada não identifica a causa da degradação.
 A documentação de avaliação concentra os detalhes, sem um documento por métrica.
 
-O fechamento atual prioriza a incerteza da referência. O diagnóstico exploratório
-das previsões salvas prepara a escolha do método; não fornece intervalos, tamanho
-de bloco ou número de amostras independentes. A comparação confirmatória de outro
-modelo permanece condicional a um candidato elegível e outra janela preservada.
+O [escopo exploratório da referência](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento)
+foi concluído: diagnóstico de dependência e grade de reamostragem nativa revisados,
+com todas as réplicas definidas. As faixas não estabelecem cobertura de generalização
+ou número de observações independentes. A comparação confirmatória de outro modelo
+permanece condicional a candidato elegível, desenho próprio e janela preservada.
+Exportação e Docker são as próximas verificações operacionais.
 
 ## Sequência operacional e controle de custo
 

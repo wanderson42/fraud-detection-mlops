@@ -1,6 +1,6 @@
 # Detecção de fraude: contexto, propósito e decisões do projeto
 
-Atualizado em 2026-10-08. A tese deste projeto é construir um **laboratório
+Atualizado em 2026-10-09. A tese deste projeto é construir um **laboratório
 reproduzível de MLOps para priorização de investigação de fraude**, com histórico
 temporal, feedback atrasado e evidências auditáveis. A contribuição pretendida
 é permitir que outra pessoa reproduza, questione e evolua esse sistema.
@@ -227,9 +227,12 @@ antes da avaliação final. O [protocolo de avaliação](../modeling/EVALUATION_
 define as escolhas e os critérios do laboratório. A avaliação final consumiu o
 teste de maio: AP 0,640703 e precisão diária @100 de 55%, com gate de laboratório
 aprovado; a [Model Card](../modeling/MODEL_CARD.md) concentra a interpretação.
-O ciclo Optuna de junho–agosto conservou a referência. Setembro permanece reservado
-até seu protocolo próprio. Uma semana de validação ou teste não demonstra
-estabilidade em outros períodos.
+O ciclo Optuna de junho–agosto conservou a referência. A avaliação de 02–15/09,
+o diagnóstico e a reamostragem nativa foram concluídos, com
+[escopo exploratório e limites explícitos](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
+16–30/09 continua reservado para replay. As faixas de reamostragem não demonstram
+cobertura futura ou superioridade confirmatória. Exportação e Docker são as
+próximas verificações operacionais.
 
 ## Para que este projeto pode ser útil
 

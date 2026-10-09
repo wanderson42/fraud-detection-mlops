@@ -1,9 +1,10 @@
 # Síntese para stakeholders
 
-Atualizado em 2026-10-08. Estado atual: pipeline offline, baseline temporal,
+Atualizado em 2026-10-09. Estado atual: pipeline offline, baseline temporal,
 diagnóstico e três ablações executados localmente pelo autor. A referência foi
 conservada e a avaliação final passou o gate de laboratório. Operação por eventos
-continua futura; as métricas diárias do teste foram revisadas.
+continua futura. A avaliação de 02–15/09, o diagnóstico e a reamostragem foram
+revisados, concluindo o escopo exploratório com limites de generalização explícitos.
 Todas as metas e prioridades estão no [mural do projeto](ROADMAP.md).
 
 ## A decisão que pretendemos apoiar
@@ -46,11 +47,13 @@ histogramas. É o modelo `HistGradientBoostingClassifier` descrito no
 | Modelos identificáveis | Três pipelines MLflow/skops publicados e verificados pelo autor |
 | Inspeção do resultado | Sete outputs de diagnóstico verificados; erros diários, permutação e SHAP informados |
 | Experimentos limitados | Três ablações verificadas; nenhuma elegível; referência de 19 features conservada |
-| Qualidade de implementação | Último relato local: 152 testes aprovados, lint, formatação e lockfile aprovados |
+| Avaliação posterior e sensibilidade | Referência fixa em 02–15/09: AP 0,621312, precisão @100 de 54,93% e recall de 72,89%; grade de blocos revisada |
+| Qualidade de implementação | Último relato local recebido: 362 testes; preparação da reamostragem: 379 testes, lint, formatação e lockfile aprovados. [Checks e escopo](../operations/TESTING.md) |
 
 Os testes usam dados controlados. O sucesso deles não demonstra eficácia antifraude;
 a execução real sobre a simulação é uma evidência separada. Os arquivos nativos
-permanecem locais e não foram enviados nesta etapa.
+permanecem locais; foram fornecidos relatórios agregados, sem os bytes das
+previsões de setembro.
 
 ## O que os números significam para a investigação
 
@@ -86,6 +89,9 @@ a interpretação, os limites e a evidência; o gate permite revisão de serving
 laboratório, sem promoção em produção. O CSV diário apresentou recall médio de
 73,02%, com precisão entre 47% e 61%. No total, 142 ocorrências de cliente com
 fraude por dia ficaram fora das filas; pessoas podem reaparecer em outros dias.
+O [fechamento de setembro](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento)
+acrescenta diagnóstico de dependência e faixas exploratórias de reamostragem.
+Não comprova cobertura futura; ainda não houve teste confirmatório de candidato.
 O [mural de metas](ROADMAP.md) concentra a sequência de
 serving, replay, orquestração, monitoramento e atualização controlada, além dos
 critérios para Kubernetes e infraestrutura em cloud. A utilidade operacional
@@ -101,6 +107,7 @@ precisa de evidência própria em cada marco.
 | Diagnóstico | [Execução informada](../../references/evidence/diagnostics_execution_2026-10-07.json) |
 | Ablações | [Decisão e resultados registrados](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08) |
 | Avaliação final | [Execução informada](../../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](../modeling/MODEL_CARD.md) |
+| Avaliação posterior e reamostragem | [Resultado e limites](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento) e [recibo nativo](../../references/evidence/reference_uncertainty_author_validation_2026-10-09.json) |
 
 A [política de documentação](DOCUMENTATION_POLICY.md) define como separar relatos
 locais, preparação e CI. [Arquitetura](../ARCHITECTURE.md) descreve responsabilidades;

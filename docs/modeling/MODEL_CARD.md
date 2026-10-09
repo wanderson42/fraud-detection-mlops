@@ -1,12 +1,13 @@
 # Model Card — referência temporal de detecção de fraude
 
 Atualizada em 2026-10-09. Estado: **avaliação final executada e verificada pelo autor;
-gate de laboratório aprovado; métricas diárias revisadas; API de serving
-implementada e conferida com dados sintéticos**. A exportação e a execução HTTP
+gate de laboratório aprovado; avaliação de 02–15/09 e reamostragem exploratória
+revisadas; API de serving implementada e conferida com dados sintéticos**.
+A exportação e a execução HTTP
 da referência real ainda estão pendentes, assim como Docker. O
 [contrato de serving](../operations/SERVING_CONTRACT.md) define esses checks.
-Esta síntese curada usa as saídas de terminal e o CSV diário
-fornecidos pelo autor. A revisão direta dos bytes da Model Card gerada permanece
+Esta síntese curada usa as saídas de terminal, o CSV diário de maio e os relatórios
+de setembro fornecidos pelo autor. A revisão direta dos bytes da Model Card gerada permanece
 pendente; os scores e o manifesto nativos não foram fornecidos ao assistente.
 
 ## Uso pretendido e decisão
@@ -35,6 +36,8 @@ de bloqueio de cartões ou estimativa de retorno financeiro.
 | Treino | 01–28/04/2018; 268.668 transações |
 | Validação | 06–12/05/2018; 67.255 transações |
 | Teste final | 20–26/05/2018; 66.954 transações e 597 fraudes |
+| Avaliação posterior da referência fixa | 02–15/09/2018; 134.467 transações e 1.200 fraudes; janela consumida |
+| Reserva de replay operacional | 16–30/09/2018; execução ainda pendente |
 | Ajuste final | Modelo original; sem refit, calibração ou ajuste no teste |
 | Ambiente do modelo | scikit-learn 1.9.1, MLflow 3.17.0, skops 0.16.0, numpy 2.5.3 e pandas 3.0.6 |
 
@@ -113,6 +116,24 @@ média diária de precisão, conforme definido antes do teste; não criamos um g
 por dia após observar os resultados. A AP global de 0,640703 também não é a
 média simples das APs diárias (0,641672).
 
+## Avaliação posterior e sensibilidade exploratória
+
+O mesmo modelo de abril foi avaliado em 02–15/09, sem refit ou novas runs:
+**AP 0,621312**, precisão média diária @100 de **54,93%** e recall médio diário
+de **72,89%**. Capturou 769 ocorrências de cliente-dia com fraude, entre 1.055;
+286 ficaram fora da fila. São unidades repetíveis, não pessoas únicas.
+
+O diagnóstico mostrou recorrência de entidades e a reamostragem circular de dias
+completos comparou blocos de 2/3/4/7 dias, com 2.000 réplicas por configuração.
+Todas ficaram definidas. As faixas centrais da AP variaram aproximadamente entre
+0,579 e 0,667 na grade, com massa nominal de 95% e cobertura não validada. Esses
+quantis não constituem intervalo demonstrado de desempenho futuro, comparação
+confirmatória ou evidência isolada de degradação entre maio e setembro.
+
+O [resultado completo e fechamento](EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento)
+mantém método, grade e limites. O escopo exploratório foi concluído; confirmação
+de outro modelo exige candidato elegível, desenho próprio e janela preservada.
+
 ## Limitações que afetam o uso
 
 - A simulação contém regras de fraude conhecidas, inclusive um limiar artificial
@@ -130,11 +151,12 @@ média simples das APs diárias (0,641672).
 
 ## Fronteira da inferência e próximos marcos
 
-O primeiro serviço receberá as 19 features já calculadas e devolverá um score com
-identificação do modelo. O [contrato proposto](../operations/SERVING_CONTRACT.md)
+O serviço implementado recebe as 19 features já calculadas e devolve um score com
+identificação do modelo. O [contrato de serving](../operations/SERVING_CONTRACT.md)
 separa pontuação, cálculo de históricos e política de investigação.
-Docker, paridade, health checks e runtime serão verificados antes de exposição
-operacional. Prometheus/Grafana e replay entram com o funcionamento observável.
+Paridade, health checks e runtime têm checks sintéticos. Exportação/HTTP da
+referência real e Docker ainda exigem execução e medições. Prometheus/Grafana e
+replay entram com o funcionamento observável, conforme o [mural](../project/ROADMAP.md).
 
 O teste final foi consumido. Melhorias futuras exigem outra janela de avaliação
 e um protocolo definido previamente. O recibo congelado conserva
@@ -155,3 +177,9 @@ operacional permanece ligado ao relatório; este documento curado acrescenta
 interpretação e navegação, sem substituir ou editar seus bytes.
 Use [o procedimento de verificação offline](EVALUATION_PROTOCOL.md#executar-a-avaliação-final)
 para consultar a evidência salva sem voltar a avaliar candidatos.
+
+A avaliação de setembro e seus relatórios posteriores têm
+[recibo próprio](../../references/evidence/reference_uncertainty_author_validation_2026-10-09.json).
+Os hashes reportados de modelo/previsões e os hashes da implementação coincidiram
+com a entrega. Os bytes nativos das previsões não foram recebidos; a AP reamostrada
+é resultado do autor, sem recálculo independente nesta revisão.
