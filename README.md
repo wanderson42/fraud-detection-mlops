@@ -32,8 +32,9 @@ AP **0,621312**, precisão diária @100 de **54,93%** e recall médio diário de
 fraudulentos de **72,89%**, sem refit ou novas runs. O autor aprovou **348 testes**,
 com 94 avisos. Essa janela foi consumida; **16–30/09 continua reservado para replay**.
 O [relato da execução](docs/modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor)
-mantém os limites estatísticos. A próxima entrega é a exportação da referência,
-seguida de Docker e Prefect, conforme
+mantém os limites estatísticos. A próxima entrega é o diagnóstico de dependência
+das previsões salvas e a análise de incerteza da referência. Exportação, Docker e
+Prefect vêm depois desse fechamento, conforme
 o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).

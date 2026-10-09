@@ -70,14 +70,19 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Publicar a branch da avaliação com o relato do autor e conferir a CI antes
+1. Fechar a análise de incerteza da referência antes de Docker: inspecionar
+   recorrência de entidades, autocorrelação e influência dos dias nas previsões
+   salvas; definir alvo da inferência, método, pressupostos e precisão sustentada
+   pela janela. Gerar intervalos com alcance explícito ou registrar a insuficiência
+   demonstrada para o alvo escolhido. [Diagnóstico](../modeling/EVALUATION_PROTOCOL.md#diagnóstico-de-dependência-e-análise-de-incerteza).
+2. Publicar a branch da avaliação com o relato do autor e conferir a CI antes
    da integração. A execução e a verificação nativas foram informadas; preservar
    manifesto, auditoria e predições no Alienware. [Resultado](../modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor).
-2. Exportar os bytes do HGB congelado com paridade sobre a validação já usada e
+3. Exportar os bytes do HGB congelado com paridade sobre a validação já usada e
    conferir HTTP/wheel identificado. Construir e medir Docker: usuário sem root,
    modelo somente leitura, memória, latência e recuperação. O
    [procedimento](../operations/SERVING_CONTRACT.md) mantém o escopo de laboratório.
-3. Encadear operações estáveis com um fluxo pequeno de Prefect, conferindo retries
+4. Encadear operações estáveis com um fluxo pequeno de Prefect, conferindo retries
    e retomada sem duplicação. Depois implementar replay causal e monitoramento
    com feedback atrasado, sob seus contratos próprios.
 
@@ -157,6 +162,11 @@ condições; teste formal e intervalo de generalização continuam pendentes.
 O volume de transações não equivale à informação independente. Resultados de maio
 são históricos; uma queda de AP isolada não identifica a causa da degradação.
 A documentação de avaliação concentra os detalhes, sem um documento por métrica.
+
+O fechamento atual prioriza a incerteza da referência. O diagnóstico exploratório
+das previsões salvas prepara a escolha do método; não fornece intervalos, tamanho
+de bloco ou número de amostras independentes. A comparação confirmatória de outro
+modelo permanece condicional a um candidato elegível e outra janela preservada.
 
 ## Sequência operacional e controle de custo
 

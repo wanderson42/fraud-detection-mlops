@@ -701,5 +701,50 @@ a diferença entre períodos não identifica, por si só, uma degradação signi
 
 Não houve refit, novas runs, confirmação de candidato, reabertura do teste de
 maio ou promoção. **02–15/09 foi consumida; 16–30/09 continua reservada para replay.**
-Teste temporal formal e intervalo de generalização continuam pendentes. Exportar
-e servir os mesmos bytes passa a ser o próximo passo de engenharia do laboratório.
+Teste temporal formal e intervalo de generalização continuam pendentes. O próximo
+passo é diagnosticar dependência e fechar a análise de incerteza antes de Docker.
+
+### Diagnóstico de dependência e análise de incerteza
+
+Esta ação inspeciona a evidência de 02–15/09 já consumida. O alvo da futura
+inferência precisa ser explícito: AP agrupada de transações e média diária da
+precisão @100 têm unidades e ponderações diferentes. Um intervalo depende da
+população/regime temporal que se pretende representar e de seus pressupostos;
+não promete cobertura para qualquer período futuro ou para novos clientes.
+
+O diagnóstico `reference_dependence_diagnostics_v1` é **exploratório, após a avaliação**:
+confere o bundle com `verify`, lê suas previsões e produz somente um JSON separado.
+Conserva a identidade da avaliação e o hash das previsões. Não carrega modelo,
+consulta Silver ou replay, nem escreve no diretório da avaliação.
+
+```bash
+ASSESSMENT_PATH="data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1"
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_dependence_diagnostics inspect "$ASSESSMENT_PATH"
+```
+
+O relatório fica no diretório irmão `reference_dependence_diagnostics_v1/report.json`;
+`--output` aceita outro caminho JSON fora da avaliação. O relatório contém:
+
+- Métricas dos 14 dias, incluindo indefinições explícitas.
+- Recorrência de clientes e terminais, concentração de transações por entidade
+  e sobreposição de entidades entre dias, sem expor IDs individuais.
+- Autocorrelação descritiva das métricas diárias, para defasagens de 1–7 dias:
+  produtos centrados divididos pela soma de quadrados de toda a série, sem ajuste
+  por defasagem. Sem bandas de significância. Uma série constante ou com dia
+  indefinido tem coeficientes nulos; os dias não são comprimidos ou omitidos.
+- AP agrupada e precisão média @100 ao retirar cada dia, com os deltas em relação
+  à janela completa. Essa análise de influência não é um intervalo de confiança.
+
+A definição de autocorrelação corresponde à convenção não ajustada, centrada,
+documentada no [statsmodels](https://www.statsmodels.org/stable/generated/statsmodels.tsa.stattools.acf.html).
+Recorrência não prova dependência; autocorrelação pequena não prova independência.
+Há poucos pares por defasagem, e sete dias de atraso de rótulo não determinam o
+tamanho de bloco. O diagnóstico não escolhe automaticamente reamostragem ou blocos,
+não calcula informação efetiva e não executa um teste temporal formal.
+
+Após revisar o JSON nativo, definir o alvo e justificar o tratamento da dependência
+temporal e de entidades; avaliar sensibilidade ao método e a precisão alcançada.
+O fechamento entrega intervalos com pressupostos/alcance declarados ou uma razão
+documentada de insuficiência para o alvo escolhido. Análises escolhidas após
+inspecionar setembro mantêm caráter exploratório. Uma confirmação de superioridade
+de outro modelo exige candidato elegível e outra janela preservada.

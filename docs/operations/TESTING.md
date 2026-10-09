@@ -209,6 +209,21 @@ avisos em 77,27 s**, tox aprovado em 82,25 s, seguido de `run` e `verify` nativo
 com sucesso. O [recibo do autor](../../references/evidence/reference_assessment_author_validation_2026-10-09.json)
 registra essa evidência; a CI da revisão publicada ainda precisa ser conferida.
 
+## Diagnóstico de dependência das previsões salvas
+
+Os checks conferem autocorrelação e influência dos dias com exemplos calculáveis
+à mão, recorrência de entidades e sobreposição entre dias. Séries constantes,
+dias de uma classe e valores indefinidos conservam sua interpretação explícita.
+A integração reutiliza o bundle sintético verificado com a Silver removida,
+confere ausência de novas cargas/pontuações e preservação dos bytes da avaliação.
+Corrupção das previsões impede o diagnóstico; destinos dentro da avaliação são
+rejeitados antes do acesso. Esses checks não determinam o método de incerteza.
+A preparação aprovou **362 testes**, com 94 avisos; os 14 checks novos passaram
+também isoladamente. Ruff, formatação e lockfile passaram no tox `py314`.
+O [recibo de preparação](../../references/evidence/reference_dependence_preparation_2026-10-09.json)
+registra hashes e cenários. O diagnóstico com as previsões nativas do autor
+ainda precisa ser executado e revisado.
+
 ## Evidências anteriores
 
 As evidências abaixo identificam revisões anteriores, com paths e hashes históricos

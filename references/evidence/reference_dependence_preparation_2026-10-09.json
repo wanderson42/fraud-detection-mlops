@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "stage": "reference_dependence_diagnostics_v1_preparation",
+  "recorded_date": "2026-10-09",
+  "branch": "feat/reference-dependence-diagnostics",
+  "base_commit": "65c8f49e0ad5fccdff23b4644005af38bbdd6c01",
+  "checks": {
+    "targeted_pytest": {
+      "tests": 14,
+      "status": "passed",
+      "wall_seconds": 4.14
+    },
+    "pytest": {
+      "tests": 362,
+      "warnings": 94,
+      "status": "passed",
+      "wall_seconds": 132.45
+    },
+    "tox": {
+      "environment": "py314",
+      "status": "passed",
+      "environment_wall_seconds": 141.77,
+      "total_wall_seconds": 141.78
+    },
+    "ruff_check": "passed",
+    "ruff_format": {
+      "status": "passed",
+      "files": 143
+    },
+    "poetry_lock_check": "passed",
+    "controlled_scenarios": [
+      "hand_calculated_autocorrelation_and_day_influence",
+      "constant_floating_series",
+      "undefined_daily_metrics_keep_full_calendar",
+      "entity_recurrence_and_lagged_overlap",
+      "missing_or_extra_day_rejected",
+      "invalid_terminal_id_rejected",
+      "saved_bundle_works_after_silver_removal",
+      "no_additional_model_load_or_score_calls",
+      "original_assessment_bytes_unchanged",
+      "corrupted_predictions_block_output",
+      "output_inside_assessment_rejected_before_read",
+      "cli_help_and_version"
+    ]
+  },
+  "code_hashes": {
+    "fraud_detection_mlops/evaluation/temporal_dependence_diagnostics.py": "d2d86dbd47b09ba1fa333ef39d5c14a780634e46ecde7d03b10f3ac1ceac30e7",
+    "fraud_detection_mlops/modeling/experiments/reference_dependence_diagnostics.py": "ac8c1f054284ab90b3e8e7d6796768507c5440c7632f01271017dbb62c4064e8",
+    "tests/evaluation/test_temporal_dependence_diagnostics.py": "9580769c46194d8069f02450d224cbd2c417399a3df57259f166c12003598ff0",
+    "tests/modeling/experiments/test_reference_dependence_diagnostics.py": "bc63b70592983a951a1018c63f38a6a3395cbd9f897302389c9f311392de7de6"
+  },
+  "scope": {
+    "post_assessment_exploratory_diagnostics": true,
+    "native_diagnostics_run_by_assistant": false,
+    "native_predictions_received": false,
+    "diagnostics_use_saved_assessment_only": true,
+    "native_replay_evaluated": false,
+    "resampling_method_selected": null,
+    "generalization_confidence_interval": null,
+    "formal_temporal_hypothesis_test": false,
+    "production_promotion": false,
+    "new_native_fit_or_tracking_run": false
+  },
+  "next_action": "Review the author-generated native report before defining the inference target, dependence treatment, resampling assumptions and achievable precision."
+}
