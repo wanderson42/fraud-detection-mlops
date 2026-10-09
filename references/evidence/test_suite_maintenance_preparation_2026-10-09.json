@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "kind": "test_suite_maintenance_preparation",
+  "checked_at_utc": "2026-10-09T12:06:18.935199+00:00",
+  "base_commit": "187af84f6802018db394cf545075ac0acbf0f683",
+  "base_scope": "Local snapshot containing stages 1 and 2; patch application depends on file content rather than this local commit identity",
+  "delivery": "Apply test-suite-maintenance.patch after both structural refactoring patches",
+  "changes": {
+    "removed": [
+      "test_transactions_round_trip_through_parquet_and_sql"
+    ],
+    "removal_reason": "Standalone pandas/PyArrow/DuckDB smoke without project calls; Silver integration already checks Parquet values, types and SQL through the production builder",
+    "moved_cases": 7,
+    "moved_scope": [
+      "Six paired-comparison cases to evaluation",
+      "Create-only JSON receipt to shared artifact tests"
+    ],
+    "renamed": {
+      "test_baseline_policy.py": "test_baseline_history.py"
+    },
+    "retained_test_bodies_and_decorators": "AST equality against base; no new test, skip, xfail or parametrization reduction"
+  },
+  "checks": {
+    "command": "poetry run tox -e py314",
+    "status": "passed",
+    "pytest_passed_before": 271,
+    "pytest_passed_after": 270,
+    "warnings": 77,
+    "pytest_seconds": 127.73,
+    "tox_seconds": 137.05,
+    "python": "3.14.4",
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "lockfile": "unchanged and passed poetry check --lock",
+    "git_diff_check": "passed",
+    "test_sources_sha256": "d4c0857f7f917a40d35beabd4212d9d5f883eb4c7282398a52d1886bb8a051fc"
+  },
+  "preserved": [
+    "Production code and executable policies",
+    "Dependency configuration and tox",
+    "All compatibility imports and command tests",
+    "Historical receipt verification without model deserialization",
+    "Causality, integrity, model interface, MLflow/skops, Optuna budget and resume guards"
+  ],
+  "limits": "Preparation uses controlled test data; no author operational dataset/store was accessed; remote CI not inspected for this patch"
+}

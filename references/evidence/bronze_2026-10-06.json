@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "evidence_id": "bronze_2026-10-06",
+  "documentation_policy": "documentation_v1",
+  "milestone_date": "2026-10-06",
+  "milestone": "bronze_acquisition_and_file_integrity",
+  "implementation": {
+    "repository": "wanderson42/fraud-detection-mlops",
+    "commit": "18242fcc8e340bad52a394c7c3624b78bd809b6c",
+    "commit_url": "https://github.com/wanderson42/fraud-detection-mlops/commit/18242fcc8e340bad52a394c7c3624b78bd809b6c",
+    "branch_at_publication": "feat/bronze-extraction"
+  },
+  "source": {
+    "repository": "Fraud-Detection-Handbook/simulated-data-raw",
+    "commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+    "inventory_path": "references/handbook_source.json",
+    "inventory_sha256": "815d00ee359c3972af931768f81c28b4744a5459c60e4b4db408b4d1924de7db",
+    "first_date": "2018-04-01",
+    "last_date": "2018-09-30",
+    "expected_file_count": 183,
+    "expected_size_bytes": 107121710
+  },
+  "local_evidence": {
+    "origin": "terminal_output_provided_by_author_in_conversation",
+    "reported_by": "Wanderson Ferreira",
+    "scope": "author_local_checkout_and_snapshot; original JSON files were not inspected",
+    "reference_environment": {
+      "python": "3.14.4",
+      "poetry": "2.4.3"
+    },
+    "environment_basis": "versions previously reported by author; not rediscovered for this run",
+    "initial_acquisition": {
+      "run_id": "96b07857a7164f39839482c048640b52",
+      "start_date": "2018-04-01",
+      "end_date": "2018-04-07",
+      "downloaded_count": 7,
+      "skipped_count": 0,
+      "partial_verification_stdout": "Verified: 7/183; complete: False"
+    },
+    "full_acquisition": {
+      "run_id": "e03daaf677b4486e9081d2d1e652638c",
+      "command": "poetry run python -m fraud_detection_mlops.dataset extract",
+      "downloaded_count": 176,
+      "skipped_count": 7,
+      "audit_relative_path": "data/raw/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/runs/e03daaf677b4486e9081d2d1e652638c.json"
+    },
+    "full_verification": {
+      "command": "poetry run python -m fraud_detection_mlops.dataset verify --require-complete",
+      "stdout": "Verified: 183/183; complete: True",
+      "verified_file_count": 183,
+      "complete": true
+    },
+    "quality_checks": [
+      {
+        "command": "poetry check --lock",
+        "stdout": "All set!"
+      },
+      {
+        "command": "poetry run ruff check .",
+        "stdout": "All checks passed!"
+      },
+      {
+        "command": "poetry run ruff format --check .",
+        "stdout": "12 files already formatted"
+      },
+      {
+        "command": "poetry run pytest -q",
+        "passed": 39,
+        "duration_seconds": 0.29
+      }
+    ]
+  },
+  "ci_evidence": {
+    "origin": "read_only_GitHub_API_query",
+    "workflow": "CI",
+    "run_id": 37514553686,
+    "head_sha": "18242fcc8e340bad52a394c7c3624b78bd809b6c",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37514553686",
+    "updated_at_utc": "2026-10-06T18:52:24Z",
+    "scope": "lockfile, installation, lint, formatting and automated tests; no real dataset download"
+  },
+  "limits": [
+    "Local results are transcribed from author-provided terminal output, not a signed attestation.",
+    "Original local manifest and extraction audit JSON files were not opened to create this receipt.",
+    "This receipt does not replace native manifest, audit files or raw-data storage.",
+    "Semantic validation of transactions and model evaluation are pending.",
+    "No remotely stored raw artifacts or immutable audit storage are implemented."
+  ]
+}

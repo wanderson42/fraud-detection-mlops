@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "assistant_execution_in_preparation_environment",
+  "scope": "controlled_data_validation_not_real_dataset_eda",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "implementation_commit": null,
+  "baseline": {
+    "published_silver_commit": "acf15169fed522751b974efae032d8683b64a036",
+    "locally_applied_patch": "tox-validation.patch",
+    "author_makefile_edits_preserved": true
+  },
+  "implementation_sha256": {
+    "fraud_detection_mlops/eda.py": "fbd2ab491ffebf2076d7a0b8812958769f2f3071d8f93ed80c42bccd995fd7d8",
+    "fraud_detection_mlops/temporal.py": "8b9b3acf9c45a40e1a31a0ce429bf7c3a3fb01697b15de845b9a1a1e9532c444",
+    "references/temporal_protocol_v1.json": "7332129121d13eac68bf2e4776abe7aacf0b24b449e60f08ef8283b56954e4d4",
+    "tests/test_eda.py": "c7be1e80815805c6f51895260b2dc136b1d862c975de83596a9e190ea1163842",
+    "pyproject.toml": "e85ec36e2856993da282384c51902862a792cc99250396d892656ec6e39458de",
+    "poetry.lock": "84486ec6b64bc800235fe64ef1d8bd0a443a370f2c7262c1412d0a2dd19a8e2c"
+  },
+  "environment": {
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "tox": "4.32.0",
+    "pandas": "3.0.6",
+    "pyarrow": "25.0.1",
+    "duckdb": "1.5.6",
+    "matplotlib": "3.11.2"
+  },
+  "controlled_validation": {
+    "passed": 83,
+    "pytest_seconds": 3.37,
+    "tox_total_seconds": 5.86,
+    "lint": "passed",
+    "format": "33 files already formatted",
+    "coverage": [
+      "training_date_boundaries",
+      "holdout_amounts_excluded",
+      "source_preserved",
+      "output_checksums",
+      "invalid_protocols",
+      "failure_audit_and_cleanup",
+      "input_changed_during_run",
+      "cli"
+    ],
+    "real_dataset_execution": false,
+    "command": "poetry run tox -e py314",
+    "environment_created_afresh_in_this_preparation": true
+  },
+  "dependency_changes": {
+    "changed_existing": {},
+    "added": {
+      "contourpy": "1.4.0",
+      "cycler": "0.12.1",
+      "fonttools": "4.66.1",
+      "kiwisolver": "1.5.1",
+      "matplotlib": "3.11.2",
+      "pillow": "12.3.0",
+      "pyparsing": "3.3.3"
+    }
+  },
+  "prior_author_tox_report": {
+    "origin": "author_terminal_output_provided_in_chat",
+    "reported_on": "2026-10-07",
+    "passed": 70,
+    "pytest_seconds": 1.57,
+    "tox_total_seconds": 4.61,
+    "lint": "passed",
+    "format": "27 files already formatted",
+    "diff_check": "no_output",
+    "implementation_commit": null,
+    "ci_for_tox_commit": "not_reported"
+  },
+  "pending": [
+    "author_applies_eda_patch",
+    "real_training_eda_execution",
+    "interpretation_of_findings",
+    "author_implementation_commit_and_ci",
+    "gold_features_and_model_evaluation"
+  ],
+  "limitations": [
+    "controlled_data_are_synthetic_test_fixtures",
+    "no_real_eda_results",
+    "no_model_metrics",
+    "native_author_data_artifacts_not_inspected",
+    "no_wheel_distribution_test"
+  ]
+}

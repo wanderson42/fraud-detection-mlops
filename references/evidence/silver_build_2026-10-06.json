@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "evidence_id": "silver_build_2026-10-06",
+  "documentation_policy": "documentation_v1",
+  "scope": "complete_silver_build_and_offline_verification_reported_by_author",
+  "origin": "author_provided_terminal_output",
+  "reported_by": "Wanderson Ferreira",
+  "date_local": "2026-10-06",
+  "timezone_context": "America/Belem",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "contract_version": "silver_v1",
+  "implementation": {
+    "git_commit": "acf15169fed522751b974efae032d8683b64a036",
+    "git_commit_note": "Published Silver implementation checked read-only through the GitHub connector.",
+    "applied_patch": "silver-parquet.patch",
+    "delivered_patch_sha256": "6fd1c41d12cbaa26772289e03526ecc1456f9b0d8b8c0cbfe44b114af11455e2",
+    "patch_application": "git apply --check and git apply completed without reported errors"
+  },
+  "build": {
+    "command": "poetry run python -m fraud_detection_mlops.silver build",
+    "terminal_log_local": "2026-10-06 23:37:05.984",
+    "status": "success",
+    "silver_path_relative_to_project": "data/interim/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/silver_v1",
+    "counts_reported": {
+      "verified_partitions": 183,
+      "rows": 1754155,
+      "distinct_transaction_ids": 1754155,
+      "fraud_count": 14681,
+      "genuine_count": 1739474,
+      "zero_amounts": 42
+    },
+    "run_id": "f9fc5a5083f14d9fadf6892a531e1488",
+    "audit_path_relative_to_project": "data/interim/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/runs/silver_f9fc5a5083f14d9fadf6892a531e1488.json"
+  },
+  "verification": {
+    "command": "poetry run python -m fraud_detection_mlops.silver verify",
+    "terminal_log_local": "2026-10-06 23:37:39.026",
+    "result": "completed_without_reported_errors",
+    "silver_path_relative_to_project": "data/interim/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/silver_v1",
+    "counts_reported": {
+      "verified_partitions": 183,
+      "rows": 1754155,
+      "distinct_transaction_ids": 1754155,
+      "fraud_count": 14681,
+      "genuine_count": 1739474,
+      "zero_amounts": 42
+    }
+  },
+  "quality_checks_reported": [
+    {
+      "command": "poetry check --lock",
+      "result": "All set!"
+    },
+    {
+      "command": "poetry run ruff check .",
+      "result": "All checks passed!"
+    },
+    {
+      "command": "poetry run ruff format --check .",
+      "formatted_files": 25
+    },
+    {
+      "command": "poetry run pytest -q",
+      "passed": 70,
+      "duration_seconds": 0.91
+    },
+    {
+      "command": "git diff --check",
+      "result": "no output reported"
+    }
+  ],
+  "reconciliation_with_reported_bronze_profile": {
+    "evidence": "references/evidence/silver_profile_2026-10-06.json",
+    "all_reported_counts_match": true,
+    "rows_removed": 0,
+    "zero_amounts_preserved": 42
+  },
+  "native_artifacts_inspected": false,
+  "ci_for_silver_commit": "success",
+  "limits": [
+    "Receipt transcribes terminal results; native manifest, audit and Parquet files were not supplied for inspection here.",
+    "Paths are normalized relative to the project; personal absolute paths are omitted.",
+    "Terminal log times are command log times, not native audit start/finish timestamps or measured durations.",
+    "Coverage is the complete pinned simulated dataset; this does not establish real-world model performance.",
+    "No model has been evaluated; temporal splits, predictive features and model evaluation remain future work."
+  ],
+  "ci_evidence": {
+    "origin": "read_only_github_connector",
+    "run_id": 37563463479,
+    "head_sha": "acf15169fed522751b974efae032d8683b64a036",
+    "branch": "feat/silver-data-contract",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37563463479",
+    "scope": "Silver implementation before tox integration"
+  }
+}

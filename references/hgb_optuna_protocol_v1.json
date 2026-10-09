@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "version": "optuna_v1",
+  "scope": "temporal_development_only",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "model_id": "hist_gradient_boosting",
+  "features": "all_19_gold_v1_in_canonical_order",
+  "label_delay_days": 7,
+  "history_days": 14,
+  "context_start": "2018-05-27",
+  "development_end_exclusive": "2018-08-19",
+  "folds": [
+    {
+      "id": "fold_1",
+      "train": {
+        "start": "2018-06-10",
+        "end_exclusive": "2018-07-08"
+      },
+      "validation": {
+        "start": "2018-07-15",
+        "end_exclusive": "2018-07-22"
+      }
+    },
+    {
+      "id": "fold_2",
+      "train": {
+        "start": "2018-06-24",
+        "end_exclusive": "2018-07-22"
+      },
+      "validation": {
+        "start": "2018-07-29",
+        "end_exclusive": "2018-08-05"
+      }
+    },
+    {
+      "id": "fold_3",
+      "train": {
+        "start": "2018-07-08",
+        "end_exclusive": "2018-08-05"
+      },
+      "validation": {
+        "start": "2018-08-12",
+        "end_exclusive": "2018-08-19"
+      }
+    }
+  ],
+  "reserved": {
+    "confirmation_train": {
+      "start": "2018-07-29",
+      "end_exclusive": "2018-08-26"
+    },
+    "confirmation": {
+      "start": "2018-09-02",
+      "end_exclusive": "2018-09-16"
+    },
+    "operational_replay": {
+      "start": "2018-09-16",
+      "end_exclusive": "2018-10-01"
+    }
+  },
+  "budget": {
+    "max_trials": 20,
+    "reference_fits": 3,
+    "max_fit_attempts": 63,
+    "max_threads": 4,
+    "random_state": 42
+  },
+  "search_space": {
+    "classifier__learning_rate": {
+      "type": "float",
+      "low": 0.03,
+      "high": 0.2,
+      "log": true
+    },
+    "classifier__max_iter": {
+      "type": "categorical",
+      "choices": [
+        100,
+        200,
+        300
+      ]
+    },
+    "classifier__max_leaf_nodes": {
+      "type": "categorical",
+      "choices": [
+        7,
+        15,
+        31
+      ]
+    },
+    "classifier__min_samples_leaf": {
+      "type": "categorical",
+      "choices": [
+        20,
+        50,
+        100
+      ]
+    },
+    "classifier__l2_regularization": {
+      "type": "float",
+      "low": 0.01,
+      "high": 10.0,
+      "log": true
+    }
+  },
+  "sampler": {
+    "name": "TPE",
+    "n_startup_trials": 5,
+    "seed_rule": "random_state_plus_trial_number",
+    "multivariate": false,
+    "constant_liar": false
+  },
+  "objective": "mean_of_three_validation_average_precisions",
+  "comparison": "reference_parameters_refitted_on_each_identical_training_window",
+  "development_gate": {
+    "minimum_absolute_mean_ap_gain": 0.01,
+    "minimum_absolute_mean_precision_at_100_gain": 0.02,
+    "maximum_fold_ap_loss": 0.02,
+    "requires_complete_budget": true,
+    "promotion": false
+  },
+  "pruning": false,
+  "early_stopping": false,
+  "row_sampling": false,
+  "feature_selection": false,
+  "formal_superiority_claim": false,
+  "confirmation_evaluated": false,
+  "original_test_reused": false,
+  "duration_policy": "measure_one_trial_before_continuing; no_unmeasured_duration_guarantee",
+  "next_stage": "Review development effects and cost, then commit a separate confirmation and statistical protocol before opening September.",
+  "reference_parameters": {
+    "learning_rate": 0.1,
+    "max_iter": 100,
+    "max_leaf_nodes": 15,
+    "min_samples_leaf": 50,
+    "l2_regularization": 1.0,
+    "early_stopping": false,
+    "categorical_features": null,
+    "class_weight": "balanced",
+    "random_state": 42
+  }
+}

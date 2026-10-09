@@ -1,0 +1,481 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "author_terminal_transcription",
+  "scope": "validation_only_real_local_diagnostics",
+  "implementation_commit": null,
+  "ci_run_id": null,
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "baseline_run_id": "f6d7aca720f74316b4183f97b6d866ab",
+  "model_uri": "runs:/d3be86000fd24dc8a053dbcab778d4b6/model",
+  "version": "diagnostics_v1",
+  "run_id": "961bb0c32fb84433af922908ea58e76b",
+  "diagnostics_relative_path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/diagnostics_v1/961bb0c32fb84433af922908ea58e76b",
+  "run_result": {
+    "verified_outputs": 7,
+    "test_evaluated": false,
+    "status": "success",
+    "score_reconciliation": "reported_by_run_terminal_message"
+  },
+  "verify_result": {
+    "verified_outputs": 7,
+    "status": "success"
+  },
+  "quality_checks": {
+    "command": "make validate",
+    "python": "3.14.4",
+    "passed": 142,
+    "warnings": 29,
+    "pytest_seconds": 13.65,
+    "tox_seconds": 17.32,
+    "format": "57 files already formatted",
+    "lockfile": "passed",
+    "lint": "passed",
+    "git_diff_check": "no_errors_reported",
+    "warning_origins": [
+      "SHAP_Matplotlib_colormap_deprecations",
+      "MLflow_SQLAlchemy_noload",
+      "MLflow_codecs_open"
+    ]
+  },
+  "daily": [
+    {
+      "date": "2018-05-06",
+      "model_id": "dummy_prior",
+      "fraud_count": 79,
+      "fraud_rate": 0.008178,
+      "average_precision": 0.008178,
+      "precision_at_100": 0.02,
+      "missed_fraudulent_customers": 71,
+      "customer_recall_at_100": 0.027397
+    },
+    {
+      "date": "2018-05-07",
+      "model_id": "dummy_prior",
+      "fraud_count": 92,
+      "fraud_rate": 0.009485,
+      "average_precision": 0.009485,
+      "precision_at_100": 0.03,
+      "missed_fraudulent_customers": 74,
+      "customer_recall_at_100": 0.038961
+    },
+    {
+      "date": "2018-05-08",
+      "model_id": "dummy_prior",
+      "fraud_count": 80,
+      "fraud_rate": 0.008482,
+      "average_precision": 0.008482,
+      "precision_at_100": 0.03,
+      "missed_fraudulent_customers": 67,
+      "customer_recall_at_100": 0.042857
+    },
+    {
+      "date": "2018-05-09",
+      "model_id": "dummy_prior",
+      "fraud_count": 84,
+      "fraud_rate": 0.008759,
+      "average_precision": 0.008759,
+      "precision_at_100": 0.01,
+      "missed_fraudulent_customers": 79,
+      "customer_recall_at_100": 0.0125
+    },
+    {
+      "date": "2018-05-10",
+      "model_id": "dummy_prior",
+      "fraud_count": 88,
+      "fraud_rate": 0.009027,
+      "average_precision": 0.009027,
+      "precision_at_100": 0.01,
+      "missed_fraudulent_customers": 74,
+      "customer_recall_at_100": 0.013333
+    },
+    {
+      "date": "2018-05-11",
+      "model_id": "dummy_prior",
+      "fraud_count": 77,
+      "fraud_rate": 0.008075,
+      "average_precision": 0.008075,
+      "precision_at_100": 0.02,
+      "missed_fraudulent_customers": 62,
+      "customer_recall_at_100": 0.03125
+    },
+    {
+      "date": "2018-05-12",
+      "model_id": "dummy_prior",
+      "fraud_count": 80,
+      "fraud_rate": 0.008344,
+      "average_precision": 0.008344,
+      "precision_at_100": 0.03,
+      "missed_fraudulent_customers": 69,
+      "customer_recall_at_100": 0.041667
+    },
+    {
+      "date": "2018-05-06",
+      "model_id": "logistic_regression",
+      "fraud_count": 79,
+      "fraud_rate": 0.008178,
+      "average_precision": 0.308151,
+      "precision_at_100": 0.39,
+      "missed_fraudulent_customers": 34,
+      "customer_recall_at_100": 0.534247
+    },
+    {
+      "date": "2018-05-07",
+      "model_id": "logistic_regression",
+      "fraud_count": 92,
+      "fraud_rate": 0.009485,
+      "average_precision": 0.450808,
+      "precision_at_100": 0.5,
+      "missed_fraudulent_customers": 27,
+      "customer_recall_at_100": 0.649351
+    },
+    {
+      "date": "2018-05-08",
+      "model_id": "logistic_regression",
+      "fraud_count": 80,
+      "fraud_rate": 0.008482,
+      "average_precision": 0.495202,
+      "precision_at_100": 0.48,
+      "missed_fraudulent_customers": 22,
+      "customer_recall_at_100": 0.685714
+    },
+    {
+      "date": "2018-05-09",
+      "model_id": "logistic_regression",
+      "fraud_count": 84,
+      "fraud_rate": 0.008759,
+      "average_precision": 0.455897,
+      "precision_at_100": 0.54,
+      "missed_fraudulent_customers": 26,
+      "customer_recall_at_100": 0.675
+    },
+    {
+      "date": "2018-05-10",
+      "model_id": "logistic_regression",
+      "fraud_count": 88,
+      "fraud_rate": 0.009027,
+      "average_precision": 0.4323,
+      "precision_at_100": 0.49,
+      "missed_fraudulent_customers": 26,
+      "customer_recall_at_100": 0.653333
+    },
+    {
+      "date": "2018-05-11",
+      "model_id": "logistic_regression",
+      "fraud_count": 77,
+      "fraud_rate": 0.008075,
+      "average_precision": 0.494482,
+      "precision_at_100": 0.45,
+      "missed_fraudulent_customers": 19,
+      "customer_recall_at_100": 0.703125
+    },
+    {
+      "date": "2018-05-12",
+      "model_id": "logistic_regression",
+      "fraud_count": 80,
+      "fraud_rate": 0.008344,
+      "average_precision": 0.50569,
+      "precision_at_100": 0.51,
+      "missed_fraudulent_customers": 21,
+      "customer_recall_at_100": 0.708333
+    },
+    {
+      "date": "2018-05-06",
+      "model_id": "hist_gradient_boosting",
+      "fraud_count": 79,
+      "fraud_rate": 0.008178,
+      "average_precision": 0.496161,
+      "precision_at_100": 0.45,
+      "missed_fraudulent_customers": 28,
+      "customer_recall_at_100": 0.616438
+    },
+    {
+      "date": "2018-05-07",
+      "model_id": "hist_gradient_boosting",
+      "fraud_count": 92,
+      "fraud_rate": 0.009485,
+      "average_precision": 0.60269,
+      "precision_at_100": 0.55,
+      "missed_fraudulent_customers": 22,
+      "customer_recall_at_100": 0.714286
+    },
+    {
+      "date": "2018-05-08",
+      "model_id": "hist_gradient_boosting",
+      "fraud_count": 80,
+      "fraud_rate": 0.008482,
+      "average_precision": 0.672992,
+      "precision_at_100": 0.53,
+      "missed_fraudulent_customers": 17,
+      "customer_recall_at_100": 0.757143
+    },
+    {
+      "date": "2018-05-09",
+      "model_id": "hist_gradient_boosting",
+      "fraud_count": 84,
+      "fraud_rate": 0.008759,
+      "average_precision": 0.535278,
+      "precision_at_100": 0.6,
+      "missed_fraudulent_customers": 20,
+      "customer_recall_at_100": 0.75
+    },
+    {
+      "date": "2018-05-10",
+      "model_id": "hist_gradient_boosting",
+      "fraud_count": 88,
+      "fraud_rate": 0.009027,
+      "average_precision": 0.667038,
+      "precision_at_100": 0.54,
+      "missed_fraudulent_customers": 21,
+      "customer_recall_at_100": 0.72
+    },
+    {
+      "date": "2018-05-11",
+      "model_id": "hist_gradient_boosting",
+      "fraud_count": 77,
+      "fraud_rate": 0.008075,
+      "average_precision": 0.691642,
+      "precision_at_100": 0.51,
+      "missed_fraudulent_customers": 13,
+      "customer_recall_at_100": 0.796875
+    },
+    {
+      "date": "2018-05-12",
+      "model_id": "hist_gradient_boosting",
+      "fraud_count": 80,
+      "fraud_rate": 0.008344,
+      "average_precision": 0.75113,
+      "precision_at_100": 0.6,
+      "missed_fraudulent_customers": 12,
+      "customer_recall_at_100": 0.833333
+    }
+  ],
+  "permutation": [
+    {
+      "feature": "TX_AMOUNT",
+      "ap_drop_mean": 0.304394,
+      "ap_drop_std": 0.002357
+    },
+    {
+      "feature": "TERMINAL_KNOWN_FRAUD_RATE_7D",
+      "ap_drop_mean": 0.216758,
+      "ap_drop_std": 0.001256
+    },
+    {
+      "feature": "CUSTOMER_AMOUNT_RATIO_7D",
+      "ap_drop_mean": 0.065655,
+      "ap_drop_std": 0.003558
+    },
+    {
+      "feature": "CUSTOMER_AVG_AMOUNT_1D",
+      "ap_drop_mean": 0.017785,
+      "ap_drop_std": 0.009215
+    },
+    {
+      "feature": "CUSTOMER_AVG_AMOUNT_7D",
+      "ap_drop_mean": 0.00634,
+      "ap_drop_std": 0.002341
+    },
+    {
+      "feature": "TX_HOUR",
+      "ap_drop_mean": 0.003864,
+      "ap_drop_std": 0.001938
+    },
+    {
+      "feature": "TX_WEEKDAY",
+      "ap_drop_mean": 0.003816,
+      "ap_drop_std": 0.001433
+    },
+    {
+      "feature": "CUSTOMER_AMOUNT_RATIO_1D",
+      "ap_drop_mean": 0.002891,
+      "ap_drop_std": 0.002841
+    },
+    {
+      "feature": "TERMINAL_KNOWN_LABEL_COUNT_1D",
+      "ap_drop_mean": 0.001373,
+      "ap_drop_std": 0.00274
+    },
+    {
+      "feature": "CUSTOMER_TX_COUNT_1D",
+      "ap_drop_mean": 0.001003,
+      "ap_drop_std": 0.000732
+    },
+    {
+      "feature": "TERMINAL_TX_COUNT_1D",
+      "ap_drop_mean": 0.000494,
+      "ap_drop_std": 0.000617
+    },
+    {
+      "feature": "TERMINAL_KNOWN_FRAUD_COUNT_1D",
+      "ap_drop_mean": 2.4e-05,
+      "ap_drop_std": 7.9e-05
+    },
+    {
+      "feature": "CUSTOMER_AMOUNT_RATIO_VALID_1D",
+      "ap_drop_mean": 0.0,
+      "ap_drop_std": 0.0
+    },
+    {
+      "feature": "CUSTOMER_AMOUNT_RATIO_VALID_7D",
+      "ap_drop_mean": 0.0,
+      "ap_drop_std": 0.0
+    },
+    {
+      "feature": "TERMINAL_TX_COUNT_7D",
+      "ap_drop_mean": -0.000437,
+      "ap_drop_std": 0.002259
+    },
+    {
+      "feature": "TERMINAL_KNOWN_LABEL_COUNT_7D",
+      "ap_drop_mean": -0.000956,
+      "ap_drop_std": 0.000791
+    },
+    {
+      "feature": "CUSTOMER_TX_COUNT_7D",
+      "ap_drop_mean": -0.005847,
+      "ap_drop_std": 0.002296
+    },
+    {
+      "feature": "TERMINAL_KNOWN_FRAUD_RATE_1D",
+      "ap_drop_mean": -0.01597,
+      "ap_drop_std": 0.001149
+    },
+    {
+      "feature": "TERMINAL_KNOWN_FRAUD_COUNT_7D",
+      "ap_drop_mean": -0.02481,
+      "ap_drop_std": 0.000914
+    }
+  ],
+  "shap_summary": [
+    {
+      "feature": "CUSTOMER_TX_COUNT_7D",
+      "mean_abs_shap_log_odds": 0.224147
+    },
+    {
+      "feature": "TX_AMOUNT",
+      "mean_abs_shap_log_odds": 0.165705
+    },
+    {
+      "feature": "TERMINAL_KNOWN_LABEL_COUNT_7D",
+      "mean_abs_shap_log_odds": 0.152558
+    },
+    {
+      "feature": "TERMINAL_TX_COUNT_7D",
+      "mean_abs_shap_log_odds": 0.134154
+    },
+    {
+      "feature": "CUSTOMER_AVG_AMOUNT_7D",
+      "mean_abs_shap_log_odds": 0.118388
+    },
+    {
+      "feature": "TX_HOUR",
+      "mean_abs_shap_log_odds": 0.097254
+    },
+    {
+      "feature": "CUSTOMER_AMOUNT_RATIO_7D",
+      "mean_abs_shap_log_odds": 0.090806
+    },
+    {
+      "feature": "TERMINAL_KNOWN_FRAUD_RATE_7D",
+      "mean_abs_shap_log_odds": 0.074428
+    },
+    {
+      "feature": "TERMINAL_KNOWN_LABEL_COUNT_1D",
+      "mean_abs_shap_log_odds": 0.066585
+    },
+    {
+      "feature": "CUSTOMER_AVG_AMOUNT_1D",
+      "mean_abs_shap_log_odds": 0.059369
+    },
+    {
+      "feature": "CUSTOMER_AMOUNT_RATIO_1D",
+      "mean_abs_shap_log_odds": 0.056232
+    },
+    {
+      "feature": "TERMINAL_TX_COUNT_1D",
+      "mean_abs_shap_log_odds": 0.047153
+    },
+    {
+      "feature": "TX_WEEKDAY",
+      "mean_abs_shap_log_odds": 0.039506
+    },
+    {
+      "feature": "CUSTOMER_TX_COUNT_1D",
+      "mean_abs_shap_log_odds": 0.032555
+    },
+    {
+      "feature": "TERMINAL_KNOWN_FRAUD_COUNT_7D",
+      "mean_abs_shap_log_odds": 0.013529
+    },
+    {
+      "feature": "TERMINAL_KNOWN_FRAUD_RATE_1D",
+      "mean_abs_shap_log_odds": 0.013297
+    },
+    {
+      "feature": "TERMINAL_KNOWN_FRAUD_COUNT_1D",
+      "mean_abs_shap_log_odds": 0.001226
+    },
+    {
+      "feature": "CUSTOMER_AMOUNT_RATIO_VALID_1D",
+      "mean_abs_shap_log_odds": 0.0
+    },
+    {
+      "feature": "CUSTOMER_AMOUNT_RATIO_VALID_7D",
+      "mean_abs_shap_log_odds": 0.0
+    }
+  ],
+  "parameter_provenance": {
+    "repeats_default": 5,
+    "uniform_sample_size_default": 1000,
+    "origin": "implementation_defaults_for_reported_command_without_overrides",
+    "native_report_parameters_independently_inspected": false
+  },
+  "derived_operational_summary": {
+    "origin": "arithmetic_from_author_terminal_table_and_documented_100_alert_policy",
+    "unit": "customer_day_occurrence_not_unique_person_or_transaction",
+    "method": "sum(100 * precision_at_100); genuine = 700 - found; total fraudulent = found + sum(missed)",
+    "models": {
+      "dummy_prior": {
+        "alert_slots": 700,
+        "fraudulent_customer_day_occurrences_in_alerts": 15,
+        "genuine_customer_day_occurrences_in_alerts": 685,
+        "fraudulent_customer_day_occurrences_outside_alerts": 496,
+        "fraudulent_customer_day_occurrences_total": 511
+      },
+      "logistic_regression": {
+        "alert_slots": 700,
+        "fraudulent_customer_day_occurrences_in_alerts": 336,
+        "genuine_customer_day_occurrences_in_alerts": 364,
+        "fraudulent_customer_day_occurrences_outside_alerts": 175,
+        "fraudulent_customer_day_occurrences_total": 511
+      },
+      "hist_gradient_boosting": {
+        "alert_slots": 700,
+        "fraudulent_customer_day_occurrences_in_alerts": 378,
+        "genuine_customer_day_occurrences_in_alerts": 322,
+        "fraudulent_customer_day_occurrences_outside_alerts": 133,
+        "fraudulent_customer_day_occurrences_total": 511
+      }
+    },
+    "hgb_additional_fraudulent_customer_day_occurrences_vs_logistic": 42
+  },
+  "notebook_updated": {
+    "origin": "author_statement",
+    "native_updated_notebook_received": false
+  },
+  "native_artifact_hashes": null,
+  "refit": false,
+  "feature_selection": false,
+  "hypothesis_test": false,
+  "test_evaluated": false,
+  "limitations": [
+    "daily_AP_recall_fraud_rate_and_importance_values_rounded_to_six_decimal_places_in_terminal",
+    "native_report_manifest_audit_model_database_and_updated_notebook_not_uploaded",
+    "run_success_and_verification_reported_by_author_not_independently_reexecuted_on_real_artifacts",
+    "no_new_commit_or_CI_identified",
+    "seven_validation_days_with_repeated_customers_not_independent_evidence_of_superiority",
+    "offline_whole_day_ranking_not_live_alert_queue",
+    "no_financial_savings_or_real_fraud_detection_claim"
+  ]
+}

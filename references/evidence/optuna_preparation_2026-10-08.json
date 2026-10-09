@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "stage": "optuna_v1_preparation",
+  "recorded_date": "2026-10-08",
+  "origin": "assistant_preparation_in_isolated_workspace",
+  "base": {
+    "upstream_revision": "e1d58df85ca2ae9921f4e01719497cb995912cae",
+    "prerequisite_applied_patches": [
+      "mlops-scope-and-statistical-roadmap.patch",
+      "model-interface-contract.patch"
+    ],
+    "local_validation_revision": "78c5278f7c09e5d5d1c6b9bd268546d28d489152",
+    "implementation_revision": "incremental_patch_identified_by_file_hashes"
+  },
+  "implementation_sha256": {
+    "fraud_detection_mlops/modeling/development.py": "8bf951b49c13fda7a6b7e2a18bc7fa938164e7381dc5bedc1234afb7933e2f52",
+    "fraud_detection_mlops/modeling/search.py": "5cfc5edb30ecb9b6f1928c7c60423852899ae10a2b55ebf27564f8c4da20a7e9",
+    "fraud_detection_mlops/gold.py": "42295ece28f3782630845ad767a73279f7eb252914a6d4d8fc2d8df845aa2db0",
+    "fraud_detection_mlops/modeling/evaluation.py": "d726127f65105824027885a955516d34133acf1f001a8b3badd80a20aaa1bbe9",
+    "references/optuna_protocol_v1.json": "d0289c3002945b47d433d601b9f6dba1ae41789e9bf19b04010c399d58858531",
+    "pyproject.toml": "8d94fa21830a926ea39ed2fdb433993c3fb73ff37a282e18567fa94506eeffb1",
+    "poetry.lock": "35882cf6e648244e7137628f4988b3eafa37f688579b7a11f5ea93b9160784f2",
+    "tests/modeling/test_development.py": "837fc8bc16477a22c85177ca3bebdcf4a55f969ec22a5986b0cb30176ae769bc",
+    "tests/modeling/test_search.py": "612bef4a78c8e974edcd18a2b7c1fe835ed021bdba217e80c2d5600b1f80e6a3",
+    "tests/modeling/conftest.py": "9376a131385c68d872693042e68f672c4b7ce9ff6182b742c97725a175e3a7db",
+    "notebooks/stages/10_temporal_optuna.ipynb": "2c3841c1ff6ff3802d62acaf434ab734f3915e2a2c9927d1790f4a4eace83608"
+  },
+  "environment": {
+    "python": "3.14.4",
+    "optuna": "5.0.0",
+    "scikit-learn": "1.9.1",
+    "mlflow": "3.17.0",
+    "skops": "0.16.0",
+    "pandas": "3.0.6",
+    "duckdb": "1.5.6",
+    "ruff": "0.16.10",
+    "tox": "4.32.0"
+  },
+  "checks": {
+    "tox": {
+      "command": "tox -e py314",
+      "status": "passed",
+      "tests": 224,
+      "warnings": 77,
+      "pytest_wall_seconds": 87.22,
+      "tox_wall_seconds": 95.24
+    },
+    "final_sampler_scheduler_test": "passed_after_final_test_refinement",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "poetry_check_lock": "passed",
+    "git_diff_check": "passed",
+    "incremental_patch_application": "passed_on_reconstructed_prerequisite_state",
+    "prior_notebook_code_outputs_metadata": "preserved"
+  },
+  "capabilities_demonstrated": [
+    "authorized_causal_development_preparation",
+    "reserved_rows_not_opened",
+    "same_training_windows_for_reference_and_trials",
+    "single_writer_sqlite_and_global_fit_trial_budgets",
+    "failed_and_abandoned_trials_consume_budget",
+    "completed_fit_reuse_without_new_tracking_runs",
+    "restart_equivalent_tpe_sequence_through_public_runner",
+    "receipt_corruption_rejected_before_new_fits",
+    "synthetic_native_mlflow_skops_score_parity",
+    "offline_metric_event_receipt_and_report_reconciliation"
+  ],
+  "budget": {
+    "max_trials": 20,
+    "reference_fits": 3,
+    "max_fit_attempts": 63,
+    "max_threads": 4,
+    "default_new_trials": 1
+  },
+  "execution_scope": {
+    "test_data": "synthetic_only",
+    "handbook_search_executed": false,
+    "confirmation_evaluated": false,
+    "operational_replay_executed": false,
+    "original_test_reused": false,
+    "reference_fixed_degradation_measured": false,
+    "formal_superiority_claim": false,
+    "production_promotion": false
+  },
+  "limitations": [
+    "No measured runtime guarantee or global HGB memory cap.",
+    "Process RSS is cumulative high-water mark; completed-fold timings exclude failed attempts.",
+    "Interrupted reference fit or partial publication requires explicit review; no automatic refit.",
+    "Confirmation hypotheses, dependence-aware statistical method and operational replay policy remain separate pending deliverables."
+  ]
+}

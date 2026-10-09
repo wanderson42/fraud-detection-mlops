@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "evidence_type": "author_supplied_execution_report",
+  "recorded_at_utc": "2026-10-09",
+  "source_file": "report(1).json",
+  "source_sha256": "ef3eac722092f17edc3c23b455d186b3c6379a9444d8f51876e9e00a44d284aa",
+  "implementation_revision": null,
+  "verification_scope": "Leitura do relatório fornecido pelo autor; dados, banco Optuna e artefatos reais não foram disponibilizados para conferência independente.",
+  "revision_note": "O relatório não contém a revisão de implementação; nenhum hash foi inferido.",
+  "summary": {
+    "version": "optuna_v1",
+    "trials_used": 20,
+    "max_trials": 20,
+    "completed_trials": 20,
+    "failed_trials": 0,
+    "fit_attempts": 63,
+    "budget_finished": true,
+    "best_development_trial": 12,
+    "candidate_for_confirmation_review": null,
+    "decision": "retain_reference",
+    "confirmation_evaluated": false,
+    "production_promotion": false,
+    "original_test_reused": false,
+    "formal_superiority_claim": false
+  },
+  "reference": {
+    "fit_save_tracking_seconds": 3.432948417001171,
+    "fit_seconds": 1.7221710800004075,
+    "mean_ap": 0.6522771210603097,
+    "mean_precision_at_100": 0.5623809523809524,
+    "peak_process_rss_mib": 1002.85546875,
+    "predict_seconds": 0.12085317500168458
+  },
+  "best_trial": {
+    "delta_mean_ap": 0.005806835896401075,
+    "delta_mean_precision_at_100": 0.0023809523809523725,
+    "fit_save_tracking_seconds": 7.878637256995717,
+    "fit_seconds": 4.970462019002298,
+    "fold_ap_deltas": [
+      0.0161460731374663,
+      0.005643691243286675,
+      -0.004369256691549972
+    ],
+    "fold_metrics": [
+      {
+        "average_precision": 0.6767386448379891,
+        "daily_customer_precision_at_100": 0.5842857142857143,
+        "fold_id": "fold_1"
+      },
+      {
+        "average_precision": 0.6392965982176442,
+        "daily_customer_precision_at_100": 0.5571428571428572,
+        "fold_id": "fold_2"
+      },
+      {
+        "average_precision": 0.658216627814499,
+        "daily_customer_precision_at_100": 0.5528571428571428,
+        "fold_id": "fold_3"
+      }
+    ],
+    "mean_ap": 0.6580839569567107,
+    "mean_precision_at_100": 0.5647619047619048,
+    "parameters": {
+      "classifier__l2_regularization": 0.7734589331242122,
+      "classifier__learning_rate": 0.07776550141689081,
+      "classifier__max_iter": 300,
+      "classifier__max_leaf_nodes": 31,
+      "classifier__min_samples_leaf": 50
+    },
+    "passes_development_gate": false,
+    "peak_process_rss_mib": 979.25,
+    "predict_seconds": 0.35206790400116006,
+    "trial_number": 12
+  }
+}

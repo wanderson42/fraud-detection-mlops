@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "stage": "candidate_freeze_preparation",
+  "recorded_on": "2026-10-08",
+  "status": "implementation_validated_real_freeze_and_test_pending",
+  "source_revision": "de41ee00246b6170cc65bdf63df1808ec35277bd",
+  "base_overlays": [
+    "controlled-ablation-execution-evidence.patch",
+    "mlops-roadmap-and-documentation.patch"
+  ],
+  "validation": {
+    "execution": "assistant_synthetic_checkout",
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "tox": "4.32.0",
+    "command": "poetry run tox -e py314",
+    "lock_check": "passed",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "pytest_passed": 164,
+    "pytest_warnings": 66,
+    "pytest_seconds": 40.28,
+    "tox_seconds": 68.1,
+    "new_freeze_cases": 12,
+    "lockfile_modified": false
+  },
+  "warning_occurrences": {
+    "shap_matplotlib_colors": 3,
+    "mlflow_sqlalchemy_noload": 1,
+    "mlflow_codecs_open": 62,
+    "new_warning_categories": 0,
+    "globally_suppressed": false
+  },
+  "integration_scope": {
+    "data": "synthetic_fixture",
+    "tracking": "real_local_mlflow_sqlite",
+    "model_format": "skops",
+    "reference_validation_score_parity": true,
+    "synthetic_train_and_test_parquets_removed_before_freeze": true,
+    "fit_forbidden_during_freeze": true,
+    "synthetic_reference_selection_directed_to_hgb_to_isolate_artifact_contract": true
+  },
+  "files_sha256": {
+    "fraud_detection_mlops/artifacts.py": "19fff8003786488bf07459f340b10f7b26456fcfee71b0b759c8a2f249582399",
+    "fraud_detection_mlops/modeling/experiments.py": "657c64271de4c9fbf953e63f84718829770c6c9e9bfc5e8cd449f8dd89cd97e3",
+    "fraud_detection_mlops/modeling/freeze.py": "0a24e59b47b7f6a6b11da9c5374f8fed4032c01d632dfe8e1f37d90ff9e2d5b2",
+    "references/final_evaluation_protocol_v1.json": "5f82c5fe83841a728271b9ac36a4133f453247a57c853ee7d2af9de5a52bb5a7",
+    "tests/modeling/test_freeze.py": "12d3f4c0c6e245065bc2c5e374ca39c2d5baed842779ed4901f5fd47577ef26b",
+    "poetry.lock": "06274a7e7a80201d8f7764f4d794c021e1c93e8bdbd7aa7bf8076fd546ac2f58"
+  },
+  "limits": {
+    "real_user_freeze_executed": false,
+    "test_evaluated": false,
+    "real_models_refit": false,
+    "production_promotion": false,
+    "patch_application_and_notebook_preservation_checked": true
+  }
+}

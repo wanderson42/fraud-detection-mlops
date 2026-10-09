@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "author_terminal_transcription",
+  "scope": "local_real_baseline_mlflow_publication_and_model_reload_verification",
+  "implementation_commit": null,
+  "ci_run_id": null,
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "version": "mlflow_skops_v1",
+  "baseline_run_id": "f6d7aca720f74316b4183f97b6d866ab",
+  "baseline_manifest_sha256": "31e1ad433a5df9c42ee17b8ecfa9e8659e815d0d82b84ad39c10a483f10309e7",
+  "export_implementation_sha256": "983a1b7c1cfa2455aab6476422cb0f93293c45f209e9f8e4d61bd10e28b759ab",
+  "export_poetry_lock_sha256": "0ed7fb3173e424aa2b399313a4e9712933e4694d89774239f3caae9430d40582",
+  "tracking": {
+    "backend": "sqlite",
+    "database_relative_path": "data/tracking/mlflow.db",
+    "experiment_id": "1",
+    "experiment_name": "fraud-temporal-baseline-v1"
+  },
+  "models": [
+    {
+      "model_id": "dummy_prior",
+      "mlflow_run_id": "112aed5b405b4dbc90296f65eeb1fbcb",
+      "model_uri": "runs:/112aed5b405b4dbc90296f65eeb1fbcb/model",
+      "publication_reused": false,
+      "verification_reused": true
+    },
+    {
+      "model_id": "logistic_regression",
+      "mlflow_run_id": "5c71bf8c647e4c878c21d057ae613103",
+      "model_uri": "runs:/5c71bf8c647e4c878c21d057ae613103/model",
+      "publication_reused": false,
+      "verification_reused": true
+    },
+    {
+      "model_id": "hist_gradient_boosting",
+      "mlflow_run_id": "d3be86000fd24dc8a053dbcab778d4b6",
+      "model_uri": "runs:/d3be86000fd24dc8a053dbcab778d4b6/model",
+      "publication_reused": false,
+      "verification_reused": true
+    }
+  ],
+  "publication": {
+    "command": "poetry run python -m fraud_detection_mlops.modeling.tracking publish \"$BASELINE_PATH\" --trust-local-models",
+    "status": "success",
+    "recorded_at_utc": "2026-10-07T23:55:56.087234+00:00"
+  },
+  "verification": {
+    "command": "poetry run python -m fraud_detection_mlops.modeling.tracking verify \"$BASELINE_PATH\"",
+    "status": "success",
+    "recorded_at_utc": "2026-10-07T23:56:06.114327+00:00",
+    "same_run_ids_and_reported_hashes_as_publication": true
+  },
+  "environment": {
+    "mlflow": "3.17.0",
+    "skops": "0.16.0",
+    "scikit-learn": "1.9.1",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6"
+  },
+  "quality_checks": {
+    "origin": "author_terminal_transcription",
+    "runner": "tox py314",
+    "python_patch_version_not_reprinted_in_this_output": true,
+    "passed": 135,
+    "pytest_seconds": 12.91,
+    "tox_total_seconds": 18.52,
+    "lint": "passed",
+    "format": "47 files already formatted",
+    "git_diff_check": "no_errors_reported",
+    "warnings": {
+      "count": 9,
+      "origins": [
+        "MLflow_SQLAlchemy_noload_deprecation",
+        "MLflow_codecs_open_deprecation"
+      ],
+      "not_suppressed": true
+    }
+  },
+  "selected_model": "hist_gradient_boosting",
+  "test_evaluated": false,
+  "refit": false,
+  "model_reload_score_parity": {
+    "origin": "success_reported_by_tracking_publish_and_verify",
+    "independently_recomputed_by_assistant": false,
+    "contract": "skops_and_MLflow_pyfunc_validation_scores_rtol_atol_1e-12"
+  },
+  "limitations": [
+    "native_database_models_predictions_and_audits_not_uploaded",
+    "assistant_compared_reported_hashes_not_local_author_file_bytes",
+    "verify_reused_true_is_not_a_second_publish_idempotency_experiment",
+    "author_ui_http_or_visual_validation_not_provided",
+    "commit_and_ci_not_yet_reported",
+    "no_test_evaluation_or_refit",
+    "no_registry_promotion_or_production_validation"
+  ],
+  "related_evidence": {
+    "baseline": "references/evidence/baseline_validation_2026-10-07.json",
+    "preparation": "references/evidence/mlflow_preparation_2026-10-07.json"
+  }
+}

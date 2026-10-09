@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "evidence_id": "silver_profile_2026-10-06",
+  "documentation_policy": "documentation_v1",
+  "scope": "complete_bronze_diagnostic; not_silver_build_validation",
+  "origin": "author_provided_terminal_stdout; native_profile_json_not_inspected",
+  "reported_by": "Wanderson Ferreira",
+  "date": "2026-10-06",
+  "code_revision": null,
+  "code_revision_note": "Diagnostic code commit was not provided.",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "command": "poetry run python -m fraud_detection_mlops.profiling",
+  "native_report_path": "data/interim/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/profile.json",
+  "native_report_sha256": null,
+  "summary_reported": {
+    "verified_files": 183,
+    "profiled_files": 183,
+    "empty_partitions": 0,
+    "rows": 1754155,
+    "distinct_valid_transaction_ids": 1754155,
+    "fraud_count": 14681,
+    "genuine_count": 1739474,
+    "checks": {
+      "null_values": 0,
+      "duplicate_rows": 0,
+      "duplicate_tx_ids_within_partition": 0,
+      "duplicate_tx_ids_across_previous_partitions": 0,
+      "negative_identifier_values": 0,
+      "invalid_timestamps": 0,
+      "timestamps_outside_partition": 0,
+      "timestamp_order_decreases": 0,
+      "seconds_datetime_mismatch": 0,
+      "days_datetime_mismatch": 0,
+      "invalid_fraud_labels": 0,
+      "invalid_scenario_labels": 0,
+      "fraud_scenario_mismatch": 0,
+      "invalid_or_nonfinite_amounts": 0,
+      "negative_amounts": 0,
+      "zero_amounts": 42
+    },
+    "invalid_int64_by_column": {
+      "TRANSACTION_ID": 0,
+      "CUSTOMER_ID": 0,
+      "TERMINAL_ID": 0,
+      "TX_TIME_SECONDS": 0,
+      "TX_TIME_DAYS": 0,
+      "TX_FRAUD": 0,
+      "TX_FRAUD_SCENARIO": 0
+    },
+    "raw_dtype_variants": {
+      "CUSTOMER_ID": [
+        "object"
+      ],
+      "TERMINAL_ID": [
+        "object"
+      ],
+      "TRANSACTION_ID": [
+        "int64"
+      ],
+      "TX_AMOUNT": [
+        "float64"
+      ],
+      "TX_DATETIME": [
+        "datetime64[ns]"
+      ],
+      "TX_FRAUD": [
+        "int64"
+      ],
+      "TX_FRAUD_SCENARIO": [
+        "int64"
+      ],
+      "TX_TIME_DAYS": [
+        "object"
+      ],
+      "TX_TIME_SECONDS": [
+        "object"
+      ]
+    },
+    "integer_scalar_type_variants": {
+      "TRANSACTION_ID": [
+        "int"
+      ],
+      "CUSTOMER_ID": [
+        "int"
+      ],
+      "TERMINAL_ID": [
+        "int"
+      ],
+      "TX_TIME_SECONDS": [
+        "int"
+      ],
+      "TX_TIME_DAYS": [
+        "int"
+      ],
+      "TX_FRAUD": [
+        "int"
+      ],
+      "TX_FRAUD_SCENARIO": [
+        "int"
+      ]
+    }
+  },
+  "quality_checks_reported": [
+    {
+      "command": "poetry run ruff check .",
+      "result": "All checks passed!"
+    },
+    {
+      "command": "poetry run ruff format --check .",
+      "formatted_files": 22
+    },
+    {
+      "command": "poetry run pytest -q",
+      "passed": 50,
+      "duration_seconds": 0.35
+    },
+    {
+      "command": "git diff --check",
+      "result": "no output reported"
+    }
+  ],
+  "derived_statistics": {
+    "fraud_rate_percent": 0.8369271814634397,
+    "zero_amount_rate_percent": 0.0023943152115976068,
+    "basis": "reported_counts; not_model_metrics"
+  },
+  "silver_policy_decisions": {
+    "version": "silver_v1",
+    "zero_amounts": "preserve_and_count",
+    "invalid_inputs": "fail_before_publication",
+    "row_filtering": "none",
+    "feature_engineering": "deferred_to_gold"
+  },
+  "limits": [
+    "Summary transcribed from the author terminal; native JSON and its generation timestamp/hash were not inspected.",
+    "Checks describe implemented diagnostics; they do not establish suitability for real financial operations.",
+    "The Silver conversion has not yet been reported as executed on all 183 source files.",
+    "The policy for zero amounts is informed by the published generator, not proof of each zero value origin."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "version": "temporal_v1",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "label_delay_days": 7,
+  "windows": {
+    "train": {"start": "2018-04-01", "end_exclusive": "2018-04-29"},
+    "validation": {"start": "2018-05-06", "end_exclusive": "2018-05-13"},
+    "test": {"start": "2018-05-20", "end_exclusive": "2018-05-27"}
+  },
+  "eda_window": "train",
+  "refit_before_test": false,
+  "evaluation_population": "all_transactions_without_customer_blocking",
+  "selection_metric": "average_precision",
+  "secondary_metrics": ["roc_auc", "daily_customer_precision_at_100"],
+  "excluded_predictors": ["TRANSACTION_ID", "CUSTOMER_ID", "TERMINAL_ID", "TX_FRAUD", "TX_FRAUD_SCENARIO"],
+  "random_seed": 42
+}

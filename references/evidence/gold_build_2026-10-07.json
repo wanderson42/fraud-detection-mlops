@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "author_terminal_output_with_subsequent_github_publication_and_ci_verification",
+  "scope": "gold_build_and_verify_on_author_local_silver",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "gold_version": "gold_v1",
+  "protocol_version": "temporal_v1",
+  "implementation": {
+    "git_commit": "14ab57e15f0931ffb6966b26d390a42b514762b7",
+    "prepared_patch": "gold-temporal-features.patch",
+    "preparation_receipt": "references/evidence/gold_preparation_2026-10-07.json",
+    "published_baseline_commit": "fc22a48af5e6d9a0f9648a62effa95d39e02de02",
+    "executed_code_hashes_independently_verified": false,
+    "ci_for_gold_commit": "success",
+    "branch": "feat/gold-temporal-features",
+    "commit_url": "https://github.com/wanderson42/fraud-detection-mlops/commit/14ab57e15f0931ffb6966b26d390a42b514762b7"
+  },
+  "execution": {
+    "reported_on": "2026-10-07",
+    "timezone": "America/Belem",
+    "timezone_origin": "author_local_timezone_from_chat_context",
+    "build_log_timestamp": "2026-10-07T13:10:17.885-03:00",
+    "verify_log_timestamp": "2026-10-07T13:10:33.196-03:00",
+    "timestamps_are_config_log_times_not_measured_start_or_finish": true,
+    "build_command_associated": "poetry run python -m fraud_detection_mlops.gold build",
+    "build_command_origin": "associated_from_requested_workflow_and_build_output",
+    "verify_command_reported": "poetry run python -m fraud_detection_mlops.gold verify",
+    "build_reported": {
+      "verified_partitions": 42,
+      "feature_count": 19,
+      "split_rows": {
+        "train": 268668,
+        "validation": 67255,
+        "test": 66954
+      },
+      "rows": 402877,
+      "status": "success",
+      "gold_path_relative": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/gold_v1",
+      "audit_path_relative": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/runs/gold_8b1564df49fc497080963986b05aa007.json"
+    },
+    "verify_reported": {
+      "verified_partitions": 42,
+      "feature_count": 19,
+      "split_rows": {
+        "train": 268668,
+        "validation": 67255,
+        "test": 66954
+      },
+      "rows": 402877,
+      "gold_path_relative": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/gold_v1"
+    },
+    "audit_run_id": "8b1564df49fc497080963986b05aa007",
+    "runtime_seconds": null,
+    "peak_memory_bytes": null,
+    "author_quality_checks_for_gold": "not_reported_in_this_execution"
+  },
+  "reconciliation_from_reported_counts": {
+    "split_rows_sum_matches_total": true,
+    "build_and_verify_counts_match": true,
+    "train_rows_match_previously_reported_eda_rows": true,
+    "expected_protocol_partition_count_matches_reported": true
+  },
+  "interpretation": {
+    "no_performance_based_row_filter_or_learned_feature_selection": true,
+    "candidate_predictors_are_a_prior_design_choice_not_model_validated": true,
+    "temporal_selection_and_predictor_allowlist_are_applied": true,
+    "all_silver_accepted_rows_in_protocol_windows_preserved_by_builder_contract": true,
+    "learned_transformations_and_model_evaluation_not_performed": true
+  },
+  "native_artifacts_inspected_by_assistant": false,
+  "limitations": [
+    "evidence_is_transcribed_author_terminal_output",
+    "native_gold_parquets_manifest_and_audit_not_uploaded_or_read",
+    "counts_do_not_prove_predictive_value_or_online_feature_parity",
+    "runtime_cannot_be_derived_from_the_two_config_log_timestamps",
+    "no_model_metrics",
+    "native_audit_code_hashes_not_inspected",
+    "author_local_tox_output_not_provided",
+    "saved_notebook_outputs_are_published_evidence_not_assistant_reexecution"
+  ],
+  "pending": [
+    "associate_author_quality_checks",
+    "baseline_training_and_validation_comparison",
+    "frozen_final_test_evaluation"
+  ],
+  "publication_verification": {
+    "origin": "github_plugin_read_only_queries",
+    "verified_on": "2026-10-07",
+    "tree_sha": "dd0d55008de737f7accf6fc35baed5d2fcf49e1b",
+    "all_65_published_blobs_matched_local_baseline": true,
+    "commit_parent": "fc22a48af5e6d9a0f9648a62effa95d39e02de02",
+    "changed_files": 20,
+    "published_implementation_sha256": {
+      "fraud_detection_mlops/gold.py": "baad86175c25c6a602b871f33343009d2d173d70b883fa5a64186e346ad0ba80",
+      "fraud_detection_mlops/features.py": "a22945066dd7e3716b6ea31b1c3ae272bd9220ff5d85ff5c1083cd1bc85bc14f",
+      "references/gold_contract_v1.json": "b90b9be97bb2e2e6cf2b819487b2b805882c6d6f22587ff4671a01e25db54796",
+      "references/temporal_protocol_v1.json": "7332129121d13eac68bf2e4776abe7aacf0b24b449e60f08ef8283b56954e4d4",
+      "tests/test_features.py": "6f293aec7aef80f7d8aeedeaa54343a70cf7eea93702775d5e3629f92c469be3",
+      "tests/test_gold.py": "20322f888cf725bbe7c370f19854caa2f1b744290fdecd36f9bc61cd82ac24cb",
+      "poetry.lock": "58ef63b470260917a2b61fdd1097ad73c1385674e7452e553366d9ba4b996342"
+    },
+    "association_limit": "published_revision_associated_with_author_report_not_native_audit_hash_verification"
+  },
+  "ci_evidence": {
+    "origin": "github_workflow_run_jobs_and_decoded_job_logs",
+    "commit_sha": "14ab57e15f0931ffb6966b26d390a42b514762b7",
+    "run_id": 37652509812,
+    "run_url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37652509812",
+    "job_id": 112899214478,
+    "job_name": "Lint, formatting and tests",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "run_attempt": 1,
+    "created_at_utc": "2026-10-07T16:30:00Z",
+    "updated_at_utc": "2026-10-07T16:31:03Z",
+    "command": "poetry run tox -e py314",
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "runner_os": "Ubuntu 24.04.5",
+    "passed": 104,
+    "pytest_seconds": 11.37,
+    "tox_total_seconds": 21.59,
+    "lint": "passed",
+    "format": "38 files already formatted",
+    "lockfile": "passed",
+    "logs_inspected": true,
+    "scope": "isolated_code_checks_on_controlled_fixtures_not_real_gold_build"
+  },
+  "published_notebook_evidence": {
+    "path": "notebooks/stages/04_gold_temporal_features.ipynb",
+    "commit_sha": "14ab57e15f0931ffb6966b26d390a42b514762b7",
+    "origin": "saved_outputs_read_from_published_notebook",
+    "verify_cell_execution_count": 1,
+    "train_loader_cell_execution_count": 3,
+    "verified_partitions": 42,
+    "feature_count": 19,
+    "rows": 402877,
+    "train_shapes": {
+      "X": [
+        268668,
+        19
+      ],
+      "y": [
+        268668
+      ],
+      "metadata": [
+        268668,
+        6
+      ]
+    },
+    "target_name": "TX_FRAUD",
+    "outputs_preserved": true,
+    "notebook_reexecuted_by_assistant": false
+  }
+}

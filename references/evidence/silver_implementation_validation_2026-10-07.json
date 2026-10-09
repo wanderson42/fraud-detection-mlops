@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "evidence_id": "silver_implementation_validation_2026-10-07",
+  "documentation_policy": "documentation_v1",
+  "scope": "prepared_implementation_tests_and_real_first_partition_smoke; not_full_silver_validation",
+  "origin": "assistant_execution_in_preparation_environment",
+  "date": "2026-10-07",
+  "code_revision": null,
+  "code_revision_note": "Incremental working-tree implementation awaiting author application/commit.",
+  "builder_sha256": "4b0f3b4f692c48bb112c10122996862f277adf61beaa9e7aa2d5265cf7097f72",
+  "profiler_sha256": "20459bf852f76ae00029baf0accd861f6c8eba143dce880b56aac499bd9448e9",
+  "contract_sha256": "a5ca3f01e7292ecbaa21cb69bb96c7cbad06e9cea065cddc4ce4414592d1f26f",
+  "environment": {
+    "python": "3.14.4",
+    "pandas": "3.0.6",
+    "pyarrow": "25.0.1",
+    "duckdb": "1.5.6"
+  },
+  "automated_checks": {
+    "pytest_passed": 70,
+    "pytest_duration_seconds": 1.34,
+    "ruff_check": "passed",
+    "ruff_format_check": "25 files already formatted",
+    "git_diff_check": "passed"
+  },
+  "real_first_partition_smoke": {
+    "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+    "filename": "2018-04-01.pkl",
+    "input_sha256": "6bb3398e858be68532e22522ed8dd52601fe507b6537f6bc2dde0abcdd3e4717",
+    "procedure": "Pinned inventory restricted to the first day; local payload supplied to Bronze downloader; Silver build and verify executed offline in temporary directories.",
+    "verified_partitions": 1,
+    "rows": 9488,
+    "distinct_transaction_ids": 9488,
+    "fraud_count": 3,
+    "genuine_count": 9485,
+    "zero_amounts": 0,
+    "status": "success"
+  },
+  "limits": [
+    "Prepared environment validation is separate from author environment execution and GitHub CI.",
+    "Only the first real source partition was converted in the smoke test; the full 183-file Silver has not been built here.",
+    "Temporary smoke data, manifests and audits were removed after the check; this receipt summarizes observed results.",
+    "Primary dependency versions match the project; this was not an installation from poetry.lock."
+  ]
+}

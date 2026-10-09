@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "stage": "final_evaluation_preparation",
+  "prepared_on": "2026-10-08",
+  "base_commit": "dd63d19fc0aa49328e7a5f948c7a39e41f23d14a",
+  "status": "implemented_controlled_validation_passed_real_execution_pending",
+  "validation": {
+    "command": "poetry run tox -e py314",
+    "python": "3.14.4",
+    "tests_passed": 180,
+    "new_final_evaluation_cases": 16,
+    "warnings": 71,
+    "pytest_wall_seconds": 32.77,
+    "tox_wall_seconds": 38.74,
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "poetry_check_lock": "passed",
+    "scope": "Complete pinned upstream test suite plus synthetic final evaluation tests; empty modeling package marker restored after this run without changing Python logic."
+  },
+  "bound_repository_files_checked": 28,
+  "frozen_receipt_sha256": "6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120",
+  "changed_source_files": {
+    "fraud_detection_mlops/modeling/evaluation.py": "a52bb8e4c4a75747a52fc58011bb3dad1c9cf682eb5b58b4ad99d94e5dab2ffd"
+  },
+  "risk_checks": [
+    "Git guard before test access",
+    "model bytes checked before skops load",
+    "test-only partition selection and semantic checks",
+    "no fit during final evaluation",
+    "both fixed gate thresholds required",
+    "retained access record and identical-input retries",
+    "partial MLflow publication reuses the same run",
+    "offline metric and gate reconciliation"
+  ],
+  "real_holdout_evaluated": false,
+  "real_model_refit": false,
+  "real_mlflow_store_accessed": false,
+  "production_promotion": false,
+  "limitations": [
+    "Real author data and local MLflow artifacts are unavailable in preparation.",
+    "Software validation is not a claim of real fraud detection performance.",
+    "Warnings originate from existing third-party deprecations; they are not globally filtered."
+  ]
+}

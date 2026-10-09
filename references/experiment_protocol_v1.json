@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "version": "experiment_v1",
+  "status": "implemented_runner_real_execution_pending",
+  "study_type": "exploratory_ablation_after_validation_diagnostics",
+  "base_revision": "1975fa379bfb3fa16b41c51c7857df3c73741307",
+  "gold_contract": "references/gold_contract_v1.json",
+  "temporal_protocol": "references/temporal_protocol_v1.json",
+  "model_protocol": "references/baseline_protocol_v1.json",
+  "model_id": "hist_gradient_boosting",
+  "reference": {
+    "baseline_run_id": "f6d7aca720f74316b4183f97b6d866ab",
+    "baseline_manifest_sha256": "31e1ad433a5df9c42ee17b8ecfa9e8659e815d0d82b84ad39c10a483f10309e7",
+    "model_uri": "runs:/d3be86000fd24dc8a053dbcab778d4b6/model",
+    "diagnostics_run_id": "961bb0c32fb84433af922908ea58e76b",
+    "average_precision": 0.6239485132514692,
+    "daily_customer_precision_at_100": 0.5399999999999999,
+    "refit": false,
+    "require_validation_score_parity": true
+  },
+  "data_policy": {
+    "fit_split": "train",
+    "evaluation_split": "validation",
+    "train_rows": 268668,
+    "validation_rows": 67255,
+    "validation_days": 7,
+    "preserve_all_rows": true,
+    "preserve_feature_order": true,
+    "change_gold": false,
+    "test_evaluated": false,
+    "refit_on_validation": false
+  },
+  "candidates": [
+    {
+      "id": "without_terminal_volume",
+      "hypothesis": "Removing terminal transaction volume improves ranking without removing known fraud risk or label support.",
+      "drop_features": [
+        "TERMINAL_TX_COUNT_1D",
+        "TERMINAL_TX_COUNT_7D"
+      ],
+      "feature_count": 17
+    },
+    {
+      "id": "without_terminal_fraud_counts",
+      "hypothesis": "Removing known fraud counts improves ranking while retaining rates and their label support.",
+      "drop_features": [
+        "TERMINAL_KNOWN_FRAUD_COUNT_1D",
+        "TERMINAL_KNOWN_FRAUD_COUNT_7D"
+      ],
+      "feature_count": 17
+    },
+    {
+      "id": "without_terminal_volume_and_fraud_counts",
+      "hypothesis": "The combined removal improves ranking; its effect need not equal the sum of individual effects.",
+      "drop_features": [
+        "TERMINAL_TX_COUNT_1D",
+        "TERMINAL_TX_COUNT_7D",
+        "TERMINAL_KNOWN_FRAUD_COUNT_1D",
+        "TERMINAL_KNOWN_FRAUD_COUNT_7D"
+      ],
+      "feature_count": 15
+    }
+  ],
+  "budget": {
+    "max_new_fits": 3,
+    "max_threads": 4,
+    "random_state": 42,
+    "execution_order": "catalog_order_sequential",
+    "hyperparameter_search": false,
+    "automatic_catalog_expansion": false
+  },
+  "development_gate": {
+    "status": "implemented_development_gate",
+    "scope": "candidate_for_freeze_review_not_production_promotion",
+    "threshold_origin": "project_practical_policy_not_estimated_financial_utility",
+    "required_complete_catalog": true,
+    "minimum_absolute_ap_gain": 0.01,
+    "minimum_absolute_daily_customer_precision_at_100_gain": 0.02,
+    "ranking": [
+      "average_precision_desc",
+      "daily_customer_precision_at_100_desc",
+      "feature_count_asc",
+      "candidate_id_asc"
+    ],
+    "fallback": "retain_reference",
+    "require_daily_review_before_freeze": true
+  },
+  "statistical_analysis": {
+    "pair_on": "TRANSACTION_ID",
+    "report_full_validation_effects": true,
+    "report_daily_effects": true,
+    "leave_one_day_out": {
+      "days": 7,
+      "refit": false,
+      "ap": "pooled_remaining_six_days",
+      "precision_at_100": "mean_remaining_six_daily_metrics",
+      "interpretation": "influence_sensitivity_not_confidence_interval"
+    },
+    "p_values": false,
+    "confidence_intervals": false,
+    "formal_superiority_claim": false,
+    "block_bootstrap": "deferred_until_separate_protocol_with_more_temporal_evidence"
+  },
+  "tracking": {
+    "backend": "existing_native_mlflow",
+    "runs_per_candidate": 1,
+    "log_protocol_sha256": true,
+    "log_gold_manifest_sha256": true,
+    "log_reference_model_uri": true,
+    "log_exact_features": true,
+    "log_validation_scores": true,
+    "log_fit_and_prediction_wall_seconds": true,
+    "model_format": "skops",
+    "check_reloaded_score_parity": true
+  },
+  "next_stage": "Commit policy and implementation, run the three ablations, verify artifacts and review paired effects before freeze decisions."
+}

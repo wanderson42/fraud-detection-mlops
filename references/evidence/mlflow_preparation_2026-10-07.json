@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "assistant_execution_on_author_supplied_code_in_preparation_environment",
+  "scope": "controlled_fixtures_sqlite_skops_models_and_local_ui_not_real_baseline_export",
+  "implementation_commit": null,
+  "ci_run_id": null,
+  "submitted_archive_sha256": "6f6ff4e98d6cd5e80f93791776565128dd32ab1db1a065f0041791c6cab382ba",
+  "implementation_sha256": {
+    "fraud_detection_mlops/modeling/tracking.py": "983a1b7c1cfa2455aab6476422cb0f93293c45f209e9f8e4d61bd10e28b759ab",
+    "tests/test_tracking.py": "2856efa3269a5136744040dc79d024572eaa6ad507124cd07ece288102fa19d8",
+    "pyproject.toml": "7ceace1b7b0260368aeccc333f0f7062a1d550bba2573342d7bb5c2181bc7417",
+    "poetry.lock": "0ed7fb3173e424aa2b399313a4e9712933e4694d89774239f3caae9430d40582",
+    "tox.toml": "3287bf2edb33287e933b50d3c449b0ad19d932ee1e7ddf621deec7d15eb5358a"
+  },
+  "environment": {
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "mlflow": "3.17.0",
+    "skops": "0.16.0",
+    "filelock": "4.0.12",
+    "sklearn": "1.9.1",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "tox": "4.32.0"
+  },
+  "dependency_changes": {
+    "previous_locked_packages": 73,
+    "preserved_previous_versions": true,
+    "changed_existing": {},
+    "added_locked_packages": 63,
+    "new_direct_dependencies": {
+      "mlflow": "3.17.0",
+      "skops": "0.16.0",
+      "filelock": "4.0.12"
+    },
+    "filelock_previously_transitive": true,
+    "cloud_and_kubernetes_extras_requested": false
+  },
+  "controlled_validation": {
+    "command": "poetry run tox -e py314",
+    "environment_recreated_in_this_preparation": true,
+    "preceding_recreation_command": "poetry run tox -r -e py314",
+    "passed": 135,
+    "new_tracking_tests": 8,
+    "pytest_seconds": 16.88,
+    "tox_total_seconds": 21.66,
+    "lockfile": "passed",
+    "lint": "passed",
+    "format": "47 files already formatted",
+    "warnings": {
+      "count": 9,
+      "origin": "MLflow_SQLAlchemy_and_codecs_deprecations",
+      "suppressed": false
+    },
+    "gold_temporal_baseline_contracts_and_baseline_training_code_unchanged": true,
+    "existing_notebook_code_counts_and_outputs_preserved": true,
+    "notebooks_checked": 7,
+    "notebook_code_cells_compiled": 17,
+    "local_document_links_checked": 208,
+    "coverage": [
+      "three_separate_main_runs",
+      "whole_pipeline_skops_and_pyfunc_score_parity",
+      "19_feature_signature_without_raw_input_examples",
+      "no_refit_or_test_feature_load",
+      "legacy_sources_preserved",
+      "repeat_reuses_finished_runs_without_joblib_load",
+      "tracking_verify_detects_altered_metrics",
+      "explicit_trust_for_legacy_joblib_migration",
+      "exact_environment_match_before_model_load",
+      "gold_validation_corruption_before_deserialization",
+      "score_mismatch_prevents_completed_run",
+      "unknown_skops_types_rejected",
+      "partial_failure_and_retry_preserve_completed_runs",
+      "concurrent_publish_lock"
+    ]
+  },
+  "ui_smoke_test": {
+    "ui_http_status": 200,
+    "ui_bytes": 701,
+    "api_http_status": 200,
+    "experiment_name": "fraud-temporal-baseline-v1",
+    "scope": "controlled_fixture_local_ui_and_api",
+    "workers": 1
+  },
+  "boundaries": {
+    "training_performed_by_tracking": false,
+    "test_evaluated": false,
+    "registry_promotion_implemented": false,
+    "prefect_implemented": false,
+    "baseline_v1_joblib_preserved": true,
+    "new_training_contract_producing_skops_from_origin_pending": true
+  },
+  "pending": [
+    "author_applies_patch_and_runs_quality_checks",
+    "author_publishes_real_baseline_to_mlflow",
+    "author_verifies_real_tracking_models_and_ui",
+    "author_commit_and_ci",
+    "diagnostic_and_statistical_evaluation_before_optimization"
+  ],
+  "limitations": [
+    "source_is_simulated",
+    "real_native_baseline_models_not_uploaded",
+    "only_controlled_fixture_export_in_preparation",
+    "sqlite_and_local_files_not_distributed_infrastructure",
+    "no_statistical_superiority_or_production_performance_inferred",
+    "future_commit_not_anticipated"
+  ]
+}

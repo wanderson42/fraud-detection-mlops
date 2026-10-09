@@ -1,0 +1,1294 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repository": "Fraud-Detection-Handbook/simulated-data-raw",
+    "repository_url": "https://github.com/Fraud-Detection-Handbook/simulated-data-raw",
+    "commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+    "format": "pickle",
+    "documentation_url": "https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_3_GettingStarted/SimulatedDataset.html",
+    "license_status": "No separate data license was found in this source repository; retain provenance and review terms before redistributing the dataset."
+  },
+  "files": [
+    {
+      "date": "2018-04-01",
+      "filename": "2018-04-01.pkl",
+      "source_path": "data/2018-04-01.pkl",
+      "size_bytes": 562791,
+      "git_blob_sha1": "9873e06c45ac65d24dd52f42edfd081444e3d0c0"
+    },
+    {
+      "date": "2018-04-02",
+      "filename": "2018-04-02.pkl",
+      "source_path": "data/2018-04-02.pkl",
+      "size_bytes": 585309,
+      "git_blob_sha1": "3c83f3e8f3fc438d0de456aa7faf22cefb75b268"
+    },
+    {
+      "date": "2018-04-03",
+      "filename": "2018-04-03.pkl",
+      "source_path": "data/2018-04-03.pkl",
+      "size_bytes": 595319,
+      "git_blob_sha1": "9baa9446a3ac09b7c8a661716de40da4bb506cc4"
+    },
+    {
+      "date": "2018-04-04",
+      "filename": "2018-04-04.pkl",
+      "source_path": "data/2018-04-04.pkl",
+      "size_bytes": 582088,
+      "git_blob_sha1": "73b26bfd9c48b28a6d5aa7057a54d794c7151918"
+    },
+    {
+      "date": "2018-04-05",
+      "filename": "2018-04-05.pkl",
+      "source_path": "data/2018-04-05.pkl",
+      "size_bytes": 589446,
+      "git_blob_sha1": "b65e6cb3cec815f757a5a04de6d0f7b7a1a601d2"
+    },
+    {
+      "date": "2018-04-06",
+      "filename": "2018-04-06.pkl",
+      "source_path": "data/2018-04-06.pkl",
+      "size_bytes": 582653,
+      "git_blob_sha1": "c468dfc5731564f32ac0087c1b9fd60805c22f90"
+    },
+    {
+      "date": "2018-04-07",
+      "filename": "2018-04-07.pkl",
+      "source_path": "data/2018-04-07.pkl",
+      "size_bytes": 576442,
+      "git_blob_sha1": "c2b99e113f14756b63c62eec4c255f4531521b5e"
+    },
+    {
+      "date": "2018-04-08",
+      "filename": "2018-04-08.pkl",
+      "source_path": "data/2018-04-08.pkl",
+      "size_bytes": 578254,
+      "git_blob_sha1": "07a93dd6498a5a418216bd9ae6d6149122ab627d"
+    },
+    {
+      "date": "2018-04-09",
+      "filename": "2018-04-09.pkl",
+      "source_path": "data/2018-04-09.pkl",
+      "size_bytes": 592367,
+      "git_blob_sha1": "077bf8856f1bb3c3e6d349baec62b3f320327499"
+    },
+    {
+      "date": "2018-04-10",
+      "filename": "2018-04-10.pkl",
+      "source_path": "data/2018-04-10.pkl",
+      "size_bytes": 590706,
+      "git_blob_sha1": "1d60db92b1b8854cdbb304eaf0c74b9db40a6b21"
+    },
+    {
+      "date": "2018-04-11",
+      "filename": "2018-04-11.pkl",
+      "source_path": "data/2018-04-11.pkl",
+      "size_bytes": 587671,
+      "git_blob_sha1": "21a6ce27d266fe41ca8d01eacbabcfecc31c71a1"
+    },
+    {
+      "date": "2018-04-12",
+      "filename": "2018-04-12.pkl",
+      "source_path": "data/2018-04-12.pkl",
+      "size_bytes": 582742,
+      "git_blob_sha1": "f5dbead92751d7e88485db9d46c64467be1e9f23"
+    },
+    {
+      "date": "2018-04-13",
+      "filename": "2018-04-13.pkl",
+      "source_path": "data/2018-04-13.pkl",
+      "size_bytes": 595657,
+      "git_blob_sha1": "4ac895a3e4aebb17439e9be2ad6b4c041032fd92"
+    },
+    {
+      "date": "2018-04-14",
+      "filename": "2018-04-14.pkl",
+      "source_path": "data/2018-04-14.pkl",
+      "size_bytes": 583697,
+      "git_blob_sha1": "8f2cb71fac66fca3fe7a9009d491d9c50c79bfc1"
+    },
+    {
+      "date": "2018-04-15",
+      "filename": "2018-04-15.pkl",
+      "source_path": "data/2018-04-15.pkl",
+      "size_bytes": 578898,
+      "git_blob_sha1": "b2e9d7085f51202ce5bdba555aafd2f15b1a8b27"
+    },
+    {
+      "date": "2018-04-16",
+      "filename": "2018-04-16.pkl",
+      "source_path": "data/2018-04-16.pkl",
+      "size_bytes": 582712,
+      "git_blob_sha1": "d03e3fac39f42c305756ca3d5f9f9c3dc661a35f"
+    },
+    {
+      "date": "2018-04-17",
+      "filename": "2018-04-17.pkl",
+      "source_path": "data/2018-04-17.pkl",
+      "size_bytes": 585150,
+      "git_blob_sha1": "39cd70c6666f4c88ba180d94301bc5f8ae0d7351"
+    },
+    {
+      "date": "2018-04-18",
+      "filename": "2018-04-18.pkl",
+      "source_path": "data/2018-04-18.pkl",
+      "size_bytes": 587327,
+      "git_blob_sha1": "7c2ea1045764c7968927cb71e5e71935d12d6900"
+    },
+    {
+      "date": "2018-04-19",
+      "filename": "2018-04-19.pkl",
+      "source_path": "data/2018-04-19.pkl",
+      "size_bytes": 582598,
+      "git_blob_sha1": "def7f5abd277d389a5e46cef45f3c518a26f67aa"
+    },
+    {
+      "date": "2018-04-20",
+      "filename": "2018-04-20.pkl",
+      "source_path": "data/2018-04-20.pkl",
+      "size_bytes": 584483,
+      "git_blob_sha1": "1dfb504cab1301595353d0ddc1c658cc8edf8231"
+    },
+    {
+      "date": "2018-04-21",
+      "filename": "2018-04-21.pkl",
+      "source_path": "data/2018-04-21.pkl",
+      "size_bytes": 589114,
+      "git_blob_sha1": "8f6e31395f91a854544a4a0fcae2d02199ddf561"
+    },
+    {
+      "date": "2018-04-22",
+      "filename": "2018-04-22.pkl",
+      "source_path": "data/2018-04-22.pkl",
+      "size_bytes": 595323,
+      "git_blob_sha1": "2299861462b0c5a14893624d51848e11e404c47c"
+    },
+    {
+      "date": "2018-04-23",
+      "filename": "2018-04-23.pkl",
+      "source_path": "data/2018-04-23.pkl",
+      "size_bytes": 595128,
+      "git_blob_sha1": "16c0eb1b7d0e3828b7438e33efd822e6f0fabe5b"
+    },
+    {
+      "date": "2018-04-24",
+      "filename": "2018-04-24.pkl",
+      "source_path": "data/2018-04-24.pkl",
+      "size_bytes": 583171,
+      "git_blob_sha1": "b8068664aa9bef291c8541fc51207dd0a5f6acd8"
+    },
+    {
+      "date": "2018-04-25",
+      "filename": "2018-04-25.pkl",
+      "source_path": "data/2018-04-25.pkl",
+      "size_bytes": 587717,
+      "git_blob_sha1": "97507d4c0f358d52fc5ed4c2744bf382b4542bed"
+    },
+    {
+      "date": "2018-04-26",
+      "filename": "2018-04-26.pkl",
+      "source_path": "data/2018-04-26.pkl",
+      "size_bytes": 583394,
+      "git_blob_sha1": "b0d5102fd2507200fe59e6037db92998e2131b8f"
+    },
+    {
+      "date": "2018-04-27",
+      "filename": "2018-04-27.pkl",
+      "source_path": "data/2018-04-27.pkl",
+      "size_bytes": 586946,
+      "git_blob_sha1": "9351654abdede07f8ed36a3d17d3bd78f428f727"
+    },
+    {
+      "date": "2018-04-28",
+      "filename": "2018-04-28.pkl",
+      "source_path": "data/2018-04-28.pkl",
+      "size_bytes": 585595,
+      "git_blob_sha1": "058248fbbcaa7b10c10539e410025a98a86aeb51"
+    },
+    {
+      "date": "2018-04-29",
+      "filename": "2018-04-29.pkl",
+      "source_path": "data/2018-04-29.pkl",
+      "size_bytes": 588400,
+      "git_blob_sha1": "aae9e8d07608dc09b3acb1f99042d9156df90829"
+    },
+    {
+      "date": "2018-04-30",
+      "filename": "2018-04-30.pkl",
+      "source_path": "data/2018-04-30.pkl",
+      "size_bytes": 596087,
+      "git_blob_sha1": "bb42e9a1a33bcd1323912ad27bd44c3562608403"
+    },
+    {
+      "date": "2018-05-01",
+      "filename": "2018-05-01.pkl",
+      "source_path": "data/2018-05-01.pkl",
+      "size_bytes": 584958,
+      "git_blob_sha1": "f67055abd0dc47ae773722ce9a6829d4e97a818d"
+    },
+    {
+      "date": "2018-05-02",
+      "filename": "2018-05-02.pkl",
+      "source_path": "data/2018-05-02.pkl",
+      "size_bytes": 580643,
+      "git_blob_sha1": "30e47bb4e16fd0270af99374d51f08efe7a0c137"
+    },
+    {
+      "date": "2018-05-03",
+      "filename": "2018-05-03.pkl",
+      "source_path": "data/2018-05-03.pkl",
+      "size_bytes": 596730,
+      "git_blob_sha1": "f1f6fa04f70b288e58eeec50e073f4601653ae73"
+    },
+    {
+      "date": "2018-05-04",
+      "filename": "2018-05-04.pkl",
+      "source_path": "data/2018-05-04.pkl",
+      "size_bytes": 579690,
+      "git_blob_sha1": "80b78f2cd2fb1636e89d060a62663e50f0439e13"
+    },
+    {
+      "date": "2018-05-05",
+      "filename": "2018-05-05.pkl",
+      "source_path": "data/2018-05-05.pkl",
+      "size_bytes": 580351,
+      "git_blob_sha1": "974af359fa0bef7d1fbdb3b6d0e1394c3fa2ff97"
+    },
+    {
+      "date": "2018-05-06",
+      "filename": "2018-05-06.pkl",
+      "source_path": "data/2018-05-06.pkl",
+      "size_bytes": 589987,
+      "git_blob_sha1": "62eec874c32e31150da4fa8aaf2f07623d09562c"
+    },
+    {
+      "date": "2018-05-07",
+      "filename": "2018-05-07.pkl",
+      "source_path": "data/2018-05-07.pkl",
+      "size_bytes": 592507,
+      "git_blob_sha1": "5e775d9afbdb38638aa55035a38f6ff2ff573f67"
+    },
+    {
+      "date": "2018-05-08",
+      "filename": "2018-05-08.pkl",
+      "source_path": "data/2018-05-08.pkl",
+      "size_bytes": 576056,
+      "git_blob_sha1": "7344f3eab17ca295af85b804b8048e6b0787fccd"
+    },
+    {
+      "date": "2018-05-09",
+      "filename": "2018-05-09.pkl",
+      "source_path": "data/2018-05-09.pkl",
+      "size_bytes": 585752,
+      "git_blob_sha1": "9ec387290ece4e5f1e06ed589ccc1e84872b9cc0"
+    },
+    {
+      "date": "2018-05-10",
+      "filename": "2018-05-10.pkl",
+      "source_path": "data/2018-05-10.pkl",
+      "size_bytes": 595369,
+      "git_blob_sha1": "a38fd70385d489e7112a246dc36d3ffb7f22128c"
+    },
+    {
+      "date": "2018-05-11",
+      "filename": "2018-05-11.pkl",
+      "source_path": "data/2018-05-11.pkl",
+      "size_bytes": 582463,
+      "git_blob_sha1": "f77e6d6dd3ed433a5238b2d861f81e882b637bda"
+    },
+    {
+      "date": "2018-05-12",
+      "filename": "2018-05-12.pkl",
+      "source_path": "data/2018-05-12.pkl",
+      "size_bytes": 585630,
+      "git_blob_sha1": "c7fe7e98ba09201c918bfaede06c6707c93613c6"
+    },
+    {
+      "date": "2018-05-13",
+      "filename": "2018-05-13.pkl",
+      "source_path": "data/2018-05-13.pkl",
+      "size_bytes": 579978,
+      "git_blob_sha1": "94caebcfe86ecbbbfbd93005b08c7a09d00e3996"
+    },
+    {
+      "date": "2018-05-14",
+      "filename": "2018-05-14.pkl",
+      "source_path": "data/2018-05-14.pkl",
+      "size_bytes": 591150,
+      "git_blob_sha1": "42e231f04483740fb4fd23854dc6d865aa6d7b21"
+    },
+    {
+      "date": "2018-05-15",
+      "filename": "2018-05-15.pkl",
+      "source_path": "data/2018-05-15.pkl",
+      "size_bytes": 576224,
+      "git_blob_sha1": "c6be97560b51a095e9af917a5548d10bbfc1b785"
+    },
+    {
+      "date": "2018-05-16",
+      "filename": "2018-05-16.pkl",
+      "source_path": "data/2018-05-16.pkl",
+      "size_bytes": 596496,
+      "git_blob_sha1": "6d46e1e7e725d5a15596f2151206ff249d872e05"
+    },
+    {
+      "date": "2018-05-17",
+      "filename": "2018-05-17.pkl",
+      "source_path": "data/2018-05-17.pkl",
+      "size_bytes": 591866,
+      "git_blob_sha1": "a114dd4e1c29dabad0569c29a0e8a9fd790ee12c"
+    },
+    {
+      "date": "2018-05-18",
+      "filename": "2018-05-18.pkl",
+      "source_path": "data/2018-05-18.pkl",
+      "size_bytes": 590304,
+      "git_blob_sha1": "25815e00b2068f6c3a27a4a4968907fa2a9a85f2"
+    },
+    {
+      "date": "2018-05-19",
+      "filename": "2018-05-19.pkl",
+      "source_path": "data/2018-05-19.pkl",
+      "size_bytes": 586011,
+      "git_blob_sha1": "76c624265f262f13e39c41d5f235b25de0637d3f"
+    },
+    {
+      "date": "2018-05-20",
+      "filename": "2018-05-20.pkl",
+      "source_path": "data/2018-05-20.pkl",
+      "size_bytes": 595088,
+      "git_blob_sha1": "e68fe439ac80bd4188f52aaec050a24c1994ab7f"
+    },
+    {
+      "date": "2018-05-21",
+      "filename": "2018-05-21.pkl",
+      "source_path": "data/2018-05-21.pkl",
+      "size_bytes": 591725,
+      "git_blob_sha1": "81120017972eea39fa16ae2ecf7733c27477d32c"
+    },
+    {
+      "date": "2018-05-22",
+      "filename": "2018-05-22.pkl",
+      "source_path": "data/2018-05-22.pkl",
+      "size_bytes": 578577,
+      "git_blob_sha1": "39c039b76152ff4c9323edf65f6f32082afe6949"
+    },
+    {
+      "date": "2018-05-23",
+      "filename": "2018-05-23.pkl",
+      "source_path": "data/2018-05-23.pkl",
+      "size_bytes": 574109,
+      "git_blob_sha1": "94510efbcddf5ee65a9a4c1c2d690c7990750a6f"
+    },
+    {
+      "date": "2018-05-24",
+      "filename": "2018-05-24.pkl",
+      "source_path": "data/2018-05-24.pkl",
+      "size_bytes": 572690,
+      "git_blob_sha1": "bd7681e85f8dc81f5bdc3434524ed9085a324e7d"
+    },
+    {
+      "date": "2018-05-25",
+      "filename": "2018-05-25.pkl",
+      "source_path": "data/2018-05-25.pkl",
+      "size_bytes": 587383,
+      "git_blob_sha1": "a8ff4181a2a07fb671c0483fd3502310c19cdab4"
+    },
+    {
+      "date": "2018-05-26",
+      "filename": "2018-05-26.pkl",
+      "source_path": "data/2018-05-26.pkl",
+      "size_bytes": 589917,
+      "git_blob_sha1": "8640ceb2b78351a50e7ad52c0aa42217fcf8de26"
+    },
+    {
+      "date": "2018-05-27",
+      "filename": "2018-05-27.pkl",
+      "source_path": "data/2018-05-27.pkl",
+      "size_bytes": 594886,
+      "git_blob_sha1": "abf01b5e4f984f4e26b7d66a8dc7d354ec542f61"
+    },
+    {
+      "date": "2018-05-28",
+      "filename": "2018-05-28.pkl",
+      "source_path": "data/2018-05-28.pkl",
+      "size_bytes": 584471,
+      "git_blob_sha1": "e3fa6139a23b1c598b95c7a232576325fa6068d1"
+    },
+    {
+      "date": "2018-05-29",
+      "filename": "2018-05-29.pkl",
+      "source_path": "data/2018-05-29.pkl",
+      "size_bytes": 583676,
+      "git_blob_sha1": "f4718a9f659478634049e8cc200734f5403151a9"
+    },
+    {
+      "date": "2018-05-30",
+      "filename": "2018-05-30.pkl",
+      "source_path": "data/2018-05-30.pkl",
+      "size_bytes": 576901,
+      "git_blob_sha1": "0b5c0cf7d9fa7037be8352adab79b69fb0252170"
+    },
+    {
+      "date": "2018-05-31",
+      "filename": "2018-05-31.pkl",
+      "source_path": "data/2018-05-31.pkl",
+      "size_bytes": 575463,
+      "git_blob_sha1": "e8ef4b54da48d38fe9a76c01ca7df3cccd6a8aed"
+    },
+    {
+      "date": "2018-06-01",
+      "filename": "2018-06-01.pkl",
+      "source_path": "data/2018-06-01.pkl",
+      "size_bytes": 583746,
+      "git_blob_sha1": "91151489b9a9e8e73c42ae73ccb572c0f0d14baf"
+    },
+    {
+      "date": "2018-06-02",
+      "filename": "2018-06-02.pkl",
+      "source_path": "data/2018-06-02.pkl",
+      "size_bytes": 584912,
+      "git_blob_sha1": "c37d90cd91059a3b1aff8a451703b94573d4daa3"
+    },
+    {
+      "date": "2018-06-03",
+      "filename": "2018-06-03.pkl",
+      "source_path": "data/2018-06-03.pkl",
+      "size_bytes": 585459,
+      "git_blob_sha1": "7bfa26362270a648fbbd276f38c3a1fa9c9d87a7"
+    },
+    {
+      "date": "2018-06-04",
+      "filename": "2018-06-04.pkl",
+      "source_path": "data/2018-06-04.pkl",
+      "size_bytes": 584847,
+      "git_blob_sha1": "cb7b0d490f87ff79a838be1ebbd8ab503b083fd5"
+    },
+    {
+      "date": "2018-06-05",
+      "filename": "2018-06-05.pkl",
+      "source_path": "data/2018-06-05.pkl",
+      "size_bytes": 583101,
+      "git_blob_sha1": "06bace17c5cf2d1c37c55f0b568afbbaf087ed1e"
+    },
+    {
+      "date": "2018-06-06",
+      "filename": "2018-06-06.pkl",
+      "source_path": "data/2018-06-06.pkl",
+      "size_bytes": 583402,
+      "git_blob_sha1": "e4b8af131bbad3538215fb247dd822a30d21fd8b"
+    },
+    {
+      "date": "2018-06-07",
+      "filename": "2018-06-07.pkl",
+      "source_path": "data/2018-06-07.pkl",
+      "size_bytes": 584989,
+      "git_blob_sha1": "f968613c15521e03993322377e6424ee152505b9"
+    },
+    {
+      "date": "2018-06-08",
+      "filename": "2018-06-08.pkl",
+      "source_path": "data/2018-06-08.pkl",
+      "size_bytes": 587649,
+      "git_blob_sha1": "1adf25bfcc6a2fdd45c28b15e51eee1b88852869"
+    },
+    {
+      "date": "2018-06-09",
+      "filename": "2018-06-09.pkl",
+      "source_path": "data/2018-06-09.pkl",
+      "size_bytes": 580919,
+      "git_blob_sha1": "b6083769cb3777947bd4ddab5eff8b3cbe3a5634"
+    },
+    {
+      "date": "2018-06-10",
+      "filename": "2018-06-10.pkl",
+      "source_path": "data/2018-06-10.pkl",
+      "size_bytes": 586588,
+      "git_blob_sha1": "68b426f8190fc118047d631b0e4cc4bd5d2f1157"
+    },
+    {
+      "date": "2018-06-11",
+      "filename": "2018-06-11.pkl",
+      "source_path": "data/2018-06-11.pkl",
+      "size_bytes": 588009,
+      "git_blob_sha1": "55c4166b7fe6ccd9ca5a344d0cf5a5b2ebb22c9e"
+    },
+    {
+      "date": "2018-06-12",
+      "filename": "2018-06-12.pkl",
+      "source_path": "data/2018-06-12.pkl",
+      "size_bytes": 587879,
+      "git_blob_sha1": "7723caf04fa77a2c1d5632a8625ca2ebc5dd56fe"
+    },
+    {
+      "date": "2018-06-13",
+      "filename": "2018-06-13.pkl",
+      "source_path": "data/2018-06-13.pkl",
+      "size_bytes": 579519,
+      "git_blob_sha1": "f8ca5af9d6538ed86977fccaf86524465ee8503d"
+    },
+    {
+      "date": "2018-06-14",
+      "filename": "2018-06-14.pkl",
+      "source_path": "data/2018-06-14.pkl",
+      "size_bytes": 591232,
+      "git_blob_sha1": "f7edba6bc73217c84bdf6ec19bb79178ef9a65bf"
+    },
+    {
+      "date": "2018-06-15",
+      "filename": "2018-06-15.pkl",
+      "source_path": "data/2018-06-15.pkl",
+      "size_bytes": 577031,
+      "git_blob_sha1": "89e022641f35c6b275ef73e213eb7afeda0d60e9"
+    },
+    {
+      "date": "2018-06-16",
+      "filename": "2018-06-16.pkl",
+      "source_path": "data/2018-06-16.pkl",
+      "size_bytes": 592538,
+      "git_blob_sha1": "aa4a72bf34767566b9c20d6bf5bd67269269c9b0"
+    },
+    {
+      "date": "2018-06-17",
+      "filename": "2018-06-17.pkl",
+      "source_path": "data/2018-06-17.pkl",
+      "size_bytes": 586929,
+      "git_blob_sha1": "75b06217342af38f79b1aa05378c9afac101489b"
+    },
+    {
+      "date": "2018-06-18",
+      "filename": "2018-06-18.pkl",
+      "source_path": "data/2018-06-18.pkl",
+      "size_bytes": 594712,
+      "git_blob_sha1": "94707a1697c3e79f266fec4e6ccac6676d31478f"
+    },
+    {
+      "date": "2018-06-19",
+      "filename": "2018-06-19.pkl",
+      "source_path": "data/2018-06-19.pkl",
+      "size_bytes": 582422,
+      "git_blob_sha1": "df4b2b6646b1868ab36b3c0d40f77048839ce09c"
+    },
+    {
+      "date": "2018-06-20",
+      "filename": "2018-06-20.pkl",
+      "source_path": "data/2018-06-20.pkl",
+      "size_bytes": 581680,
+      "git_blob_sha1": "a29dd30086557642dddb10e9690b16feccb96e2a"
+    },
+    {
+      "date": "2018-06-21",
+      "filename": "2018-06-21.pkl",
+      "source_path": "data/2018-06-21.pkl",
+      "size_bytes": 579321,
+      "git_blob_sha1": "74f935c19a9a003d9f96da50ecc4c471c8e0f6b9"
+    },
+    {
+      "date": "2018-06-22",
+      "filename": "2018-06-22.pkl",
+      "source_path": "data/2018-06-22.pkl",
+      "size_bytes": 583064,
+      "git_blob_sha1": "568c4f2c77defc9f4f2f34551bc6399ce26600fd"
+    },
+    {
+      "date": "2018-06-23",
+      "filename": "2018-06-23.pkl",
+      "source_path": "data/2018-06-23.pkl",
+      "size_bytes": 589600,
+      "git_blob_sha1": "f9929f3b6e4189bd5fce4f38c6750a30a9a27729"
+    },
+    {
+      "date": "2018-06-24",
+      "filename": "2018-06-24.pkl",
+      "source_path": "data/2018-06-24.pkl",
+      "size_bytes": 583509,
+      "git_blob_sha1": "49a279cd44672e0e0d936e72e80c1710a02223f8"
+    },
+    {
+      "date": "2018-06-25",
+      "filename": "2018-06-25.pkl",
+      "source_path": "data/2018-06-25.pkl",
+      "size_bytes": 585769,
+      "git_blob_sha1": "17253476dc4edae039a15c07852d97b375b768a2"
+    },
+    {
+      "date": "2018-06-26",
+      "filename": "2018-06-26.pkl",
+      "source_path": "data/2018-06-26.pkl",
+      "size_bytes": 580970,
+      "git_blob_sha1": "41fa8cc690b34c70420b2212c9b6add9b03fa8ff"
+    },
+    {
+      "date": "2018-06-27",
+      "filename": "2018-06-27.pkl",
+      "source_path": "data/2018-06-27.pkl",
+      "size_bytes": 584208,
+      "git_blob_sha1": "b790e8f460c54bf32b87bba6c11ff78f59b5cbeb"
+    },
+    {
+      "date": "2018-06-28",
+      "filename": "2018-06-28.pkl",
+      "source_path": "data/2018-06-28.pkl",
+      "size_bytes": 592030,
+      "git_blob_sha1": "bcd40979fc45191b96648de37a61d784281f9d5c"
+    },
+    {
+      "date": "2018-06-29",
+      "filename": "2018-06-29.pkl",
+      "source_path": "data/2018-06-29.pkl",
+      "size_bytes": 583007,
+      "git_blob_sha1": "990c82eb07894a147605df2855cddacfe8d1f8ef"
+    },
+    {
+      "date": "2018-06-30",
+      "filename": "2018-06-30.pkl",
+      "source_path": "data/2018-06-30.pkl",
+      "size_bytes": 597865,
+      "git_blob_sha1": "70cec978768368279ad0d93906ab7db4d2803677"
+    },
+    {
+      "date": "2018-07-01",
+      "filename": "2018-07-01.pkl",
+      "source_path": "data/2018-07-01.pkl",
+      "size_bytes": 591895,
+      "git_blob_sha1": "4a14cef3e86606fb2ee26eec472dcb5a16b1af6c"
+    },
+    {
+      "date": "2018-07-02",
+      "filename": "2018-07-02.pkl",
+      "source_path": "data/2018-07-02.pkl",
+      "size_bytes": 590592,
+      "git_blob_sha1": "7d618ff98e2faa8f34c940c752a5e93b569e434e"
+    },
+    {
+      "date": "2018-07-03",
+      "filename": "2018-07-03.pkl",
+      "source_path": "data/2018-07-03.pkl",
+      "size_bytes": 587536,
+      "git_blob_sha1": "42e0bc8a81162fec1dbbc4180c2c23b38953ac15"
+    },
+    {
+      "date": "2018-07-04",
+      "filename": "2018-07-04.pkl",
+      "source_path": "data/2018-07-04.pkl",
+      "size_bytes": 582810,
+      "git_blob_sha1": "b8273416a1fb47523654d108029b5e19c2b0ec5f"
+    },
+    {
+      "date": "2018-07-05",
+      "filename": "2018-07-05.pkl",
+      "source_path": "data/2018-07-05.pkl",
+      "size_bytes": 597506,
+      "git_blob_sha1": "61db4c3574267b8d8a41a5a4bc3b1bf3572a0e2f"
+    },
+    {
+      "date": "2018-07-06",
+      "filename": "2018-07-06.pkl",
+      "source_path": "data/2018-07-06.pkl",
+      "size_bytes": 589018,
+      "git_blob_sha1": "f937d2aa64be7faf14cd45d8e390aa318dc96e84"
+    },
+    {
+      "date": "2018-07-07",
+      "filename": "2018-07-07.pkl",
+      "source_path": "data/2018-07-07.pkl",
+      "size_bytes": 584220,
+      "git_blob_sha1": "5c8c2f37052c06592d42ec64bf6035f0b81dcde7"
+    },
+    {
+      "date": "2018-07-08",
+      "filename": "2018-07-08.pkl",
+      "source_path": "data/2018-07-08.pkl",
+      "size_bytes": 577729,
+      "git_blob_sha1": "21af86c9633163f259bfc7ec604af98441581b2f"
+    },
+    {
+      "date": "2018-07-09",
+      "filename": "2018-07-09.pkl",
+      "source_path": "data/2018-07-09.pkl",
+      "size_bytes": 577669,
+      "git_blob_sha1": "efd0b2a57f12372e5715bfc4a40b734b7e4e57a9"
+    },
+    {
+      "date": "2018-07-10",
+      "filename": "2018-07-10.pkl",
+      "source_path": "data/2018-07-10.pkl",
+      "size_bytes": 580378,
+      "git_blob_sha1": "c584d191fd17ee675660b03d1f1da2bf5f9f9d6f"
+    },
+    {
+      "date": "2018-07-11",
+      "filename": "2018-07-11.pkl",
+      "source_path": "data/2018-07-11.pkl",
+      "size_bytes": 585658,
+      "git_blob_sha1": "9fb60691407cf4374063170100fa32258cdf58f4"
+    },
+    {
+      "date": "2018-07-12",
+      "filename": "2018-07-12.pkl",
+      "source_path": "data/2018-07-12.pkl",
+      "size_bytes": 582491,
+      "git_blob_sha1": "412e8ef6f78601e44b88721119288d9e913f18c8"
+    },
+    {
+      "date": "2018-07-13",
+      "filename": "2018-07-13.pkl",
+      "source_path": "data/2018-07-13.pkl",
+      "size_bytes": 586631,
+      "git_blob_sha1": "91b9fc06a8beff9338a5c814806e9f7ab36fbd19"
+    },
+    {
+      "date": "2018-07-14",
+      "filename": "2018-07-14.pkl",
+      "source_path": "data/2018-07-14.pkl",
+      "size_bytes": 581488,
+      "git_blob_sha1": "c482ee9bdc3a862aa89040c9514eca0443156c2e"
+    },
+    {
+      "date": "2018-07-15",
+      "filename": "2018-07-15.pkl",
+      "source_path": "data/2018-07-15.pkl",
+      "size_bytes": 581663,
+      "git_blob_sha1": "1cf619cc8e16d165a99d5cf62c0e8fecf03b1574"
+    },
+    {
+      "date": "2018-07-16",
+      "filename": "2018-07-16.pkl",
+      "source_path": "data/2018-07-16.pkl",
+      "size_bytes": 581756,
+      "git_blob_sha1": "9b916c1bb73452bf86690a4f39ac40930c3a1222"
+    },
+    {
+      "date": "2018-07-17",
+      "filename": "2018-07-17.pkl",
+      "source_path": "data/2018-07-17.pkl",
+      "size_bytes": 588023,
+      "git_blob_sha1": "d96792427751be9b51637d491a071eb5de7e66eb"
+    },
+    {
+      "date": "2018-07-18",
+      "filename": "2018-07-18.pkl",
+      "source_path": "data/2018-07-18.pkl",
+      "size_bytes": 582132,
+      "git_blob_sha1": "72c9305a4768957b1be70e3e8f0fe1074b6fe3ba"
+    },
+    {
+      "date": "2018-07-19",
+      "filename": "2018-07-19.pkl",
+      "source_path": "data/2018-07-19.pkl",
+      "size_bytes": 583772,
+      "git_blob_sha1": "5b8f9153901f1696071a9774a27029fb84de41db"
+    },
+    {
+      "date": "2018-07-20",
+      "filename": "2018-07-20.pkl",
+      "source_path": "data/2018-07-20.pkl",
+      "size_bytes": 592419,
+      "git_blob_sha1": "853e5c39601e17d59a2dd43bc2689348d64963b1"
+    },
+    {
+      "date": "2018-07-21",
+      "filename": "2018-07-21.pkl",
+      "source_path": "data/2018-07-21.pkl",
+      "size_bytes": 585079,
+      "git_blob_sha1": "9ae06fc58b3eddf91b69cae98bb2e96388e4f625"
+    },
+    {
+      "date": "2018-07-22",
+      "filename": "2018-07-22.pkl",
+      "source_path": "data/2018-07-22.pkl",
+      "size_bytes": 576567,
+      "git_blob_sha1": "ecbc8c3a3de05eb6af7b166eb0c15a3644e4b3a9"
+    },
+    {
+      "date": "2018-07-23",
+      "filename": "2018-07-23.pkl",
+      "source_path": "data/2018-07-23.pkl",
+      "size_bytes": 581516,
+      "git_blob_sha1": "f085bacb9e87ff67d060fc0343d89ee1054d6d37"
+    },
+    {
+      "date": "2018-07-24",
+      "filename": "2018-07-24.pkl",
+      "source_path": "data/2018-07-24.pkl",
+      "size_bytes": 580036,
+      "git_blob_sha1": "18d3a5bf3923451db331c427dd17be9952a71df6"
+    },
+    {
+      "date": "2018-07-25",
+      "filename": "2018-07-25.pkl",
+      "source_path": "data/2018-07-25.pkl",
+      "size_bytes": 582727,
+      "git_blob_sha1": "ba78b14e9922a34236aa3e257f9b1eaba831583d"
+    },
+    {
+      "date": "2018-07-26",
+      "filename": "2018-07-26.pkl",
+      "source_path": "data/2018-07-26.pkl",
+      "size_bytes": 597699,
+      "git_blob_sha1": "c09470b605fed12badaf631607583e0c66b6e0f0"
+    },
+    {
+      "date": "2018-07-27",
+      "filename": "2018-07-27.pkl",
+      "source_path": "data/2018-07-27.pkl",
+      "size_bytes": 582151,
+      "git_blob_sha1": "9569d2d6b6026567b26525808e33170313491283"
+    },
+    {
+      "date": "2018-07-28",
+      "filename": "2018-07-28.pkl",
+      "source_path": "data/2018-07-28.pkl",
+      "size_bytes": 580003,
+      "git_blob_sha1": "0a8b436f0cc2c09fe22da4e9f33b05f605021942"
+    },
+    {
+      "date": "2018-07-29",
+      "filename": "2018-07-29.pkl",
+      "source_path": "data/2018-07-29.pkl",
+      "size_bytes": 582199,
+      "git_blob_sha1": "4147d7e713457d55981f8fc1943e2554405ea57a"
+    },
+    {
+      "date": "2018-07-30",
+      "filename": "2018-07-30.pkl",
+      "source_path": "data/2018-07-30.pkl",
+      "size_bytes": 589277,
+      "git_blob_sha1": "7ced7886dedda62726c80df33970fcd09086695b"
+    },
+    {
+      "date": "2018-07-31",
+      "filename": "2018-07-31.pkl",
+      "source_path": "data/2018-07-31.pkl",
+      "size_bytes": 592702,
+      "git_blob_sha1": "5ea93dee600facf7307fb438333ccacaa0ba46a8"
+    },
+    {
+      "date": "2018-08-01",
+      "filename": "2018-08-01.pkl",
+      "source_path": "data/2018-08-01.pkl",
+      "size_bytes": 583400,
+      "git_blob_sha1": "32c9e90f609ab1c32199fa43d3e6b71c7909a985"
+    },
+    {
+      "date": "2018-08-02",
+      "filename": "2018-08-02.pkl",
+      "source_path": "data/2018-08-02.pkl",
+      "size_bytes": 589887,
+      "git_blob_sha1": "300a9f4f7c30ab518d7a1caed8e6510123b6e8ac"
+    },
+    {
+      "date": "2018-08-03",
+      "filename": "2018-08-03.pkl",
+      "source_path": "data/2018-08-03.pkl",
+      "size_bytes": 578769,
+      "git_blob_sha1": "9df051738678cc366ee07457f9076d75c9b7103c"
+    },
+    {
+      "date": "2018-08-04",
+      "filename": "2018-08-04.pkl",
+      "source_path": "data/2018-08-04.pkl",
+      "size_bytes": 588582,
+      "git_blob_sha1": "7bf13d651f0a48a67cbc7d0f91d63e416b5d1ecc"
+    },
+    {
+      "date": "2018-08-05",
+      "filename": "2018-08-05.pkl",
+      "source_path": "data/2018-08-05.pkl",
+      "size_bytes": 581913,
+      "git_blob_sha1": "2975e68622711658a328d3f50ba99efc6513ed2d"
+    },
+    {
+      "date": "2018-08-06",
+      "filename": "2018-08-06.pkl",
+      "source_path": "data/2018-08-06.pkl",
+      "size_bytes": 575160,
+      "git_blob_sha1": "fc069295a7a154b02a21281c87ccf444b21a382f"
+    },
+    {
+      "date": "2018-08-07",
+      "filename": "2018-08-07.pkl",
+      "source_path": "data/2018-08-07.pkl",
+      "size_bytes": 592905,
+      "git_blob_sha1": "6bdaad03afac077451294119eb0a3b0082fa2360"
+    },
+    {
+      "date": "2018-08-08",
+      "filename": "2018-08-08.pkl",
+      "source_path": "data/2018-08-08.pkl",
+      "size_bytes": 594849,
+      "git_blob_sha1": "ea49acf9eff00e9a2b5884930e1904545ad94532"
+    },
+    {
+      "date": "2018-08-09",
+      "filename": "2018-08-09.pkl",
+      "source_path": "data/2018-08-09.pkl",
+      "size_bytes": 588843,
+      "git_blob_sha1": "5f84ff69280418b01591901b928e05b65da5c60f"
+    },
+    {
+      "date": "2018-08-10",
+      "filename": "2018-08-10.pkl",
+      "source_path": "data/2018-08-10.pkl",
+      "size_bytes": 581662,
+      "git_blob_sha1": "614c384cd095914b55d41cabdd91acf72a847604"
+    },
+    {
+      "date": "2018-08-11",
+      "filename": "2018-08-11.pkl",
+      "source_path": "data/2018-08-11.pkl",
+      "size_bytes": 575807,
+      "git_blob_sha1": "abcf25c4c2fd15aa0af583c8bafcc7f3413678c7"
+    },
+    {
+      "date": "2018-08-12",
+      "filename": "2018-08-12.pkl",
+      "source_path": "data/2018-08-12.pkl",
+      "size_bytes": 591228,
+      "git_blob_sha1": "a5888173f7340f4b43a0c21a4d04277fb70335f7"
+    },
+    {
+      "date": "2018-08-13",
+      "filename": "2018-08-13.pkl",
+      "source_path": "data/2018-08-13.pkl",
+      "size_bytes": 580484,
+      "git_blob_sha1": "d35b1362d16e389259957ed0ec23783676039f91"
+    },
+    {
+      "date": "2018-08-14",
+      "filename": "2018-08-14.pkl",
+      "source_path": "data/2018-08-14.pkl",
+      "size_bytes": 584150,
+      "git_blob_sha1": "09963318b1561bcfb8fd73e53aeafde856594fd3"
+    },
+    {
+      "date": "2018-08-15",
+      "filename": "2018-08-15.pkl",
+      "source_path": "data/2018-08-15.pkl",
+      "size_bytes": 592480,
+      "git_blob_sha1": "9c35be450a84cd991de7a48f9c4cd108461ac48c"
+    },
+    {
+      "date": "2018-08-16",
+      "filename": "2018-08-16.pkl",
+      "source_path": "data/2018-08-16.pkl",
+      "size_bytes": 575517,
+      "git_blob_sha1": "6c8b7a45cfbc997f489cf384e937a3984a8e8201"
+    },
+    {
+      "date": "2018-08-17",
+      "filename": "2018-08-17.pkl",
+      "source_path": "data/2018-08-17.pkl",
+      "size_bytes": 581204,
+      "git_blob_sha1": "a35a451090da0c679587cd65fe81804154bac5e1"
+    },
+    {
+      "date": "2018-08-18",
+      "filename": "2018-08-18.pkl",
+      "source_path": "data/2018-08-18.pkl",
+      "size_bytes": 581186,
+      "git_blob_sha1": "e5bd968bb5990f129e899801525fdda97372309d"
+    },
+    {
+      "date": "2018-08-19",
+      "filename": "2018-08-19.pkl",
+      "source_path": "data/2018-08-19.pkl",
+      "size_bytes": 590707,
+      "git_blob_sha1": "a48b269b8e7fb44fba821e9c9b294bd003380025"
+    },
+    {
+      "date": "2018-08-20",
+      "filename": "2018-08-20.pkl",
+      "source_path": "data/2018-08-20.pkl",
+      "size_bytes": 587297,
+      "git_blob_sha1": "c0d764dbe6d8d45f75effde3417437a7c46c1ed0"
+    },
+    {
+      "date": "2018-08-21",
+      "filename": "2018-08-21.pkl",
+      "source_path": "data/2018-08-21.pkl",
+      "size_bytes": 586603,
+      "git_blob_sha1": "26bfcfcbcefb3ffa3e1f8530071732cb275854cc"
+    },
+    {
+      "date": "2018-08-22",
+      "filename": "2018-08-22.pkl",
+      "source_path": "data/2018-08-22.pkl",
+      "size_bytes": 588018,
+      "git_blob_sha1": "454884536865832bc3b0ebf99be1e35f0f153d5b"
+    },
+    {
+      "date": "2018-08-23",
+      "filename": "2018-08-23.pkl",
+      "source_path": "data/2018-08-23.pkl",
+      "size_bytes": 577224,
+      "git_blob_sha1": "8e47c9865df9e249895577d3452b4cad03daf9a0"
+    },
+    {
+      "date": "2018-08-24",
+      "filename": "2018-08-24.pkl",
+      "source_path": "data/2018-08-24.pkl",
+      "size_bytes": 586772,
+      "git_blob_sha1": "3406d175a6897b05d1aafc760d67c7f4fcdd9c26"
+    },
+    {
+      "date": "2018-08-25",
+      "filename": "2018-08-25.pkl",
+      "source_path": "data/2018-08-25.pkl",
+      "size_bytes": 580166,
+      "git_blob_sha1": "751c72c83e7d96f56a6e3cd85561986f7870ac80"
+    },
+    {
+      "date": "2018-08-26",
+      "filename": "2018-08-26.pkl",
+      "source_path": "data/2018-08-26.pkl",
+      "size_bytes": 594103,
+      "git_blob_sha1": "c2a301904a92961c5d0c967229018b77390cd70c"
+    },
+    {
+      "date": "2018-08-27",
+      "filename": "2018-08-27.pkl",
+      "source_path": "data/2018-08-27.pkl",
+      "size_bytes": 586150,
+      "git_blob_sha1": "c55bb5ccfdbd0a2633604be2228ff1494b32d1e4"
+    },
+    {
+      "date": "2018-08-28",
+      "filename": "2018-08-28.pkl",
+      "source_path": "data/2018-08-28.pkl",
+      "size_bytes": 587676,
+      "git_blob_sha1": "7dd25961b5b5109375af84ea653b2305474835f5"
+    },
+    {
+      "date": "2018-08-29",
+      "filename": "2018-08-29.pkl",
+      "source_path": "data/2018-08-29.pkl",
+      "size_bytes": 567125,
+      "git_blob_sha1": "bf7caa149530b22507311c3d116f3935c2e86659"
+    },
+    {
+      "date": "2018-08-30",
+      "filename": "2018-08-30.pkl",
+      "source_path": "data/2018-08-30.pkl",
+      "size_bytes": 582374,
+      "git_blob_sha1": "b3680097608d5d683f36bcf7eede3a2fcaf1d6c8"
+    },
+    {
+      "date": "2018-08-31",
+      "filename": "2018-08-31.pkl",
+      "source_path": "data/2018-08-31.pkl",
+      "size_bytes": 580464,
+      "git_blob_sha1": "69d557543622d857336fc08908be17ba549988b5"
+    },
+    {
+      "date": "2018-09-01",
+      "filename": "2018-09-01.pkl",
+      "source_path": "data/2018-09-01.pkl",
+      "size_bytes": 577879,
+      "git_blob_sha1": "35b3de50f85bd1b6b4df55aeb59d93526e04c8d8"
+    },
+    {
+      "date": "2018-09-02",
+      "filename": "2018-09-02.pkl",
+      "source_path": "data/2018-09-02.pkl",
+      "size_bytes": 594650,
+      "git_blob_sha1": "a9d2f93087863f420ca0b1914945648ea48d5121"
+    },
+    {
+      "date": "2018-09-03",
+      "filename": "2018-09-03.pkl",
+      "source_path": "data/2018-09-03.pkl",
+      "size_bytes": 581905,
+      "git_blob_sha1": "9cefd12717849afc6135522c28d44bc7d3f1ee06"
+    },
+    {
+      "date": "2018-09-04",
+      "filename": "2018-09-04.pkl",
+      "source_path": "data/2018-09-04.pkl",
+      "size_bytes": 587640,
+      "git_blob_sha1": "a3e0bb4d1fdb020e45f18ecfdf6894591dc4c29c"
+    },
+    {
+      "date": "2018-09-05",
+      "filename": "2018-09-05.pkl",
+      "source_path": "data/2018-09-05.pkl",
+      "size_bytes": 577206,
+      "git_blob_sha1": "f020b2659dbf26b07ab6e711bee4702734c6ab32"
+    },
+    {
+      "date": "2018-09-06",
+      "filename": "2018-09-06.pkl",
+      "source_path": "data/2018-09-06.pkl",
+      "size_bytes": 590318,
+      "git_blob_sha1": "e7ddebfd2e16dda5d7c35bbdfc02eab99d84293b"
+    },
+    {
+      "date": "2018-09-07",
+      "filename": "2018-09-07.pkl",
+      "source_path": "data/2018-09-07.pkl",
+      "size_bytes": 581777,
+      "git_blob_sha1": "842ca4c4d86be06ab7aa8712af1d15cdcc73e8e9"
+    },
+    {
+      "date": "2018-09-08",
+      "filename": "2018-09-08.pkl",
+      "source_path": "data/2018-09-08.pkl",
+      "size_bytes": 590900,
+      "git_blob_sha1": "c260139f34535fcd0c57309bc39937d0964495c3"
+    },
+    {
+      "date": "2018-09-09",
+      "filename": "2018-09-09.pkl",
+      "source_path": "data/2018-09-09.pkl",
+      "size_bytes": 596239,
+      "git_blob_sha1": "cf960c14c4dda653e2b2f924196bf9e353699b15"
+    },
+    {
+      "date": "2018-09-10",
+      "filename": "2018-09-10.pkl",
+      "source_path": "data/2018-09-10.pkl",
+      "size_bytes": 591730,
+      "git_blob_sha1": "6a3f6854c8b7004771ab6ec61bdee67fafda9699"
+    },
+    {
+      "date": "2018-09-11",
+      "filename": "2018-09-11.pkl",
+      "source_path": "data/2018-09-11.pkl",
+      "size_bytes": 579864,
+      "git_blob_sha1": "22e13f2ab8036bb2a326a522806aff04a44c8bc0"
+    },
+    {
+      "date": "2018-09-12",
+      "filename": "2018-09-12.pkl",
+      "source_path": "data/2018-09-12.pkl",
+      "size_bytes": 588261,
+      "git_blob_sha1": "425eb4044b5d3feccd30fbc5aa8559d325a4f4f7"
+    },
+    {
+      "date": "2018-09-13",
+      "filename": "2018-09-13.pkl",
+      "source_path": "data/2018-09-13.pkl",
+      "size_bytes": 589654,
+      "git_blob_sha1": "b0bc8456490a3f4bb2f634cb616b8b534b0648c3"
+    },
+    {
+      "date": "2018-09-14",
+      "filename": "2018-09-14.pkl",
+      "source_path": "data/2018-09-14.pkl",
+      "size_bytes": 579062,
+      "git_blob_sha1": "2e36320d0935d181a97c41151f737f847096445c"
+    },
+    {
+      "date": "2018-09-15",
+      "filename": "2018-09-15.pkl",
+      "source_path": "data/2018-09-15.pkl",
+      "size_bytes": 583748,
+      "git_blob_sha1": "61cedbfa4b428d8cfcf2eb656f6e2a8f3f801445"
+    },
+    {
+      "date": "2018-09-16",
+      "filename": "2018-09-16.pkl",
+      "source_path": "data/2018-09-16.pkl",
+      "size_bytes": 587459,
+      "git_blob_sha1": "73fb83a1a044418d95f2689616b1d408a454c789"
+    },
+    {
+      "date": "2018-09-17",
+      "filename": "2018-09-17.pkl",
+      "source_path": "data/2018-09-17.pkl",
+      "size_bytes": 587532,
+      "git_blob_sha1": "6558514eb79696a1aeb38286f668788d06cfdca8"
+    },
+    {
+      "date": "2018-09-18",
+      "filename": "2018-09-18.pkl",
+      "source_path": "data/2018-09-18.pkl",
+      "size_bytes": 588493,
+      "git_blob_sha1": "3de06f76a4303c563ae63d4d5fd81f5e462203a9"
+    },
+    {
+      "date": "2018-09-19",
+      "filename": "2018-09-19.pkl",
+      "source_path": "data/2018-09-19.pkl",
+      "size_bytes": 590163,
+      "git_blob_sha1": "ce8b83869753550610d7b0488d4f19837793df0b"
+    },
+    {
+      "date": "2018-09-20",
+      "filename": "2018-09-20.pkl",
+      "source_path": "data/2018-09-20.pkl",
+      "size_bytes": 592375,
+      "git_blob_sha1": "44832668da5ed870d42d760c6f69ac84882dd3d4"
+    },
+    {
+      "date": "2018-09-21",
+      "filename": "2018-09-21.pkl",
+      "source_path": "data/2018-09-21.pkl",
+      "size_bytes": 586104,
+      "git_blob_sha1": "60d235e879aee7af0939203666ce85acf978b215"
+    },
+    {
+      "date": "2018-09-22",
+      "filename": "2018-09-22.pkl",
+      "source_path": "data/2018-09-22.pkl",
+      "size_bytes": 593921,
+      "git_blob_sha1": "3ac111e48085318d5270160ad0bc47a5f2cc01c8"
+    },
+    {
+      "date": "2018-09-23",
+      "filename": "2018-09-23.pkl",
+      "source_path": "data/2018-09-23.pkl",
+      "size_bytes": 590854,
+      "git_blob_sha1": "ee45c0506262711ddc2160fd5fe18f9a2a5e651b"
+    },
+    {
+      "date": "2018-09-24",
+      "filename": "2018-09-24.pkl",
+      "source_path": "data/2018-09-24.pkl",
+      "size_bytes": 575568,
+      "git_blob_sha1": "889a4099cd5a90fc2c6f9bae87cb7603cdb89107"
+    },
+    {
+      "date": "2018-09-25",
+      "filename": "2018-09-25.pkl",
+      "source_path": "data/2018-09-25.pkl",
+      "size_bytes": 582211,
+      "git_blob_sha1": "8e845b49988b80e4d48835121780d55921150b60"
+    },
+    {
+      "date": "2018-09-26",
+      "filename": "2018-09-26.pkl",
+      "source_path": "data/2018-09-26.pkl",
+      "size_bytes": 588598,
+      "git_blob_sha1": "8f8618ebb6aac2bc05edaee41aa11e53aa2089cd"
+    },
+    {
+      "date": "2018-09-27",
+      "filename": "2018-09-27.pkl",
+      "source_path": "data/2018-09-27.pkl",
+      "size_bytes": 577744,
+      "git_blob_sha1": "d3614abe5f6a1d4fda239f0dd8c085424517e855"
+    },
+    {
+      "date": "2018-09-28",
+      "filename": "2018-09-28.pkl",
+      "source_path": "data/2018-09-28.pkl",
+      "size_bytes": 585771,
+      "git_blob_sha1": "10dcb222dc0cfe88eed049fca3981856ce033b54"
+    },
+    {
+      "date": "2018-09-29",
+      "filename": "2018-09-29.pkl",
+      "source_path": "data/2018-09-29.pkl",
+      "size_bytes": 575576,
+      "git_blob_sha1": "0bea61cfc7226ee7b0a4b57d352e5cbe2128a54c"
+    },
+    {
+      "date": "2018-09-30",
+      "filename": "2018-09-30.pkl",
+      "source_path": "data/2018-09-30.pkl",
+      "size_bytes": 589319,
+      "git_blob_sha1": "4156ce393b949bc337f61f3c62321fe625c27ec1"
+    }
+  ]
+}

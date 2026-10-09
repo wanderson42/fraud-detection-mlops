@@ -38,11 +38,5 @@ jobs:
       - name: Install dependencies and project
         run: poetry install
 
-      - name: Check lint
-        run: poetry run ruff check .
-
-      - name: Check formatting
-        run: poetry run ruff format --check .
-
-      - name: Run tests
-        run: poetry run pytest -q
+      - name: Run isolated quality checks with tox
+        run: poetry run tox -e py314

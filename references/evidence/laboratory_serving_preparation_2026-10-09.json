@@ -1,0 +1,115 @@
+{
+  "base": {
+    "implementation_revision": "incremental_patch_identified_by_file_hashes",
+    "local_snapshot_revision": "c930cb960329997b651659f02edb5c38b64bdcee",
+    "prerequisite_patch": "retire-legacy-entry-points.patch"
+  },
+  "checks": {
+    "additional_dev_dependencies": [
+      "httpx==0.28.1",
+      "httpcore==1.0.9"
+    ],
+    "git_diff_check": "passed",
+    "json_native_mlflow_skops_export": {
+      "fit_blocked": true,
+      "gold_train_and_test_files_removed_before_export": true,
+      "native_model_bytes": "identical",
+      "new_tracking_runs": 0,
+      "saved_evaluation_outputs": "synthetic_fixture",
+      "status": "passed",
+      "validation_rows": 160
+    },
+    "make_validate": {
+      "pytest_wall_seconds": 114.61,
+      "status": "passed",
+      "tests": 302,
+      "tox_wall_seconds": 124.71,
+      "warnings": 89
+    },
+    "poetry_check_lock": "passed",
+    "previous_locked_versions": "all_preserved",
+    "prior_notebook_cells_and_metadata": "preserved",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "wheel": {
+      "evidence_kind": "synthetic_smoke",
+      "excluded_packages": [
+        "mlflow",
+        "shap",
+        "duckdb",
+        "matplotlib",
+        "optuna",
+        "typer"
+      ],
+      "filename": "fraud_detection_mlops-0.0.1-py3-none-any.whl",
+      "fresh_locked_main_only_environment": true,
+      "http_parity_tolerance": 1e-12,
+      "isolated_python": true,
+      "model_sha256": "02b00e20c665f9c8e856650e5815f6527daea56d49b383c6a5d4dde9ca588243",
+      "outside_checkout": true,
+      "sha256": "e8f60b71c763911bcd8ec42a22ade6c6c02f3a88f6f2fd88a1f15f626c791f00",
+      "status": "success"
+    }
+  },
+  "environment": {
+    "fastapi": "0.142.4",
+    "httpx": "0.28.1",
+    "mlflow": "3.17.0",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "poetry": "2.4.3",
+    "pyarrow": "25.0.1",
+    "pydantic": "2.13.5",
+    "python": "3.14.4",
+    "ruff": "0.16.10",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "skops": "0.16.0",
+    "starlette": "1.7.0",
+    "tox": "4.32.0",
+    "uvicorn": "0.54.0"
+  },
+  "execution_scope": {
+    "confirmation_evaluated": false,
+    "docker_built_or_measured": false,
+    "new_handbook_fit": false,
+    "online_features_or_replay_executed": false,
+    "original_gold_test_reopened": false,
+    "production_promotion": false,
+    "real_frozen_reference_exported": false,
+    "saved_final_evaluation_verification": "supported_without_rescoring_holdout",
+    "test_data": "generated_synthetic_only"
+  },
+  "implementation_sha256": {
+    "Makefile": "1ea4ecfa325f4fe73a189026e57413cd5ed18c7d7f7b0db9e5e42f196ebccef0",
+    "examples/serving_smoke.py": "4bd2716aff6ea81193df16e71ad6322b97685ee5ce7daf465c8afcbb2f5255fc",
+    "fraud_detection_mlops/features/feature_validation.py": "654a7c60fea672c80a3a9fb3719e31013c3b3bf958ac90bc123e265bc58e4887",
+    "fraud_detection_mlops/integrations/serving_release_export.py": "1303df87a8c3fd438fe6182f03c8a64359d8d424c1a4ea8f8a3c90237b080138",
+    "fraud_detection_mlops/integrations/skops_persistence.py": "ad8c8d9ae68561f765d7cd868bcbca30231a96363349d9d067fc15ef85834c3c",
+    "fraud_detection_mlops/serving/__init__.py": "5c151fac3419f73a0dc13bb717231723a4f17443527b71fac1c634a0ea09bdee",
+    "fraud_detection_mlops/serving/http_service.py": "93f27d3d4c127218e6558528b16d542c1b86d4b367eee0807814f71e3d8b59fd",
+    "fraud_detection_mlops/serving/model_release.py": "3a64add1eb4cec79293246270821ef1ed4833c61b480ba69f900ba693ab5f5fc",
+    "fraud_detection_mlops/serving/request_schema.py": "70d9ad6d2c6f548b1cd37b0a832370adb6048ef7fadf04c40503f9ce053300aa",
+    "poetry.lock": "33e734e6dfd05c5b134f5bcd48c11bd44d374322d1e993cd550261dfb0f8e59f",
+    "pyproject.toml": "e50306cbb78675cb44acb2fdf40de7c9927b36b594f90470485d0cb122634ebf",
+    "scripts/check_serving_wheel.py": "32abb503772664a8602aa685e580f1440e979a0a92840c9bdf5b2b76bbee239f",
+    "tests/integrations/test_serving_release_export.py": "aea278432276cde6659fb5b3d9a8a46265b3a596acf021e80734d1dfd7600cfb",
+    "tests/integrations/test_skops_persistence.py": "dd7232723437851f9eb59acff2a464fb39fdf3ffb22651e2e7c7b56e9535f990",
+    "tests/serving/conftest.py": "a84fd75a742cf9d2c149314b27325102ad96fc195c33519069e020365daae36a",
+    "tests/serving/test_feature_coherence.py": "b654d2c60c753c5bb05edd417d8d7a2d7ce194cd46817abf84c090896aed3127",
+    "tests/serving/test_http_scoring.py": "2496d7d0c8fa3cf7223824682ec1478ff1178f303c6ba3551a8723a32756f950",
+    "tests/serving/test_release_integrity.py": "0ead41a700934d7308bb795b8d24520e700b6d767ba0086908b890af065b5c25",
+    "tox.toml": "07e7ec8ff845d1bb9b58db939b1931f79a580ae822022a7a10f2a24863e2907e"
+  },
+  "limitations": [
+    "Author export and HTTP/wheel verification with existing local reference artifacts remain pending.",
+    "No Docker engine was available; image construction, read-only mount, nonroot execution and resource measurements remain pending.",
+    "The HTTP wheel does not package external reference protocols for offline data/experiment workflows.",
+    "The endpoint receives precomputed features; causality must be demonstrated by the future event producer.",
+    "Dependency warnings remain visible; no global suppression was introduced."
+  ],
+  "origin": "assistant_preparation_in_isolated_workspace",
+  "recorded_date": "2026-10-09",
+  "schema_version": 1,
+  "stage": "laboratory_serving_v1_preparation"
+}

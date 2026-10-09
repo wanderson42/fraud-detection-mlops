@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "author_terminal_transcription_and_uploaded_executed_notebook",
+  "scope": "real_gold_training_and_validation_not_test_or_production",
+  "implementation_commit": null,
+  "ci_run_id": null,
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "baseline_run_id": "f6d7aca720f74316b4183f97b6d866ab",
+  "baseline_relative_path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/baseline_v1/f6d7aca720f74316b4183f97b6d866ab",
+  "result": {
+    "run_id": "f6d7aca720f74316b4183f97b6d866ab",
+    "verified_outputs": 10,
+    "selected_model": "hist_gradient_boosting",
+    "comparison": {
+      "dummy_prior": {
+        "rows": 67255,
+        "fraud_count": 580,
+        "fraud_rate": 0.008623894134265111,
+        "average_precision": 0.008623894134265111,
+        "roc_auc": 0.5,
+        "daily_customer_precision_at_100": 0.02142857142857143
+      },
+      "logistic_regression": {
+        "rows": 67255,
+        "fraud_count": 580,
+        "fraud_rate": 0.008623894134265111,
+        "average_precision": 0.4350008973626218,
+        "roc_auc": 0.8731684315322654,
+        "daily_customer_precision_at_100": 0.48000000000000004
+      },
+      "hist_gradient_boosting": {
+        "rows": 67255,
+        "fraud_count": 580,
+        "fraud_rate": 0.008623894134265111,
+        "average_precision": 0.6239485132514692,
+        "roc_auc": 0.8849532601528257,
+        "daily_customer_precision_at_100": 0.5399999999999999
+      }
+    },
+    "test_evaluated": false,
+    "status": "success"
+  },
+  "quality_checks": {
+    "origin": "author_terminal_output",
+    "command": "make validate",
+    "python": "3.14.4",
+    "passed": 127,
+    "pytest_seconds": 6.71,
+    "tox_total_seconds": 8.44,
+    "lockfile": "passed",
+    "lint": "passed",
+    "format": "43 files already formatted",
+    "git_diff_check": "no_errors_reported"
+  },
+  "selected_model_daily_precision_at_100": [
+    {
+      "date": "2018-05-06",
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 45,
+      "precision_at_100": 0.45
+    },
+    {
+      "date": "2018-05-07",
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 55,
+      "precision_at_100": 0.55
+    },
+    {
+      "date": "2018-05-08",
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 53,
+      "precision_at_100": 0.53
+    },
+    {
+      "date": "2018-05-09",
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 60,
+      "precision_at_100": 0.6
+    },
+    {
+      "date": "2018-05-10",
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 54,
+      "precision_at_100": 0.54
+    },
+    {
+      "date": "2018-05-11",
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 51,
+      "precision_at_100": 0.51
+    },
+    {
+      "date": "2018-05-12",
+      "alerts": 100,
+      "fraudulent_customers_in_alerts": 60,
+      "precision_at_100": 0.6
+    }
+  ],
+  "selected_model_timing": {
+    "origin": "author_notebook_output",
+    "fit_seconds": 0.6027634560014121,
+    "predict_seconds": 0.036915013999532675,
+    "benchmark_claim": false
+  },
+  "submitted_code_identity": {
+    "fraud_detection_mlops/modeling/train.py": "2cdcb5f8d3e2bb66152e452353b91e4a7349f6a019b5380719bd1b45258f11b1",
+    "fraud_detection_mlops/modeling/metrics.py": "fd8905db53aaa8623b93df0d415ae99fc03985e319936dc4aecbf6c1bdc73a9e",
+    "references/baseline_protocol_v1.json": "053e31caae9fe7b5752f8829e1d4213eda4e912c2f424e7185a5c724b92de23c"
+  },
+  "limitations": [
+    "native_model_prediction_manifest_and_audit_files_not_uploaded",
+    "executed_revision_not_independently_bound_to_native_audit",
+    "no_baseline_commit_or_ci_reported",
+    "single_validation_week_not_statistical_superiority",
+    "test_not_scored",
+    "scores_not_calibrated_probabilities",
+    "no_production_promotion"
+  ]
+}

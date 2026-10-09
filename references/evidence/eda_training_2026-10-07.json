@@ -1,0 +1,438 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-10-07",
+  "origin": "author_terminal_outputs_provided_in_chat",
+  "scope": "training_eda_summary_and_four_aggregate_tables",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "implementation": {
+    "git_commit": "fc22a48af5e6d9a0f9648a62effa95d39e02de02",
+    "delivered_patch": "silver-eda.patch",
+    "author_quality_checks": "not_reported_for_eda",
+    "ci_for_eda_commit": "success"
+  },
+  "execution": {
+    "run_id": "733686de23204cd6b9a5a1ec1cfbc2e7",
+    "relative_path": "data/interim/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/eda_v1/733686de23204cd6b9a5a1ec1cfbc2e7",
+    "build_stdout_received": false,
+    "bundle_verification_reported": {
+      "command": "poetry run python -m fraud_detection_mlops.eda verify <run_path>",
+      "status": "success",
+      "verified_outputs": 9,
+      "terminal_log_local": "2026-10-07 09:47:59.142",
+      "terminal_log_timezone": "America/Belem",
+      "native_started_at_utc": null,
+      "native_finished_at_utc": null
+    }
+  },
+  "summary_reported": {
+    "customers": 4954,
+    "distinct_transaction_ids": 268668,
+    "first_transaction": "2018-04-01T00:00:31.000",
+    "fraud_count": 1505,
+    "fraud_rate": 0.0056017092,
+    "genuine_count": 267163,
+    "last_transaction": "2018-04-28T23:59:27.000",
+    "rows": 268668,
+    "terminals": 10000,
+    "zero_amounts": 4
+  },
+  "tables_transcribed": {
+    "daily": [
+      {
+        "period": "2018-04-01",
+        "transactions": 9488,
+        "frauds": 3,
+        "fraud_rate_reported_rounded": 0.000316,
+        "mean_amount": 53.249981,
+        "customers": 3676,
+        "terminals": 6028
+      },
+      {
+        "period": "2018-04-02",
+        "transactions": 9583,
+        "frauds": 13,
+        "fraud_rate_reported_rounded": 0.001357,
+        "mean_amount": 52.600467,
+        "customers": 3695,
+        "terminals": 6089
+      },
+      {
+        "period": "2018-04-03",
+        "transactions": 9747,
+        "frauds": 15,
+        "fraud_rate_reported_rounded": 0.001539,
+        "mean_amount": 53.831375,
+        "customers": 3724,
+        "terminals": 6121
+      },
+      {
+        "period": "2018-04-04",
+        "transactions": 9530,
+        "frauds": 18,
+        "fraud_rate_reported_rounded": 0.001889,
+        "mean_amount": 53.255014,
+        "customers": 3731,
+        "terminals": 6045
+      },
+      {
+        "period": "2018-04-05",
+        "transactions": 9651,
+        "frauds": 22,
+        "fraud_rate_reported_rounded": 0.00228,
+        "mean_amount": 53.443085,
+        "customers": 3759,
+        "terminals": 6087
+      },
+      {
+        "period": "2018-04-06",
+        "transactions": 9539,
+        "frauds": 27,
+        "fraud_rate_reported_rounded": 0.00283,
+        "mean_amount": 53.174529,
+        "customers": 3742,
+        "terminals": 6119
+      },
+      {
+        "period": "2018-04-07",
+        "transactions": 9438,
+        "frauds": 39,
+        "fraud_rate_reported_rounded": 0.004132,
+        "mean_amount": 53.134377,
+        "customers": 3697,
+        "terminals": 5989
+      },
+      {
+        "period": "2018-04-08",
+        "transactions": 9468,
+        "frauds": 39,
+        "fraud_rate_reported_rounded": 0.004119,
+        "mean_amount": 53.449256,
+        "customers": 3716,
+        "terminals": 6009
+      },
+      {
+        "period": "2018-04-09",
+        "transactions": 9699,
+        "frauds": 40,
+        "fraud_rate_reported_rounded": 0.004124,
+        "mean_amount": 52.656559,
+        "customers": 3727,
+        "terminals": 6126
+      },
+      {
+        "period": "2018-04-10",
+        "transactions": 9672,
+        "frauds": 58,
+        "fraud_rate_reported_rounded": 0.005997,
+        "mean_amount": 54.323561,
+        "customers": 3739,
+        "terminals": 6114
+      },
+      {
+        "period": "2018-04-11",
+        "transactions": 9622,
+        "frauds": 52,
+        "fraud_rate_reported_rounded": 0.005404,
+        "mean_amount": 53.518359,
+        "customers": 3696,
+        "terminals": 6113
+      },
+      {
+        "period": "2018-04-12",
+        "transactions": 9541,
+        "frauds": 42,
+        "fraud_rate_reported_rounded": 0.004402,
+        "mean_amount": 53.334865,
+        "customers": 3724,
+        "terminals": 6082
+      },
+      {
+        "period": "2018-04-13",
+        "transactions": 9753,
+        "frauds": 50,
+        "fraud_rate_reported_rounded": 0.005127,
+        "mean_amount": 54.178964,
+        "customers": 3772,
+        "terminals": 6163
+      },
+      {
+        "period": "2018-04-14",
+        "transactions": 9557,
+        "frauds": 53,
+        "fraud_rate_reported_rounded": 0.005546,
+        "mean_amount": 53.967781,
+        "customers": 3760,
+        "terminals": 6116
+      },
+      {
+        "period": "2018-04-15",
+        "transactions": 9478,
+        "frauds": 52,
+        "fraud_rate_reported_rounded": 0.005486,
+        "mean_amount": 53.869579,
+        "customers": 3700,
+        "terminals": 6076
+      },
+      {
+        "period": "2018-04-16",
+        "transactions": 9540,
+        "frauds": 61,
+        "fraud_rate_reported_rounded": 0.006394,
+        "mean_amount": 53.650422,
+        "customers": 3751,
+        "terminals": 6074
+      },
+      {
+        "period": "2018-04-17",
+        "transactions": 9581,
+        "frauds": 56,
+        "fraud_rate_reported_rounded": 0.005845,
+        "mean_amount": 53.782806,
+        "customers": 3674,
+        "terminals": 6127
+      },
+      {
+        "period": "2018-04-18",
+        "transactions": 9616,
+        "frauds": 77,
+        "fraud_rate_reported_rounded": 0.008007,
+        "mean_amount": 52.78615,
+        "customers": 3724,
+        "terminals": 6099
+      },
+      {
+        "period": "2018-04-19",
+        "transactions": 9539,
+        "frauds": 79,
+        "fraud_rate_reported_rounded": 0.008282,
+        "mean_amount": 53.753887,
+        "customers": 3738,
+        "terminals": 6071
+      },
+      {
+        "period": "2018-04-20",
+        "transactions": 9569,
+        "frauds": 68,
+        "fraud_rate_reported_rounded": 0.007106,
+        "mean_amount": 53.602531,
+        "customers": 3742,
+        "terminals": 6061
+      },
+      {
+        "period": "2018-04-21",
+        "transactions": 9645,
+        "frauds": 70,
+        "fraud_rate_reported_rounded": 0.007258,
+        "mean_amount": 53.764338,
+        "customers": 3730,
+        "terminals": 6115
+      },
+      {
+        "period": "2018-04-22",
+        "transactions": 9747,
+        "frauds": 75,
+        "fraud_rate_reported_rounded": 0.007695,
+        "mean_amount": 54.070002,
+        "customers": 3735,
+        "terminals": 6150
+      },
+      {
+        "period": "2018-04-23",
+        "transactions": 9744,
+        "frauds": 86,
+        "fraud_rate_reported_rounded": 0.008826,
+        "mean_amount": 54.68117,
+        "customers": 3792,
+        "terminals": 6118
+      },
+      {
+        "period": "2018-04-24",
+        "transactions": 9548,
+        "frauds": 81,
+        "fraud_rate_reported_rounded": 0.008483,
+        "mean_amount": 53.613682,
+        "customers": 3722,
+        "terminals": 6048
+      },
+      {
+        "period": "2018-04-25",
+        "transactions": 9623,
+        "frauds": 89,
+        "fraud_rate_reported_rounded": 0.009249,
+        "mean_amount": 53.318128,
+        "customers": 3749,
+        "terminals": 6122
+      },
+      {
+        "period": "2018-04-26",
+        "transactions": 9552,
+        "frauds": 70,
+        "fraud_rate_reported_rounded": 0.007328,
+        "mean_amount": 53.042892,
+        "customers": 3725,
+        "terminals": 6098
+      },
+      {
+        "period": "2018-04-27",
+        "transactions": 9610,
+        "frauds": 79,
+        "fraud_rate_reported_rounded": 0.008221,
+        "mean_amount": 53.552445,
+        "customers": 3722,
+        "terminals": 6132
+      },
+      {
+        "period": "2018-04-28",
+        "transactions": 9588,
+        "frauds": 91,
+        "fraud_rate_reported_rounded": 0.009491,
+        "mean_amount": 54.200867,
+        "customers": 3721,
+        "terminals": 6069
+      }
+    ],
+    "amount_by_label": [
+      {
+        "label": 0,
+        "transactions": 267163,
+        "zero_amounts": 4,
+        "minimum": 0,
+        "mean": 52.999277,
+        "std_population": 39.369964,
+        "median": 44.57,
+        "p90": 109.36,
+        "p99": 166.66,
+        "maximum": 219.98
+      },
+      {
+        "label": 1,
+        "transactions": 1505,
+        "zero_amounts": 0,
+        "minimum": 0.49,
+        "mean": 154.207322,
+        "std_population": 160.433331,
+        "median": 91.92,
+        "p90": 375.46,
+        "p99": 734.184,
+        "maximum": 947.4
+      }
+    ],
+    "entity_activity": [
+      {
+        "entity": "CUSTOMER_ID",
+        "entities": 4954,
+        "minimum": 1,
+        "mean": 54.232539,
+        "median": 53,
+        "p90": 98,
+        "p99": 116,
+        "maximum": 130
+      },
+      {
+        "entity": "TERMINAL_ID",
+        "entities": 10000,
+        "minimum": 6,
+        "mean": 26.8668,
+        "median": 26,
+        "p90": 37,
+        "p99": 47,
+        "maximum": 67
+      }
+    ],
+    "scenarios_audit_only": [
+      {
+        "scenario": 0,
+        "label": 0,
+        "transactions": 267163
+      },
+      {
+        "scenario": 1,
+        "label": 1,
+        "transactions": 152
+      },
+      {
+        "scenario": 2,
+        "label": 1,
+        "transactions": 812
+      },
+      {
+        "scenario": 3,
+        "label": 1,
+        "transactions": 541
+      }
+    ]
+  },
+  "derived_from_reported_counts": {
+    "weekly": [
+      {
+        "start": "2018-04-01",
+        "end_inclusive": "2018-04-07",
+        "transactions": 66976,
+        "frauds": 137,
+        "fraud_rate": 0.0020455088389871
+      },
+      {
+        "start": "2018-04-08",
+        "end_inclusive": "2018-04-14",
+        "transactions": 67312,
+        "frauds": 334,
+        "fraud_rate": 0.004961968148324222
+      },
+      {
+        "start": "2018-04-15",
+        "end_inclusive": "2018-04-21",
+        "transactions": 66968,
+        "frauds": 463,
+        "fraud_rate": 0.006913749850674949
+      },
+      {
+        "start": "2018-04-22",
+        "end_inclusive": "2018-04-28",
+        "transactions": 67412,
+        "frauds": 571,
+        "fraud_rate": 0.008470302023378626
+      }
+    ],
+    "all_genuine_counterfactual": {
+      "origin": "arithmetic_from_training_label_counts_not_fitted_model",
+      "predicted_fraud_count": 0,
+      "accuracy": 0.9943982908273408,
+      "fraud_recall": 0.0
+    },
+    "scenario_final_label_shares": {
+      "1": 0.1009966777408638,
+      "2": 0.5395348837209303,
+      "3": 0.359468438538206
+    }
+  },
+  "precision_note": "Daily rates and summary statistics were printed with limited precision; weekly rates and counterfactual accuracy are recomputed from integer counts.",
+  "not_inspected": [
+    "native_audit_json",
+    "native_eda_manifest_json",
+    "source_silver_manifest_json",
+    "native_csv_bytes",
+    "training_overview_png",
+    "hourly_csv",
+    "weekday_csv",
+    "amount_bins_csv"
+  ],
+  "limits": [
+    "author_report_not_direct_file_inspection",
+    "source_data_are_simulated",
+    "no_model_training_or_holdout_evaluation",
+    "scenario_labels_are_final_audit_metadata_not_disjoint_causal_mechanisms"
+  ],
+  "ci_evidence": {
+    "origin": "read_only_github_connector_query",
+    "head_sha": "fc22a48af5e6d9a0f9648a62effa95d39e02de02",
+    "branch": "feat/silver-eda",
+    "event": "push",
+    "run_id": 37634000505,
+    "job_id": 112835300248,
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/37634000505",
+    "scope": "lockfile_installation_and_isolated_quality_checks_with_tox",
+    "pytest_count_from_ci_logs": null
+  }
+}

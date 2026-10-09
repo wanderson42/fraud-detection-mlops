@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "version": "final_evaluation_v1",
+  "status": "policy_defined_test_execution_pending",
+  "reference": {
+    "baseline_run_id": "f6d7aca720f74316b4183f97b6d866ab",
+    "baseline_manifest_sha256": "31e1ad433a5df9c42ee17b8ecfa9e8659e815d0d82b84ad39c10a483f10309e7",
+    "model_id": "hist_gradient_boosting",
+    "model_uri": "runs:/d3be86000fd24dc8a053dbcab778d4b6/model",
+    "gold_manifest_sha256": "a3540ae4d52ff241f8ac512d9f195ee33c8d01299b7fd736a3180eb3d9508f9d",
+    "experiment_run_id": "21ccedf10d944092ba874153c1d21257"
+  },
+  "choices": {
+    "features": "all_19_gold_v1_in_contract_order",
+    "model_parameters": "baseline_protocol_v1.hist_gradient_boosting",
+    "preprocessor": null,
+    "refit": false,
+    "probability_calibration": false,
+    "score_semantics": "uncalibrated_ranking",
+    "population": "all_transactions_without_customer_blocking",
+    "customer_score": "maximum_transaction_score_per_customer_day",
+    "customer_label": "any_fraud_per_customer_day",
+    "alert_budget": 100,
+    "tie_break": "CUSTOMER_ID_ascending",
+    "evaluation_clock": "retrospective_complete_day",
+    "daily_aggregation": "unweighted_mean",
+    "label_delay_days": 7
+  },
+  "holdout": {
+    "split": "test",
+    "start": "2018-05-20",
+    "end_exclusive": "2018-05-27",
+    "expected_rows": 66954,
+    "evaluate_after_freeze_commit": true,
+    "select_or_tune_on_test": false
+  },
+  "acceptance": {
+    "scope": "offline_candidate_for_laboratory_serving",
+    "minimum_average_precision": 0.5,
+    "minimum_daily_customer_precision_at_100": 0.45,
+    "threshold_origin": "practical_project_targets_defined_after_validation_before_test",
+    "financial_utility_estimated": false,
+    "production_promotion": false,
+    "on_failure": "record_failure_keep_thresholds_do_not_tune_on_this_test"
+  },
+  "reporting": {
+    "primary": "average_precision",
+    "secondary": ["roc_auc", "daily_customer_precision_at_100"],
+    "daily_metrics": true,
+    "constant_score_control": true,
+    "hypothesis_test": false,
+    "confidence_intervals": false,
+    "formal_superiority_claim": false
+  }
+}

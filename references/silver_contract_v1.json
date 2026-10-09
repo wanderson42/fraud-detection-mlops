@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "version": "silver_v1",
+  "temporal_origin": "2018-04-01",
+  "timestamp_timezone": null,
+  "columns": {
+    "TRANSACTION_ID": "int64",
+    "TX_DATETIME": "datetime64[ns]",
+    "CUSTOMER_ID": "int64",
+    "TERMINAL_ID": "int64",
+    "TX_AMOUNT": "float64",
+    "TX_TIME_SECONDS": "int64",
+    "TX_TIME_DAYS": "int64",
+    "TX_FRAUD": "int8",
+    "TX_FRAUD_SCENARIO": "int8"
+  },
+  "amount_policy": "finite_nonnegative_preserve_zero_and_extremes",
+  "row_policy": "preserve_all_rows_and_order_fail_on_invalid_input",
+  "informational_checks": ["timestamp_order_decreases", "zero_amounts"],
+  "excluded_predictors": ["TX_FRAUD", "TX_FRAUD_SCENARIO"]
+}

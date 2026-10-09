@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "kind": "data_features_organization_preparation",
+  "checked_at_utc": "2026-10-09T10:44:29.961866+00:00",
+  "implementation": {
+    "local_base_commit": "e0f1d3aabc346a0eec6b750e10aa4fffd7b6a351",
+    "local_base_scope": "Local snapshot containing the first-stage patch; not a published remote revision",
+    "original_branch_base_commit": "b5959857d2fb74113a4b52378d35572c9971c698",
+    "delivery": "Incremental patch applied after modeling-structure-refactor.patch",
+    "package_sources_sha256": "b4edf608f8745d59bbea2cb2a8516ca30e1987fe80f0a9118c3f24d78d1ed2ed"
+  },
+  "environment": {
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "dependency_source": "Unchanged poetry.lock",
+    "tox_environment": "py314"
+  },
+  "checks": {
+    "command": "poetry run tox -e py314",
+    "status": "passed",
+    "pytest_passed": 271,
+    "warnings": 77,
+    "pytest_seconds": 187.71,
+    "tox_seconds": 203.81,
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "poetry_check_lock": "passed",
+    "git_diff_check": "passed",
+    "notebook_package_imports": 21,
+    "local_links_checked": 381,
+    "notebook_outputs_execution_counts_metadata": "preserved",
+    "defined_public_exports_checked": 65,
+    "runtime_note": "The cached Ruff executable in the new isolated tox environment required restoring its execute permission before the successful run; no project configuration changed."
+  },
+  "parity": {
+    "source": "Offline synthetic fixture: 21 days with 3 transactions per day; download responses mocked",
+    "silver": {
+      "rows": 63,
+      "physical_columns": 9,
+      "values_order_dtypes": "exact match"
+    },
+    "gold": {
+      "rows": 12,
+      "physical_columns": 25,
+      "values_order_dtypes": "exact match"
+    },
+    "context_features": {
+      "rows": 63,
+      "physical_columns": 25,
+      "values_order_dtypes": "exact match"
+    },
+    "causal_sql": "identical",
+    "eda_summary_and_tables": "identical",
+    "historical_silver_gold_verify": "passed without rebuilding or computing features"
+  },
+  "preserved": [
+    "Historical reference files and executable protocols",
+    "Dependency definitions and lockfile",
+    "Dataset versions, physical schemas and storage paths",
+    "Model interface, algorithm parameters and selection gates",
+    "Existing notebook outputs and execution metadata"
+  ],
+  "limits": {
+    "scope": "Local preparation on controlled data; not remote CI or validation on the author Alienware",
+    "real_dataset_rebuilt": false,
+    "real_models_retrained": false,
+    "real_mlflow_optuna_stores_inspected": false,
+    "confirmation_evaluated": false,
+    "production_promotion": false,
+    "standalone_wheel_validated": false
+  }
+}
