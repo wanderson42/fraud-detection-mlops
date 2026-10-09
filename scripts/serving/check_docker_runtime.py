@@ -132,6 +132,8 @@ class Docker:
             raise CheckFailed(f"Docker indisponível ou comando excedeu 30s: {args[0]}") from error
         if check and result.returncode:
             raise CheckFailed(f"docker {args[0]} falhou: {result.stderr.strip()[-3000:]}")
+        if args[0] == "logs":
+            return (result.stdout + result.stderr).strip()
         return result.stdout.strip()
 
     def inspect(self, container):
@@ -200,9 +202,14 @@ def wait_ready(docker, container, release_id, timeout=60):
         info = docker.inspect(container)
         state = info["State"]
         if not state["Running"]:
+            details = json.dumps(
+                {key: state.get(key) for key in ("Status", "ExitCode", "OOMKilled", "Error")},
+                ensure_ascii=False,
+            )
+            logs = docker.run("logs", container, check=False)[-4000:]
             raise CheckFailed(
-                "Serviço encerrou antes de ficar pronto: "
-                + docker.run("logs", container, check=False)[-2000:]
+                f"Serviço encerrou antes de ficar pronto. Estado: {details}\n"
+                f"Logs (stdout/stderr):\n{logs or '(sem saída capturada)'}"
             )
         ports = info["NetworkSettings"]["Ports"].get("8000/tcp")
         if ports:
