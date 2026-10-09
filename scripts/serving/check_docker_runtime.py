@@ -313,8 +313,13 @@ def assess(image, release, manifest_sha256, requests=100):
         engine = json.loads(docker.run("info", "--format", "{{json .}}"))
         require(engine["OSType"] == "linux", "Este check requer containers Linux.")
         require(
-            engine.get("MemoryLimit") and engine.get("SwapLimit") and engine.get("CPUCfsQuota"),
-            "Engine não suporta os limites de memória/swap/CPU.",
+            engine.get("MemoryLimit") is True
+            and engine.get("SwapLimit") is True
+            and engine.get("CpuCfsQuota") is True,
+            "Engine não suporta os limites de memória/swap/CPU: "
+            f"MemoryLimit={engine.get('MemoryLimit')!r}, "
+            f"SwapLimit={engine.get('SwapLimit')!r}, "
+            f"CpuCfsQuota={engine.get('CpuCfsQuota')!r}.",
         )
         image_info = json.loads(docker.run("image", "inspect", image))[0]
         image_id = image_info["Id"]
