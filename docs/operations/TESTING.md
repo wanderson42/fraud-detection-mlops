@@ -174,6 +174,82 @@ o exemplo `synthetic_smoke`; não substitui a exportação da referência no Ali
 nem comprova Docker. [Procedimento](SERVING_CONTRACT.md#wheel-e-runtime-de-inferência)
 e [recibo](../../references/evidence/laboratory_serving_preparation_2026-10-09.json).
 
+## Preparação do protocolo estatístico
+
+O plano lê somente quatro JSONs versionados, mesmo com bytes inválidos em uma
+partição reservada. Os checks rejeitam políticas/recibos alterados e código não
+commitado, modificado ou excluído. A referência de fila aleatória é comparada com
+enumeração independente de todas as filas possíveis em populações pequenas,
+incluindo clientes recorrentes; probabilidades extremas conservam o resultado
+em log10 quando a representação linear sofre underflow.
+
+Esses checks verificam a implementação e os limites declarados de interpretação;
+não avaliam o HGB em setembro. A preparação aprovou **324 testes**, com 89 avisos
+de dependências; lockfile, Ruff e formatação passaram no tox com Python 3.14.4. O
+[recibo da preparação](../../references/evidence/reference_assessment_preparation_2026-10-09.json)
+registra o ambiente e a suíte completa. Validação no Alienware e CI da nova revisão
+permanecem evidências distintas. [Protocolo e comandos](../modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1).
+
+## Executor da referência em setembro
+
+Os checks percorrem 28 partições Silver sintéticas, geram somente os 14 dias
+de avaliação e conferem o histórico de rótulos por máscara temporal independente.
+Arquivos inválidos em maio e no replay asseguram que essas janelas não entram
+no cálculo. A carga de MLflow/skops é conferida num store temporário, sem fit
+durante a carga ou nova run. Os cenários exercitam dias de uma classe, cobertura
+ausente, dados inválidos, symlinks, corrupção rehasheada, concorrência e interrupção
+após publicação; retomadas completas não carregam modelo nem consultam a Silver.
+
+[Escopo e comandos](../modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada)
+e [recibo da preparação](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json).
+A preparação aprovou **348 testes**, com 94 avisos de dependências; lockfile, Ruff
+e formatação passaram no tox com Python 3.14.4. A execução com os artefatos do
+autor continua separada destes checks. O autor também informou **348 testes/94
+avisos em 77,27 s**, tox aprovado em 82,25 s, seguido de `run` e `verify` nativos
+com sucesso. O [recibo do autor](../../references/evidence/reference_assessment_author_validation_2026-10-09.json)
+registra essa evidência; a CI da revisão publicada ainda precisa ser conferida.
+
+## Diagnóstico de dependência das previsões salvas
+
+Os checks conferem autocorrelação e influência dos dias com exemplos calculáveis
+à mão, recorrência de entidades e sobreposição entre dias. Séries constantes,
+dias de uma classe e valores indefinidos conservam sua interpretação explícita.
+A integração reutiliza o bundle sintético verificado com a Silver removida,
+confere ausência de novas cargas/pontuações e preservação dos bytes da avaliação.
+Corrupção das previsões impede o diagnóstico; destinos dentro da avaliação são
+rejeitados antes do acesso. Esses checks não determinam o método de incerteza.
+A preparação aprovou **362 testes**, com 94 avisos; os 14 checks novos passaram
+também isoladamente. Ruff, formatação e lockfile passaram no tox `py314`.
+O [recibo de preparação](../../references/evidence/reference_dependence_preparation_2026-10-09.json)
+registra hashes e cenários. O autor executou o diagnóstico em `70a0acc`, após
+aprovar 362 testes/94 avisos; o JSON nativo foi revisado nesta entrega e registrado
+no [relato do autor](../../references/evidence/reference_dependence_author_validation_2026-10-09.json).
+
+## Sensibilidade por blocos de dias completos
+
+Os checks verificam blocos circulares, multiplicidades, truncamento da última
+extração e reprodutibilidade. A AP agrupada otimizada é comparada com réplicas
+que duplicam explicitamente as linhas e usam o scikit-learn, incluindo empates
+de score e tamanhos diários distintos; não é a média das APs diárias. Classes
+únicas e pesos inválidos não geram faixas válidas. Réplicas indefinidas suprimem
+a faixa e preservam as contagens. A integração funciona com a Silver removida,
+sem novas cargas/pontuações ou mudanças nos bytes da avaliação original.
+
+A preparação passou **379 testes/134 avisos**, Ruff (147 arquivos formatados),
+Poetry/lockfile e tox `py314`, em 156,00 s. O run inclui avisos de depreciação e
+de conexões SQLite não fechadas em testes existentes; não houve falhas. O
+[recibo](../../references/evidence/reference_uncertainty_preparation_2026-10-09.json)
+registra hashes e cenários, incluindo um check sintético de capacidade. Esses
+checks não substituem o relatório reamostrado das previsões nativas.
+
+O autor agora forneceu esse relatório nativo: as quatro configurações e seus
+hashes foram revisados, sem métricas indefinidas. O
+[recibo](../../references/evidence/reference_uncertainty_author_validation_2026-10-09.json)
+distingue resultados fornecidos, verificações de revisão e bytes não recebidos.
+O fechamento altera documentação/evidência; executores e testes permanecem
+idênticos à preparação de 379 testes. Nenhum novo resultado de suíte nativa foi
+informado junto ao JSON.
+
 ## Evidências anteriores
 
 As evidências abaixo identificam revisões anteriores, com paths e hashes históricos

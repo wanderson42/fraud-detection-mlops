@@ -8,6 +8,12 @@ o resultado e a fronteira consumida estão [registrados abaixo](#resultado-final
 Fonte: snapshot `6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a` do Handbook.
 Referência executável: [temporal_protocol_v1.json](../../references/temporal_protocol_v1.json).
 
+**Estado atual — 2026-10-09:** avaliações de maio e de 02–15/09 executadas pelo
+autor; diagnóstico e reamostragem nativa revisados; escopo exploratório concluído.
+O [resultado e seus limites](#resultado-nativo-da-reamostragem-e-fechamento) são a
+síntese vigente. As seções anteriores de preparação preservam o desenho histórico;
+16–30/09 permanece reservado para replay. A próxima ação é a exportação da referência.
+
 ## Objetivo e janelas
 
 Fixar as regras antes da escolha de features/modelos, preservar o teste final e
@@ -374,10 +380,10 @@ recall médio diário de 73,02%; 142 ocorrências ficaram fora. A precisão vari
 de 47% a 61%. A [Model Card](MODEL_CARD.md#revisão-diária-da-fila-de-investigação)
 concentra a tabela, unidades e interpretação, sem alterar o gate.
 A conferência direta dos bytes da Model Card gerada e do vínculo do CSV ao
-manifesto nativo continua pendente. A API e o wheel de serving têm checks
-sintéticos; exportar e servir a referência real e medir Docker continuam
-pendentes. O [contrato de serving](../operations/SERVING_CONTRACT.md) separa
-essas evidências.
+manifesto nativo continua pendente. O autor exportou a referência real e validou
+HTTP/wheel fora do checkout; construir e medir Docker permanece pendente.
+O [contrato de serving](../operations/SERVING_CONTRACT.md) separa os checks
+sintéticos do relato de execução com a referência existente.
 
 A consolidação documental não altera código, lockfile, contratos ou recibo
 congelado. Os artefatos operacionais existentes e suas runs permanecem preservados.
@@ -409,14 +415,15 @@ As janelas de treino e as entidades se repetem: os cortes não são amostras ind
 | Reserva | Período | Autorização atual |
 | --- | --- | --- |
 | Futuro treino confirmatório | 29/07–25/08 | Sem novo fit; parte coincide com desenvolvimento |
-| Confirmação | 02–15/09 | Não lida; protocolo estatístico separado antes do acesso |
+| Confirmação originalmente reservada | 02–15/09 | Consumida pela avaliação da referência; não houve confirmação de candidato |
 | Replay operacional | 16–30/09 | Não lido; política de eventos/feedback ainda pendente |
 
 A reserva de setembro é temporal, com os mesmos clientes/terminais possíveis.
-Não representa validação em novas entidades. A confirmação de 14 dias é uma
-reserva inicial, sem promessa de potência estatística; hipótese, efeito relevante,
-unidade e método para dependência temporal/por cliente precisam ser definidos
-antes do acesso. Não usar resultados de setembro para novas escolhas de Optuna.
+Não representa validação em novas entidades. A reserva inicial de 14 dias não
+prometia potência estatística e foi consumida pela avaliação da referência abaixo.
+Uma comparação confirmatória futura exige outra janela preservada, com hipótese,
+efeito relevante, unidade e método para dependência definidos antes do acesso.
+Não usar resultados de setembro para novas escolhas de Optuna.
 
 ### Busca, seleção e custo
 
@@ -508,3 +515,367 @@ alegação formal de superioridade. O [recibo do relato](../../references/eviden
 identifica o arquivo fornecido e seu hash. A revisão de implementação não está no
 relatório e não foi inferida; banco, dados e modelos reais não foram conferidos
 independentemente. Uma nova hipótese exige outro protocolo e outra identidade.
+
+## Protocolo estatístico da referência — v1
+
+**Pergunta:** como o HGB já congelado, treinado em 01–28/04/2018, ordena transações
+e prioriza clientes em 02–15/09/2018? O
+[snapshot executável](../../references/reference_assessment_protocol_v1.json)
+fixa modelo, fonte, população, métricas e limites de interpretação. Seus bytes e
+os três recibos vinculados têm hashes fixados; mudanças exigem outra versão.
+Na etapa 14, o comando prepara o plano lendo somente esses quatro JSONs.
+Não carrega modelo, Parquet ou tracking e não executa a avaliação.
+
+Nenhum trial passou o gate de desenvolvimento. Conservamos os bytes do modelo de
+abril e as 19 features, sem refit, calibração ou nova busca. A referência de AP
+média 0,652277 no Optuna foi **retreinada em cada corte**; esse número não é uma
+baseline pareada para o modelo fixo em setembro. O resultado de maio serve como
+comparação histórica descritiva, pois seu teste já foi consumido.
+
+### Reserva, população e relógio
+
+| Uso | Datas inclusivas de 2018 | Regra |
+| --- | --- | --- |
+| Contexto da avaliação | 19/08–01/09, 14 dias | Somente histórico causal; sem treino ou métricas de avaliação |
+| Avaliação da referência | 02–15/09, 14 dias | Todas as transações; conservar os 14 dias no relatório |
+| Replay operacional | 16–30/09, 15 dias | Continua reservado; execução depende do contrato de eventos |
+
+“Reservado” significa sem uso na avaliação/seleção do modelo: a Silver já passou
+por aceitação estrutural da fonte inteira. Não significa novos clientes ou que
+nenhum byte foi lido pela qualidade dos dados. Não estimamos aqui o volume de
+setembro a partir do volume total.
+
+Features usam somente histórico elegível e rótulos com `LABEL_AVAILABLE_AT`
+estritamente anterior ao instante da decisão. Os sete dias de atraso exigem 14
+dias de contexto para as features atuais; isso **não define independência
+estatística nem tamanho de bloco para bootstrap**. Os rótulos da avaliação estarão
+completos antes de 23/09, e o feedback do replay antes de 08/10. No replay, avançar
+o relógio para receber feedback não exige transações de outubro.
+
+A fila continua retrospectiva por dia completo: máximo score por cliente/dia,
+rótulo positivo se houver qualquer fraude desse cliente no dia, desempate por ID,
+até 100 clientes. Ela precisa de outra política para decisões instantâneas em
+streaming. Replay será simulação histórica, com transação e feedback separados;
+paridade operacional não constitui confirmação independente de qualidade.
+
+### Métricas e alcance da inferência
+
+O desfecho principal será AP sobre todas as transações da janela. Relataremos
+precisão diária @100 com média não ponderada, recall, clientes-dia fraudulentos
+capturados/perdidos, prevalência e contagens por dia. ROC AUC exige ambas as classes.
+Dias com uma classe conservam suas contagens, com AP/AUC indefinidas; dias ausentes
+não podem ser omitidos silenciosamente pelo futuro executor.
+
+Essas métricas descrevem a população observada no período. Clientes, terminais e
+históricos se repetem; muitas transações não garantem muita informação independente.
+Nesta v1, **não estimamos intervalo de confiança para desempenho futuro nem
+executamos teste formal de estabilidade, degradação ou superioridade**. A duração
+de 14 dias não é uma impossibilidade universal de inferência; faltam justificativas
+de dependência, método e precisão para a pergunta deste projeto.
+
+Implementamos uma comparação mais limitada sobre contagens diárias: uma política
+hipotética seleciona uniformemente, sem reposição, até 100 clientes por dia, com
+sorteios novos e independentes entre dias. Condicionando nas populações e rótulos
+observados, as capturas de cada dia seguem distribuição hipergeométrica. A soma é
+calculada por convolução em log-probabilidade, sem Monte Carlo. O relatório traz
+capturas esperadas, excesso observado, intervalo central de 95% das capturas dessa
+política e probabilidade de ela capturar pelo menos o total observado.
+
+A independência é dos sorteios **da política definida**, não dos clientes ou dias
+observados. Esse intervalo não é um intervalo de confiança do modelo; a cauda não
+testa generalização nem todas as formas de ranking sem informação. Não determina
+promoção. Probabilidades pequenas demais para representação linear ficam nulas
+nesse campo, com valor em log10 e indicador explícito de underflow.
+
+Uma futura comparação confirmatória exige candidato elegível e congelado, janela
+ainda não consultada, scores pareados na mesma população, efeito mínimo relevante,
+método e informação efetiva justificados, avaliação de potência ou precisão e
+política para multiplicidade/consultas repetidas. A hipótese **ainda não ativa**
+terá forma `H0: efeito de AP candidato − referência ≤ ganho relevante` contra
+`H1: efeito > ganho relevante`, com alvo temporal explicitado. Se as condições
+não sustentarem inferência, relataremos efeitos descritivos sem p-valor ou alegação
+de estabilidade. Abrir setembro para esta avaliação consome sua reserva de qualidade.
+
+### Preparar e conferir
+
+```bash
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_temporal_assessment plan --project-root .
+# Após validar e commitar protocolo, implementação e lockfile:
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_temporal_assessment plan --project-root . --require-committed
+```
+
+O segundo comando exige inputs e código Python rastreados e iguais ao commit.
+Ambos retornam `plan_prepared_only`, sem autorização para abrir setembro. O
+executor abaixo implementa a autorização de acesso em outro snapshot, preservando
+o plano e suas regras estatísticas. Os checks da preparação usam dados sintéticos;
+[preparação](../../references/evidence/reference_assessment_preparation_2026-10-09.json)
+e [etapa 14](../../notebooks/stages/14_reference_assessment_protocol.ipynb).
+
+As escolhas acima são do projeto, informadas por
+[Künsch (1989), reamostragem para observações estacionárias](https://projecteuclid.org/journals/annals-of-statistics/volume-17/issue-3/The-Jackknife-and-the-Bootstrap-for-General-Stationary-Observations/10.1214/aos/1176347265.short),
+[SciPy, distribuição hipergeométrica](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.hypergeom.html),
+[ASA (2016), interpretação de p-valores](https://www.amstat.org/asa/files/pdfs/p-valuestatement.pdf)
+e [Handbook, validação temporal e feedback atrasado](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_5_ModelValidationAndSelection/ValidationStrategies.html).
+
+### Executor auditável da janela fixada
+
+Etapa 15: [autorização executável](../../references/reference_assessment_execution_v1.json)
+vinculada pelo hash ao protocolo estatístico v1. `plan` continua sem acesso nativo;
+**`run` abre e consome a reserva de qualidade de 02–15/09**, preservando 16–30/09.
+A preparação do assistente usou somente fixtures sintéticas. O autor informou
+execução e verificação nativas bem-sucedidas, registradas abaixo; a CI da revisão
+publicada ainda precisa de evidência própria.
+
+Antes de `run`, valide e commite os arquivos do incremento. O executor exige
+protocolos, recibos, inventário, contratos, implementação e lockfile rastreados,
+sem alterações, e as versões do ambiente do modelo congelado. Não precisa de novo
+treino, de exportação para HTTP ou de uma nova busca Optuna.
+
+```bash
+make validate
+git diff --check
+# Commit dos arquivos da entrega, antes de executar:
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_assessment_execution run
+ASSESSMENT_PATH="data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1"
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_assessment_execution verify "$ASSESSMENT_PATH"
+```
+
+`run` aceita `--silver-root` e `--output-root` para os diretórios de armazenamento.
+Não aceita outras datas, modelos ou parâmetros. Preserve o diretório de saída
+inteiro nas retomadas; mudar o destino não cria uma nova janela independente.
+
+O fluxo lê primeiro metadados, verifica os bytes/signatura/parâmetros da referência
+no MLflow/skops e grava `access.json` antes de abrir ou hashear partições Silver.
+Confere somente os 28 dias de contexto e avaliação, origem, hashes, schema,
+aceitação Silver e identidade das transações. Reutiliza o SQL causal existente,
+salvando apenas as features dos 14 dias de avaliação. Pontua sem fit e sem novas
+runs, com quatro threads. O limite interno de 2 GB do DuckDB não limita a RAM total.
+
+`results/` contém 14 partições de features, predições com os metadados originais,
+`daily.json`, `report.json`, snapshots das políticas/recibo/origem e manifesto com
+hashes. A publicação do diretório é atômica. O relatório conserva dias de uma
+classe, AP/AUC indefinidas quando aplicável e contagens completas. A média de recall
+usa somente dias com clientes fraudulentos e informa seu denominador.
+
+`verify` exige a auditoria original, rejeita arquivos fora do bundle, confere
+schema, cobertura, população, maturidade dos rótulos e hashes, e recalcula todas
+as métricas e a referência condicional de fila aleatória. Não acessa a Silver,
+o tracking ou o modelo. Isso verifica a evidência salva; não é nova pontuação nem
+autenticação externa de toda a execução.
+
+Uma nova chamada a `run` reutiliza resultados completos sem consultar a Silver
+ou carregar o modelo. Antes da publicação, uma falha pode ser retomada com a mesma
+identidade: cada tentativa permanece na auditoria. Mudanças nos inputs, código
+ou ambiente bloqueiam a retomada. Falha do modelo fica registrada sem abertura
+das partições; corrupção de dados impede a pontuação. Preserve/restaure o conjunto
+coerente, sem apagar a auditoria para aparentar um primeiro acesso.
+
+O executor não instala um gate de promoção ou teste de superioridade. Após revisar
+os resultados nativos, o autor exportou a referência e validou HTTP/wheel isolado.
+O fechamento do PR precede Docker e Prefect; o replay
+terá seu contrato de eventos. [Recibo dos checks](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json)
+e [etapa 15](../../notebooks/stages/15_reference_assessment_execution.ipynb).
+
+### Resultado da referência em setembro — relato do autor
+
+Em 2026-10-09, o autor aprovou 348 testes com 94 avisos no tox `py314`, commitou
+a entrega em `d2a40aac949fc273fab28f4ba40c86460097d06a` e executou `run` e `verify`
+com `status: success`. Ambos informaram a identidade
+`7af4b6be089cb8318adbadb0ad6b503f6bbd76a30acf88d40c7834fbae31e864`, o mesmo
+hash do modelo congelado e as mesmas métricas. O
+[recibo do autor](../../references/evidence/reference_assessment_author_validation_2026-10-09.json)
+registra as saídas fornecidas. Os Parquets, manifesto e auditoria nativos não
+foram recebidos ou verificados independentemente pelo assistente; preserve o
+diretório inteiro de resultados e use `verify` para conferir a evidência salva.
+
+| Medida | Resultado em 02–15/09/2018 |
+| --- | --- |
+| Transações / fraudes | 134.467 / 1.200; prevalência de 0,8924% |
+| AP / ROC AUC | 0,621312 / 0,883141 |
+| Precisão média diária @100 | 54,9286% |
+| Recall médio diário de clientes fraudulentos | 72,8927%; definido nos 14 dias |
+| Alertas / capturas / perdas | 1.400 / 769 / 286 pares cliente/dia |
+| Clientes fraudulentos por dia, somados | 1.055 pares cliente/dia; não clientes únicos no período |
+| Capturas esperadas na fila uniforme | 28,3348; intervalo central de referência de 95%: 19–39 |
+
+A precisão diária variou de 48% a 64%. A fila uniforme condiciona nas populações,
+rótulos e orçamentos observados; seu intervalo descreve essa política aleatória,
+sem estimar a incerteza futura do modelo. A probabilidade de cauda linear ficou
+`null` por underflow, com `log10` preservado em −1055,9863. Esse contraste não
+constitui teste temporal formal nem declaração de superioridade generalizável.
+A AP de maio (0,640703) e a precisão de 55% são comparações históricas descritivas;
+a diferença entre períodos não identifica, por si só, uma degradação significativa.
+
+Não houve refit, novas runs, confirmação de candidato, reabertura do teste de
+maio ou promoção. **02–15/09 foi consumida; 16–30/09 continua reservada para replay.**
+Na revisão inicial desse resultado, o diagnóstico e a análise de incerteza eram
+os próximos passos. Ambos foram executados e revisados posteriormente, fechando
+o [escopo exploratório](#resultado-nativo-da-reamostragem-e-fechamento). Cobertura
+de generalização não foi estabelecida; confirmação de candidato permanece
+condicional a outro desenho e janela preservada.
+
+### Diagnóstico de dependência e análise de incerteza
+
+Esta ação inspeciona a evidência de 02–15/09 já consumida. O alvo da futura
+inferência precisa ser explícito: AP agrupada de transações e média diária da
+precisão @100 têm unidades e ponderações diferentes. Um intervalo depende da
+população/regime temporal que se pretende representar e de seus pressupostos;
+não promete cobertura para qualquer período futuro ou para novos clientes.
+
+O diagnóstico `reference_dependence_diagnostics_v1` é **exploratório, após a avaliação**:
+confere o bundle com `verify`, lê suas previsões e produz somente um JSON separado.
+Conserva a identidade da avaliação e o hash das previsões. Não carrega modelo,
+consulta Silver ou replay, nem escreve no diretório da avaliação.
+
+```bash
+ASSESSMENT_PATH="data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1"
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_dependence_diagnostics inspect "$ASSESSMENT_PATH"
+```
+
+O relatório fica no diretório irmão `reference_dependence_diagnostics_v1/report.json`;
+`--output` aceita outro caminho JSON fora da avaliação. O relatório contém:
+
+- Métricas dos 14 dias, incluindo indefinições explícitas.
+- Recorrência de clientes e terminais, concentração de transações por entidade
+  e sobreposição de entidades entre dias, sem expor IDs individuais.
+- Autocorrelação descritiva das métricas diárias, para defasagens de 1–7 dias:
+  produtos centrados divididos pela soma de quadrados de toda a série, sem ajuste
+  por defasagem. Sem bandas de significância. Uma série constante ou com dia
+  indefinido tem coeficientes nulos; os dias não são comprimidos ou omitidos.
+- AP agrupada e precisão média @100 ao retirar cada dia, com os deltas em relação
+  à janela completa. Essa análise de influência não é um intervalo de confiança.
+
+A definição de autocorrelação corresponde à convenção não ajustada, centrada,
+documentada no [statsmodels](https://www.statsmodels.org/stable/generated/statsmodels.tsa.stattools.acf.html).
+Recorrência não prova dependência; autocorrelação pequena não prova independência.
+Há poucos pares por defasagem, e sete dias de atraso de rótulo não determinam o
+tamanho de bloco. O diagnóstico não escolhe automaticamente reamostragem ou blocos,
+não calcula informação efetiva e não executa um teste temporal formal.
+
+O JSON nativo foi revisado e fundamentou o alvo e a grade exploratória descritos
+na seção seguinte. O fechamento registra quantis de reamostragem e a insuficiência
+para cobertura de generalização validada. Análises escolhidas após inspecionar
+setembro mantêm caráter exploratório. Uma confirmação de superioridade de outro
+modelo exige candidato elegível e outra janela preservada.
+
+### Sensibilidade de reamostragem e fechamento do escopo
+
+O autor aprovou 362 testes/94 avisos, commitou o diagnóstico em `70a0acc` e
+forneceu seu JSON nativo. A identidade é a mesma avaliação de 134.467 transações;
+o hash das previsões informado é
+`9400ffcd44142f51789a0d08c96ac79fd94ba7882095eb5fdb90e608967e69d9`.
+Contagens, histogramas e autocorrelações diárias foram reconciliados a partir do
+[relatório fornecido](../../references/evidence/reference_dependence_author_validation_2026-10-09.json).
+Os bytes nativos das previsões, manifesto e auditoria não foram recebidos.
+
+Dos 4.907 clientes, 4.803 (97,88%) aparecem em múltiplos dias; dos 9.999 terminais,
+9.998 se repetem. A sobreposição média de clientes com o dia anterior é 83,31%.
+A autocorrelação de precisão @100 na defasagem de um dia é −0,694; AP diária tem
+0,132 e 0,225 nas defasagens de um e dois dias. Isso não valida independência ou
+estacionariedade. Ao retirar cada dia, a AP agrupada fica entre 0,611106 e
+0,633239; essa sensibilidade descritiva não é um intervalo de confiança.
+
+Escolhemos, **depois de observar o diagnóstico**, o bootstrap circular de dias
+completos como análise exploratória de sensibilidade, com blocos de **2, 3, 4 e
+7 dias**, 2.000 réplicas por configuração, seed 42 e quantis 2,5%/97,5%.
+Não selecionamos um bloco ótimo ou a faixa mais favorável. Dias completos conservam
+a estrutura entre entidades dentro do dia e a ordem dentro de cada bloco; relações
+entre blocos não são integralmente conservadas. O método faz a transição circular
+do último ao primeiro dia, uma aproximação de reamostragem, não uma continuidade
+observada ou um replay causal. Blocos de sete dias deixam apenas duas extrações
+por réplica; isso não é uma contagem de grupos independentes.
+
+O [bootstrap circular](https://arch.readthedocs.io/en/stable/bootstrap/generated/arch.bootstrap.CircularBlockBootstrap.html)
+evita a sub-representação das bordas do bootstrap móvel sem retorno circular,
+mas adiciona essa aproximação de adjacência. A
+[dependência dos resultados no comprimento de bloco](https://arxiv.org/abs/1204.1035)
+motiva a grade de sensibilidade. Não adotamos bootstrap IID de transações nem
+clusters de clientes isolados, que não preservariam a estrutura temporal e entre
+clientes/terminais da mesma maneira. A grade não prova que cobre toda dependência.
+
+O alvo hipotético é uma janela de 14 dias de um **regime local comparável**, com o
+mesmo modelo fixo e população recorrente: AP agrupada ponderada por transações,
+precisão média diária @100 e recall médio nos dias em que está definido. Supõe
+estacionariedade local e dependência adequadamente representada pelos blocos;
+os 14 dias não estabeleceram esses pressupostos ou a cobertura frequentista.
+Portanto, publicamos **faixas centrais de reamostragem com massa nominal de 95%**,
+com `coverage_validated: false`, e não um intervalo de generalização validado.
+Aumentar réplicas reduz erro de Monte Carlo; não acrescenta dias observados.
+
+Nas métricas diárias recebidas, calculamos:
+
+| Bloco | Faixa de reamostragem da precisão média @100 | Faixa do recall médio diário |
+| --- | --- | --- |
+| 2 dias | 53,07%–56,57% | 70,99%–74,95% |
+| 3 dias | 53,43%–56,43% | 70,54%–75,11% |
+| 4 dias | 53,43%–56,43% | 70,77%–75,18% |
+| 7 dias | 53,86%–56,00% | 70,83%–74,77% |
+
+Esses cálculos usam apenas as métricas diárias fornecidas. A AP agrupada não é a
+média das APs diárias e exige as previsões nativas. O executor calcula a AP exata
+com multiplicidades de dias, incluindo empates de score, sem duplicar os Parquets
+por réplica ou reconstruir features. Confere seu cálculo contra a AP original.
+Réplicas indefinidas têm contagens explícitas e suprimem a faixa da métrica;
+não são descartadas para produzir um intervalo condicionado silenciosamente.
+
+```bash
+ASSESSMENT_PATH="data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1"
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_uncertainty_analysis analyze "$ASSESSMENT_PATH"
+```
+
+O comando verifica o bundle, usa as previsões salvas e escreve no diretório irmão
+`reference_uncertainty_analysis_v1/report.json`. Mantém quatro threads, registra
+hashes da implementação, ambiente, identidade, hash das previsões e a grade inteira.
+Não consulta modelo, Silver, replay ou tracking e não altera a avaliação original.
+
+Os critérios de fechamento foram atendidos pela execução nativa e sua revisão:
+AP e todas as configurações registradas, faixas e indefinições conferidas, relatório
+e proveniência preservados no recibo abaixo. A entrega conclui **a análise
+exploratória e seus limites**; não
+transforma a hipótese de regime local em cobertura demonstrada para o futuro.
+Essa incerteza mais ampla fica condicionada a desenho/dados que sustentem a
+inferência. Comparação confirmatória de outro modelo exige candidato elegível,
+outra janela preservada e seu protocolo. Não há teste formal ou promoção neste ciclo.
+
+### Resultado nativo da reamostragem e fechamento
+
+Em 2026-10-09, o autor executou `reference_uncertainty_analysis analyze` e
+forneceu o JSON completo. A revisão confirmou a mesma avaliação, hashes de modelo
+e previsões, janela, grade, seed e hashes da implementação entregue. Precisão e
+recall coincidiram exatamente com a reamostragem secundária registrada antes;
+todas as métricas tiveram 2.000 réplicas definidas por configuração, sem supressão.
+O recall teve 14 dias definidos em todas as réplicas.
+
+| Bloco | Faixa central da AP agrupada | Precisão média diária @100 | Recall médio diário |
+| --- | --- | --- | --- |
+| 2 dias | 0,583389–0,661410 | 53,07%–56,57% | 70,99%–74,95% |
+| 3 dias | 0,579289–0,664576 | 53,43%–56,43% | 70,54%–75,11% |
+| 4 dias | 0,580198–0,666739 | 53,43%–56,43% | 70,77%–75,18% |
+| 7 dias | 0,584160–0,659657 | 53,86%–56,00% | 70,83%–74,77% |
+
+Os valores observados permanecem AP **0,621312**, precisão **54,93%** e recall
+**72,89%**. O desvio padrão reamostrado da AP vai de 0,019899 a 0,022273. A grade
+mostra como os quantis mudam ao reponderar os dias; não identifica um bloco ótimo,
+não corrige o modelo e não demonstra estabilidade para períodos futuros. A faixa
+mais estreita com sete dias não justifica preferir essa configuração.
+
+O [recibo da revisão](../../references/evidence/reference_uncertainty_author_validation_2026-10-09.json)
+preserva o relatório completo, hash do arquivo recebido, verificações e limites.
+Os bytes nativos das previsões não foram recebidos: a AP reamostrada é resultado
+da execução do autor, com implementação conferida por hash; não foi recalculada
+independentemente nesta revisão. Os hashes de modelo e previsões no relatório
+coincidem com os relatos anteriores e o executor verifica o bundle localmente.
+Não foi fornecido novo resultado de pytest ou CI nesta mensagem.
+
+**Este escopo exploratório está concluído:** avaliação, diagnóstico, grade inteira,
+resultados nativos e insuficiência para cobertura futura estão documentados.
+`generalization_confidence_interval: null`, teste temporal formal e promoção
+continuam falsos. Generalização e confirmação de outro modelo exigem desenho e
+dados adequados; candidato elegível e janela preservada seguem condicionais.
+Não será reaberta esta janela para selecionar um candidato.
+
+O benefício é substituir apenas estimativas pontuais por uma descrição auditável
+de sensibilidade e de dependência, e explicitar o que a evidência permite afirmar.
+A referência existente foi exportada e seu HTTP/wheel foi validado pelo autor.
+Após integrar o PR desta etapa, seguimos para **Docker de laboratório**, conforme
+o [contrato de serving](../operations/SERVING_CONTRACT.md).

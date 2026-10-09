@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "version": "reference_assessment_v1",
+  "stage": "protocol_preparation_before_reserved_access",
+  "question": "How does the already frozen April reference rank transactions and prioritize customers during 2-15 September?",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "bindings": {
+    "frozen_reference": {
+      "path": "references/frozen_candidate_v1.json",
+      "sha256": "6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120"
+    },
+    "development_policy": {
+      "path": "references/hgb_optuna_protocol_v1.json",
+      "sha256": "d0289c3002945b47d433d601b9f6dba1ae41789e9bf19b04010c399d58858531"
+    },
+    "development_result": {
+      "path": "references/evidence/hgb_optuna_author_report_2026-10-09.json",
+      "sha256": "26b63de0cf143f13cfb2fe1124a54ac7e9451e15476ca7f98463339076472ede",
+      "verification_scope": "author_report_not_native_study_verification"
+    }
+  },
+  "reference": {
+    "model_id": "hist_gradient_boosting",
+    "model_uri": "runs:/d3be86000fd24dc8a053dbcab778d4b6/model",
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "features": "all_19_gold_v1_in_canonical_order",
+    "trained_window": {
+      "start": "2018-04-01",
+      "end_exclusive": "2018-04-29"
+    },
+    "refit": false,
+    "hyperparameter_search": false,
+    "calibration": false,
+    "feature_selection": false
+  },
+  "windows": {
+    "assessment_context": {
+      "start": "2018-08-19",
+      "end_exclusive": "2018-09-02"
+    },
+    "assessment": {
+      "start": "2018-09-02",
+      "end_exclusive": "2018-09-16"
+    },
+    "operational_replay": {
+      "start": "2018-09-16",
+      "end_exclusive": "2018-10-01"
+    }
+  },
+  "time_policy": {
+    "history_days": 14,
+    "label_delay_days": 7,
+    "label_use": "LABEL_AVAILABLE_AT_strictly_before_decision_clock",
+    "assessment_labels_complete_before": "2018-09-23T00:00:00",
+    "replay_feedback_complete_before": "2018-10-08T00:00:00",
+    "context_usage": "causal_features_only_not_fit_or_assessment_metrics",
+    "replay_context": "previous_14_days_with_causal_feedback"
+  },
+  "population": {
+    "transactions": "all_transactions_in_assessment_window",
+    "customer_blocking": false,
+    "customer_score": "maximum_transaction_score_per_customer_day",
+    "customer_label": "any_fraud_per_customer_day",
+    "tie_break": "CUSTOMER_ID_ascending",
+    "alert_budget": 100,
+    "small_population_rule": "min_100_available_customers",
+    "queue_clock": "retrospective_complete_day_not_instantaneous_online_alerts"
+  },
+  "reporting": {
+    "primary": "pooled_transaction_average_precision",
+    "secondary": [
+      "daily_unweighted_customer_precision_at_100",
+      "daily_customer_recall_at_100",
+      "captured_and_missed_customer_days",
+      "daily_prevalence_and_population_counts",
+      "roc_auc_when_both_classes_exist"
+    ],
+    "daily_coverage": "all_14_prespecified_days_no_silent_omission",
+    "single_class_days": "keep_counts_mark_AP_and_ROC_AUC_undefined",
+    "may_comparison": "descriptive_only_already_consumed_test",
+    "generalization_confidence_interval": null,
+    "formal_temporal_hypothesis_test": false,
+    "formal_superiority_claim": false
+  },
+  "conditional_queue_reference": {
+    "version": "uniform_queue_reference_v1",
+    "policy": "uniform_sampling_without_replacement_per_day",
+    "random_draws_between_days": "independent_by_definition_of_reference_policy",
+    "condition_on": "all_observed_daily_customers_labels_and_alert_budgets",
+    "statistic": "total_captured_customer_days",
+    "method": "hypergeometric_log_probability_convolution",
+    "reference_interval_mass": 0.95,
+    "tail": "probability_reference_policy_captures_at_least_observed_total",
+    "interpretation": "conditional_random_policy_benchmark_not_test_of_model_generalization",
+    "model_confidence_interval": false,
+    "promotion_gate": false
+  },
+  "future_candidate_confirmation": {
+    "authorized": false,
+    "eligible_candidate": null,
+    "current_selection_decision": "retain_reference",
+    "requirements": [
+      "eligible_candidate_frozen_before_new_untouched_evaluation",
+      "paired_scores_identical_population_and_temporal_windows",
+      "primary_effect_and_minimum_relevant_gain_fixed_before_access",
+      "dependence_and_effective_information_justified_without_reserved_outcomes",
+      "valid_inference_method_and_power_or_precision_assessment",
+      "multiplicity_and_repeated_look_policy",
+      "new_versioned_protocol_and_reserved_data_identity"
+    ],
+    "hypothesis_template": "H0: target_candidate_minus_reference_AP_effect <= prespecified_relevant_gain; H1: effect > gain",
+    "fallback_if_inference_not_justified": "descriptive_effects_only_no_p_value_or_stability_claim"
+  },
+  "current_authorization": {
+    "plan_only": true,
+    "native_data_reads": false,
+    "native_model_loading": false,
+    "new_fits": 0,
+    "new_tracking_runs": 0,
+    "reserved_assessment_evaluated": false,
+    "replay_executed": false,
+    "production_promotion": false,
+    "next_delivery": "commit_protocol_then_implement_audited_reference_assessment_executor"
+  }
+}

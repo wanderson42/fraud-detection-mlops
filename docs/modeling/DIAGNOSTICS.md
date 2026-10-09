@@ -5,6 +5,10 @@ com sete outputs verificados. Versão `diagnostics_v1`. O modelo publicado perma
 assim como o [protocolo temporal](EVALUATION_PROTOCOL.md). Esta etapa formula
 hipóteses para os próximos experimentos; não seleciona features automaticamente.
 
+Este documento trata do diagnóstico de **validação de maio**. O diagnóstico
+posterior de dependência e a reamostragem de 02–15/09 têm
+[resultado e fechamento próprios](EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
+
 ## Escopo e custo
 
 **HGB = Histogram-based Gradient Boosting** (boosting de árvores baseado em

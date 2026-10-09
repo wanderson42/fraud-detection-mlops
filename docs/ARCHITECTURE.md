@@ -10,6 +10,7 @@ infraestrutura entra por capacidade implementada.
 | --- | --- |
 | `modeling/contracts/model_interface.py` | `ModelSpec`, construção, fit e score com checks de compatibilidade |
 | `modeling/contracts/prediction_schema.py` | Tipos de metadados e scores persistidos |
+| `modeling/contracts/temporal_assessment_protocol.py` | Snapshot do protocolo estatístico e vínculos com recibos históricos; lê somente JSON versionado |
 | `modeling/algorithms/<algoritmo>.py` | Factory completa e não ajustada; sem política temporal ou publicação |
 | `modeling/algorithms/model_catalog.py` | Registro explícito e parâmetros padrão dos algoritmos |
 | `modeling/experiments/candidate_training.py` | Entrada compartilhada de ajuste, métricas e artefatos |
@@ -17,8 +18,10 @@ infraestrutura entra por capacidade implementada.
 | `modeling/experiments/temporal_development_data.py`, `hgb_optimization.py` | Preparação autorizada e busca de hiperparâmetros HGB |
 | `modeling/experiments/terminal_feature_ablation.py` | Ablações específicas das features de terminal |
 | `modeling/experiments/candidate_freeze.py`, `final_holdout_evaluation.py` | Congelamento e avaliação final autorizada |
+| `modeling/experiments/reference_temporal_assessment.py` | Preparação do plano temporal da referência; somente metadados, sem execução reservada |
+| `modeling/experiments/reference_assessment_execution.py` | Execução autorizada da janela fixada, auditoria de acesso, retomada e verificação offline |
 | `modeling/experiments/experiment_provenance.py`, `experiment_artifacts.py` | Identidade de implementação e integridade compartilhadas |
-| `evaluation/` | Ranking, comparação pareada e diagnósticos da validação |
+| `evaluation/` | Ranking, comparação pareada, diagnósticos e referência condicional de fila aleatória sobre contagens diárias |
 | `integrations/` | Tracking MLflow e persistência skops |
 
 Dependências seguem essas fronteiras: algoritmos dependem do contrato; integrações
@@ -61,6 +64,7 @@ recibos históricos para permitir retomada com código diferente.
 | `data/ingestion/handbook_inventory.py` | Identidade da fonte e seleção das partições |
 | `data/ingestion/handbook_bronze.py`, `handbook_download.py` | Aquisição, integridade, retomada e CLI da Bronze |
 | `data/datasets/silver_dataset.py`, `gold_dataset.py` | Construção, publicação atômica, verificação e consulta |
+| `data/datasets/reference_assessment_dataset.py` | Contexto Silver restrito e features causais da avaliação de setembro; sem carga ou ajuste de modelo |
 | `data/quality/transaction_profile.py`, `training_eda.py` | Diagnóstico dos dados brutos e exploração restrita ao treino |
 | `features/feature_schema.py` | Ordem, tipos e schema dos preditores e metadados |
 | `features/causal_history.py` | Fórmulas e janelas SQL sobre o passado elegível |
@@ -96,7 +100,9 @@ Poetry separa `main` (inferência), `pipeline` (dados/experimentos) e `dev` (che
 A instalação padrão conserva todos os grupos. O wheel HTTP foi conferido em
 ambiente só com `main`, fora do checkout. Isso não empacota os protocolos externos
 dos workflows offline. Uma mudança para `src/` permanece decisão futura;
-Docker, replay e orquestração seguem o [mural](project/ROADMAP.md).
+O autor validou o wheel com a referência real. Docker entra em branch própria
+após integrar o PR estatístico; replay e orquestração seguem o
+[mural](project/ROADMAP.md).
 
 ## Documentação e testes
 
@@ -111,3 +117,8 @@ comparação. Arquivos de teste não importam outros arquivos de teste. Iniciali
 e opções das CLIs atuais são conferidas em `tests/modeling/test_entry_points.py` e
 `tests/data/test_entry_points.py`; a API pública de features continua coberta em sua área.
 Checks e limites ficam em [Testing](operations/TESTING.md).
+
+A CLI de plano conserva seu escopo de metadados. O executor de setembro aplica
+outro snapshot de autorização, verifica o modelo antes das partições e persiste
+resultados sem novas runs. `evaluation/temporal_reference_metrics.py` recebe scores
+e metadados; não lê dados nem carrega modelos. [Execução e limites](modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada).

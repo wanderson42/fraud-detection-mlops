@@ -1,0 +1,1028 @@
+{
+  "schema_version": 1,
+  "stage": "reference_dependence_diagnostics_v1_author_validation",
+  "recorded_date": "2026-10-09",
+  "origin": "author_terminal_output_and_uploaded_native_diagnostics_report",
+  "uploaded_report_sha256": "60996f71a5f932422f699836c1fbd1aa8950434ad59335daf190c14a9c39a83c",
+  "author_diagnostics_commit_abbreviated": "70a0acc",
+  "author_software_validation": {
+    "pytest": {
+      "tests": 362,
+      "warnings": 94,
+      "wall_seconds": 79.74,
+      "status": "passed"
+    },
+    "tox": {
+      "environment": "py314",
+      "environment_wall_seconds": 84.69,
+      "total_wall_seconds": 84.7,
+      "status": "passed"
+    }
+  },
+  "review": {
+    "daily_counts_and_entity_histograms_reconciled": true,
+    "autocorrelations_recomputed_from_uploaded_daily_metrics": true,
+    "native_prediction_bytes_received": false,
+    "native_manifest_and_access_audit_received": false,
+    "predictions_hash_is_author_reported": true
+  },
+  "native_diagnostics_report": {
+    "analysis_scope": "post_assessment_exploratory_diagnostics",
+    "assessment_git_revision": "d2a40aac949fc273fab28f4ba40c86460097d06a",
+    "assessment_id": "7af4b6be089cb8318adbadb0ad6b503f6bbd76a30acf88d40c7834fbae31e864",
+    "assessment_window": {
+      "end_exclusive": "2018-09-16",
+      "start": "2018-09-02"
+    },
+    "daily": [
+      {
+        "alerts": 100,
+        "average_precision": 0.5970131548553989,
+        "customer_recall_at_100": 0.7391304347826086,
+        "customers": 3770,
+        "daily_customer_precision_at_100": 0.51,
+        "date": "2018-09-02",
+        "fraud_count": 74,
+        "fraud_rate": 0.007599876758755264,
+        "fraudulent_customers": 69,
+        "fraudulent_customers_in_alerts": 51,
+        "missed_fraudulent_customers": 18,
+        "precision_at_100": 0.51,
+        "roc_auc": 0.8471209489526783,
+        "rows": 9737
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.5869919049899446,
+        "customer_recall_at_100": 0.6626506024096386,
+        "customers": 3730,
+        "daily_customer_precision_at_100": 0.55,
+        "date": "2018-09-03",
+        "fraud_count": 94,
+        "fraud_rate": 0.009866694657289808,
+        "fraudulent_customers": 83,
+        "fraudulent_customers_in_alerts": 55,
+        "missed_fraudulent_customers": 28,
+        "precision_at_100": 0.55,
+        "roc_auc": 0.8643202564108348,
+        "rows": 9527
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.6744486022107188,
+        "customer_recall_at_100": 0.7692307692307693,
+        "customers": 3723,
+        "daily_customer_precision_at_100": 0.6,
+        "date": "2018-09-04",
+        "fraud_count": 91,
+        "fraud_rate": 0.009458476249870076,
+        "fraudulent_customers": 78,
+        "fraudulent_customers_in_alerts": 60,
+        "missed_fraudulent_customers": 18,
+        "precision_at_100": 0.6,
+        "roc_auc": 0.9132041096364286,
+        "rows": 9621
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.5841384211011004,
+        "customer_recall_at_100": 0.7,
+        "customers": 3696,
+        "daily_customer_precision_at_100": 0.49,
+        "date": "2018-09-05",
+        "fraud_count": 79,
+        "fraud_rate": 0.00835978835978836,
+        "fraudulent_customers": 70,
+        "fraudulent_customers_in_alerts": 49,
+        "missed_fraudulent_customers": 21,
+        "precision_at_100": 0.49,
+        "roc_auc": 0.8799379718468909,
+        "rows": 9450
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.647984870512084,
+        "customer_recall_at_100": 0.7428571428571429,
+        "customers": 3720,
+        "daily_customer_precision_at_100": 0.52,
+        "date": "2018-09-06",
+        "fraud_count": 84,
+        "fraud_rate": 0.008691153647180549,
+        "fraudulent_customers": 70,
+        "fraudulent_customers_in_alerts": 52,
+        "missed_fraudulent_customers": 18,
+        "precision_at_100": 0.52,
+        "roc_auc": 0.8923191236624073,
+        "rows": 9665
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.7517946471091125,
+        "customer_recall_at_100": 0.8051948051948052,
+        "customers": 3745,
+        "daily_customer_precision_at_100": 0.62,
+        "date": "2018-09-07",
+        "fraud_count": 86,
+        "fraud_rate": 0.009028871391076115,
+        "fraudulent_customers": 77,
+        "fraudulent_customers_in_alerts": 62,
+        "missed_fraudulent_customers": 15,
+        "precision_at_100": 0.62,
+        "roc_auc": 0.9471637959283231,
+        "rows": 9525
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.7007477036138875,
+        "customer_recall_at_100": 0.7538461538461538,
+        "customers": 3695,
+        "daily_customer_precision_at_100": 0.49,
+        "date": "2018-09-08",
+        "fraud_count": 75,
+        "fraud_rate": 0.007751937984496124,
+        "fraudulent_customers": 65,
+        "fraudulent_customers_in_alerts": 49,
+        "missed_fraudulent_customers": 16,
+        "precision_at_100": 0.49,
+        "roc_auc": 0.8757458333333332,
+        "rows": 9675
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.6995975099515593,
+        "customer_recall_at_100": 0.7631578947368421,
+        "customers": 3759,
+        "daily_customer_precision_at_100": 0.58,
+        "date": "2018-09-09",
+        "fraud_count": 84,
+        "fraud_rate": 0.008604794099569761,
+        "fraudulent_customers": 76,
+        "fraudulent_customers_in_alerts": 58,
+        "missed_fraudulent_customers": 18,
+        "precision_at_100": 0.58,
+        "roc_auc": 0.9165805607219123,
+        "rows": 9762
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.5787514261758665,
+        "customer_recall_at_100": 0.7125,
+        "customers": 3761,
+        "daily_customer_precision_at_100": 0.57,
+        "date": "2018-09-10",
+        "fraud_count": 93,
+        "fraud_rate": 0.009599504541701073,
+        "fraudulent_customers": 80,
+        "fraudulent_customers_in_alerts": 57,
+        "missed_fraudulent_customers": 23,
+        "precision_at_100": 0.57,
+        "roc_auc": 0.8761619795256267,
+        "rows": 9688
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.6451893458707868,
+        "customer_recall_at_100": 0.7183098591549296,
+        "customers": 3706,
+        "daily_customer_precision_at_100": 0.51,
+        "date": "2018-09-11",
+        "fraud_count": 79,
+        "fraud_rate": 0.00832104487044449,
+        "fraudulent_customers": 71,
+        "fraudulent_customers_in_alerts": 51,
+        "missed_fraudulent_customers": 20,
+        "precision_at_100": 0.51,
+        "roc_auc": 0.8575959450647701,
+        "rows": 9494
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.6395963118302173,
+        "customer_recall_at_100": 0.7619047619047619,
+        "customers": 3709,
+        "daily_customer_precision_at_100": 0.64,
+        "date": "2018-09-12",
+        "fraud_count": 104,
+        "fraud_rate": 0.010798463295607933,
+        "fraudulent_customers": 84,
+        "fraudulent_customers_in_alerts": 64,
+        "missed_fraudulent_customers": 20,
+        "precision_at_100": 0.64,
+        "roc_auc": 0.9033707842488151,
+        "rows": 9631
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.5484926142266666,
+        "customer_recall_at_100": 0.6956521739130435,
+        "customers": 3715,
+        "daily_customer_precision_at_100": 0.48,
+        "date": "2018-09-13",
+        "fraud_count": 79,
+        "fraud_rate": 0.008182288969445882,
+        "fraudulent_customers": 69,
+        "fraudulent_customers_in_alerts": 48,
+        "missed_fraudulent_customers": 21,
+        "precision_at_100": 0.48,
+        "roc_auc": 0.8631791768450662,
+        "rows": 9655
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.6261039960186506,
+        "customer_recall_at_100": 0.7441860465116279,
+        "customers": 3683,
+        "daily_customer_precision_at_100": 0.64,
+        "date": "2018-09-14",
+        "fraud_count": 92,
+        "fraud_rate": 0.009704641350210971,
+        "fraudulent_customers": 86,
+        "fraudulent_customers_in_alerts": 64,
+        "missed_fraudulent_customers": 22,
+        "precision_at_100": 0.64,
+        "roc_auc": 0.8933629425168115,
+        "rows": 9480
+      },
+      {
+        "alerts": 100,
+        "average_precision": 0.465792429154658,
+        "customer_recall_at_100": 0.6363636363636364,
+        "customers": 3717,
+        "daily_customer_precision_at_100": 0.49,
+        "date": "2018-09-15",
+        "fraud_count": 86,
+        "fraud_rate": 0.008998639740504343,
+        "fraudulent_customers": 77,
+        "fraudulent_customers_in_alerts": 49,
+        "missed_fraudulent_customers": 28,
+        "precision_at_100": 0.49,
+        "roc_auc": 0.8172610146518258,
+        "rows": 9557
+      }
+    ],
+    "daily_metric_autocorrelation": {
+      "average_precision": {
+        "confidence_bands": null,
+        "days": 14,
+        "definition": "sum_of_lagged_demeaned_products_over_sum_of_squared_deviations",
+        "independence_test": false,
+        "lags": [
+          {
+            "calendar_pairs": 13,
+            "coefficient": 0.13153172614164615,
+            "lag_days": 1
+          },
+          {
+            "calendar_pairs": 12,
+            "coefficient": 0.2251396109553377,
+            "lag_days": 2
+          },
+          {
+            "calendar_pairs": 11,
+            "coefficient": 0.0470506031580763,
+            "lag_days": 3
+          },
+          {
+            "calendar_pairs": 10,
+            "coefficient": -0.16228590350043537,
+            "lag_days": 4
+          },
+          {
+            "calendar_pairs": 9,
+            "coefficient": 0.04648829532107512,
+            "lag_days": 5
+          },
+          {
+            "calendar_pairs": 8,
+            "coefficient": -0.4279310218828571,
+            "lag_days": 6
+          },
+          {
+            "calendar_pairs": 7,
+            "coefficient": -0.1994780361074638,
+            "lag_days": 7
+          }
+        ],
+        "undefined_reason": null
+      },
+      "customer_recall_at_100": {
+        "confidence_bands": null,
+        "days": 14,
+        "definition": "sum_of_lagged_demeaned_products_over_sum_of_squared_deviations",
+        "independence_test": false,
+        "lags": [
+          {
+            "calendar_pairs": 13,
+            "coefficient": -0.18576758023161263,
+            "lag_days": 1
+          },
+          {
+            "calendar_pairs": 12,
+            "coefficient": 0.23961621223684057,
+            "lag_days": 2
+          },
+          {
+            "calendar_pairs": 11,
+            "coefficient": -0.05528273486067199,
+            "lag_days": 3
+          },
+          {
+            "calendar_pairs": 10,
+            "coefficient": -0.21126116287519223,
+            "lag_days": 4
+          },
+          {
+            "calendar_pairs": 9,
+            "coefficient": 0.17453799725928104,
+            "lag_days": 5
+          },
+          {
+            "calendar_pairs": 8,
+            "coefficient": -0.2768265488246101,
+            "lag_days": 6
+          },
+          {
+            "calendar_pairs": 7,
+            "coefficient": -0.05930535953426782,
+            "lag_days": 7
+          }
+        ],
+        "undefined_reason": null
+      },
+      "fraud_rate": {
+        "confidence_bands": null,
+        "days": 14,
+        "definition": "sum_of_lagged_demeaned_products_over_sum_of_squared_deviations",
+        "independence_test": false,
+        "lags": [
+          {
+            "calendar_pairs": 13,
+            "coefficient": -0.4233936007660801,
+            "lag_days": 1
+          },
+          {
+            "calendar_pairs": 12,
+            "coefficient": 0.13020999584264495,
+            "lag_days": 2
+          },
+          {
+            "calendar_pairs": 11,
+            "coefficient": 0.06486301262832829,
+            "lag_days": 3
+          },
+          {
+            "calendar_pairs": 10,
+            "coefficient": -0.16861622783424274,
+            "lag_days": 4
+          },
+          {
+            "calendar_pairs": 9,
+            "coefficient": -0.07646296724960283,
+            "lag_days": 5
+          },
+          {
+            "calendar_pairs": 8,
+            "coefficient": 0.04884929052645091,
+            "lag_days": 6
+          },
+          {
+            "calendar_pairs": 7,
+            "coefficient": -0.014908615234750766,
+            "lag_days": 7
+          }
+        ],
+        "undefined_reason": null
+      },
+      "precision_at_100": {
+        "confidence_bands": null,
+        "days": 14,
+        "definition": "sum_of_lagged_demeaned_products_over_sum_of_squared_deviations",
+        "independence_test": false,
+        "lags": [
+          {
+            "calendar_pairs": 13,
+            "coefficient": -0.694433662869015,
+            "lag_days": 1
+          },
+          {
+            "calendar_pairs": 12,
+            "coefficient": 0.23938902714673854,
+            "lag_days": 2
+          },
+          {
+            "calendar_pairs": 11,
+            "coefficient": 0.10544761295919997,
+            "lag_days": 3
+          },
+          {
+            "calendar_pairs": 10,
+            "coefficient": -0.23066736683485914,
+            "lag_days": 4
+          },
+          {
+            "calendar_pairs": 9,
+            "coefficient": 0.24031370579236982,
+            "lag_days": 5
+          },
+          {
+            "calendar_pairs": 8,
+            "coefficient": -0.20192241832005303,
+            "lag_days": 6
+          },
+          {
+            "calendar_pairs": 7,
+            "coefficient": 0.07599488572798475,
+            "lag_days": 7
+          }
+        ],
+        "undefined_reason": null
+      },
+      "roc_auc": {
+        "confidence_bands": null,
+        "days": 14,
+        "definition": "sum_of_lagged_demeaned_products_over_sum_of_squared_deviations",
+        "independence_test": false,
+        "lags": [
+          {
+            "calendar_pairs": 13,
+            "coefficient": -0.13712204832202393,
+            "lag_days": 1
+          },
+          {
+            "calendar_pairs": 12,
+            "coefficient": 0.16730254097060285,
+            "lag_days": 2
+          },
+          {
+            "calendar_pairs": 11,
+            "coefficient": 0.09074578030209526,
+            "lag_days": 3
+          },
+          {
+            "calendar_pairs": 10,
+            "coefficient": -0.1946043775370094,
+            "lag_days": 4
+          },
+          {
+            "calendar_pairs": 9,
+            "coefficient": 0.0694591694252319,
+            "lag_days": 5
+          },
+          {
+            "calendar_pairs": 8,
+            "coefficient": -0.27710215257115395,
+            "lag_days": 6
+          },
+          {
+            "calendar_pairs": 7,
+            "coefficient": -0.06909742824448727,
+            "lag_days": 7
+          }
+        ],
+        "undefined_reason": null
+      }
+    },
+    "days": 14,
+    "entity_recurrence": {
+      "customers": {
+        "days_observed_histogram": [
+          {
+            "days_observed": 1,
+            "entities": 104
+          },
+          {
+            "days_observed": 2,
+            "entities": 120
+          },
+          {
+            "days_observed": 3,
+            "entities": 119
+          },
+          {
+            "days_observed": 4,
+            "entities": 106
+          },
+          {
+            "days_observed": 5,
+            "entities": 140
+          },
+          {
+            "days_observed": 6,
+            "entities": 177
+          },
+          {
+            "days_observed": 7,
+            "entities": 204
+          },
+          {
+            "days_observed": 8,
+            "entities": 199
+          },
+          {
+            "days_observed": 9,
+            "entities": 261
+          },
+          {
+            "days_observed": 10,
+            "entities": 335
+          },
+          {
+            "days_observed": 11,
+            "entities": 442
+          },
+          {
+            "days_observed": 12,
+            "entities": 596
+          },
+          {
+            "days_observed": 13,
+            "entities": 947
+          },
+          {
+            "days_observed": 14,
+            "entities": 1157
+          }
+        ],
+        "entities_seen_on_multiple_days": 4803,
+        "entity_days": 52129,
+        "independent_cluster_count": null,
+        "overlap_by_lag": [
+          {
+            "calendar_pairs": 13,
+            "lag_days": 1,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.8330533170579955,
+            "mean_jaccard": 0.713197264073708,
+            "mean_shared_entities": 3098.846153846154
+          },
+          {
+            "calendar_pairs": 12,
+            "lag_days": 2,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.8341220345376789,
+            "mean_jaccard": 0.7140471877610958,
+            "mean_shared_entities": 3102.0833333333335
+          },
+          {
+            "calendar_pairs": 11,
+            "lag_days": 3,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.8343965797653639,
+            "mean_jaccard": 0.7142493282210799,
+            "mean_shared_entities": 3102.909090909091
+          },
+          {
+            "calendar_pairs": 10,
+            "lag_days": 4,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.8346941755070366,
+            "mean_jaccard": 0.7146880561241765,
+            "mean_shared_entities": 3105.8
+          },
+          {
+            "calendar_pairs": 9,
+            "lag_days": 5,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.8344991217326576,
+            "mean_jaccard": 0.7139932705117847,
+            "mean_shared_entities": 3105.222222222222
+          },
+          {
+            "calendar_pairs": 8,
+            "lag_days": 6,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.8342388415407991,
+            "mean_jaccard": 0.7137373064597589,
+            "mean_shared_entities": 3101.875
+          },
+          {
+            "calendar_pairs": 7,
+            "lag_days": 7,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.8328177492838369,
+            "mean_jaccard": 0.712853435598823,
+            "mean_shared_entities": 3099.285714285714
+          }
+        ],
+        "transactions_per_entity": {
+          "median": 27.0,
+          "p90": 50.0,
+          "p99": 62.0
+        },
+        "unique_entities": 4907
+      },
+      "terminals": {
+        "days_observed_histogram": [
+          {
+            "days_observed": 1,
+            "entities": 1
+          },
+          {
+            "days_observed": 2,
+            "entities": 17
+          },
+          {
+            "days_observed": 3,
+            "entities": 71
+          },
+          {
+            "days_observed": 4,
+            "entities": 198
+          },
+          {
+            "days_observed": 5,
+            "entities": 477
+          },
+          {
+            "days_observed": 6,
+            "entities": 929
+          },
+          {
+            "days_observed": 7,
+            "entities": 1371
+          },
+          {
+            "days_observed": 8,
+            "entities": 1778
+          },
+          {
+            "days_observed": 9,
+            "entities": 1776
+          },
+          {
+            "days_observed": 10,
+            "entities": 1566
+          },
+          {
+            "days_observed": 11,
+            "entities": 1073
+          },
+          {
+            "days_observed": 12,
+            "entities": 531
+          },
+          {
+            "days_observed": 13,
+            "entities": 177
+          },
+          {
+            "days_observed": 14,
+            "entities": 34
+          }
+        ],
+        "entities_seen_on_multiple_days": 9998,
+        "entity_days": 85416,
+        "independent_cluster_count": null,
+        "overlap_by_lag": [
+          {
+            "calendar_pairs": 13,
+            "lag_days": 1,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.6195884809188943,
+            "mean_jaccard": 0.4487361559776597,
+            "mean_shared_entities": 3777.846153846154
+          },
+          {
+            "calendar_pairs": 12,
+            "lag_days": 2,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.6204535575075684,
+            "mean_jaccard": 0.4491332601931158,
+            "mean_shared_entities": 3784.0
+          },
+          {
+            "calendar_pairs": 11,
+            "lag_days": 3,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.6223433496320069,
+            "mean_jaccard": 0.45088975029337613,
+            "mean_shared_entities": 3795.3636363636365
+          },
+          {
+            "calendar_pairs": 10,
+            "lag_days": 4,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.6202847871716728,
+            "mean_jaccard": 0.4488244291575921,
+            "mean_shared_entities": 3781.5
+          },
+          {
+            "calendar_pairs": 9,
+            "lag_days": 5,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.6212223660487092,
+            "mean_jaccard": 0.4485160487499527,
+            "mean_shared_entities": 3780.5555555555557
+          },
+          {
+            "calendar_pairs": 8,
+            "lag_days": 6,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.6215583407127218,
+            "mean_jaccard": 0.44927439946492304,
+            "mean_shared_entities": 3788.375
+          },
+          {
+            "calendar_pairs": 7,
+            "lag_days": 7,
+            "mean_fraction_of_later_day_entities_seen_earlier": 0.6191793404298477,
+            "mean_jaccard": 0.44706402010149054,
+            "mean_shared_entities": 3770.0
+          }
+        ],
+        "transactions_per_entity": {
+          "median": 13.0,
+          "p90": 20.0,
+          "p99": 26.0
+        },
+        "unique_entities": 9999
+      }
+    },
+    "full_window_metrics": {
+      "average_precision": 0.6213118747307486,
+      "daily_customer_precision_at_100": 0.5492857142857142,
+      "daily_mean_customer_recall_at_100": 0.72892744863614
+    },
+    "interpretation": {
+      "effective_independent_sample_size": null,
+      "formal_temporal_hypothesis_test": false,
+      "generalization_confidence_interval": null,
+      "label_delay_does_not_determine_block_length": true,
+      "leave_one_day_out_is_not_a_confidence_interval": true,
+      "production_promotion": false,
+      "recurrence_does_not_prove_dependence": true,
+      "resampling_block_length_days": null,
+      "resampling_method_selected": null,
+      "short_window_days": 14,
+      "small_autocorrelation_does_not_prove_independence": true
+    },
+    "leave_one_day_out": [
+      {
+        "average_precision": 0.6233597573487085,
+        "daily_customer_precision_at_100": 0.5523076923076922,
+        "delta_average_precision": 0.002047882617959962,
+        "delta_daily_customer_precision_at_100": 0.0030219780219780112,
+        "omitted_day": "2018-09-02",
+        "remaining_days": 13,
+        "remaining_rows": 124730
+      },
+      {
+        "average_precision": 0.6241820493766775,
+        "daily_customer_precision_at_100": 0.5492307692307692,
+        "delta_average_precision": 0.00287017464592898,
+        "delta_daily_customer_precision_at_100": -5.494505494496593e-05,
+        "omitted_day": "2018-09-03",
+        "remaining_days": 13,
+        "remaining_rows": 124940
+      },
+      {
+        "average_precision": 0.6168308009145459,
+        "daily_customer_precision_at_100": 0.5453846153846154,
+        "delta_average_precision": -0.004481073816202663,
+        "delta_daily_customer_precision_at_100": -0.0039010989010987984,
+        "omitted_day": "2018-09-04",
+        "remaining_days": 13,
+        "remaining_rows": 124846
+      },
+      {
+        "average_precision": 0.6242478677963644,
+        "daily_customer_precision_at_100": 0.5538461538461538,
+        "delta_average_precision": 0.0029359930656158717,
+        "delta_daily_customer_precision_at_100": 0.004560439560439611,
+        "omitted_day": "2018-09-05",
+        "remaining_days": 13,
+        "remaining_rows": 125017
+      },
+      {
+        "average_precision": 0.6204187053595736,
+        "daily_customer_precision_at_100": 0.5515384615384614,
+        "delta_average_precision": -0.0008931693711750066,
+        "delta_daily_customer_precision_at_100": 0.002252747252747267,
+        "omitted_day": "2018-09-06",
+        "remaining_days": 13,
+        "remaining_rows": 124802
+      },
+      {
+        "average_precision": 0.6111058521842495,
+        "daily_customer_precision_at_100": 0.5438461538461538,
+        "delta_average_precision": -0.01020602254649905,
+        "delta_daily_customer_precision_at_100": -0.005439560439560398,
+        "omitted_day": "2018-09-07",
+        "remaining_days": 13,
+        "remaining_rows": 124942
+      },
+      {
+        "average_precision": 0.615818347490812,
+        "daily_customer_precision_at_100": 0.5538461538461538,
+        "delta_average_precision": -0.005493527239936569,
+        "delta_daily_customer_precision_at_100": 0.004560439560439611,
+        "omitted_day": "2018-09-08",
+        "remaining_days": 13,
+        "remaining_rows": 124792
+      },
+      {
+        "average_precision": 0.6159466135330509,
+        "daily_customer_precision_at_100": 0.5469230769230768,
+        "delta_average_precision": -0.005365261197697646,
+        "delta_daily_customer_precision_at_100": -0.00236263736263731,
+        "omitted_day": "2018-09-09",
+        "remaining_days": 13,
+        "remaining_rows": 124705
+      },
+      {
+        "average_precision": 0.6253101906992371,
+        "daily_customer_precision_at_100": 0.5476923076923076,
+        "delta_average_precision": 0.003998315968488542,
+        "delta_daily_customer_precision_at_100": -0.0015934065934065655,
+        "omitted_day": "2018-09-10",
+        "remaining_days": 13,
+        "remaining_rows": 124779
+      },
+      {
+        "average_precision": 0.6202756028854903,
+        "daily_customer_precision_at_100": 0.5523076923076922,
+        "delta_average_precision": -0.0010362718452582298,
+        "delta_daily_customer_precision_at_100": 0.0030219780219780112,
+        "omitted_day": "2018-09-11",
+        "remaining_days": 13,
+        "remaining_rows": 124973
+      },
+      {
+        "average_precision": 0.6198815712643605,
+        "daily_customer_precision_at_100": 0.5423076923076923,
+        "delta_average_precision": -0.001430303466388061,
+        "delta_daily_customer_precision_at_100": -0.006978021978021887,
+        "omitted_day": "2018-09-12",
+        "remaining_days": 13,
+        "remaining_rows": 124836
+      },
+      {
+        "average_precision": 0.6267506499126523,
+        "daily_customer_precision_at_100": 0.5546153846153845,
+        "delta_average_precision": 0.005438775181903721,
+        "delta_daily_customer_precision_at_100": 0.005329670329670355,
+        "omitted_day": "2018-09-13",
+        "remaining_days": 13,
+        "remaining_rows": 124812
+      },
+      {
+        "average_precision": 0.6212557526515451,
+        "daily_customer_precision_at_100": 0.5423076923076923,
+        "delta_average_precision": -5.61220792034689e-05,
+        "delta_daily_customer_precision_at_100": -0.006978021978021887,
+        "omitted_day": "2018-09-14",
+        "remaining_days": 13,
+        "remaining_rows": 124987
+      },
+      {
+        "average_precision": 0.6332394394723655,
+        "daily_customer_precision_at_100": 0.5538461538461538,
+        "delta_average_precision": 0.011927564741616936,
+        "delta_daily_customer_precision_at_100": 0.004560439560439611,
+        "omitted_day": "2018-09-15",
+        "remaining_days": 13,
+        "remaining_rows": 124910
+      }
+    ],
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "predictions_sha256": "9400ffcd44142f51789a0d08c96ac79fd94ba7882095eb5fdb90e608967e69d9",
+    "rows": 134467,
+    "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+    "status": "success",
+    "version": "reference_dependence_diagnostics_v1"
+  },
+  "secondary_resampling_from_uploaded_daily_metrics": [
+    {
+      "block_length_days": 2,
+      "metrics": {
+        "precision_at_100": {
+          "observed": 0.5492857142857142,
+          "replicates": 2000,
+          "defined_replicates": 2000,
+          "undefined_replicates": 0,
+          "replicate_mean": 0.5496832142857142,
+          "replicate_standard_deviation": 0.009062855915606337,
+          "central_resampling_interval": {
+            "lower": 0.5307142857142857,
+            "upper": 0.5657142857142856
+          },
+          "interval_suppressed_reason": null,
+          "nominal_mass": 0.95,
+          "coverage_validated": false
+        },
+        "customer_recall_at_100": {
+          "observed": 0.72892744863614,
+          "replicates": 2000,
+          "defined_replicates": 2000,
+          "undefined_replicates": 0,
+          "replicate_mean": 0.7288597768063649,
+          "replicate_standard_deviation": 0.010190415159874058,
+          "central_resampling_interval": {
+            "lower": 0.7099460704074265,
+            "upper": 0.7495359156779852
+          },
+          "interval_suppressed_reason": null,
+          "nominal_mass": 0.95,
+          "coverage_validated": false
+        }
+      }
+    },
+    {
+      "block_length_days": 3,
+      "metrics": {
+        "precision_at_100": {
+          "observed": 0.5492857142857142,
+          "replicates": 2000,
+          "defined_replicates": 2000,
+          "undefined_replicates": 0,
+          "replicate_mean": 0.5493796428571429,
+          "replicate_standard_deviation": 0.007689980256284698,
+          "central_resampling_interval": {
+            "lower": 0.5342857142857143,
+            "upper": 0.5642857142857143
+          },
+          "interval_suppressed_reason": null,
+          "nominal_mass": 0.95,
+          "coverage_validated": false
+        },
+        "customer_recall_at_100": {
+          "observed": 0.72892744863614,
+          "replicates": 2000,
+          "defined_replicates": 2000,
+          "undefined_replicates": 0,
+          "replicate_mean": 0.729029135500413,
+          "replicate_standard_deviation": 0.011512484772155687,
+          "central_resampling_interval": {
+            "lower": 0.7053551424084593,
+            "upper": 0.7510902488104596
+          },
+          "interval_suppressed_reason": null,
+          "nominal_mass": 0.95,
+          "coverage_validated": false
+        }
+      }
+    },
+    {
+      "block_length_days": 4,
+      "metrics": {
+        "precision_at_100": {
+          "observed": 0.5492857142857142,
+          "replicates": 2000,
+          "defined_replicates": 2000,
+          "undefined_replicates": 0,
+          "replicate_mean": 0.5490653571428571,
+          "replicate_standard_deviation": 0.007770775478154562,
+          "central_resampling_interval": {
+            "lower": 0.5342857142857143,
+            "upper": 0.5642857142857142
+          },
+          "interval_suppressed_reason": null,
+          "nominal_mass": 0.95,
+          "coverage_validated": false
+        },
+        "customer_recall_at_100": {
+          "observed": 0.72892744863614,
+          "replicates": 2000,
+          "defined_replicates": 2000,
+          "undefined_replicates": 0,
+          "replicate_mean": 0.7291103016356439,
+          "replicate_standard_deviation": 0.011449581396432762,
+          "central_resampling_interval": {
+            "lower": 0.7077149473604982,
+            "upper": 0.7517773035922375
+          },
+          "interval_suppressed_reason": null,
+          "nominal_mass": 0.95,
+          "coverage_validated": false
+        }
+      }
+    },
+    {
+      "block_length_days": 7,
+      "metrics": {
+        "precision_at_100": {
+          "observed": 0.5492857142857142,
+          "replicates": 2000,
+          "defined_replicates": 2000,
+          "undefined_replicates": 0,
+          "replicate_mean": 0.5492157142857141,
+          "replicate_standard_deviation": 0.005826516853070577,
+          "central_resampling_interval": {
+            "lower": 0.5385714285714286,
+            "upper": 0.5599999999999999
+          },
+          "interval_suppressed_reason": null,
+          "nominal_mass": 0.95,
+          "coverage_validated": false
+        },
+        "customer_recall_at_100": {
+          "observed": 0.72892744863614,
+          "replicates": 2000,
+          "defined_replicates": 2000,
+          "undefined_replicates": 0,
+          "replicate_mean": 0.7287902097337225,
+          "replicate_standard_deviation": 0.011095940742232198,
+          "central_resampling_interval": {
+            "lower": 0.7083139307200351,
+            "upper": 0.7477383047460836
+          },
+          "interval_suppressed_reason": null,
+          "nominal_mass": 0.95,
+          "coverage_validated": false
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Secondary resampling uses the supplied daily metrics; pooled AP resampling requires native predictions and was not computed here.",
+    "The reviewed block grid was chosen after inspecting the assessment and remains exploratory.",
+    "Circular resampling percentiles do not establish future coverage, model superiority or production eligibility."
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "stage": "reference_assessment_execution_v1_author_validation",
+  "recorded_date": "2026-10-09",
+  "origin": "author_terminal_outputs_shared_in_conversation",
+  "author_environment": {
+    "host": "Alienware-16",
+    "project_path": "/home/wanderson/Documentos/fraud-detection-mlops",
+    "branch": "feat/reference-assessment-executor",
+    "tox_environment": "py314"
+  },
+  "author_software_validation": {
+    "pytest": {
+      "status": "passed",
+      "tests": 348,
+      "warnings": 94,
+      "wall_seconds": 77.27
+    },
+    "tox": {
+      "status": "passed",
+      "environment": "py314",
+      "environment_wall_seconds": 82.24,
+      "total_wall_seconds": 82.25
+    },
+    "checks_preceded_author_commit": true
+  },
+  "commands": {
+    "run": {
+      "command": "poetry run python -m fraud_detection_mlops.modeling.experiments.reference_assessment_execution run",
+      "status": "success",
+      "reused": false
+    },
+    "verify": {
+      "command": "poetry run python -m fraud_detection_mlops.modeling.experiments.reference_assessment_execution verify \"$ASSESSMENT_PATH\"",
+      "status": "success",
+      "assessment_id_matches_run": true,
+      "reported_metrics_match_run": true
+    }
+  },
+  "verify_output": {
+    "schema_version": 1,
+    "version": "reference_assessment_execution_v1",
+    "assessment_id": "7af4b6be089cb8318adbadb0ad6b503f6bbd76a30acf88d40c7834fbae31e864",
+    "git_revision": "d2a40aac949fc273fab28f4ba40c86460097d06a",
+    "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+    "model_uri": "runs:/d3be86000fd24dc8a053dbcab778d4b6/model",
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "assessment_window": {
+      "start": "2018-09-02",
+      "end_exclusive": "2018-09-16"
+    },
+    "assessment_clock": "2018-09-23T00:00:00",
+    "metrics": {
+      "rows": 134467,
+      "fraud_count": 1200,
+      "fraud_rate": 0.008924122647192247,
+      "average_precision": 0.6213118747307486,
+      "roc_auc": 0.8831408031745793,
+      "daily_customer_precision_at_100": 0.5492857142857142,
+      "daily_customer_metrics": [
+        {
+          "date": "2018-09-02",
+          "customers": 3770,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 51,
+          "precision_at_100": 0.51
+        },
+        {
+          "date": "2018-09-03",
+          "customers": 3730,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 55,
+          "precision_at_100": 0.55
+        },
+        {
+          "date": "2018-09-04",
+          "customers": 3723,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 60,
+          "precision_at_100": 0.6
+        },
+        {
+          "date": "2018-09-05",
+          "customers": 3696,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 49,
+          "precision_at_100": 0.49
+        },
+        {
+          "date": "2018-09-06",
+          "customers": 3720,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 52,
+          "precision_at_100": 0.52
+        },
+        {
+          "date": "2018-09-07",
+          "customers": 3745,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 62,
+          "precision_at_100": 0.62
+        },
+        {
+          "date": "2018-09-08",
+          "customers": 3695,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 49,
+          "precision_at_100": 0.49
+        },
+        {
+          "date": "2018-09-09",
+          "customers": 3759,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 58,
+          "precision_at_100": 0.58
+        },
+        {
+          "date": "2018-09-10",
+          "customers": 3761,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 57,
+          "precision_at_100": 0.57
+        },
+        {
+          "date": "2018-09-11",
+          "customers": 3706,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 51,
+          "precision_at_100": 0.51
+        },
+        {
+          "date": "2018-09-12",
+          "customers": 3709,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 64,
+          "precision_at_100": 0.64
+        },
+        {
+          "date": "2018-09-13",
+          "customers": 3715,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 48,
+          "precision_at_100": 0.48
+        },
+        {
+          "date": "2018-09-14",
+          "customers": 3683,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 64,
+          "precision_at_100": 0.64
+        },
+        {
+          "date": "2018-09-15",
+          "customers": 3717,
+          "alerts": 100,
+          "fraudulent_customers_in_alerts": 49,
+          "precision_at_100": 0.49
+        }
+      ],
+      "captured_customer_days": 769,
+      "missed_customer_days": 286,
+      "fraudulent_customer_days": 1055,
+      "daily_mean_customer_recall_at_100": 0.72892744863614,
+      "days_with_defined_customer_recall": 14,
+      "conditional_queue_reference": {
+        "version": "uniform_queue_reference_v1",
+        "conditioning": "fixed_daily_populations_labels_and_budgets",
+        "random_policy": "fresh_uniform_draws_without_replacement_independently_each_day",
+        "days": 14,
+        "total_alerts": 1400,
+        "observed_captured_customer_days": 769,
+        "expected_uniform_captured_customer_days": 28.334825883904628,
+        "excess_captured_customer_days": 740.6651741160954,
+        "uniform_capture_reference_interval": {
+          "mass": 0.95,
+          "lower": 19,
+          "upper": 39
+        },
+        "tail_probability_at_least_observed": null,
+        "log10_tail_probability_at_least_observed": -1055.9862660288973,
+        "linear_probability_underflow": true,
+        "generalization_confidence_interval": null,
+        "formal_superiority_claim": false,
+        "production_promotion": false
+      }
+    },
+    "assessment_evaluated": true,
+    "refit": false,
+    "new_tracking_runs": 0,
+    "candidate_confirmation_evaluated": false,
+    "operational_replay_evaluated": false,
+    "original_may_test_reopened": false,
+    "generalization_confidence_interval": null,
+    "formal_temporal_hypothesis_test": false,
+    "formal_superiority_claim": false,
+    "production_promotion": false,
+    "status": "success",
+    "assessment_path": "/home/wanderson/Documentos/fraud-detection-mlops/data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1"
+  },
+  "native_artifacts": {
+    "assessment_directory_reported": "/home/wanderson/Documentos/fraud-detection-mlops/data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1",
+    "manifest_sha256_received": null,
+    "native_artifact_bytes_received": false,
+    "independently_verified_by_assistant": false
+  },
+  "scope": {
+    "assessment_window_consumed": true,
+    "operational_replay_window_preserved": true,
+    "candidate_confirmation_evaluated": false,
+    "formal_temporal_hypothesis_test": false,
+    "generalization_confidence_interval": null,
+    "production_promotion": false
+  },
+  "limitations": [
+    "The record transcribes author-reported CLI output; native Parquets, manifest and access audit were not received for independent verification.",
+    "The conditional uniform-queue reference describes a specified random policy on fixed populations and labels; it is not a generalization confidence interval or a formal temporal superiority test.",
+    "The 02–15 September assessment window is consumed and cannot serve as an untouched confirmation window for a later candidate.",
+    "The author supplied local validation and execution results; CI approval of the published revision remains separate."
+  ]
+}

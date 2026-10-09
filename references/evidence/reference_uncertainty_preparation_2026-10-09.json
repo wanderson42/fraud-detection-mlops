@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "stage": "reference_uncertainty_analysis_v1_preparation",
+  "recorded_date": "2026-10-09",
+  "branch": "feat/reference-uncertainty-analysis",
+  "base_commit": "f10af77489f27d26a2891acf513d750833dc05de",
+  "checks": {
+    "targeted_pytest": {
+      "tests": 17,
+      "status": "passed",
+      "wall_seconds": 3.71
+    },
+    "pytest": {
+      "tests": 379,
+      "warnings": 134,
+      "status": "passed",
+      "wall_seconds": 145.33
+    },
+    "tox": {
+      "environment": "py314",
+      "status": "passed",
+      "environment_wall_seconds": 155.99,
+      "total_wall_seconds": 156.0
+    },
+    "ruff_check": "passed",
+    "ruff_format": {
+      "status": "passed",
+      "files": 147
+    },
+    "poetry_lock_check": "passed",
+    "synthetic_capacity_check": {
+      "scope": "synthetic_capacity_check_only",
+      "rows": 134467,
+      "positive_rows": 1200,
+      "block_configurations": 4,
+      "replicates_per_configuration": 2000,
+      "seconds": 0.63,
+      "native_result": false,
+      "status": "passed"
+    },
+    "controlled_scenarios": [
+      "circular_block_adjacency_wrap_truncation_and_seed",
+      "multiplicities_sum_to_original_calendar",
+      "exact_pooled_AP_against_explicit_row_replication_with_ties_and_unequal_day_sizes",
+      "pooled_AP_is_not_mean_daily_AP",
+      "single_class_AP_undefined",
+      "invalid_day_weights_rejected",
+      "undefined_replicates_suppress_interval",
+      "constant_series_does_not_imply_validated_coverage",
+      "saved_verified_bundle_works_after_silver_removal",
+      "no_additional_model_load_or_score_calls",
+      "original_assessment_bytes_unchanged",
+      "corrupted_predictions_block_output",
+      "output_inside_assessment_rejected_before_read",
+      "cli_help_and_version"
+    ]
+  },
+  "code_hashes": {
+    "fraud_detection_mlops/evaluation/temporal_block_resampling.py": "acd5b1ae16f665e1b0d55e93c0cedc6f377df08a0074f4d04ac69ae468b1e47b",
+    "fraud_detection_mlops/modeling/experiments/reference_uncertainty_analysis.py": "e40e2004dce2f943eab62d2c9108d3d34ad964098388defde5809410779b4c2c",
+    "tests/evaluation/test_temporal_block_resampling.py": "f37191c048cc3f32c678ab59f60b93d242e7ce2524be003bd77bcb16f1d6d35c",
+    "tests/modeling/experiments/test_reference_uncertainty_analysis.py": "76bb17da01fde8bcbc533472bf362e00f01ddafcaa4c1e225a9d2dbc421e154d"
+  },
+  "scope": {
+    "native_diagnostics_report_received_and_reviewed": true,
+    "native_prediction_bytes_received": false,
+    "secondary_daily_metric_resampling_calculated_from_author_report": true,
+    "native_pooled_AP_resampling_run_by_assistant": false,
+    "method": "whole_day_circular_block_bootstrap",
+    "block_lengths_days": [
+      2,
+      3,
+      4,
+      7
+    ],
+    "replicates_per_configuration": 2000,
+    "seed": 42,
+    "post_assessment_exploratory_analysis": true,
+    "coverage_validated": false,
+    "generalization_confidence_interval": null,
+    "formal_temporal_hypothesis_test": false,
+    "production_promotion": false,
+    "native_replay_evaluated": false,
+    "new_native_fit_or_tracking_run": false
+  },
+  "next_action": "Run analysis on the author verified saved prediction bundle, review all native pooled AP and daily metric resampling configurations, and close the exploratory scope with its explicit coverage limitations before export and Docker."
+}

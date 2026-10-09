@@ -40,6 +40,8 @@ substanciais e documentos por responsabilidade em `docs/project/`, `docs/data/`,
 | `references/evidence/` | Recibos estruturados de evidência, ligados à revisão avaliada | Fechamento de um marco validado |
 | `references/frozen_candidate_v1.json` | Recibo das escolhas, modelo e insumos da avaliação final | Criar na execução real e versionar antes de abrir o teste; não substituir para escolher outro candidato |
 | `references/hgb_optuna_protocol_v1.json` | Autorização executável de janelas, reserva, espaço de busca, recursos e gates | Versionar antes de preparar dados ou executar a busca; mudanças geram outra identidade |
+| `references/reference_assessment_protocol_v1.json` | Pergunta, referência fixa, janelas e interpretação estatística; nesta etapa autoriza somente preparar o plano | Commitar antes do acesso reservado; alterações nas regras exigem outra versão, preservando o snapshot v1 |
+| `references/reference_assessment_execution_v1.json` | Autoriza executar exatamente a avaliação declarada, com acesso registrado e verificação dos resultados | Commitar com a implementação antes de `run`; preserva o protocolo estatístico v1 e mantém replay/novo treino fechados |
 
 A Model Card foi criada com a avaliação final relatada pelo autor. Infraestrutura
 e diretórios de experimentos entram quando houver conteúdo concreto. A Model Card

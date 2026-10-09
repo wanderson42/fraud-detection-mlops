@@ -7,6 +7,17 @@ Poetry 2.4.3. A fonte e os contratos estão em [Data pipeline](../data/DATA_PIPE
 
 ## Preparar e conferir o ambiente
 
+A avaliação de setembro usa um executor próprio, sem reconstruir a Gold original.
+[Protocolo, comandos e recuperação](../modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada)
+concentram esse procedimento; `run` abre a janela fixada e `verify` confere resultados salvos.
+
+O autor já executou e verificou 02–15/09; diagnóstico e reamostragem também foram
+revisados. Consulte o [fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
+A janela foi consumida e não exige nova pontuação para atualizar documentação.
+16–30/09 segue reservado para replay. O autor validou a exportação e HTTP/wheel;
+Docker será conferido após integrar o PR estatístico e tem seu
+[procedimento próprio](SERVING_CONTRACT.md).
+
 ```bash
 poetry install
 poetry check --lock

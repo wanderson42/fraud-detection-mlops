@@ -21,10 +21,26 @@ A confirmação não foi avaliada. A evidência está no
 Esses resultados simulados não demonstram desempenho em produção.
 
 O serving de laboratório recebe as 19 features e devolve score identificado.
-API, exportação sem refit e wheel fora do checkout têm checks sintéticos;
-a suíte local do autor aprovou 302 testes. Primeiro integramos esse marco com CI
-na revisão publicada e consolidamos o protocolo estatístico antes de consultar
-setembro. Depois retomamos a exportação da referência, Docker e Prefect, conforme
+O autor exportou a referência congelada com 67.255 linhas de paridade e validou
+HTTP/wheel fora do checkout, sem as dependências de experimentação. O
+[relato nativo](references/evidence/laboratory_serving_native_validation_2026-10-09.json)
+preserva identidade e limites. A suíte local do marco anterior aprovou 302 testes,
+e esse marco foi integrado em `main` pelo
+[PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1).
+O [protocolo estatístico da referência](docs/modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1)
+fixa 2–15/09 para avaliação e 16–30/09 para replay. O
+[executor auditável](docs/modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada)
+foi executado e verificado pelo autor em 02–15/09/2018: **134.467 transações**,
+AP **0,621312**, precisão diária @100 de **54,93%** e recall médio diário de clientes
+fraudulentos de **72,89%**, sem refit ou novas runs. O autor aprovou **362 testes**,
+com 94 avisos. Essa janela foi consumida; **16–30/09 continua reservado para replay**.
+O [relato da execução](docs/modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor)
+mantém os limites estatísticos. O diagnóstico e a reamostragem nativa por blocos
+foram revisados: **o escopo exploratório está concluído**, com todas as réplicas
+definidas e faixas da AP entre aproximadamente 0,579 e 0,667 ao comparar os quatro
+comprimentos. Essas faixas não têm cobertura de generalização demonstrada.
+Fechamos agora o PR estatístico com revisão e CI da ponta final. Docker vem em
+uma branch a partir de `main` atualizada; depois Prefect, conforme
 o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).
