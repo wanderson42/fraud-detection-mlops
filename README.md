@@ -229,6 +229,50 @@ registra a decisão de conservar a referência. O catálogo foi encerrado, sem
 promoção em produção ou hipótese confirmatória. A avaliação final veio depois
 do congelamento dessa decisão.
 
+## Contrato para contribuições de modelos
+
+O contrato executável `model_interface_v1` define construção, entradas, rótulos,
+pré-processamento e probabilidades esperadas. Os três modelos existentes usam essa
+fronteira; uma contribuição Gaussian Naive Bayes demonstra fit, artefatos e MLflow
+com dados sintéticos, fora da baseline fixa. A
+[arquitetura](docs/ARCHITECTURE.md#interface-para-contribuição-de-modelos) contém as
+regras, o procedimento de contribuição e o comando do exemplo.
+
+Os checks rejeitam componentes já ajustados, desalinhamento, features inválidas e
+saídas incompatíveis. Compatibilidade com a interface não autoriza um experimento
+ou promove um modelo. A busca temporal com Optuna usa esse contrato, com execução
+sobre os dados do autor ainda pendente; veja o [mural](docs/ROADMAP.md).
+
+## Busca temporal com Optuna
+
+O executor `modeling.search` compara cinco hiperparâmetros do HGB em três cortes
+posteriores, com 19 features, treino de 28 dias, gap de sete dias e validação de
+sete dias. Os parâmetros de referência são retreinados nos mesmos dados de cada
+corte: a comparação isola a configuração do efeito de atualizar o treino.
+
+O estudo SQLite tem até **20 trials globais e 63 tentativas de ajuste**, incluindo
+três ajustes de referência. A primeira chamada executa um trial (três ajustes),
+além da referência; registre tempo e memória antes de continuar. Artefatos
+concluídos são reutilizados; falhas consomem orçamento. Setembro permanece
+reservado, e o teste histórico de maio não é aberto.
+
+Depois de instalar as dependências, validar e fazer commit dos insumos:
+
+```bash
+poetry run python -m fraud_detection_mlops.modeling.search prepare
+# Copie development_path retornado pelo comando acima.
+DEVELOPMENT_PATH="CAMINHO_RETORNADO"
+poetry run python -m fraud_detection_mlops.modeling.search run "$DEVELOPMENT_PATH"
+poetry run python -m fraud_detection_mlops.modeling.search verify "$DEVELOPMENT_PATH/study"
+```
+
+`study_incomplete` é esperado após o primeiro trial. A conclusão pode ser
+`retain_reference` ou `candidate_for_confirmation_review`; a busca não promove um
+modelo. Janelas, espaço de busca, custos, gates e recuperação estão no
+[protocolo](docs/EVALUATION_PROTOCOL.md#busca-temporal-com-optuna-v1). O
+[notebook 10](notebooks/stages/10_temporal_optuna.ipynb) revisa apenas resultados
+salvos. Ganhos, degradação e superioridade estatística ainda precisam de evidência.
+
 ## Congelar antes de avaliar o teste
 
 O executor `modeling.freeze` conserva o HGB existente e suas 19 features, confere

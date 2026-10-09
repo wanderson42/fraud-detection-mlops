@@ -102,7 +102,7 @@ def _context_records(manifest: dict, protocol: dict) -> list[dict]:
     return records
 
 
-def _check_values(connection: duckdb.DuckDBPyConnection, view: str) -> int:
+def check_feature_values(connection: duckdb.DuckDBPyConnection, view: str) -> int:
     checks = [
         "TRANSACTION_ID < 0",
         "CUSTOMER_ID < 0",
@@ -174,7 +174,7 @@ def _verify_directory(directory: Path, inventory: dict, protocol: dict, identiti
             wrong_day = connection.execute(
                 "SELECT count(*) FROM part WHERE CAST(TX_DATETIME AS DATE) != ?::DATE", [day]
             ).fetchone()[0]
-            if wrong_day or _check_values(connection, "part"):
+            if wrong_day or check_feature_values(connection, "part"):
                 raise GoldError(f"Gold semantic checks failed: {item['path']}")
             rows[split] += item["rows"]
             all_paths.append(str(path))

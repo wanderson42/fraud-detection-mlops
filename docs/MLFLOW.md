@@ -78,3 +78,14 @@ atual e os resultados históricos. Outputs reais da migração foram preservados
 registros estáticos em Markdown; as células executáveis usam a API atual e aguardam
 execução local. A versão executada anterior é recuperável no Git. Não há notebook
 07 separado, nem é necessário retreinar o baseline histórico para esta refatoração.
+
+
+## Busca Optuna temporal
+
+O experimento `fraud-temporal-optuna-v1` registra uma run principal por ajuste de
+modelo/corte: três referências e até 60 ajustes de busca. Cada run contém Pipeline
+completa, parâmetros, métricas, scores e proveniência de protocolo/dados/features.
+`study_candidate` e `fold_id` relacionam a run ao trial persistido em SQLite; nenhum
+modelo é registrado/promovido automaticamente. O relatório do estudo agrega os
+cortes, sem guardar múltiplos modelos em uma mesma run. Fits concluídos são reutilizados.
+Recuperação parcial e orçamento estão no [protocolo](EVALUATION_PROTOCOL.md#busca-temporal-com-optuna-v1).

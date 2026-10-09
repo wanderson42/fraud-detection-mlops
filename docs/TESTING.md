@@ -167,3 +167,41 @@ real; esses marcos estão no [mural de metas](ROADMAP.md).
 Avisos de terceiros permanecem visíveis. Falhas são investigadas e depreciações
 acompanhadas na atualização das dependências; não suprimimos avisos globalmente
 para deixar o resultado visualmente limpo.
+
+## Contrato de integração de modelos
+
+`tests/modeling/test_interface.py` verifica os três modelos registrados e a
+contribuição sintética externa: isolamento das factories, seed/parâmetros,
+pré-processamento aprendido só no treino, invariância à ordem das entradas e
+paridade após recarga. A comparação com Pipelines construídas a partir do protocolo
+fixo protege os parâmetros e scores históricos em dados controlados.
+
+Os cenários negativos rejeitam dados desalinhados, features inválidas, factory ou
+pré-processador já ajustado, classe positiva incompatível e probabilidades de
+formato/domínio incorretos antes de publicação. A contribuição externa usa o mesmo
+fit, artefatos e MLflow; o teste confere uma run principal e sua identidade. O
+[recibo de preparação](../references/evidence/model_interface_preparation_2026-10-08.json)
+registra o ambiente e os checks observados. Isso não mede qualidade de um novo
+modelo sobre os dados reais do projeto.
+
+
+## Busca temporal e Optuna
+
+`test_development.py` usa partições sintéticas com bytes reservados deliberadamente
+inválidos, demonstrando que setembro não é aberto. Verifica contexto causal,
+atraso de rótulos, integridade, schema, autorização dos cortes e reutilização.
+`test_search.py` exercita SQLite real, retomada, orçamento global, falhas e trial
+abandonado, lock de escritor, mudança de identidade e corrupção antes de novos fits.
+Compara a sequência TPE contínua/retomada além da inicialização e rejeita recibos
+inconsistentes. A referência interrompida exige revisão, sem ajuste silencioso.
+
+Um teste de integração usa MLflow nativo e skops reais, confirma identidade/run,
+parâmetros, download e paridade dos scores. Os demais isolam o tracking para testar
+o ciclo de estudo com baixo custo. Gates usam resultados controlados para conferir
+retenção e elegibilidade sem promoção. Isso não demonstra ganho de AP, estabilidade
+ou custo sobre o conjunto Handbook: essa execução pertence ao autor.
+
+Validação da preparação: **224 testes, Ruff, lockfile e tox aprovados**; 77 avisos
+de dependências permanecem visíveis. O [recibo estruturado](../references/evidence/optuna_preparation_2026-10-08.json)
+identifica código, ambiente, checks e limitações. O teste do sampler exerce o runner
+público em uma chamada e em lotes, com SQLite real e objetivo sintético controlado.

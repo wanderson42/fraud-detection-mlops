@@ -379,3 +379,116 @@ quando tiverem seus checks.
 
 A consolidação documental não altera código, lockfile, contratos ou recibo
 congelado. Os artefatos operacionais existentes e suas runs permanecem preservados.
+
+
+## Busca temporal com Optuna v1
+
+Problema: comparar configurações do HGB sem confundir hiperparâmetros com a
+atualização do período de treino. `optuna_protocol_v1.json` é a autorização
+executável; o candidato v1 e o holdout de 20–26/05 permanecem como evidência histórica.
+A busca mantém 19 features, classe positiva e contrato `model_interface_v1`.
+
+As datas abaixo são inclusivas; o JSON usa intervalos com fim exclusivo.
+
+| Corte | Treino (28 dias) | Gap de rótulos | Validação (7 dias) |
+| --- | --- | --- | --- |
+| fold_1 | 10/06–07/07/2018 | 08–14/07 | 15–21/07 |
+| fold_2 | 24/06–21/07/2018 | 22–28/07 | 29/07–04/08 |
+| fold_3 | 08/07–04/08/2018 | 05–11/08 | 12–18/08 |
+
+Contexto causal: 27/05–18/08. O preparador lê somente essas 84 partições Silver,
+verifica hashes/schema/origem e calcula o mesmo histórico causal Gold, inclusive
+rótulos conhecidos com atraso de sete dias. Publica somente os 63 dias distintos
+usados nos treinos/validações, sob `development_gold_v2/<identidade>`; não modifica
+`gold_v1`. Um dia de validação anterior pode entrar em um treino posterior quando
+seus rótulos já estão disponíveis; os três períodos de validação são disjuntos.
+As janelas de treino e as entidades se repetem: os cortes não são amostras independentes.
+
+| Reserva | Período | Autorização atual |
+| --- | --- | --- |
+| Futuro treino confirmatório | 29/07–25/08 | Sem novo fit; parte coincide com desenvolvimento |
+| Confirmação | 02–15/09 | Não lida; protocolo estatístico separado antes do acesso |
+| Replay operacional | 16–30/09 | Não lido; política de eventos/feedback ainda pendente |
+
+A reserva de setembro é temporal, com os mesmos clientes/terminais possíveis.
+Não representa validação em novas entidades. A confirmação de 14 dias é uma
+reserva inicial, sem promessa de potência estatística; hipótese, efeito relevante,
+unidade e método para dependência temporal/por cliente precisam ser definidos
+antes do acesso. Não usar resultados de setembro para novas escolhas de Optuna.
+
+### Busca, seleção e custo
+
+Espaço fixado: `learning_rate` log-uniforme 0,03–0,20; `max_iter` em {100, 200, 300};
+`max_leaf_nodes` em {7, 15, 31}; `min_samples_leaf` em {20, 50, 100};
+`l2_regularization` log-uniforme 0,01–10. Seed do modelo 42, peso de classe balanced,
+sem early stopping, pruning, amostragem de linhas ou ablação.
+
+Cada trial ajusta um modelo em cada corte. A referência usa seus parâmetros
+históricos, retreinados em cada um dos mesmos treinos; não é o modelo congelado de
+maio. Objetivo: média não ponderada das três APs, uma AP por janela de validação.
+Empates no relatório usam precisão média @100 e número do trial. A fila diária
+continua retrospectiva: máximo score por cliente/dia, 100 clientes e desempate por ID.
+
+Somente com o orçamento concluído, um candidato pode seguir à **revisão** de
+confirmação: ganho absoluto médio de AP ≥ 0,01; ganho absoluto médio de precisão
+@100 ≥ 0,02; perda de AP em cada corte ≤ 0,02. O melhor elegível pode diferir do
+trial com maior AP. Sem elegíveis: `retain_reference`. Antes da conclusão:
+`study_incomplete`. Nenhum desses estados promove um modelo ou comprova superioridade.
+A busca não mede a degradação do modelo fixo: essa comparação futura é distinta.
+
+Até 20 trials, inclusive FAIL, e 63 tentativas de fit (3 referência + 20 × 3).
+Retomadas não ampliam orçamento. Um processo escritor local; quatro threads nos
+ajustes. Preparação DuckDB com quatro threads e limite de memória interna de 2 GB,
+que não é limite total de RAM do processo. O relatório informa tempos de fit,
+predição e fit+persistência+tracking. `peak_process_rss_mib` é o pico acumulado do
+processo Linux, não a memória isolada de cada modelo. Tempos agregam fits concluídos;
+tentativas interrompidas permanecem no contador de orçamento. Não há timeout ou teto global
+de RAM para HGB nesta versão; executar em lotes e medir custo antes de continuar.
+
+### Execução e recuperação
+
+Instale, valide e faça commit antes da preparação. O executor exige política,
+implementação e lockfile rastreados, sem alterações; documentação pode evoluir.
+
+```bash
+poetry install
+make validate
+git diff --check
+# Faça o commit da implementação antes dos comandos abaixo.
+poetry run python -m fraud_detection_mlops.modeling.search prepare
+DEVELOPMENT_PATH="CAMINHO_DEVELOPMENT_PATH_RETORNADO"
+poetry run python -m fraud_detection_mlops.modeling.search run "$DEVELOPMENT_PATH"
+poetry run python -m fraud_detection_mlops.modeling.search verify "$DEVELOPMENT_PATH/study"
+```
+
+A primeira busca mede seis fits: três referências e três ajustes do primeiro
+trial. Após revisar custo e integridade, por exemplo, continue com dois novos trials:
+
+```bash
+poetry run python -m fraud_detection_mlops.modeling.search run "$DEVELOPMENT_PATH" --new-trials 2
+```
+
+`--new-trials` limita esta chamada; nunca reinicia o teto global. No fim do orçamento,
+novas chamadas verificam/reutilizam os resultados. `verify` recalcula métricas dos
+scores salvos, confere alinhamento dos eventos com cada validação, hashes, recibos,
+relatório e orçamento; não ajusta, não publica e não precisa acessar MLflow.
+A [etapa 10](../notebooks/stages/10_temporal_optuna.ipynb) só lê resultados salvos.
+
+Identidade inclui protocolo, dados, código/lockfile, versão Optuna e caminho de
+tracking. Mudanças recusam reutilização: não misturar estudos/ambientes. SQLite
+persiste histórico; seed do sampler `42 + número do trial` torna a sequência
+reproduzível entre chamadas sob o mesmo histórico, ambiente e estados de falha.
+Não é reprodução do estado interno de um sampler TPE continuamente vivo.
+
+Cada fit concluído tem recibo, modelo skops, scores, métricas e uma run principal
+MLflow em `fraud-temporal-optuna-v1`. Fits completos são reutilizados sem nova run.
+Uma falha interrompe a chamada. Ao retomar, trial abandonado RUNNING vira FAIL e
+consome orçamento; o próximo trial usa os slots restantes. Um fit sem recibo final
+não é repetido silenciosamente. Uma referência interrompida bloqueia a continuidade
+até revisão do ocorrido, pois esta versão não automatiza recuperação de publicação
+parcial ou reposição de referências. Preserve banco, tentativas e artefatos juntos;
+não remova recibos, falhas ou banco para ganhar orçamento. Corrupção exige restaurar
+o conjunto consistente a partir de backup, ou uma nova autorização documentada.
+
+Referências: [Optuna — persistência e retomada](https://optuna.readthedocs.io/en/stable/tutorial/20_recipes/001_rdb.html)
+e [Handbook — validação temporal](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_5_ModelValidationAndSelection/ValidationStrategies.html).

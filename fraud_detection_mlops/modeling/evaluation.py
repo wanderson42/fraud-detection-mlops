@@ -21,7 +21,7 @@ import typer
 from fraud_detection_mlops.artifacts import sha256, write_json
 from fraud_detection_mlops.config import PROJECT_ROOT
 from fraud_detection_mlops.features import DTYPES, FEATURE_COLUMNS, METADATA_DTYPES
-from fraud_detection_mlops.gold import ARROW_SCHEMA, _check_values
+from fraud_detection_mlops.gold import ARROW_SCHEMA, check_feature_values
 from fraud_detection_mlops.modeling import experiments, freeze, tracking
 from fraud_detection_mlops.modeling.metrics import evaluate_ranking
 
@@ -65,7 +65,7 @@ def load_test(directory: Path, records: list, holdout: dict) -> pd.DataFrame:
                 "SELECT count(*) FROM part WHERE CAST(TX_DATETIME AS DATE) != ?::DATE",
                 [record["date"]],
             ).fetchone()[0]
-            if wrong_day or _check_values(connection, "part"):
+            if wrong_day or check_feature_values(connection, "part"):
                 raise EvaluationError("Test partition failed frozen Gold checks")
         connection.read_parquet(
             [str(directory / r["path"]) for r in records], hive_partitioning=False

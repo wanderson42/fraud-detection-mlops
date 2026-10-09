@@ -324,3 +324,18 @@ diárias, permutação por AP e SHAP; `diagnostics verify` confere os outputs sa
 O comando não retreina e não abre as partições Gold de treino/teste. Scores diferentes
 dos registrados interrompem a execução. Preserve a auditoria para investigação;
 não altere checksums nem treine novamente apenas para contornar uma falha de recarga.
+
+
+## Preparar e retomar a busca temporal
+
+O procedimento principal, as janelas e a recuperação estão no
+[protocolo Optuna](EVALUATION_PROTOCOL.md#busca-temporal-com-optuna-v1).
+`make search-prepare`, `make search-run DEVELOPMENT_PATH="..." NEW_TRIALS=1` e
+`make search-verify STUDY_PATH="..."` delegam ao mesmo executor. O padrão é um novo
+trial por chamada; o estudo inteiro tem até 20, incluindo falhas. Verifique após a
+chamada terminar; não execute verificação concorrente com o escritor.
+
+Preserve a Gold de desenvolvimento e `study/` juntos (banco, protocolo, tentativas,
+recibos, modelos e scores), além do armazenamento MLflow. Uma falha não autoriza
+apagar o histórico ou reiniciar orçamento. Código, lockfile e protocolo devem estar
+versionados antes da preparação.

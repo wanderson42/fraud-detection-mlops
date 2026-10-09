@@ -1,8 +1,10 @@
 """Synthetic, offline source fixtures shared by modeling tests."""
 
+from datetime import date, timedelta
 import hashlib
 from io import BytesIO
 import json
+from pathlib import Path
 import shutil
 
 import numpy as np
@@ -10,6 +12,10 @@ import pandas as pd
 import pytest
 
 from fraud_detection_mlops import bronze, gold, silver, temporal
+from fraud_detection_mlops.artifacts import sha256, write_json
+from fraud_detection_mlops.bronze import SOURCE_REPOSITORY
+from fraud_detection_mlops.modeling import development
+from fraud_detection_mlops.silver import DEFAULT_CONTRACT, DTYPES
 
 
 @pytest.fixture(scope="session")
@@ -101,3 +107,103 @@ def toy_pipeline():
     features = pd.DataFrame(np.zeros((8, len(FEATURE_COLUMNS))), columns=FEATURE_COLUMNS)
     model = make_model("dummy_prior").fit(features, [0, 1] * 4)
     return model, features
+
+
+@pytest.fixture(scope="module")
+def silver_fixture(tmp_path_factory):
+    root = tmp_path_factory.mktemp("study-source")
+    policy = development.load_policy()
+    source = root / "silver" / policy["source_commit"] / "silver_v1"
+    items, records = [], []
+    # Extra reserved bytes are deliberately invalid: preparation must not open them.
+    for i in range(128):
+        day = str(date(2018, 5, 27) + timedelta(days=i))
+        path = source / f"transactions/tx_date={day}/part-00000.parquet"
+        path.parent.mkdir(parents=True)
+        stamps = pd.to_datetime([day + " 01:00", day + " 12:00", day + " 23:00"])
+        seconds = ((stamps - pd.Timestamp("2018-04-01")).total_seconds()).astype(int)
+        frame = pd.DataFrame(
+            {
+                "TRANSACTION_ID": np.arange(3 * i, 3 * i + 3),
+                "TX_DATETIME": stamps,
+                "CUSTOMER_ID": [1, 2, 3],
+                "TERMINAL_ID": [1, 1, 1],
+                "TX_AMOUNT": [10.0, 20.0, 150.0],
+                "TX_TIME_SECONDS": seconds,
+                "TX_TIME_DAYS": seconds // 86400,
+                "TX_FRAUD": [0, 0, 1],
+                "TX_FRAUD_SCENARIO": [0, 0, 1],
+            }
+        ).astype(DTYPES)
+        frame.to_parquet(path, engine="pyarrow", index=False, version="2.6")
+        item = {
+            "date": day,
+            "filename": day + ".pkl",
+            "source_path": "data/" + day + ".pkl",
+            "size_bytes": 1,
+            "git_blob_sha1": "b" * 40,
+        }
+        items.append(item)
+        records.append(
+            {
+                "path": str(path.relative_to(source)),
+                "input_filename": item["filename"],
+                "input_size_bytes": 1,
+                "input_git_blob_sha1": item["git_blob_sha1"],
+                "input_sha256": "c" * 64,
+                "size_bytes": path.stat().st_size,
+                "sha256": sha256(path),
+                "rows": 3,
+            }
+        )
+    inventory = root / "inventory.json"
+    write_json(
+        inventory,
+        {
+            "schema_version": 1,
+            "source": {"repository": SOURCE_REPOSITORY, "commit": policy["source_commit"]},
+            "files": items,
+        },
+    )
+    write_json(
+        source / "manifest.json",
+        {
+            "schema_version": 1,
+            "layer": "silver",
+            "source": json.loads(inventory.read_text())["source"],
+            "contract_version": "silver_v1",
+            "contract_sha256": sha256(DEFAULT_CONTRACT),
+            "inventory_sha256": sha256(inventory),
+            "files": records,
+        },
+    )
+    (source / "transactions/tx_date=2018-09-02/part-00000.parquet").write_bytes(
+        b"RESERVED; MUST NOT READ"
+    )
+    return root
+
+
+@pytest.fixture
+def policy_path(tmp_path):
+    policy = development.load_policy()
+    policy["budget"]["max_trials"] = 2
+    policy["budget"]["max_fit_attempts"] = 9
+    path = tmp_path / "policy.json"
+    write_json(path, policy)
+    return path
+
+
+@pytest.fixture
+def prepared_data(silver_fixture, tmp_path, monkeypatch, policy_path):
+    monkeypatch.setattr(
+        development,
+        "committed_inputs",
+        lambda p: {"git_revision": "test", "files": {"test": "d" * 64}},
+    )
+    result = development.prepare_data(
+        silver_fixture / "silver",
+        tmp_path / "output",
+        policy_path=policy_path,
+        inventory_path=silver_fixture / "inventory.json",
+    )
+    return Path(result["development_path"]), policy_path

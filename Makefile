@@ -152,3 +152,18 @@ evaluate-final:
 verify-final:
 	@test -n "$(EVALUATION_PATH)" || (echo "Set EVALUATION_PATH"; exit 1)
 	poetry run python -m fraud_detection_mlops.modeling.evaluation verify "$(EVALUATION_PATH)"
+
+.PHONY: search-prepare search-run search-verify
+## Prepare authorized development features; requires committed code and protocol
+search-prepare:
+	poetry run python -m fraud_detection_mlops.modeling.search prepare
+
+## Run or resume bounded Optuna search; requires DEVELOPMENT_PATH; default one new trial
+search-run:
+	@test -n "$(DEVELOPMENT_PATH)" || (echo "Set DEVELOPMENT_PATH"; exit 1)
+	poetry run python -m fraud_detection_mlops.modeling.search run "$(DEVELOPMENT_PATH)" --new-trials $(or $(NEW_TRIALS),1)
+
+## Verify study artifacts offline; requires STUDY_PATH
+search-verify:
+	@test -n "$(STUDY_PATH)" || (echo "Set STUDY_PATH"; exit 1)
+	poetry run python -m fraud_detection_mlops.modeling.search verify "$(STUDY_PATH)"
