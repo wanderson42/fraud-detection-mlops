@@ -1,5 +1,6 @@
 """Small file operations shared by ingestion and modeling."""
 
+from collections.abc import Iterable
 import hashlib
 import json
 from pathlib import Path
@@ -13,6 +14,16 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def source_fingerprint(project_root: Path, paths: Iterable[Path]) -> str:
+    """Bind all selected source files to relative paths and bytes, independent of checkout."""
+    root = project_root.resolve()
+    records = {str(Path(path).resolve().relative_to(root)): sha256(Path(path)) for path in paths}
+    if not records:
+        raise ValueError("Source fingerprint requires at least one file")
+    payload = json.dumps(records, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
 
 
 def write_json(path: Path, value: dict, *, overwrite: bool = True) -> None:

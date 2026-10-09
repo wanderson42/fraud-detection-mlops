@@ -13,7 +13,7 @@ set_env = { VIRTUAL_ENV = "{env_dir}", POETRY_VIRTUALENVS_CREATE = "false", POET
 commands_pre = [
     ["python", "scripts/check_test_environment.py"],
     ["poetry", "check", "--lock"],
-    ["poetry", "sync", "--only", "main,dev"],
+    ["poetry", "sync", "--only", "main,pipeline,dev"],
 ]
 commands = [
     ["python", "-m", "ruff", "check", "."],

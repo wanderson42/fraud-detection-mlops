@@ -16,17 +16,15 @@ classifiers = [
     
 ]
 dependencies = [
-    "typer",
+    "numpy (==2.5.3)",
     "pandas (>=3.0.6,<4.0.0)",
     "pyarrow (>=25.0.1,<26.0.0)",
-    "duckdb (>=1.5.6,<2.0.0)",
-    "matplotlib (>=3.10,<4.0)",
     "scikit-learn (>=1.9.1,<2.0.0)",
     "threadpoolctl (>=3.6,<4.0.0)",
-    "mlflow (==3.17.0)",
     "skops (==0.16.0)",
-    "shap (==0.52.0)",
-    "optuna (==5.0.0)",
+    "fastapi (==0.142.4)",
+    "pydantic (==2.13.5)",
+    "uvicorn (==0.54.0)",
 ]
 requires-python = "~=3.14.0"
 
@@ -43,11 +41,20 @@ known-first-party = ["fraud_detection_mlops"]
 force-sort-within-sections = true
 
 [dependency-groups]
+pipeline = [
+    "typer",
+    "duckdb (>=1.5.6,<2.0.0)",
+    "matplotlib (>=3.10,<4.0)",
+    "mlflow (==3.17.0)",
+    "shap (==0.52.0)",
+    "optuna (==5.0.0)",
+]
 dev = [
     "pytest (>=9.1.1,<10.0.0)",
     "ruff (>=0.16.10,<0.17.0)",
     "tox (==4.32.0)",
-    "ipykernel (>=7.4.0,<8.0.0)"
+    "ipykernel (>=7.4.0,<8.0.0)",
+    "httpx (==0.28.1)"
 ]
 
 [tool.pytest.ini_options]

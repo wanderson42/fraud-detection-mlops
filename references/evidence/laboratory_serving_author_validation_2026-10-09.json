@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "stage": "laboratory_serving_v1_author_software_validation",
+  "recorded_date": "2026-10-09",
+  "origin": "author_terminal_output_shared_in_conversation",
+  "author_environment": {
+    "host": "Alienware-16",
+    "project_path": "/home/wanderson/Documentos/fraud-detection-mlops",
+    "tox_environment": "py314",
+    "python": "3.14.4",
+    "python_version_source": "earlier_author_environment_output_in_same_session"
+  },
+  "checks": {
+    "pytest": {
+      "status": "passed",
+      "tests": 302,
+      "warnings": 89,
+      "wall_seconds": 65.81
+    },
+    "tox": {
+      "status": "passed",
+      "environment": "py314",
+      "total_wall_seconds": 70.64,
+      "environment_wall_seconds": 70.63,
+      "setup_wall_seconds": 0.02,
+      "command_wall_seconds": [0.34, 0.36, 0.59, 0.03, 0.04, 69.25]
+    }
+  },
+  "identity": {
+    "author_checkout_commit": null,
+    "author_working_tree_sha256": null,
+    "prepared_patch": "laboratory-serving.patch",
+    "prepared_snapshot_commit": "cf56f195eb840f363c3c6df64d983b4a865bdee6",
+    "prepared_snapshot_is_not_author_checkout_identity": true,
+    "preparation_record": "references/evidence/laboratory_serving_preparation_2026-10-09.json"
+  },
+  "scope": {
+    "software_suite": "author_reported_success",
+    "native_fraud_artifacts_independently_verified": false,
+    "real_frozen_reference_export_confirmed": false,
+    "real_reference_http_or_wheel_confirmed": false,
+    "docker_build_or_measurement_confirmed": false,
+    "september_access_authorized_by_this_record": false,
+    "production_promotion": false
+  },
+  "limitations": [
+    "The author supplied the pytest/tox summary, not a complete raw log or checkout identity.",
+    "Prepared patch identity must be checked locally before publication; this report does not establish byte equality.",
+    "CI must run on the published revision before integration into main.",
+    "This software result does not establish statistical superiority or production readiness."
+  ]
+}

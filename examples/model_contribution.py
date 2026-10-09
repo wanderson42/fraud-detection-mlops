@@ -13,9 +13,12 @@ from sklearn.preprocessing import StandardScaler
 from threadpoolctl import threadpool_limits
 
 from fraud_detection_mlops.artifacts import sha256
-from fraud_detection_mlops.features import FEATURE_COLUMNS, LABEL_DELAY_DAYS
-from fraud_detection_mlops.modeling import tracking, train
-from fraud_detection_mlops.modeling.interface import VERSION, ModelSpec
+from fraud_detection_mlops.features.feature_schema import FEATURE_COLUMNS, LABEL_DELAY_DAYS
+from fraud_detection_mlops.integrations import mlflow_tracking as tracking
+from fraud_detection_mlops.modeling.contracts.model_interface import VERSION, ModelSpec
+from fraud_detection_mlops.modeling.experiments import (
+    candidate_training,
+)
 
 
 def gaussian_nb() -> Pipeline:
@@ -57,7 +60,7 @@ def run(output: Path, tracking_root: Path | None = None) -> dict:
     run_id = uuid4().hex
     (X_train, y_train, _), (X_val, y_val, metadata) = synthetic_batches()
     with threadpool_limits(limits=4):
-        model, scores, metrics, timings = train.fit_candidate(
+        model, scores, metrics, timings = candidate_training.fit_candidate(
             MODEL.model_id,
             X_train,
             y_train,
@@ -82,7 +85,7 @@ def run(output: Path, tracking_root: Path | None = None) -> dict:
             "metrics": metrics,
             **timings,
         }
-        train.save_candidate(output, model, X_val, scores, metadata, measurement)
+        candidate_training.save_candidate(output, model, X_val, scores, metadata, measurement)
         recorded = None
         if tracking_root is not None:
             recorded = tracking.log_candidate(
