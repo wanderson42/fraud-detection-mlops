@@ -16,10 +16,10 @@ A fonte é simulada; a utilidade e os limites estão no [contexto](PROBLEM_CONTE
 validados localmente. As três ablações não passaram o gate; conservamos a referência
 de 19 features. **A avaliação final foi executada e verificada pelo autor:**
 AP 0,640703 e precisão diária @100 de 55%, com gate de laboratório aprovado.
-O holdout de maio foi consumido; as métricas diárias foram revisadas. A API de
-serving, a exportação e o wheel têm checks sintéticos; o autor aprovou 302 testes
-locais. A exportação da referência real, Docker, streaming, CD e CT ainda precisam
-de execução e evidência própria. O marco de organização/serving foi integrado pelo
+O holdout de maio foi consumido; as métricas diárias foram revisadas. O autor
+exportou a referência real e validou HTTP/wheel fora do checkout, com 67.255 linhas
+de paridade no exportador. Docker, streaming, CD e CT ainda precisam de execução
+e evidência própria. O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
 referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
 precisão diária @100 de 54,93% e recall médio diário de 72,89%, sem refit.
@@ -59,7 +59,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Análise estatística e testes de hipóteses | Escopo exploratório concluído; reamostragem nativa revisada; confirmação futura condicional | AP 0,621312, precisão diária @100 de 54,93% e recall de 72,89%. Todas as 2.000 réplicas por configuração 2/3/4/7 ficaram definidas. Quantis exploratórios não demonstram cobertura futura; não houve teste temporal formal ou confirmação de candidato. [Resultado e fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento). |
 | Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](../modeling/CONTRIBUTING_MODELS.md). |
 | Validação temporal e otimização do HGB com Optuna | Estudo concluído no relatório do autor; referência conservada | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
-| Contrato de inferência e Docker | API/exportação implementadas; checks sintéticos e wheel conferidos; Docker pendente | Recebe 19 features, devolve score identificado e rejeita entradas inválidas. Paridade JSON/HTTP, health/readiness e wheel fora do checkout conferidos na preparação. Falta exportar a referência no Alienware e medir a imagem Docker. [Contrato e execução](../operations/SERVING_CONTRACT.md). |
+| Contrato de inferência e Docker | Referência exportada e HTTP/wheel validados pelo autor; Docker pendente | 67.255 linhas de paridade no exportador e score HTTP identificado fora do checkout. Construção, recuperação e medições da imagem entram após integrar o PR estatístico. [Contrato e execução](../operations/SERVING_CONTRACT.md). |
 | Orquestração com Prefect | Planejado; escolha do projeto | Prefect auto-hospedado para encadear os módulos Python, registrar dependências e falhas, testar retries e retomada sem duplicação. Manter lógica independente do orquestrador e medir recursos. O consumidor de streaming terá contrato próprio. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
 | Streaming por replay histórico e paridade de features | Planejado; entrega central | Publicar transações e feedback como eventos separados; consumidor com estado causal e relógio explícito. Demonstrar duplicidade, empates, atraso, reinício e retomada; comparar features/scores offline e online e medir lag/recursos. Replay acelerado preserva os sete dias no relógio dos eventos. O replay será identificado como simulação. |
@@ -73,15 +73,15 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Exportar os bytes do HGB congelado com paridade sobre a validação já usada e
-   conferir HTTP/wheel identificado. O diagnóstico e a reamostragem nativa foram
-   revisados, fechando o escopo exploratório e seus limites. Construir e medir
-   Docker: usuário sem root, modelo somente leitura, memória, latência e
-   recuperação. O [procedimento](../operations/SERVING_CONTRACT.md) mantém o
-   escopo de laboratório.
-2. Publicar a branch da avaliação com os relatos nativos e conferir a CI antes
-   da integração. A execução e a verificação nativas foram informadas; preservar
-   manifesto, auditoria e predições no Alienware. [Resultado](../modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor).
+1. Fechar a revisão de `feat/reference-uncertainty-analysis`, já publicada pelo
+   autor: incluir a síntese revisada do notebook e o relato de exportação/wheel,
+   validar a revisão final e conferir sua CI no PR antes da integração em `main`.
+   Preservar manifesto, auditoria e predições no Alienware.
+   [Resultado](../modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor).
+2. Atualizar `main` local após o merge e abrir a branch Docker a partir dela.
+   Construir e medir a imagem com a release já exportada: usuário sem root,
+   modelo somente leitura, memória, latência e recuperação. O
+   [procedimento](../operations/SERVING_CONTRACT.md) mantém o escopo de laboratório.
 3. Encadear operações estáveis com um fluxo pequeno de Prefect, conferindo retries
    e retomada sem duplicação. Depois implementar replay causal e monitoramento
    com feedback atrasado, sob seus contratos próprios.
@@ -168,7 +168,8 @@ foi concluído: diagnóstico de dependência e grade de reamostragem nativa revi
 com todas as réplicas definidas. As faixas não estabelecem cobertura de generalização
 ou número de observações independentes. A comparação confirmatória de outro modelo
 permanece condicional a candidato elegível, desenho próprio e janela preservada.
-Exportação e Docker são as próximas verificações operacionais.
+Exportação e HTTP/wheel da referência foram validados pelo autor. A integração
+do PR estatístico precede a próxima verificação operacional, com Docker.
 
 ## Sequência operacional e controle de custo
 

@@ -154,8 +154,8 @@ scores após carregar seus próprios artefatos skops recém-gravados e o modelo 
 MLflow. Use o lockfile; os tipos permitidos são revisados explicitamente.
 A CLI de baseline `verify` lê somente bytes e Parquets, sem executar modelos.
 A [API de serving](../operations/SERVING_CONTRACT.md) recebe features prontas e
-tem checks sintéticos. A exportação da referência real e o cálculo online das
-features ainda exigem suas verificações próprias.
+tem checks sintéticos e validação nativa do wheel com a referência exportada.
+Docker e o cálculo online das features ainda exigem suas verificações próprias.
 
 Uma `ConvergenceWarning` interrompe o experimento; não registramos regressão sem
 convergência como comparação bem-sucedida. Investigue a auditoria e os inputs antes

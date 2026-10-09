@@ -380,10 +380,10 @@ recall médio diário de 73,02%; 142 ocorrências ficaram fora. A precisão vari
 de 47% a 61%. A [Model Card](MODEL_CARD.md#revisão-diária-da-fila-de-investigação)
 concentra a tabela, unidades e interpretação, sem alterar o gate.
 A conferência direta dos bytes da Model Card gerada e do vínculo do CSV ao
-manifesto nativo continua pendente. A API e o wheel de serving têm checks
-sintéticos; exportar e servir a referência real e medir Docker continuam
-pendentes. O [contrato de serving](../operations/SERVING_CONTRACT.md) separa
-essas evidências.
+manifesto nativo continua pendente. O autor exportou a referência real e validou
+HTTP/wheel fora do checkout; construir e medir Docker permanece pendente.
+O [contrato de serving](../operations/SERVING_CONTRACT.md) separa os checks
+sintéticos do relato de execução com a referência existente.
 
 A consolidação documental não altera código, lockfile, contratos ou recibo
 congelado. Os artefatos operacionais existentes e suas runs permanecem preservados.
@@ -671,7 +671,8 @@ das partições; corrupção de dados impede a pontuação. Preserve/restaure o 
 coerente, sem apagar a auditoria para aparentar um primeiro acesso.
 
 O executor não instala um gate de promoção ou teste de superioridade. Após revisar
-os resultados nativos, seguimos para exportação real, Docker e Prefect; o replay
+os resultados nativos, o autor exportou a referência e validou HTTP/wheel isolado.
+O fechamento do PR precede Docker e Prefect; o replay
 terá seu contrato de eventos. [Recibo dos checks](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json)
 e [etapa 15](../../notebooks/stages/15_reference_assessment_execution.ipynb).
 
@@ -875,5 +876,6 @@ Não será reaberta esta janela para selecionar um candidato.
 
 O benefício é substituir apenas estimativas pontuais por uma descrição auditável
 de sensibilidade e de dependência, e explicitar o que a evidência permite afirmar.
-Podemos prosseguir com a **exportação da referência existente e Docker de
-laboratório**, conforme o [contrato de serving](../operations/SERVING_CONTRACT.md).
+A referência existente foi exportada e seu HTTP/wheel foi validado pelo autor.
+Após integrar o PR desta etapa, seguimos para **Docker de laboratório**, conforme
+o [contrato de serving](../operations/SERVING_CONTRACT.md).

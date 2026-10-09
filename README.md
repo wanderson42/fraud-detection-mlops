@@ -21,8 +21,11 @@ A confirmação não foi avaliada. A evidência está no
 Esses resultados simulados não demonstram desempenho em produção.
 
 O serving de laboratório recebe as 19 features e devolve score identificado.
-API, exportação sem refit e wheel fora do checkout têm checks sintéticos;
-a suíte local do autor aprovou 302 testes. Esse marco foi integrado em `main` pelo
+O autor exportou a referência congelada com 67.255 linhas de paridade e validou
+HTTP/wheel fora do checkout, sem as dependências de experimentação. O
+[relato nativo](references/evidence/laboratory_serving_native_validation_2026-10-09.json)
+preserva identidade e limites. A suíte local do marco anterior aprovou 302 testes,
+e esse marco foi integrado em `main` pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1).
 O [protocolo estatístico da referência](docs/modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1)
 fixa 2–15/09 para avaliação e 16–30/09 para replay. O
@@ -36,7 +39,8 @@ mantém os limites estatísticos. O diagnóstico e a reamostragem nativa por blo
 foram revisados: **o escopo exploratório está concluído**, com todas as réplicas
 definidas e faixas da AP entre aproximadamente 0,579 e 0,667 ao comparar os quatro
 comprimentos. Essas faixas não têm cobertura de generalização demonstrada.
-Seguimos para exportação da referência, Docker e Prefect, conforme
+Fechamos agora o PR estatístico com revisão e CI da ponta final. Docker vem em
+uma branch a partir de `main` atualizada; depois Prefect, conforme
 o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).

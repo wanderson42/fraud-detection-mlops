@@ -2,9 +2,8 @@
 
 Atualizada em 2026-10-09. Estado: **avaliação final executada e verificada pelo autor;
 gate de laboratório aprovado; avaliação de 02–15/09 e reamostragem exploratória
-revisadas; API de serving implementada e conferida com dados sintéticos**.
-A exportação e a execução HTTP
-da referência real ainda estão pendentes, assim como Docker. O
+revisadas; referência exportada e HTTP/wheel isolado validados pelo autor**.
+Construção e medição Docker permanecem pendentes. O
 [contrato de serving](../operations/SERVING_CONTRACT.md) define esses checks.
 Esta síntese curada usa as saídas de terminal, o CSV diário de maio e os relatórios
 de setembro fornecidos pelo autor. A revisão direta dos bytes da Model Card gerada permanece
@@ -154,8 +153,9 @@ de outro modelo exige candidato elegível, desenho próprio e janela preservada.
 O serviço implementado recebe as 19 features já calculadas e devolve um score com
 identificação do modelo. O [contrato de serving](../operations/SERVING_CONTRACT.md)
 separa pontuação, cálculo de históricos e política de investigação.
-Paridade, health checks e runtime têm checks sintéticos. Exportação/HTTP da
-referência real e Docker ainda exigem execução e medições. Prometheus/Grafana e
+O autor exportou a referência com 67.255 linhas de paridade e validou o score
+HTTP fora do checkout, mantendo a identidade congelada. Docker ainda exige
+construção e medições em uma branch após integrar o PR estatístico. Prometheus/Grafana e
 replay entram com o funcionamento observável, conforme o [mural](../project/ROADMAP.md).
 
 O teste final foi consumido. Melhorias futuras exigem outra janela de avaliação

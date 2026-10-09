@@ -100,7 +100,9 @@ Poetry separa `main` (inferência), `pipeline` (dados/experimentos) e `dev` (che
 A instalação padrão conserva todos os grupos. O wheel HTTP foi conferido em
 ambiente só com `main`, fora do checkout. Isso não empacota os protocolos externos
 dos workflows offline. Uma mudança para `src/` permanece decisão futura;
-Docker, replay e orquestração seguem o [mural](project/ROADMAP.md).
+O autor validou o wheel com a referência real. Docker entra em branch própria
+após integrar o PR estatístico; replay e orquestração seguem o
+[mural](project/ROADMAP.md).
 
 ## Documentação e testes
 

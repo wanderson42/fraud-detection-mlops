@@ -1,15 +1,15 @@
 # Serving de laboratório: contrato e execução
 
-`precomputed_features_v1` recebe features prontas em `POST /score`. API, exportação
-sem refit e wheel fora do checkout foram conferidos com dados sintéticos.
-A exportação da referência no Alienware e Docker permanecem checks pendentes.
+`precomputed_features_v1` recebe features prontas em `POST /score`. O autor exportou
+a referência congelada e conferiu HTTP/wheel fora do checkout no Alienware.
+O [relato nativo](../../references/evidence/laboratory_serving_native_validation_2026-10-09.json)
+preserva identidade e paridade. Construção e medição Docker permanecem pendentes.
 O gate offline autoriza revisão de laboratório; não promove o modelo em produção.
 
 O [escopo estatístico exploratório](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento)
 foi fechado após revisar a reamostragem nativa em 2026-10-09, mantendo explícita
-a ausência de cobertura de generalização demonstrada. A próxima execução é a
-exportação abaixo; preservar seu recibo para conferir a identidade na API e na
-imagem Docker.
+a ausência de cobertura de generalização demonstrada. A exportação abaixo já foi
+relatada com sucesso; preservar a release e seu recibo para a próxima etapa Docker.
 
 ## Entradas, saída e responsabilidade
 
@@ -133,6 +133,20 @@ poetry run python examples/serving_smoke.py --output data/serving/synthetic-v1
 Esse exemplo ajusta um HGB em 160 registros gerados em memória e marca a release
 como `synthetic_smoke`. Não é a referência; preserve essa identificação no relato.
 
+## Resultado nativo da referência
+
+Em 2026-10-09, o autor relatou exportação com **67.255 linhas de paridade**, sem
+refit, e wheel funcionando fora do checkout com apenas as dependências `main`.
+O score HTTP do evento `335910` foi `0.4178630794049542`, com tolerância `1e-12`.
+Modelo: `9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9`;
+release: `b3deb7e7bb6d4189bc7671453f8643d2`;
+manifesto: `1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263`.
+MLflow, SHAP, DuckDB, Matplotlib, Optuna e Typer estavam ausentes.
+O [relato](../../references/evidence/laboratory_serving_native_validation_2026-10-09.json)
+registra saídas de terminal: o assistente não recebeu os bytes nativos nem o
+SHA do wheel. O check mede paridade de um caso HTTP; a paridade das 67.255 linhas
+pertence ao exportador. São verificações com alcances diferentes.
+
 ## Evidências e próximo marco
 
 [Preparação](../../references/evidence/laboratory_serving_preparation_2026-10-09.json):
@@ -140,7 +154,9 @@ paridade HTTP sintética e exportação nativa MLflow/skops em 160 linhas de val
 com fit bloqueado e partições de treino/teste removidas antes da exportação.
 O wheel pontuou num runtime isolado. A avaliação final original continua preservada.
 
-Docker não foi construído nesta preparação. A próxima entrega deve conferir imagem
+Após fechar o PR estatístico com validação e CI da ponta final, atualizar `main`
+local e abrir uma branch própria para Docker. Docker não foi construído nesta
+preparação. A próxima entrega deve conferir imagem
 identificada, usuário sem root, modelo somente leitura, recuperação e medições de
 tamanho, memória e latência. O serviço atual usa loopback e não define autenticação,
 TLS, fila de investigação ou objetivo de disponibilidade para produção.
