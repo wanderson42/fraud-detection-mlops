@@ -204,7 +204,10 @@ após publicação; retomadas completas não carregam modelo nem consultam a Sil
 e [recibo da preparação](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json).
 A preparação aprovou **348 testes**, com 94 avisos de dependências; lockfile, Ruff
 e formatação passaram no tox com Python 3.14.4. A execução com os artefatos do
-autor continua separada destes checks.
+autor continua separada destes checks. O autor também informou **348 testes/94
+avisos em 77,27 s**, tox aprovado em 82,25 s, seguido de `run` e `verify` nativos
+com sucesso. O [recibo do autor](../../references/evidence/reference_assessment_author_validation_2026-10-09.json)
+registra essa evidência; a CI da revisão publicada ainda precisa ser conferida.
 
 ## Evidências anteriores
 

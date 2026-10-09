@@ -27,10 +27,13 @@ a suíte local do autor aprovou 302 testes. Esse marco foi integrado em `main` p
 O [protocolo estatístico da referência](docs/modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1)
 fixa 2–15/09 para avaliação e 16–30/09 para replay. O
 [executor auditável](docs/modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada)
-foi implementado e conferido com dados sintéticos, sem fit ou novas runs durante
-a avaliação. A execução com os dados do autor ainda está pendente; setembro
-permanece reservado nesta preparação. Depois retomamos a exportação da referência,
-Docker e Prefect, conforme
+foi executado e verificado pelo autor em 02–15/09/2018: **134.467 transações**,
+AP **0,621312**, precisão diária @100 de **54,93%** e recall médio diário de clientes
+fraudulentos de **72,89%**, sem refit ou novas runs. O autor aprovou **348 testes**,
+com 94 avisos. Essa janela foi consumida; **16–30/09 continua reservado para replay**.
+O [relato da execução](docs/modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor)
+mantém os limites estatísticos. A próxima entrega é a exportação da referência,
+seguida de Docker e Prefect, conforme
 o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).

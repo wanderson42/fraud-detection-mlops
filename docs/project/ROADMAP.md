@@ -21,8 +21,11 @@ serving, a exportação e o wheel têm checks sintéticos; o autor aprovou 302 t
 locais. A exportação da referência real, Docker, streaming, CD e CT ainda precisam
 de execução e evidência própria. O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
-referência está fixado e seu executor tem checks controlados. A execução nativa
-de setembro permanece pendente, assim como o replay.
+referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
+precisão diária @100 de 54,93% e recall médio diário de 72,89%, sem refit.
+O autor aprovou 348 testes/94 avisos. A janela foi consumida; 16–30/09 continua
+reservada para replay. Teste temporal formal e intervalo de generalização
+continuam pendentes.
 
 **Escopo acordado:** interface para novos modelos, otimização limitada com Optuna,
 streaming com estado, feedback atrasado, monitoramento e atualização controlada
@@ -45,12 +48,12 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Meta | Estado | Entrega que permite concluir |
 | --- | --- | --- |
 | Dados reproduzíveis: Bronze, Silver e Gold | Validado localmente | Fonte fixada, integridade, contratos, reconciliação, features causais e separação temporal. [Pipeline](../data/DATA_PIPELINE.md), [dicionário](../data/DATA_DICTIONARY.md) e [Gold](../data/GOLD_CONTRACT.md). |
-| Qualidade do software e CI | Marco anterior integrado em main; preparação estatística com checks controlados | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O autor aprovou 302 testes/89 avisos no marco de serving, integrado pelo PR #1. A nova preparação tem evidência própria; validação do autor e CI da nova revisão são verificações posteriores. [Testing](../operations/TESTING.md). |
+| Qualidade do software e CI | Marco anterior integrado em main; nova suíte aprovada pelo autor; CI da revisão a conferir | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O autor aprovou 348 testes/94 avisos antes do commit da avaliação. A CI precisa conferir a revisão publicada antes da integração. [Testing](../operations/TESTING.md). |
 | Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](../modeling/BASELINE.md), [MLflow](../operations/MLFLOW.md) e [diagnóstico](../modeling/DIAGNOSTICS.md). |
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
 | Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../../references/evidence/freeze_execution_2026-10-08.json). |
 | Avaliação final | Executado e verificado localmente; CSV diário revisado | AP 0,640703 e precisão diária @100 de 55%; critérios atingidos, sem refit ou promoção em produção. [Evidência](../../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](../modeling/MODEL_CARD.md). |
-| Análise estatística e testes de hipóteses | Protocolo fixado e executor com checks controlados; avaliação nativa pendente; confirmação condicional | Modelo de abril, 14 dias, métricas e referência condicional de fila aleatória declarados antes do acesso. Executor auditável sem refit; não estima incerteza temporal do modelo. Nenhum candidato elegível ou teste confirmatório executado. [Execução](../modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada). |
+| Análise estatística e testes de hipóteses | Avaliação da referência executada e verificada pelo autor; teste temporal formal e intervalo de generalização pendentes | Modelo de abril e regras fixados antes do acesso; 134.467 transações e 769 capturas por cliente/dia. Referência condicional de fila aleatória não estima incerteza temporal do modelo. Nenhum candidato elegível ou teste confirmatório executado. [Resultado e limites](../modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor). |
 | Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](../modeling/CONTRIBUTING_MODELS.md). |
 | Validação temporal e otimização do HGB com Optuna | Estudo concluído no relatório do autor; referência conservada | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
 | Contrato de inferência e Docker | API/exportação implementadas; checks sintéticos e wheel conferidos; Docker pendente | Recebe 19 features, devolve score identificado e rejeita entradas inválidas. Paridade JSON/HTTP, health/readiness e wheel fora do checkout conferidos na preparação. Falta exportar a referência no Alienware e medir a imagem Docker. [Contrato e execução](../operations/SERVING_CONTRACT.md). |
@@ -67,23 +70,20 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Validar e commitar a preparação estatística e seu executor em branch própria,
-   sem alterar os snapshots históricos. Aprovar a CI da revisão publicada.
-2. Executar e verificar a referência fixa em 02–15/09 no Alienware: o executor
-   verifica modelo/dados, constrói features causais, preserva os 14 dias e permite
-   conferir scores/resultados salvos sem refit. Registrar o relato e revisar a
-   evidência. [Comandos](../modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada).
-3. Exportar os bytes do HGB congelado com paridade sobre a validação já usada e
+1. Publicar a branch da avaliação com o relato do autor e conferir a CI antes
+   da integração. A execução e a verificação nativas foram informadas; preservar
+   manifesto, auditoria e predições no Alienware. [Resultado](../modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor).
+2. Exportar os bytes do HGB congelado com paridade sobre a validação já usada e
    conferir HTTP/wheel identificado. Construir e medir Docker: usuário sem root,
    modelo somente leitura, memória, latência e recuperação. O
    [procedimento](../operations/SERVING_CONTRACT.md) mantém o escopo de laboratório.
-4. Encadear operações estáveis com um fluxo pequeno de Prefect, conferindo retries
+3. Encadear operações estáveis com um fluxo pequeno de Prefect, conferindo retries
    e retomada sem duplicação. Depois implementar replay causal e monitoramento
    com feedback atrasado, sob seus contratos próprios.
 
 O [resultado fornecido](../modeling/EVALUATION_PROTOCOL.md#resultado-da-busca-informado-pelo-autor)
-registra 20 trials, 63 fits, nenhuma falha e `retain_reference`. A confirmação
-permanece fechada. Refatoração estrutural e qualidade dos modelos têm evidências
+registra 20 trials, 63 fits, nenhuma falha e `retain_reference`. Não houve confirmação
+de candidato; 02–15/09 foi usada na avaliação da referência. Refatoração estrutural e qualidade dos modelos têm evidências
 separadas; os testes usam dados sintéticos.
 
 ## Próximo ciclo de modelos e operação
@@ -144,9 +144,9 @@ dos dados originais e das conclusões sobre a evolução histórica.
 Optuna seleciona configurações; não fornece confirmação estatística por si só.
 Como nenhum trial passou o gate, o
 [protocolo v1](../modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1)
-fixa a avaliação do modelo de abril em 02–15/09. O plano lê somente JSONs; o
-executor autorizado tem checks sintéticos e aguarda execução nativa. A reserva
-de qualidade será consumida por essa execução. O cálculo de referência de fila aleatória
+fixou a avaliação do modelo de abril em 02–15/09. O plano lê somente JSONs; o
+executor autorizado foi executado e verificado pelo autor, consumindo a reserva
+de qualidade dessa janela. O cálculo de referência de fila aleatória
 condiciona nas contagens observadas; seu intervalo descreve essa política, não a
 qualidade futura do modelo.
 

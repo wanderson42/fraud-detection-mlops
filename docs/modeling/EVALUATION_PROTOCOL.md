@@ -409,14 +409,15 @@ As janelas de treino e as entidades se repetem: os cortes não são amostras ind
 | Reserva | Período | Autorização atual |
 | --- | --- | --- |
 | Futuro treino confirmatório | 29/07–25/08 | Sem novo fit; parte coincide com desenvolvimento |
-| Confirmação | 02–15/09 | Não lida; protocolo estatístico separado antes do acesso |
+| Confirmação originalmente reservada | 02–15/09 | Consumida pela avaliação da referência; não houve confirmação de candidato |
 | Replay operacional | 16–30/09 | Não lido; política de eventos/feedback ainda pendente |
 
 A reserva de setembro é temporal, com os mesmos clientes/terminais possíveis.
-Não representa validação em novas entidades. A confirmação de 14 dias é uma
-reserva inicial, sem promessa de potência estatística; hipótese, efeito relevante,
-unidade e método para dependência temporal/por cliente precisam ser definidos
-antes do acesso. Não usar resultados de setembro para novas escolhas de Optuna.
+Não representa validação em novas entidades. A reserva inicial de 14 dias não
+prometia potência estatística e foi consumida pela avaliação da referência abaixo.
+Uma comparação confirmatória futura exige outra janela preservada, com hipótese,
+efeito relevante, unidade e método para dependência definidos antes do acesso.
+Não usar resultados de setembro para novas escolhas de Optuna.
 
 ### Busca, seleção e custo
 
@@ -615,8 +616,9 @@ e [Handbook, validação temporal e feedback atrasado](https://fraud-detection-h
 Etapa 15: [autorização executável](../../references/reference_assessment_execution_v1.json)
 vinculada pelo hash ao protocolo estatístico v1. `plan` continua sem acesso nativo;
 **`run` abre e consome a reserva de qualidade de 02–15/09**, preservando 16–30/09.
-A preparação do assistente usa somente fixtures sintéticas; os resultados do
-autor e a CI da nova revisão ainda precisam de evidência própria.
+A preparação do assistente usou somente fixtures sintéticas. O autor informou
+execução e verificação nativas bem-sucedidas, registradas abaixo; a CI da revisão
+publicada ainda precisa de evidência própria.
 
 Antes de `run`, valide e commite os arquivos do incremento. O executor exige
 protocolos, recibos, inventário, contratos, implementação e lockfile rastreados,
@@ -666,3 +668,38 @@ O executor não instala um gate de promoção ou teste de superioridade. Após r
 os resultados nativos, seguimos para exportação real, Docker e Prefect; o replay
 terá seu contrato de eventos. [Recibo dos checks](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json)
 e [etapa 15](../../notebooks/stages/15_reference_assessment_execution.ipynb).
+
+### Resultado da referência em setembro — relato do autor
+
+Em 2026-10-09, o autor aprovou 348 testes com 94 avisos no tox `py314`, commitou
+a entrega em `d2a40aac949fc273fab28f4ba40c86460097d06a` e executou `run` e `verify`
+com `status: success`. Ambos informaram a identidade
+`7af4b6be089cb8318adbadb0ad6b503f6bbd76a30acf88d40c7834fbae31e864`, o mesmo
+hash do modelo congelado e as mesmas métricas. O
+[recibo do autor](../../references/evidence/reference_assessment_author_validation_2026-10-09.json)
+registra as saídas fornecidas. Os Parquets, manifesto e auditoria nativos não
+foram recebidos ou verificados independentemente pelo assistente; preserve o
+diretório inteiro de resultados e use `verify` para conferir a evidência salva.
+
+| Medida | Resultado em 02–15/09/2018 |
+| --- | --- |
+| Transações / fraudes | 134.467 / 1.200; prevalência de 0,8924% |
+| AP / ROC AUC | 0,621312 / 0,883141 |
+| Precisão média diária @100 | 54,9286% |
+| Recall médio diário de clientes fraudulentos | 72,8927%; definido nos 14 dias |
+| Alertas / capturas / perdas | 1.400 / 769 / 286 pares cliente/dia |
+| Clientes fraudulentos por dia, somados | 1.055 pares cliente/dia; não clientes únicos no período |
+| Capturas esperadas na fila uniforme | 28,3348; intervalo central de referência de 95%: 19–39 |
+
+A precisão diária variou de 48% a 64%. A fila uniforme condiciona nas populações,
+rótulos e orçamentos observados; seu intervalo descreve essa política aleatória,
+sem estimar a incerteza futura do modelo. A probabilidade de cauda linear ficou
+`null` por underflow, com `log10` preservado em −1055,9863. Esse contraste não
+constitui teste temporal formal nem declaração de superioridade generalizável.
+A AP de maio (0,640703) e a precisão de 55% são comparações históricas descritivas;
+a diferença entre períodos não identifica, por si só, uma degradação significativa.
+
+Não houve refit, novas runs, confirmação de candidato, reabertura do teste de
+maio ou promoção. **02–15/09 foi consumida; 16–30/09 continua reservada para replay.**
+Teste temporal formal e intervalo de generalização continuam pendentes. Exportar
+e servir os mesmos bytes passa a ser o próximo passo de engenharia do laboratório.
