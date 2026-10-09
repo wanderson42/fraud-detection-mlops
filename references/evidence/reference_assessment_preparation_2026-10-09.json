@@ -1,0 +1,104 @@
+{
+  "base": {
+    "branch": "feat/statistical-protocol",
+    "git_revision": "2e3a8e8b511c8c4fafc27781b9610150f667a5c9",
+    "implementation_revision": "identified_by_file_hashes_not_a_future_commit",
+    "merge_pull_request": "https://github.com/wanderson42/fraud-detection-mlops/pull/1"
+  },
+  "checks": {
+    "commit_guard": "synthetic_git_fixture_rejects_untracked_modified_and_deleted_inputs",
+    "conditional_queue_reference": {
+      "extreme_tail": "log10_checked_against_independent_combinatorial_expression",
+      "linear_underflow": "explicit_null_and_flag_not_reported_as_zero_probability",
+      "oracle": "exhaustive_independent_enumeration_of_small_uniform_queues",
+      "recurring_customer_labels": "included_without_observed_entity_independence_assumption"
+    },
+    "git_diff_check": "passed",
+    "main_notebook_prior_cells_and_metadata": "unchanged_except_current_intro_markdown",
+    "make_validate": {
+      "pytest_wall_seconds": 116.37,
+      "status": "passed",
+      "tests": 324,
+      "tox_wall_seconds": 128.36,
+      "warnings": 89
+    },
+    "new_notebook_code": "executed_on_metadata_and_toy_inputs_outputs_not_embedded",
+    "new_synthetic_test_cases": 22,
+    "plan_access": "exactly_four_bound_json_reads_with_native_reads_prohibited_in_fixture",
+    "poetry_check_lock": "passed",
+    "prior_protocols_bound_receipts_lockfile_and_pyproject": "bytes_unchanged",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed"
+  },
+  "environment": {
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "poetry": "2.4.3",
+    "pytest": "9.1.1",
+    "python": "3.14.4",
+    "ruff": "0.16.10",
+    "scipy": "1.18.1",
+    "tox": "4.32.0"
+  },
+  "execution_scope": {
+    "docker_built_or_measured": false,
+    "native_frozen_model_loaded": false,
+    "native_new_fits": 0,
+    "native_new_tracking_runs": 0,
+    "native_rows_read": 0,
+    "operational_replay_executed": false,
+    "original_may_test_reopened": false,
+    "prefect_flow_implemented": false,
+    "production_promotion": false,
+    "september_assessment_evaluated": false,
+    "test_data": "generated_synthetic_only"
+  },
+  "implementation_sha256": {
+    "fraud_detection_mlops/evaluation/conditional_queue_reference.py": "03fdb036c78a804825e00bf36bfa678c59ad1ee956f773020e1b8d771bbbfb2a",
+    "fraud_detection_mlops/modeling/contracts/temporal_assessment_protocol.py": "5911e309088bf830c3b742b4199c48ec305e2989c48e1b990a07a1e2d065ef1a",
+    "fraud_detection_mlops/modeling/experiments/reference_temporal_assessment.py": "2abb3b4c248d8e67246292ce4adb1a188858f8e0b43c46e30747af278a34af80",
+    "poetry.lock": "33e734e6dfd05c5b134f5bcd48c11bd44d374322d1e993cd550261dfb0f8e59f",
+    "pyproject.toml": "e50306cbb78675cb44acb2fdf40de7c9927b36b594f90470485d0cb122634ebf",
+    "references/reference_assessment_protocol_v1.json": "b548521f0d54d2be47f47918f47d3f0c834bc8234da07c56f9be1d3be83edced",
+    "tests/evaluation/test_conditional_queue_reference.py": "08e43710552ef1d53b74cdf868bc5dcbe7e3db1395b2fb47dd6657cac7a3dd2e",
+    "tests/modeling/experiments/test_reference_assessment_plan.py": "e152aea2acead444492cbc6652125de2f719bf2d25cb084c861ff59245281caf"
+  },
+  "limitations": [
+    "No native September, model or Optuna SQLite artifact was independently verified.",
+    "The CLI prepares metadata only; reserved-data execution is the next separate implementation.",
+    "Uniform-policy reference probabilities condition on fixed observed populations and labels; they are not model generalization uncertainty.",
+    "Future confirmatory inference still requires an eligible frozen candidate, an untouched assessment window and justified statistical conditions.",
+    "Author validation and CI of this new revision remain pending; dependency warnings remain visible."
+  ],
+  "origin": "assistant_preparation_in_isolated_checkout",
+  "protocol": {
+    "bindings": {
+      "development_policy": {
+        "path": "references/hgb_optuna_protocol_v1.json",
+        "sha256": "d0289c3002945b47d433d601b9f6dba1ae41789e9bf19b04010c399d58858531"
+      },
+      "development_result": {
+        "path": "references/evidence/hgb_optuna_author_report_2026-10-09.json",
+        "sha256": "26b63de0cf143f13cfb2fe1124a54ac7e9451e15476ca7f98463339076472ede",
+        "verification_scope": "author_report_not_native_study_verification"
+      },
+      "frozen_reference": {
+        "path": "references/frozen_candidate_v1.json",
+        "sha256": "6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120"
+      }
+    },
+    "native_binding_verification": false,
+    "sha256": "b548521f0d54d2be47f47918f47d3f0c834bc8234da07c56f9be1d3be83edced",
+    "version": "reference_assessment_v1"
+  },
+  "recorded_date": "2026-10-09",
+  "schema_version": 1,
+  "stage": "reference_assessment_v1_protocol_preparation",
+  "statistical_scope": {
+    "conditional_uniform_policy_reference": "implemented_and_synthetically_verified",
+    "formal_superiority_claim": false,
+    "formal_temporal_hypothesis_test_executed": false,
+    "model_generalization_confidence_interval": null,
+    "native_policy_reference_computed": false
+  }
+}

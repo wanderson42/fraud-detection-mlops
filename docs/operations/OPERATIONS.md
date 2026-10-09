@@ -7,6 +7,10 @@ Poetry 2.4.3. A fonte e os contratos estão em [Data pipeline](../data/DATA_PIPE
 
 ## Preparar e conferir o ambiente
 
+A avaliação de setembro usa um executor próprio, sem reconstruir a Gold original.
+[Protocolo, comandos e recuperação](../modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada)
+concentram esse procedimento; `run` abre a janela fixada e `verify` confere resultados salvos.
+
 ```bash
 poetry install
 poetry check --lock

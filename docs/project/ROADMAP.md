@@ -19,7 +19,10 @@ AP 0,640703 e precisão diária @100 de 55%, com gate de laboratório aprovado.
 O holdout de maio foi consumido; as métricas diárias foram revisadas. A API de
 serving, a exportação e o wheel têm checks sintéticos; o autor aprovou 302 testes
 locais. A exportação da referência real, Docker, streaming, CD e CT ainda precisam
-de execução e evidência própria. Setembro permanece reservado.
+de execução e evidência própria. O marco de organização/serving foi integrado pelo
+[PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
+referência está fixado e seu executor tem checks controlados. A execução nativa
+de setembro permanece pendente, assim como o replay.
 
 **Escopo acordado:** interface para novos modelos, otimização limitada com Optuna,
 streaming com estado, feedback atrasado, monitoramento e atualização controlada
@@ -42,12 +45,12 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Meta | Estado | Entrega que permite concluir |
 | --- | --- | --- |
 | Dados reproduzíveis: Bronze, Silver e Gold | Validado localmente | Fonte fixada, integridade, contratos, reconciliação, features causais e separação temporal. [Pipeline](../data/DATA_PIPELINE.md), [dicionário](../data/DATA_DICTIONARY.md) e [Gold](../data/GOLD_CONTRACT.md). |
-| Qualidade do software e CI | Implementado; suíte validada localmente; publicação atual pendente | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. Último relato do autor: 302 testes e 89 avisos, tox `py314` aprovado após a retirada dos aliases e o serving. A CI deverá aprovar a revisão publicada antes do merge. [Testing](../operations/TESTING.md). |
+| Qualidade do software e CI | Marco anterior integrado em main; preparação estatística com checks controlados | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O autor aprovou 302 testes/89 avisos no marco de serving, integrado pelo PR #1. A nova preparação tem evidência própria; validação do autor e CI da nova revisão são verificações posteriores. [Testing](../operations/TESTING.md). |
 | Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](../modeling/BASELINE.md), [MLflow](../operations/MLFLOW.md) e [diagnóstico](../modeling/DIAGNOSTICS.md). |
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
 | Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../../references/evidence/freeze_execution_2026-10-08.json). |
 | Avaliação final | Executado e verificado localmente; CSV diário revisado | AP 0,640703 e precisão diária @100 de 55%; critérios atingidos, sem refit ou promoção em produção. [Evidência](../../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](../modeling/MODEL_CARD.md). |
-| Análise estatística e testes de hipóteses | Próximo após integrar o marco atual; protocolo pendente | Definir a pergunta autorizada, efeito relevante, unidade de inferência e dependência temporal/por entidade antes de novas avaliações. A busca não produziu candidato elegível para confirmação. Obter evidência temporal separada do desenvolvimento e justificar a incerteza possível; a exclusão de um dia da ablação é sensibilidade, não intervalo de confiança. [Marco estatístico](#marco-de-análise-estatística-e-testes-de-hipóteses). |
+| Análise estatística e testes de hipóteses | Protocolo fixado e executor com checks controlados; avaliação nativa pendente; confirmação condicional | Modelo de abril, 14 dias, métricas e referência condicional de fila aleatória declarados antes do acesso. Executor auditável sem refit; não estima incerteza temporal do modelo. Nenhum candidato elegível ou teste confirmatório executado. [Execução](../modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada). |
 | Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](../modeling/CONTRIBUTING_MODELS.md). |
 | Validação temporal e otimização do HGB com Optuna | Estudo concluído no relatório do autor; referência conservada | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
 | Contrato de inferência e Docker | API/exportação implementadas; checks sintéticos e wheel conferidos; Docker pendente | Recebe 19 features, devolve score identificado e rejeita entradas inválidas. Paridade JSON/HTTP, health/readiness e wheel fora do checkout conferidos na preparação. Falta exportar a referência no Alienware e medir a imagem Docker. [Contrato e execução](../operations/SERVING_CONTRACT.md). |
@@ -64,13 +67,12 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Fechar a organização e o serving implementados: publicar os commits, aprovar
-   a CI da revisão exata e integrar em `main`. A suíte local do autor já passou;
-   esse merge não declara a referência real servida nem Docker validado.
-2. Consolidar o protocolo estatístico em branch própria antes de consultar setembro.
-   A busca não produziu candidato elegível. Fixar a pergunta sobre a referência
-   e as condições para uma futura comparação; justificar a inferência possível
-   com 14 dias, clientes/terminais repetidos e dependência temporal.
+1. Validar e commitar a preparação estatística e seu executor em branch própria,
+   sem alterar os snapshots históricos. Aprovar a CI da revisão publicada.
+2. Executar e verificar a referência fixa em 02–15/09 no Alienware: o executor
+   verifica modelo/dados, constrói features causais, preserva os 14 dias e permite
+   conferir scores/resultados salvos sem refit. Registrar o relato e revisar a
+   evidência. [Comandos](../modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada).
 3. Exportar os bytes do HGB congelado com paridade sobre a validação já usada e
    conferir HTTP/wheel identificado. Construir e medir Docker: usuário sem root,
    modelo somente leitura, memória, latência e recuperação. O
@@ -139,42 +141,22 @@ dos dados originais e das conclusões sobre a evolução histórica.
 
 ## Marco de análise estatística e testes de hipóteses
 
-Esta entrega permanece no escopo e tem propósito próprio. Optuna seleciona
-configurações; a análise estatística estima efeito e incerteza nas comparações.
-O protocolo deve ser fixado antes de observar os resultados das janelas reservadas
-para avaliação do candidato, após concluir a seleção no desenvolvimento.
+Optuna seleciona configurações; não fornece confirmação estatística por si só.
+Como nenhum trial passou o gate, o
+[protocolo v1](../modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1)
+fixa a avaliação do modelo de abril em 02–15/09. O plano lê somente JSONs; o
+executor autorizado tem checks sintéticos e aguarda execução nativa. A reserva
+de qualidade será consumida por essa execução. O cálculo de referência de fila aleatória
+condiciona nas contagens observadas; seu intervalo descreve essa política, não a
+qualidade futura do modelo.
 
-1. Fixar a pergunta antes do acesso reservado. Como nenhum trial passou o gate,
-   o próximo protocolo deve tratar a referência fixa e sua evolução temporal;
-   não aprovar retroativamente o melhor trial para confirmação. Uma futura
-   comparação exige candidato elegível e congelado, hipótese principal, desfecho
-   e efeito mínimo relevante. Precisão/recall da fila e custo entram como critérios
-   operacionais declarados antes da avaliação.
-2. Definir cortes temporais, disponibilidade de rótulos e população comum de
-   comparação. Registrar scores pareados por transação e efeitos por janela;
-   as métricas de investigação usam clientes por dia e não transações como unidade.
-3. Examinar dependência temporal e recorrência de entidades para justificar a
-   unidade de inferência e o método de incerteza. Planejar, por exemplo, reamostragem
-   pareada em blocos temporais suficientemente longos, se as condições permitirem;
-   não usar bootstrap de linhas independentes como padrão. A quantidade de
-   transações não equivale à quantidade de observações independentes.
-4. Relatar tamanho de efeito e intervalo de incerteza; um teste formal e seu nível
-   de significância precisam de justificativa prévia. Tratar comparações múltiplas
-   e consultas repetidas ao monitoramento conforme a política definida. Não gerar
-   p-values para cada gráfico ou confundir significância com utilidade operacional.
-5. Separar análise exploratória, comparação confirmatória e acompanhamento
-   operacional. Os sete dias já utilizados não serão reaproveitados como confirmação
-   independente das hipóteses que eles ajudaram a criar. Se as novas janelas não
-   sustentarem a inferência escolhida, registrar a limitação e apresentar resultados
-   descritivos, sem afirmar superioridade ou ausência de degradação.
-
-O resultado desse marco é um protocolo revisável com pergunta, população,
-efeito, método, condições de suficiência e decisão. A reserva de confirmação tem
-14 dias; se ela não sustentar a inferência escolhida, o resultado será descritivo,
-sem p-valor ou alegação de estabilidade/superioridade. A análise de degradação também considerará prevalência
-e política da fila: uma queda de AP isolada não identifica a causa. Manteremos
-o protocolo e seus resultados nos documentos de avaliação já existentes, evitando
-um documento adicional para cada teste ou métrica.
+Uma comparação confirmatória futura exige candidato congelado, avaliação ainda
+não consultada, efeito relevante e método de incerteza justificados para a
+dependência temporal e recorrência de entidades. O protocolo especifica essas
+condições; teste formal e intervalo de generalização continuam pendentes.
+O volume de transações não equivale à informação independente. Resultados de maio
+são históricos; uma queda de AP isolada não identifica a causa da degradação.
+A documentação de avaliação concentra os detalhes, sem um documento por métrica.
 
 ## Sequência operacional e controle de custo
 

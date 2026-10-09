@@ -1,0 +1,110 @@
+{
+  "base": {
+    "branch": "feat/reference-temporal-assessment",
+    "git_revision": "40dbe14129f471d400cd5c525f23b2a20f11b58d",
+    "implementation_revision": "identified_by_file_hashes_not_future_commit",
+    "main_revision": "2e3a8e8b511c8c4fafc27781b9610150f667a5c9"
+  },
+  "checks": {
+    "assessment_pipeline": {
+      "assessment_days": 14,
+      "assessment_rows": 84,
+      "causal_history_oracle": "independent_timestamp_mask",
+      "complete_retry_prediction_calls": 1,
+      "fit_during_operation": "prohibited",
+      "offline_verification": "passed_after_removing_source_silver",
+      "poison_partitions_outside_scope": [
+        "2018-05-20",
+        "2018-09-16"
+      ],
+      "single_class_days": "retained_with_undefined_AP_AUC_and_zero_denominator_recall_as_null",
+      "synthetic_silver_context_days": 28
+    },
+    "failure_cases": [
+      "uncommitted_source_before_access",
+      "changed_committed_source_blocks_retry",
+      "model_failure_before_silver_bytes",
+      "missing_daily_coverage",
+      "corrupt_hash",
+      "invalid_schema_label_scenario_timestamp_or_identity",
+      "redirected_silver_path",
+      "rehashed_report_population_or_daily_output",
+      "extra_replay_file",
+      "redirected_saved_records_before_read",
+      "concurrent_writer",
+      "interruption_after_atomic_result_rename",
+      "missing_original_access_record"
+    ],
+    "git_diff_check": "passed",
+    "interrupted_integrated_validation": "environment_transport_disconnected_before_completion_then_full_suite_repeated_successfully",
+    "main_notebook_prior_cells_and_outputs": "preserved_except_current_intro_markdown",
+    "make_validate": {
+      "pytest_wall_seconds": 130.49,
+      "status": "passed",
+      "tests": 348,
+      "tox_wall_seconds": 139.96,
+      "warnings": 94
+    },
+    "model_loader": {
+      "explicit_project_root": "passed",
+      "fit_during_load": "prohibited",
+      "libraries": "real_MLflow_skops_and_HGB_on_generated_fixture",
+      "model_bytes_checked_before_deserialization": "passed",
+      "new_runs_during_load": 0,
+      "store": "temporary_synthetic_only"
+    },
+    "new_execution_cases": 24,
+    "new_notebook_code": "executed_with_metadata_only_no_native_result_exists_in_checkout",
+    "poetry_check_lock": "passed",
+    "previous_protocols_receipts_and_dependencies": "unchanged",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed"
+  },
+  "environment": {
+    "duckdb": "1.5.6",
+    "mlflow": "3.17.0",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "poetry": "2.4.3",
+    "pyarrow": "25.0.1",
+    "pytest": "9.1.1",
+    "python": "3.14.4",
+    "ruff": "0.16.10",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "skops": "0.16.0",
+    "tox": "4.32.0"
+  },
+  "execution_scope": {
+    "native_model_loaded": false,
+    "native_new_fits": 0,
+    "native_new_tracking_runs": 0,
+    "native_rows_read": 0,
+    "native_september_assessment_evaluated": false,
+    "operational_replay_executed": false,
+    "original_may_test_reopened": false,
+    "production_promotion": false
+  },
+  "implementation_sha256": {
+    "fraud_detection_mlops/data/datasets/reference_assessment_dataset.py": "717705ccf215f7e99c1a6b21f409390cc935aab57469c42a8e097b2d8f39a283",
+    "fraud_detection_mlops/evaluation/temporal_reference_metrics.py": "86d4ab4714e9e132bf21f98db3d018753fe7cb001b777612575b10f0ecbe77e5",
+    "fraud_detection_mlops/modeling/experiments/final_holdout_evaluation.py": "12d977af36e838589b4b6738f1a5e238d58e90728f3f43d7d1a2dca0270fb171",
+    "fraud_detection_mlops/modeling/experiments/reference_assessment_execution.py": "6ce4ec30b242e65ced08a46767b5439b3279985133f9426ed6a316365dc1233a",
+    "poetry.lock": "33e734e6dfd05c5b134f5bcd48c11bd44d374322d1e993cd550261dfb0f8e59f",
+    "pyproject.toml": "e50306cbb78675cb44acb2fdf40de7c9927b36b594f90470485d0cb122634ebf",
+    "references/reference_assessment_execution_v1.json": "46b2d6e94c3e2fc39cf7f6f19ee0578fa03db87a2df371ffcdc8ccfdb4fa6919",
+    "references/reference_assessment_protocol_v1.json": "b548521f0d54d2be47f47918f47d3f0c834bc8234da07c56f9be1d3be83edced",
+    "tests/modeling/experiments/test_reference_assessment_execution.py": "5b33043f39f5b39234b6504fb242da2e4aa01e4f10a975d46e0c83dba0d5808d"
+  },
+  "limitations": [
+    "Author model/data execution and CI of this new revision remain pending.",
+    "Library-native model load is verified on a generated temporary fixture, not the author model URI.",
+    "Uniform-policy reference probabilities condition on observed counts and labels, without temporal generalization or superiority claims.",
+    "Saved-result verification recomputes evidence and checks integrity; it does not independently authenticate the complete native execution or rescore with the model.",
+    "Dependency warnings remain visible; no global suppression introduced."
+  ],
+  "origin": "assistant_preparation_with_generated_synthetic_inputs",
+  "recorded_date": "2026-10-09",
+  "schema_version": 1,
+  "stage": "reference_assessment_execution_v1_preparation"
+}

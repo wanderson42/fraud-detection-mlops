@@ -508,3 +508,161 @@ alegação formal de superioridade. O [recibo do relato](../../references/eviden
 identifica o arquivo fornecido e seu hash. A revisão de implementação não está no
 relatório e não foi inferida; banco, dados e modelos reais não foram conferidos
 independentemente. Uma nova hipótese exige outro protocolo e outra identidade.
+
+## Protocolo estatístico da referência — v1
+
+**Pergunta:** como o HGB já congelado, treinado em 01–28/04/2018, ordena transações
+e prioriza clientes em 02–15/09/2018? O
+[snapshot executável](../../references/reference_assessment_protocol_v1.json)
+fixa modelo, fonte, população, métricas e limites de interpretação. Seus bytes e
+os três recibos vinculados têm hashes fixados; mudanças exigem outra versão.
+Na etapa 14, o comando prepara o plano lendo somente esses quatro JSONs.
+Não carrega modelo, Parquet ou tracking e não executa a avaliação.
+
+Nenhum trial passou o gate de desenvolvimento. Conservamos os bytes do modelo de
+abril e as 19 features, sem refit, calibração ou nova busca. A referência de AP
+média 0,652277 no Optuna foi **retreinada em cada corte**; esse número não é uma
+baseline pareada para o modelo fixo em setembro. O resultado de maio serve como
+comparação histórica descritiva, pois seu teste já foi consumido.
+
+### Reserva, população e relógio
+
+| Uso | Datas inclusivas de 2018 | Regra |
+| --- | --- | --- |
+| Contexto da avaliação | 19/08–01/09, 14 dias | Somente histórico causal; sem treino ou métricas de avaliação |
+| Avaliação da referência | 02–15/09, 14 dias | Todas as transações; conservar os 14 dias no relatório |
+| Replay operacional | 16–30/09, 15 dias | Continua reservado; execução depende do contrato de eventos |
+
+“Reservado” significa sem uso na avaliação/seleção do modelo: a Silver já passou
+por aceitação estrutural da fonte inteira. Não significa novos clientes ou que
+nenhum byte foi lido pela qualidade dos dados. Não estimamos aqui o volume de
+setembro a partir do volume total.
+
+Features usam somente histórico elegível e rótulos com `LABEL_AVAILABLE_AT`
+estritamente anterior ao instante da decisão. Os sete dias de atraso exigem 14
+dias de contexto para as features atuais; isso **não define independência
+estatística nem tamanho de bloco para bootstrap**. Os rótulos da avaliação estarão
+completos antes de 23/09, e o feedback do replay antes de 08/10. No replay, avançar
+o relógio para receber feedback não exige transações de outubro.
+
+A fila continua retrospectiva por dia completo: máximo score por cliente/dia,
+rótulo positivo se houver qualquer fraude desse cliente no dia, desempate por ID,
+até 100 clientes. Ela precisa de outra política para decisões instantâneas em
+streaming. Replay será simulação histórica, com transação e feedback separados;
+paridade operacional não constitui confirmação independente de qualidade.
+
+### Métricas e alcance da inferência
+
+O desfecho principal será AP sobre todas as transações da janela. Relataremos
+precisão diária @100 com média não ponderada, recall, clientes-dia fraudulentos
+capturados/perdidos, prevalência e contagens por dia. ROC AUC exige ambas as classes.
+Dias com uma classe conservam suas contagens, com AP/AUC indefinidas; dias ausentes
+não podem ser omitidos silenciosamente pelo futuro executor.
+
+Essas métricas descrevem a população observada no período. Clientes, terminais e
+históricos se repetem; muitas transações não garantem muita informação independente.
+Nesta v1, **não estimamos intervalo de confiança para desempenho futuro nem
+executamos teste formal de estabilidade, degradação ou superioridade**. A duração
+de 14 dias não é uma impossibilidade universal de inferência; faltam justificativas
+de dependência, método e precisão para a pergunta deste projeto.
+
+Implementamos uma comparação mais limitada sobre contagens diárias: uma política
+hipotética seleciona uniformemente, sem reposição, até 100 clientes por dia, com
+sorteios novos e independentes entre dias. Condicionando nas populações e rótulos
+observados, as capturas de cada dia seguem distribuição hipergeométrica. A soma é
+calculada por convolução em log-probabilidade, sem Monte Carlo. O relatório traz
+capturas esperadas, excesso observado, intervalo central de 95% das capturas dessa
+política e probabilidade de ela capturar pelo menos o total observado.
+
+A independência é dos sorteios **da política definida**, não dos clientes ou dias
+observados. Esse intervalo não é um intervalo de confiança do modelo; a cauda não
+testa generalização nem todas as formas de ranking sem informação. Não determina
+promoção. Probabilidades pequenas demais para representação linear ficam nulas
+nesse campo, com valor em log10 e indicador explícito de underflow.
+
+Uma futura comparação confirmatória exige candidato elegível e congelado, janela
+ainda não consultada, scores pareados na mesma população, efeito mínimo relevante,
+método e informação efetiva justificados, avaliação de potência ou precisão e
+política para multiplicidade/consultas repetidas. A hipótese **ainda não ativa**
+terá forma `H0: efeito de AP candidato − referência ≤ ganho relevante` contra
+`H1: efeito > ganho relevante`, com alvo temporal explicitado. Se as condições
+não sustentarem inferência, relataremos efeitos descritivos sem p-valor ou alegação
+de estabilidade. Abrir setembro para esta avaliação consome sua reserva de qualidade.
+
+### Preparar e conferir
+
+```bash
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_temporal_assessment plan --project-root .
+# Após validar e commitar protocolo, implementação e lockfile:
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_temporal_assessment plan --project-root . --require-committed
+```
+
+O segundo comando exige inputs e código Python rastreados e iguais ao commit.
+Ambos retornam `plan_prepared_only`, sem autorização para abrir setembro. O
+executor abaixo implementa a autorização de acesso em outro snapshot, preservando
+o plano e suas regras estatísticas. Os checks da preparação usam dados sintéticos;
+[preparação](../../references/evidence/reference_assessment_preparation_2026-10-09.json)
+e [etapa 14](../../notebooks/stages/14_reference_assessment_protocol.ipynb).
+
+As escolhas acima são do projeto, informadas por
+[Künsch (1989), reamostragem para observações estacionárias](https://projecteuclid.org/journals/annals-of-statistics/volume-17/issue-3/The-Jackknife-and-the-Bootstrap-for-General-Stationary-Observations/10.1214/aos/1176347265.short),
+[SciPy, distribuição hipergeométrica](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.hypergeom.html),
+[ASA (2016), interpretação de p-valores](https://www.amstat.org/asa/files/pdfs/p-valuestatement.pdf)
+e [Handbook, validação temporal e feedback atrasado](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_5_ModelValidationAndSelection/ValidationStrategies.html).
+
+### Executor auditável da janela fixada
+
+Etapa 15: [autorização executável](../../references/reference_assessment_execution_v1.json)
+vinculada pelo hash ao protocolo estatístico v1. `plan` continua sem acesso nativo;
+**`run` abre e consome a reserva de qualidade de 02–15/09**, preservando 16–30/09.
+A preparação do assistente usa somente fixtures sintéticas; os resultados do
+autor e a CI da nova revisão ainda precisam de evidência própria.
+
+Antes de `run`, valide e commite os arquivos do incremento. O executor exige
+protocolos, recibos, inventário, contratos, implementação e lockfile rastreados,
+sem alterações, e as versões do ambiente do modelo congelado. Não precisa de novo
+treino, de exportação para HTTP ou de uma nova busca Optuna.
+
+```bash
+make validate
+git diff --check
+# Commit dos arquivos da entrega, antes de executar:
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_assessment_execution run
+ASSESSMENT_PATH="data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1"
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_assessment_execution verify "$ASSESSMENT_PATH"
+```
+
+`run` aceita `--silver-root` e `--output-root` para os diretórios de armazenamento.
+Não aceita outras datas, modelos ou parâmetros. Preserve o diretório de saída
+inteiro nas retomadas; mudar o destino não cria uma nova janela independente.
+
+O fluxo lê primeiro metadados, verifica os bytes/signatura/parâmetros da referência
+no MLflow/skops e grava `access.json` antes de abrir ou hashear partições Silver.
+Confere somente os 28 dias de contexto e avaliação, origem, hashes, schema,
+aceitação Silver e identidade das transações. Reutiliza o SQL causal existente,
+salvando apenas as features dos 14 dias de avaliação. Pontua sem fit e sem novas
+runs, com quatro threads. O limite interno de 2 GB do DuckDB não limita a RAM total.
+
+`results/` contém 14 partições de features, predições com os metadados originais,
+`daily.json`, `report.json`, snapshots das políticas/recibo/origem e manifesto com
+hashes. A publicação do diretório é atômica. O relatório conserva dias de uma
+classe, AP/AUC indefinidas quando aplicável e contagens completas. A média de recall
+usa somente dias com clientes fraudulentos e informa seu denominador.
+
+`verify` exige a auditoria original, rejeita arquivos fora do bundle, confere
+schema, cobertura, população, maturidade dos rótulos e hashes, e recalcula todas
+as métricas e a referência condicional de fila aleatória. Não acessa a Silver,
+o tracking ou o modelo. Isso verifica a evidência salva; não é nova pontuação nem
+autenticação externa de toda a execução.
+
+Uma nova chamada a `run` reutiliza resultados completos sem consultar a Silver
+ou carregar o modelo. Antes da publicação, uma falha pode ser retomada com a mesma
+identidade: cada tentativa permanece na auditoria. Mudanças nos inputs, código
+ou ambiente bloqueiam a retomada. Falha do modelo fica registrada sem abertura
+das partições; corrupção de dados impede a pontuação. Preserve/restaure o conjunto
+coerente, sem apagar a auditoria para aparentar um primeiro acesso.
+
+O executor não instala um gate de promoção ou teste de superioridade. Após revisar
+os resultados nativos, seguimos para exportação real, Docker e Prefect; o replay
+terá seu contrato de eventos. [Recibo dos checks](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json)
+e [etapa 15](../../notebooks/stages/15_reference_assessment_execution.ipynb).

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "version": "reference_assessment_execution_v1",
+  "assessment_protocol_sha256": "b548521f0d54d2be47f47918f47d3f0c834bc8234da07c56f9be1d3be83edced",
+  "scope": "execute_the_prespecified_frozen_reference_assessment",
+  "required_committed_inputs": [
+    "references/handbook_source.json",
+    "references/silver_contract_v1.json",
+    "references/gold_contract_v1.json",
+    "pyproject.toml"
+  ],
+  "resources": {
+    "threads": 4,
+    "duckdb_memory_limit": "2GB"
+  },
+  "access_policy": {
+    "model_verification": "before_any_native_silver_partition_read",
+    "access_record": "persist_before_selected_silver_hashing_or_feature_calculation",
+    "silver_context_and_assessment_only": true,
+    "assessment_clock": "2018-09-23T00:00:00",
+    "retry": "same_identity_record_each_attempt_reuse_complete_results_without_scoring",
+    "offline_verification": "saved_features_scores_receipts_and_metrics_no_native_source_or_model",
+    "candidate_confirmation": false,
+    "operational_replay": false,
+    "original_may_test": false,
+    "new_fits": 0,
+    "new_tracking_runs": 0,
+    "production_promotion": false
+  }
+}

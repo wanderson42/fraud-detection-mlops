@@ -93,9 +93,9 @@ def load_test(directory: Path, records: list, holdout: dict) -> pd.DataFrame:
     return frame
 
 
-def load_frozen_model(receipt: dict, destination: Path):
+def load_frozen_model(receipt: dict, destination: Path, *, project_root: Path | None = None):
     """Check frozen bytes before the existing skops/signature loader deserializes."""
-    root = PROJECT_ROOT / receipt["tracking_root"]
+    root = (PROJECT_ROOT if project_root is None else project_root) / receipt["tracking_root"]
     if not (root / "mlflow.db").is_file():
         raise EvaluationError("Restore the existing local MLflow store")
     with tracking.local_tracking(root):

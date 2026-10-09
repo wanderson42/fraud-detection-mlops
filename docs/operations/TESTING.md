@@ -174,6 +174,38 @@ o exemplo `synthetic_smoke`; não substitui a exportação da referência no Ali
 nem comprova Docker. [Procedimento](SERVING_CONTRACT.md#wheel-e-runtime-de-inferência)
 e [recibo](../../references/evidence/laboratory_serving_preparation_2026-10-09.json).
 
+## Preparação do protocolo estatístico
+
+O plano lê somente quatro JSONs versionados, mesmo com bytes inválidos em uma
+partição reservada. Os checks rejeitam políticas/recibos alterados e código não
+commitado, modificado ou excluído. A referência de fila aleatória é comparada com
+enumeração independente de todas as filas possíveis em populações pequenas,
+incluindo clientes recorrentes; probabilidades extremas conservam o resultado
+em log10 quando a representação linear sofre underflow.
+
+Esses checks verificam a implementação e os limites declarados de interpretação;
+não avaliam o HGB em setembro. A preparação aprovou **324 testes**, com 89 avisos
+de dependências; lockfile, Ruff e formatação passaram no tox com Python 3.14.4. O
+[recibo da preparação](../../references/evidence/reference_assessment_preparation_2026-10-09.json)
+registra o ambiente e a suíte completa. Validação no Alienware e CI da nova revisão
+permanecem evidências distintas. [Protocolo e comandos](../modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1).
+
+## Executor da referência em setembro
+
+Os checks percorrem 28 partições Silver sintéticas, geram somente os 14 dias
+de avaliação e conferem o histórico de rótulos por máscara temporal independente.
+Arquivos inválidos em maio e no replay asseguram que essas janelas não entram
+no cálculo. A carga de MLflow/skops é conferida num store temporário, sem fit
+durante a carga ou nova run. Os cenários exercitam dias de uma classe, cobertura
+ausente, dados inválidos, symlinks, corrupção rehasheada, concorrência e interrupção
+após publicação; retomadas completas não carregam modelo nem consultam a Silver.
+
+[Escopo e comandos](../modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada)
+e [recibo da preparação](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json).
+A preparação aprovou **348 testes**, com 94 avisos de dependências; lockfile, Ruff
+e formatação passaram no tox com Python 3.14.4. A execução com os artefatos do
+autor continua separada destes checks.
+
 ## Evidências anteriores
 
 As evidências abaixo identificam revisões anteriores, com paths e hashes históricos

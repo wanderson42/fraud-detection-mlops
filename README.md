@@ -22,9 +22,15 @@ Esses resultados simulados não demonstram desempenho em produção.
 
 O serving de laboratório recebe as 19 features e devolve score identificado.
 API, exportação sem refit e wheel fora do checkout têm checks sintéticos;
-a suíte local do autor aprovou 302 testes. Primeiro integramos esse marco com CI
-na revisão publicada e consolidamos o protocolo estatístico antes de consultar
-setembro. Depois retomamos a exportação da referência, Docker e Prefect, conforme
+a suíte local do autor aprovou 302 testes. Esse marco foi integrado em `main` pelo
+[PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1).
+O [protocolo estatístico da referência](docs/modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1)
+fixa 2–15/09 para avaliação e 16–30/09 para replay. O
+[executor auditável](docs/modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada)
+foi implementado e conferido com dados sintéticos, sem fit ou novas runs durante
+a avaliação. A execução com os dados do autor ainda está pendente; setembro
+permanece reservado nesta preparação. Depois retomamos a exportação da referência,
+Docker e Prefect, conforme
 o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).
