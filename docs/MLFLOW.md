@@ -88,4 +88,4 @@ completa, parâmetros, métricas, scores e proveniência de protocolo/dados/feat
 `study_candidate` e `fold_id` relacionam a run ao trial persistido em SQLite; nenhum
 modelo é registrado/promovido automaticamente. O relatório do estudo agrega os
 cortes, sem guardar múltiplos modelos em uma mesma run. Fits concluídos são reutilizados.
-Recuperação parcial e orçamento estão no [protocolo](EVALUATION_PROTOCOL.md#busca-temporal-com-optuna-v1).
+Recuperação parcial e orçamento estão no [protocolo](EVALUATION_PROTOCOL.md#otimização-temporal-do-hgb-com-optuna-v1).

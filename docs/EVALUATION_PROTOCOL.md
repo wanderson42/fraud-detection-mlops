@@ -381,10 +381,10 @@ A consolidação documental não altera código, lockfile, contratos ou recibo
 congelado. Os artefatos operacionais existentes e suas runs permanecem preservados.
 
 
-## Busca temporal com Optuna v1
+## Otimização temporal do HGB com Optuna v1
 
 Problema: comparar configurações do HGB sem confundir hiperparâmetros com a
-atualização do período de treino. `optuna_protocol_v1.json` é a autorização
+atualização do período de treino. `hgb_optuna_protocol_v1.json` é a autorização
 executável; o candidato v1 e o holdout de 20–26/05 permanecem como evidência histórica.
 A busca mantém 19 features, classe positiva e contrato `model_interface_v1`.
 
@@ -455,24 +455,24 @@ poetry install
 make validate
 git diff --check
 # Faça o commit da implementação antes dos comandos abaixo.
-poetry run python -m fraud_detection_mlops.modeling.search prepare
+poetry run python -m fraud_detection_mlops.modeling.hgb_optuna prepare
 DEVELOPMENT_PATH="CAMINHO_DEVELOPMENT_PATH_RETORNADO"
-poetry run python -m fraud_detection_mlops.modeling.search run "$DEVELOPMENT_PATH"
-poetry run python -m fraud_detection_mlops.modeling.search verify "$DEVELOPMENT_PATH/study"
+poetry run python -m fraud_detection_mlops.modeling.hgb_optuna optimize "$DEVELOPMENT_PATH"
+poetry run python -m fraud_detection_mlops.modeling.hgb_optuna verify "$DEVELOPMENT_PATH/study"
 ```
 
 A primeira busca mede seis fits: três referências e três ajustes do primeiro
 trial. Após revisar custo e integridade, por exemplo, continue com dois novos trials:
 
 ```bash
-poetry run python -m fraud_detection_mlops.modeling.search run "$DEVELOPMENT_PATH" --new-trials 2
+poetry run python -m fraud_detection_mlops.modeling.hgb_optuna optimize "$DEVELOPMENT_PATH" --new-trials 2
 ```
 
 `--new-trials` limita esta chamada; nunca reinicia o teto global. No fim do orçamento,
 novas chamadas verificam/reutilizam os resultados. `verify` recalcula métricas dos
 scores salvos, confere alinhamento dos eventos com cada validação, hashes, recibos,
 relatório e orçamento; não ajusta, não publica e não precisa acessar MLflow.
-A [etapa 10](../notebooks/stages/10_temporal_optuna.ipynb) só lê resultados salvos.
+A [etapa 10](../notebooks/stages/10_hgb_optuna.ipynb) só lê resultados salvos.
 
 Identidade inclui protocolo, dados, código/lockfile, versão Optuna e caminho de
 tracking. Mudanças recusam reutilização: não misturar estudos/ambientes. SQLite

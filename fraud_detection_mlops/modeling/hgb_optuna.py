@@ -1,4 +1,4 @@
-"""A single-writer, globally bounded Optuna study using the common model interface."""
+"""Bounded temporal Optuna optimization for HistGradientBoostingClassifier only."""
 
 from contextlib import contextmanager
 import fcntl
@@ -30,7 +30,7 @@ app = typer.Typer(no_args_is_help=True)
 EXPERIMENT = "fraud-temporal-optuna-v1"
 
 
-class SearchError(ValueError):
+class HGBOptimizationError(ValueError):
     """The study budget, fitted artifacts or declared identity differ."""
 
 
@@ -41,14 +41,14 @@ def study_lock(directory):
         try:
             fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError as exc:
-            raise SearchError("Another process owns this study") from exc
+            raise HGBOptimizationError("Another process owns this study") from exc
         try:
             yield
         finally:
             fcntl.flock(handle, fcntl.LOCK_UN)
 
 
-def distributions(policy):
+def hgb_search_distributions(policy):
     return {
         name: optuna.distributions.FloatDistribution(s["low"], s["high"], log=s["log"])
         if s["type"] == "float"
@@ -57,7 +57,7 @@ def distributions(policy):
     }
 
 
-def open_study(directory, seed):
+def open_hgb_study(directory, seed):
     return optuna.create_study(
         study_name=EXPERIMENT,
         storage="sqlite:///" + str((directory / "study.db").resolve()),
@@ -70,23 +70,25 @@ def open_study(directory, seed):
     )
 
 
-def fit_fold(directory, name, fold, parameters, data_dir, manifest, identity, tracking_root):
+def fit_hgb_fold(directory, name, fold, parameters, data_dir, manifest, identity, tracking_root):
     """A completed reference fold is reused; interrupted fits are never silently repeated."""
     destination = directory / "models" / name / fold["id"]
     receipt = destination / "result.json"
     if receipt.exists():
         result = json.loads(receipt.read_text())
         if result["parameters"] != parameters or result["identity"] != identity:
-            raise SearchError("Completed fit belongs to different inputs")
+            raise HGBOptimizationError("Completed fit belongs to different inputs")
         if not (directory / "attempts" / name / (fold["id"] + ".json")).exists():
-            raise SearchError("Completed fit has no budget receipt")
+            raise HGBOptimizationError("Completed fit has no budget receipt")
         check_records(destination, result["files"])
         return result
     attempt = directory / "attempts" / name / (fold["id"] + ".json")
     if len(list((directory / "attempts").rglob("*.json"))) >= identity["max_fit_attempts"]:
-        raise SearchError("Global fit attempt budget exhausted")
+        raise HGBOptimizationError("Global fit attempt budget exhausted")
     if attempt.exists():
-        raise SearchError("Incomplete fit requires review; automatic refitting is disabled")
+        raise HGBOptimizationError(
+            "Incomplete fit requires review; automatic refitting is disabled"
+        )
     training, validation = development.load_fold(data_dir, manifest, fold)
     X_train, y_train, _ = training
     X_val, y_val, metadata = validation
@@ -182,7 +184,7 @@ def aggregate(results):
     }
 
 
-def study_report(study, reference, policy, directory):
+def summarize_hgb_optimization(study, reference, policy, directory):
     base = aggregate(reference) if len(reference) == 3 else None
     complete = [t for t in study.trials if t.state == TrialState.COMPLETE]
     budget_finished = len(study.trials) == policy["budget"]["max_trials"] and all(
@@ -249,7 +251,7 @@ def study_report(study, reference, policy, directory):
     }
 
 
-def run_search(
+def optimize_hgb(
     data_dir,
     *,
     policy_path=development.DEFAULT_POLICY,
@@ -258,13 +260,15 @@ def run_search(
 ):
     data_dir, tracking_root = Path(data_dir), Path(tracking_root)
     if type(new_trials) is not int or new_trials < 1:
-        raise SearchError("Expected a positive maximum of new trials for this invocation")
+        raise HGBOptimizationError("Expected a positive maximum of new trials for this invocation")
     policy = development.load_policy(policy_path)
     development.verify_data(data_dir, policy_path=policy_path)
     manifest = json.loads((data_dir / "manifest.json").read_text())
     provenance = committed_inputs(policy_path)
     if provenance["files"] != manifest["implementation"]:
-        raise SearchError("Preparation and search code or lock differ; prepare a new study")
+        raise HGBOptimizationError(
+            "Preparation and search code or lock differ; prepare a new study"
+        )
     directory = data_dir / "study"
     identity = {
         "data_sha256": sha256(data_dir / "manifest.json"),
@@ -275,14 +279,14 @@ def run_search(
         "max_fit_attempts": policy["budget"]["max_fit_attempts"],
     }
     with study_lock(directory):
-        study = open_study(directory, 42)
+        study = open_hgb_study(directory, 42)
         if study.user_attrs and study.user_attrs.get("identity") != identity:
-            raise SearchError("Persistent study identity changed")
+            raise HGBOptimizationError("Persistent study identity changed")
         if not study.user_attrs:
             study.set_user_attr("identity", identity)
             write_json(directory / "protocol.json", policy)
         if len(study.trials) > policy["budget"]["max_trials"]:
-            raise SearchError("Persistent trial budget was exceeded")
+            raise HGBOptimizationError("Persistent trial budget was exceeded")
         # Validate completed artifacts before spending more of the study budget.
         for completed in study.trials:
             if completed.state == TrialState.COMPLETE:
@@ -292,7 +296,7 @@ def run_search(
                         not part.resolve().is_relative_to(directory.resolve())
                         or result["identity"] != identity
                     ):
-                        raise SearchError("Completed trial artifact identity differs")
+                        raise HGBOptimizationError("Completed trial artifact identity differs")
                     check_records(part, result["files"])
                     receipt = part / "result.json"
                     attempt = (
@@ -303,7 +307,7 @@ def run_search(
                         or json.loads(receipt.read_text()) != result
                         or not attempt.exists()
                     ):
-                        raise SearchError("Completed trial receipt differs")
+                        raise HGBOptimizationError("Completed trial receipt differs")
         # The OS lock proves no active writer; abandoned trials consume the budget.
         for trial in study.trials:
             if trial.state == TrialState.RUNNING:
@@ -312,7 +316,7 @@ def run_search(
         try:
             for fold in policy["folds"]:
                 reference.append(
-                    fit_fold(
+                    fit_hgb_fold(
                         directory,
                         "reference",
                         fold,
@@ -326,13 +330,13 @@ def run_search(
             remaining = min(new_trials, policy["budget"]["max_trials"] - len(study.trials))
             for _ in range(remaining):
                 # Recreate per trial: SQLite does not persist a sampler's RNG state.
-                study = open_study(directory, 42 + len(study.trials))
-                trial = study.ask(distributions(policy))
+                study = open_hgb_study(directory, 42 + len(study.trials))
+                trial = study.ask(hgb_search_distributions(policy))
                 results = []
                 try:
                     for fold in policy["folds"]:
                         results.append(
-                            fit_fold(
+                            fit_hgb_fold(
                                 directory,
                                 f"trial-{trial.number:03d}",
                                 fold,
@@ -351,12 +355,13 @@ def run_search(
                     raise
         finally:
             write_json(
-                directory / "report.json", study_report(study, reference, policy, directory)
+                directory / "report.json",
+                summarize_hgb_optimization(study, reference, policy, directory),
             )
-    return verify_search(directory, policy_path=policy_path)
+    return verify_hgb_optimization(directory, policy_path=policy_path)
 
 
-def verify_search(directory, *, policy_path=development.DEFAULT_POLICY):
+def verify_hgb_optimization(directory, *, policy_path=development.DEFAULT_POLICY):
     """Offline artifact/metric reconciliation; does not fit or access the MLflow server."""
     directory = Path(directory)
     policy = development.load_policy(policy_path)
@@ -372,11 +377,11 @@ def verify_search(directory, *, policy_path=development.DEFAULT_POLICY):
         != json.loads((directory.parent / "manifest.json").read_text())["implementation"]
         or json.loads((directory / "protocol.json").read_text()) != policy
     ):
-        raise SearchError("Study policy or dataset identity differs")
+        raise HGBOptimizationError("Study policy or dataset identity differs")
     if len(study.trials) > policy["budget"]["max_trials"] or any(
         t.state == TrialState.WAITING for t in study.trials
     ):
-        raise SearchError("Study budget or trial state differs")
+        raise HGBOptimizationError("Study budget or trial state differs")
     reference = []
     receipts = []
     for fold in policy["folds"]:
@@ -393,7 +398,7 @@ def verify_search(directory, *, policy_path=development.DEFAULT_POLICY):
                 or any(r["parameters"] != trial.params for r in results)
                 or not np.isclose(trial.value, aggregate(results)["mean_ap"], rtol=0, atol=1e-12)
             ):
-                raise SearchError("Trial objective or fold population differs")
+                raise HGBOptimizationError("Trial objective or fold population differs")
             receipts.extend(results)
     manifest = json.loads((directory.parent / "manifest.json").read_text())
     for result in receipts:
@@ -402,7 +407,7 @@ def verify_search(directory, *, policy_path=development.DEFAULT_POLICY):
             not part.resolve().is_relative_to(directory.resolve())
             or result["identity"] != identity
         ):
-            raise SearchError("Model artifact identity differs")
+            raise HGBOptimizationError("Model artifact identity differs")
         check_records(part, result["files"])
         receipt = part / "result.json"
         name = part.parent.name
@@ -412,14 +417,14 @@ def verify_search(directory, *, policy_path=development.DEFAULT_POLICY):
             or not receipt.exists()
             or json.loads(receipt.read_text()) != result
         ):
-            raise SearchError("Saved fit receipt or budget receipt differs")
+            raise HGBOptimizationError("Saved fit receipt or budget receipt differs")
         predictions = pd.read_parquet(part / "validation_predictions.parquet")
         fold = next(f for f in policy["folds"] if f["id"] == result["fold_id"])
         training, (_, _, metadata) = development.load_fold(directory.parent, manifest, fold)
         if result["training_rows"] != len(training[0]) or result["validation_rows"] != len(
             metadata
         ):
-            raise SearchError("Saved training or validation population differs")
+            raise HGBOptimizationError("Saved training or validation population differs")
         pd.testing.assert_frame_equal(
             predictions[list(metadata.columns)], metadata.reset_index(drop=True), check_exact=True
         )
@@ -428,40 +433,42 @@ def verify_search(directory, *, policy_path=development.DEFAULT_POLICY):
             metrics != result["metrics"]
             or json.loads((part / "metrics.json").read_text()) != metrics
         ):
-            raise SearchError("Saved metrics differ from paired validation predictions")
-    report = study_report(study, reference, policy, directory)
+            raise HGBOptimizationError("Saved metrics differ from paired validation predictions")
+    report = summarize_hgb_optimization(study, reference, policy, directory)
     if report["fit_attempts"] > policy["budget"]["max_fit_attempts"] or report != json.loads(
         (directory / "report.json").read_text()
     ):
-        raise SearchError("Study fit budget or report differs")
+        raise HGBOptimizationError("Study fit budget or report differs")
     return {**report, "status": "success"}
 
 
 @app.command("prepare")
-def prepare(policy_path: Annotated[Path, typer.Option()] = development.DEFAULT_POLICY):
+def prepare_hgb_data(policy_path: Annotated[Path, typer.Option()] = development.DEFAULT_POLICY):
     """Build new causal features from authorized Silver dates only."""
     typer.echo(json.dumps(development.prepare_data(policy_path=policy_path), indent=2))
 
 
-@app.command("run")
-def run(
+@app.command("optimize")
+def optimize_hgb_command(
     data_path: Annotated[Path, typer.Argument()],
     new_trials: Annotated[int, typer.Option(min=1, max=20)] = 1,
     policy_path: Annotated[Path, typer.Option()] = development.DEFAULT_POLICY,
 ):
     """Default: one trial for cost review; resume under the same global budget."""
     typer.echo(
-        json.dumps(run_search(data_path, policy_path=policy_path, new_trials=new_trials), indent=2)
+        json.dumps(
+            optimize_hgb(data_path, policy_path=policy_path, new_trials=new_trials), indent=2
+        )
     )
 
 
 @app.command("verify")
-def verify(
+def verify_hgb_optimization_command(
     study_path: Annotated[Path, typer.Argument()],
     policy_path: Annotated[Path, typer.Option()] = development.DEFAULT_POLICY,
 ):
     """Reconcile saved scores, metrics, identities and global trial/fit budgets offline."""
-    typer.echo(json.dumps(verify_search(study_path, policy_path=policy_path), indent=2))
+    typer.echo(json.dumps(verify_hgb_optimization(study_path, policy_path=policy_path), indent=2))
 
 
 if __name__ == "__main__":

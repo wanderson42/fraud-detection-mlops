@@ -243,9 +243,9 @@ saídas incompatíveis. Compatibilidade com a interface não autoriza um experim
 ou promove um modelo. A busca temporal com Optuna usa esse contrato, com execução
 sobre os dados do autor ainda pendente; veja o [mural](docs/ROADMAP.md).
 
-## Busca temporal com Optuna
+## Otimização temporal do HGB com Optuna
 
-O executor `modeling.search` compara cinco hiperparâmetros do HGB em três cortes
+O executor `modeling.hgb_optuna` compara cinco hiperparâmetros do HGB em três cortes
 posteriores, com 19 features, treino de 28 dias, gap de sete dias e validação de
 sete dias. Os parâmetros de referência são retreinados nos mesmos dados de cada
 corte: a comparação isola a configuração do efeito de atualizar o treino.
@@ -259,18 +259,18 @@ reservado, e o teste histórico de maio não é aberto.
 Depois de instalar as dependências, validar e fazer commit dos insumos:
 
 ```bash
-poetry run python -m fraud_detection_mlops.modeling.search prepare
+poetry run python -m fraud_detection_mlops.modeling.hgb_optuna prepare
 # Copie development_path retornado pelo comando acima.
 DEVELOPMENT_PATH="CAMINHO_RETORNADO"
-poetry run python -m fraud_detection_mlops.modeling.search run "$DEVELOPMENT_PATH"
-poetry run python -m fraud_detection_mlops.modeling.search verify "$DEVELOPMENT_PATH/study"
+poetry run python -m fraud_detection_mlops.modeling.hgb_optuna optimize "$DEVELOPMENT_PATH"
+poetry run python -m fraud_detection_mlops.modeling.hgb_optuna verify "$DEVELOPMENT_PATH/study"
 ```
 
 `study_incomplete` é esperado após o primeiro trial. A conclusão pode ser
 `retain_reference` ou `candidate_for_confirmation_review`; a busca não promove um
 modelo. Janelas, espaço de busca, custos, gates e recuperação estão no
-[protocolo](docs/EVALUATION_PROTOCOL.md#busca-temporal-com-optuna-v1). O
-[notebook 10](notebooks/stages/10_temporal_optuna.ipynb) revisa apenas resultados
+[protocolo](docs/EVALUATION_PROTOCOL.md#otimização-temporal-do-hgb-com-optuna-v1). O
+[notebook 10](notebooks/stages/10_hgb_optuna.ipynb) revisa apenas resultados
 salvos. Ganhos, degradação e superioridade estatística ainda precisam de evidência.
 
 ## Congelar antes de avaliar o teste

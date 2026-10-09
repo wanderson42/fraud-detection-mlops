@@ -30,7 +30,7 @@ from fraud_detection_mlops.modeling.models import BASELINE_PARAMETERS
 from fraud_detection_mlops.silver import ARROW_SCHEMA as SILVER_SCHEMA
 from fraud_detection_mlops.silver import DEFAULT_CONTRACT, DEFAULT_OUTPUT
 
-DEFAULT_POLICY = PROJECT_ROOT / "references/optuna_protocol_v1.json"
+DEFAULT_POLICY = PROJECT_ROOT / "references/hgb_optuna_protocol_v1.json"
 DEFAULT_DEVELOPMENT = PROJECT_ROOT / "data/processed/handbook"
 
 

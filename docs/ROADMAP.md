@@ -47,7 +47,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Avaliação final | Executado e verificado localmente; CSV diário revisado | AP 0,640703 e precisão diária @100 de 55%; critérios atingidos, sem refit ou promoção em produção. [Evidência](../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](MODEL_CARD.md). |
 | Análise estatística e testes de hipóteses | Planejado; entrega do escopo; protocolo confirmatório pendente | Definir hipótese, efeito relevante, unidade de inferência e dependência temporal/por entidade antes de novas comparações. Obter mais evidência temporal separada do desenvolvimento; registrar tamanho de efeito e incerteza apropriada. A exclusão de um dia da ablação é sensibilidade, não intervalo de confiança. [Marco estatístico](#marco-de-análise-estatística-e-testes-de-hipóteses). |
 | Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](ARCHITECTURE.md#interface-para-contribuição-de-modelos). |
-| Validação temporal e otimização com Optuna | Implementado; execução local pendente | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
+| Validação temporal e otimização do HGB com Optuna | Implementado; execução local pendente | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
 | Contrato de inferência e Docker | Contrato inicial definido; após revisão da busca e protocolo confirmatório | Receber 19 features calculadas, devolver score identificado e rejeitar entradas inválidas. [Contrato proposto](ARCHITECTURE.md#primeiro-contrato-de-inferência--definido-implementação-pendente). Demonstrar paridade, execução fora do checkout, health/readiness, imagem mensurada e recuperação. |
 | Orquestração com Prefect | Planejado; escolha do projeto | Prefect auto-hospedado para encadear os módulos Python, registrar dependências e falhas, testar retries e retomada sem duplicação. Manter lógica independente do orquestrador e medir recursos. O consumidor de streaming terá contrato próprio. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
@@ -82,9 +82,9 @@ custo real e estabilidade da referência ainda dependem de execução local.
 ## Próximo ciclo de modelos e operação
 
 O ciclo inicial produziu uma referência congelada, não um modelo definitivo.
-O [protocolo executável](../references/optuna_protocol_v1.json) autoriza desenvolvimento
+O [protocolo executável](../references/hgb_optuna_protocol_v1.json) autoriza desenvolvimento
 em junho–agosto e reserva setembro. A tabela e o procedimento ficam no
-[protocolo de avaliação](EVALUATION_PROTOCOL.md#busca-temporal-com-optuna-v1).
+[protocolo de avaliação](EVALUATION_PROTOCOL.md#otimização-temporal-do-hgb-com-optuna-v1).
 A Gold desse ciclo tem identidade própria; os artefatos da avaliação inicial
 permanecem preservados.
 

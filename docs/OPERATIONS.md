@@ -329,9 +329,9 @@ não altere checksums nem treine novamente apenas para contornar uma falha de re
 ## Preparar e retomar a busca temporal
 
 O procedimento principal, as janelas e a recuperação estão no
-[protocolo Optuna](EVALUATION_PROTOCOL.md#busca-temporal-com-optuna-v1).
-`make search-prepare`, `make search-run DEVELOPMENT_PATH="..." NEW_TRIALS=1` e
-`make search-verify STUDY_PATH="..."` delegam ao mesmo executor. O padrão é um novo
+[protocolo Optuna](EVALUATION_PROTOCOL.md#otimização-temporal-do-hgb-com-optuna-v1).
+`make hgb-optuna-prepare`, `make hgb-optuna-optimize DEVELOPMENT_PATH="..." NEW_TRIALS=1` e
+`make hgb-optuna-verify STUDY_PATH="..."` delegam ao mesmo executor. O padrão é um novo
 trial por chamada; o estudo inteiro tem até 20, incluindo falhas. Verifique após a
 chamada terminar; não execute verificação concorrente com o escritor.
 

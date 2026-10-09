@@ -153,17 +153,17 @@ verify-final:
 	@test -n "$(EVALUATION_PATH)" || (echo "Set EVALUATION_PATH"; exit 1)
 	poetry run python -m fraud_detection_mlops.modeling.evaluation verify "$(EVALUATION_PATH)"
 
-.PHONY: search-prepare search-run search-verify
+.PHONY: hgb-optuna-prepare hgb-optuna-optimize hgb-optuna-verify
 ## Prepare authorized development features; requires committed code and protocol
-search-prepare:
-	poetry run python -m fraud_detection_mlops.modeling.search prepare
+hgb-optuna-prepare:
+	poetry run python -m fraud_detection_mlops.modeling.hgb_optuna prepare
 
 ## Run or resume bounded Optuna search; requires DEVELOPMENT_PATH; default one new trial
-search-run:
+hgb-optuna-optimize:
 	@test -n "$(DEVELOPMENT_PATH)" || (echo "Set DEVELOPMENT_PATH"; exit 1)
-	poetry run python -m fraud_detection_mlops.modeling.search run "$(DEVELOPMENT_PATH)" --new-trials $(or $(NEW_TRIALS),1)
+	poetry run python -m fraud_detection_mlops.modeling.hgb_optuna optimize "$(DEVELOPMENT_PATH)" --new-trials $(or $(NEW_TRIALS),1)
 
 ## Verify study artifacts offline; requires STUDY_PATH
-search-verify:
+hgb-optuna-verify:
 	@test -n "$(STUDY_PATH)" || (echo "Set STUDY_PATH"; exit 1)
-	poetry run python -m fraud_detection_mlops.modeling.search verify "$(STUDY_PATH)"
+	poetry run python -m fraud_detection_mlops.modeling.hgb_optuna verify "$(STUDY_PATH)"

@@ -190,7 +190,7 @@ modelo sobre os dados reais do projeto.
 `test_development.py` usa partições sintéticas com bytes reservados deliberadamente
 inválidos, demonstrando que setembro não é aberto. Verifica contexto causal,
 atraso de rótulos, integridade, schema, autorização dos cortes e reutilização.
-`test_search.py` exercita SQLite real, retomada, orçamento global, falhas e trial
+`test_hgb_optuna.py` exercita SQLite real, retomada, orçamento global, falhas e trial
 abandonado, lock de escritor, mudança de identidade e corrupção antes de novos fits.
 Compara a sequência TPE contínua/retomada além da inicialização e rejeita recibos
 inconsistentes. A referência interrompida exige revisão, sem ajuste silencioso.
@@ -205,3 +205,7 @@ Validação da preparação: **224 testes, Ruff, lockfile e tox aprovados**; 77 
 de dependências permanecem visíveis. O [recibo estruturado](../references/evidence/optuna_preparation_2026-10-08.json)
 identifica código, ambiente, checks e limitações. O teste do sampler exerce o runner
 público em uma chamada e em lotes, com SQLite real e objetivo sintético controlado.
+
+O recibo de preparação registra a revisão anterior à renomeação: seus caminhos e
+hashes históricos são preservados. O executor atual é `modeling/hgb_optuna.py`,
+com checks em `test_hgb_optuna.py`; a política mantém as mesmas regras e orçamento.

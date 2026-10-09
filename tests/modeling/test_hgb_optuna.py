@@ -10,14 +10,16 @@ import pandas as pd
 import pytest
 
 from fraud_detection_mlops.artifacts import write_json
-from fraud_detection_mlops.modeling import development, search, tracking, train
+from fraud_detection_mlops.modeling import development, hgb_optuna, tracking, train
 
 
 @pytest.fixture
 def study_environment(prepared_data, tmp_path, monkeypatch):
     directory, policy_path = prepared_data
     monkeypatch.setattr(
-        search, "committed_inputs", lambda p: {"git_revision": "test", "files": {"test": "d" * 64}}
+        hgb_optuna,
+        "committed_inputs",
+        lambda p: {"git_revision": "test", "files": {"test": "d" * 64}},
     )
     calls = []
 
@@ -32,7 +34,7 @@ def study_environment(prepared_data, tmp_path, monkeypatch):
 
 def run(environment, count=1):
     directory, policy_path, root, _ = environment
-    return search.run_search(
+    return hgb_optuna.optimize_hgb(
         directory, policy_path=policy_path, tracking_root=root, new_trials=count
     )
 
@@ -59,11 +61,13 @@ def test_global_budget_resume_reuses_completed_fits_and_offline_verification(
     )
     assert run(study_environment, 20) == second
     directory, policy_path, _, _ = study_environment
-    assert search.verify_search(directory / "study", policy_path=policy_path) == second
+    assert (
+        hgb_optuna.verify_hgb_optimization(directory / "study", policy_path=policy_path) == second
+    )
     predictions = directory / "study/models/trial-001/fold_3/validation_predictions.parquet"
     predictions.write_bytes(b"corrupted")
     with pytest.raises(ValueError, match="integrity"):
-        search.verify_search(directory / "study", policy_path=policy_path)
+        hgb_optuna.verify_hgb_optimization(directory / "study", policy_path=policy_path)
 
 
 def test_failed_trial_consumes_budget_and_completed_reference_is_not_repeated(
@@ -92,8 +96,8 @@ def test_failed_trial_consumes_budget_and_completed_reference_is_not_repeated(
 def test_abandoned_trial_does_not_grant_new_budget(study_environment):
     first = run(study_environment)
     directory = study_environment[0] / "study"
-    study = search.open_study(directory, 43)
-    study.ask(search.distributions(development.load_policy(study_environment[1])))
+    study = hgb_optuna.open_hgb_study(directory, 43)
+    study.ask(hgb_optuna.hgb_search_distributions(development.load_policy(study_environment[1])))
     final = run(study_environment, 20)
     assert final["failed_trials"] == 1 and final["trials_used"] == 2
     assert final["fit_attempts"] == first["fit_attempts"]
@@ -105,25 +109,25 @@ def test_changed_store_or_implementation_is_rejected_before_new_fit(
     run(study_environment)
     directory, policy_path, root, _ = study_environment
     monkeypatch.setattr(train, "fit_candidate", lambda *a, **k: pytest.fail("Unauthorized fit"))
-    with pytest.raises(search.SearchError, match="identity changed"):
-        search.run_search(directory, policy_path=policy_path, tracking_root=root / "other")
+    with pytest.raises(hgb_optuna.HGBOptimizationError, match="identity changed"):
+        hgb_optuna.optimize_hgb(directory, policy_path=policy_path, tracking_root=root / "other")
     monkeypatch.setattr(
-        search,
+        hgb_optuna,
         "committed_inputs",
         lambda p: {"git_revision": "different", "files": {"changed": "e" * 64}},
     )
-    with pytest.raises(search.SearchError, match="code or lock differ"):
+    with pytest.raises(hgb_optuna.HGBOptimizationError, match="code or lock differ"):
         run(study_environment)
 
 
 def test_single_writer_lock_is_released_after_exception(tmp_path):
     with (
-        search.study_lock(tmp_path),
-        pytest.raises(search.SearchError, match="Another process"),
-        search.study_lock(tmp_path),
+        hgb_optuna.study_lock(tmp_path),
+        pytest.raises(hgb_optuna.HGBOptimizationError, match="Another process"),
+        hgb_optuna.study_lock(tmp_path),
     ):
         pytest.fail("Concurrent writer acquired lock")
-    with search.study_lock(tmp_path):
+    with hgb_optuna.study_lock(tmp_path):
         pass
 
 
@@ -149,7 +153,7 @@ def test_interrupted_reference_is_not_silently_retrained(study_environment, monk
     monkeypatch.setattr(
         train, "fit_candidate", lambda *a, **k: pytest.fail("Interrupted reference refitted")
     )
-    with pytest.raises(search.SearchError, match="Incomplete fit requires review"):
+    with pytest.raises(hgb_optuna.HGBOptimizationError, match="Incomplete fit requires review"):
         run(study_environment)
 
 
@@ -160,9 +164,9 @@ def test_saved_receipt_tampering_is_rejected(study_environment):
     result = json.loads(receipt.read_text())
     result["training_rows"] += 1
     write_json(receipt, result)
-    with pytest.raises(search.SearchError, match="receipt"):
-        search.verify_search(directory / "study", policy_path=policy_path)
-    with pytest.raises(search.SearchError, match="receipt"):
+    with pytest.raises(hgb_optuna.HGBOptimizationError, match="receipt"):
+        hgb_optuna.verify_hgb_optimization(directory / "study", policy_path=policy_path)
+    with pytest.raises(hgb_optuna.HGBOptimizationError, match="receipt"):
         run(study_environment)
 
 
@@ -175,7 +179,7 @@ def test_tpe_trial_sequence_is_equal_across_restarted_and_continuous_invocations
     write_json(policy_path, policy)
     provenance = {"git_revision": "test", "files": {"test": "d" * 64}}
     monkeypatch.setattr(development, "committed_inputs", lambda p: provenance)
-    monkeypatch.setattr(search, "committed_inputs", lambda p: provenance)
+    monkeypatch.setattr(hgb_optuna, "committed_inputs", lambda p: provenance)
     prepared = development.prepare_data(
         silver_fixture / "silver",
         tmp_path / "data",
@@ -206,7 +210,7 @@ def test_tpe_trial_sequence_is_equal_across_restarted_and_continuous_invocations
             "files": [],
         }
 
-    monkeypatch.setattr(search, "check_records", lambda *a: None)
+    monkeypatch.setattr(hgb_optuna, "check_records", lambda *a: None)
 
     # The artifact contract is covered elsewhere. Record synthetic receipts for preflight.
     def recorded_fit(directory, name, fold, parameters, *args):
@@ -215,15 +219,16 @@ def test_tpe_trial_sequence_is_equal_across_restarted_and_continuous_invocations
         write_json(directory / "attempts" / name / (fold["id"] + ".json"), {})
         return result
 
-    monkeypatch.setattr(search, "fit_fold", recorded_fit)
-    monkeypatch.setattr(search, "verify_search", lambda directory, **kwargs: {})
-    search.run_search(continuous, policy_path=policy_path, new_trials=7)
+    monkeypatch.setattr(hgb_optuna, "fit_hgb_fold", recorded_fit)
+    monkeypatch.setattr(hgb_optuna, "verify_hgb_optimization", lambda directory, **kwargs: {})
+    hgb_optuna.optimize_hgb(continuous, policy_path=policy_path, new_trials=7)
     for count in (1, 2, 4):
-        search.run_search(resumed, policy_path=policy_path, new_trials=count)
+        hgb_optuna.optimize_hgb(resumed, policy_path=policy_path, new_trials=count)
     histories = []
     for directory in (continuous, resumed):
         study = optuna.load_study(
-            study_name=search.EXPERIMENT, storage="sqlite:///" + str(directory / "study/study.db")
+            study_name=hgb_optuna.EXPERIMENT,
+            storage="sqlite:///" + str(directory / "study/study.db"),
         )
         histories.append([(t.number, t.params, t.value, t.state) for t in study.trials])
     assert len(histories[0]) == 7
@@ -254,7 +259,7 @@ def test_development_gate_does_not_promote_an_incomplete_or_unstable_winner(tmp_
     study.add_trial(
         optuna.trial.create_trial(value=0.5666666666666667, user_attrs={"fold_results": results})
     )
-    report = search.study_report(study, reference, policy, tmp_path)
+    report = hgb_optuna.summarize_hgb_optimization(study, reference, policy, tmp_path)
     assert report["comparison"][0]["delta_mean_ap"] > 0.01
     assert report["candidate_for_confirmation_review"] is None  # One fold loses .05.
     assert report["decision"] == "retain_reference"
@@ -263,7 +268,7 @@ def test_development_gate_does_not_promote_an_incomplete_or_unstable_winner(tmp_
     second.add_trial(
         optuna.trial.create_trial(value=0.6166666666666667, user_attrs={"fold_results": results})
     )
-    eligible = search.study_report(second, reference, policy, tmp_path)
+    eligible = hgb_optuna.summarize_hgb_optimization(second, reference, policy, tmp_path)
     assert eligible["candidate_for_confirmation_review"] == 0
     assert not eligible["production_promotion"] and not eligible["confirmation_evaluated"]
 
@@ -274,7 +279,7 @@ def test_one_temporal_fold_uses_real_native_mlflow_and_skops(prepared_data, tmp_
     manifest = json.loads((directory / "manifest.json").read_text())
     destination = directory / "study"
     write_json(destination / "protocol.json", policy)
-    result = search.fit_fold(
+    result = hgb_optuna.fit_hgb_fold(
         destination,
         "reference",
         policy["folds"][0],

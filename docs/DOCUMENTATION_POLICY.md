@@ -37,7 +37,7 @@ substanciais e documentos por responsabilidade em `docs/`.
 | [Stakeholders](STAKEHOLDERS.md) | Problema, entregas, evidências, limitações e próximos marcos | Mudança no resultado ou no escopo |
 | `references/evidence/` | Recibos estruturados de evidência, ligados à revisão avaliada | Fechamento de um marco validado |
 | `references/frozen_candidate_v1.json` | Recibo das escolhas, modelo e insumos da avaliação final | Criar na execução real e versionar antes de abrir o teste; não substituir para escolher outro candidato |
-| `references/optuna_protocol_v1.json` | Autorização executável de janelas, reserva, espaço de busca, recursos e gates | Versionar antes de preparar dados ou executar a busca; mudanças geram outra identidade |
+| `references/hgb_optuna_protocol_v1.json` | Autorização executável de janelas, reserva, espaço de busca, recursos e gates | Versionar antes de preparar dados ou executar a busca; mudanças geram outra identidade |
 
 A Model Card foi criada com a avaliação final relatada pelo autor. Infraestrutura
 e diretórios de experimentos entram quando houver conteúdo concreto. A Model Card

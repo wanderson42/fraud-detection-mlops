@@ -13,7 +13,7 @@ têm uma referência única no [mural do projeto](ROADMAP.md).
 | `bronze.py`, `profiling.py`, `silver.py`, `gold.py` | Aquisição, diagnóstico e contratos de dados | `tests/test_<módulo>.py` |
 | `features.py`, `temporal.py`, `eda.py` | Features causais, protocolo e EDA | Testes correspondentes na raiz |
 | `modeling/interface.py`, `modeling/models.py` | Contrato executável e factories explícitas, compartilhados pelo treinamento e pela persistência | `tests/modeling/test_interface.py` |
-| `modeling/development.py`, `modeling/search.py` | Datas autorizadas, Gold causal própria, estudo Optuna local e comparação pareada de configurações | `tests/modeling/test_development.py`, `tests/modeling/test_search.py` |
+| `modeling/development.py`, `modeling/hgb_optuna.py` | Datas autorizadas, Gold causal própria, estudo Optuna local e comparação pareada de configurações | `tests/modeling/test_development.py`, `tests/modeling/test_hgb_optuna.py` |
 | `modeling/baseline.py` | Política fixa e verificação não executável de artefatos | `tests/modeling/test_baseline.py` e `test_train.py` |
 | `modeling/train.py` | Ajuste, seleção na validação e publicação da execução | `tests/modeling/test_train.py` |
 | `modeling/metrics.py` | Métricas de ranking e priorização diária | `tests/modeling/test_metrics.py` |
@@ -217,10 +217,12 @@ esse modelo à política histórica nem escolhe outro candidato para servir.
 
 ### Relação com Optuna e com as evidências históricas
 
-O executor `modeling/search.py` usa a mesma factory e `train.fit_candidate`, com
+O executor `modeling/hgb_optuna.py` usa a mesma factory e `train.fit_candidate`, com
 parâmetros separados da seed. `modeling/development.py` prepara e verifica somente
-as datas autorizadas no [protocolo Optuna](../references/optuna_protocol_v1.json).
-Optuna 5.0.0 é uma dependência travada. A integração está implementada; a busca
+as datas autorizadas no [protocolo Optuna](../references/hgb_optuna_protocol_v1.json).
+O módulo `hgb_optuna.py` e as funções `optimize_hgb`, `fit_hgb_fold` e
+`verify_hgb_optimization` tornam explícito o escopo do algoritmo. Esta implementação
+autoriza somente o HGB. Optuna 5.0.0 é uma dependência travada. A integração está implementada; a busca
 sobre os dados do autor ainda não foi executada.
 
 SQLite persiste trials e seus resultados. Um lock de processo limita a um escritor
@@ -238,7 +240,7 @@ por trial; não mistura modelos numa única run.
 Uma tentativa é registrada antes do fit. Um trial interrompido vira `FAIL` na
 retomada e consome orçamento; resultados concluídos são preservados. Referência
 interrompida exige revisão explícita, sem refit automático ou publicação duplicada.
-Os detalhes operacionais estão no [protocolo](EVALUATION_PROTOCOL.md#busca-temporal-com-optuna-v1).
+Os detalhes operacionais estão no [protocolo](EVALUATION_PROTOCOL.md#otimização-temporal-do-hgb-com-optuna-v1).
 
 Alterar código impede reutilizar execuções que exigem os bytes da revisão anterior.
 Preservar o recibo congelado e os artefatos; usar a revisão histórica para reproduzir
