@@ -32,11 +32,11 @@ AP **0,621312**, precisão diária @100 de **54,93%** e recall médio diário de
 fraudulentos de **72,89%**, sem refit ou novas runs. O autor aprovou **362 testes**,
 com 94 avisos. Essa janela foi consumida; **16–30/09 continua reservado para replay**.
 O [relato da execução](docs/modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor)
-mantém os limites estatísticos. O diagnóstico nativo de dependência foi revisado;
-a análise exploratória de reamostragem por blocos está implementada e aguarda
-execução sobre as previsões nativas para conferir a AP agrupada. As faixas não têm
-cobertura de generalização demonstrada. Exportação, Docker e Prefect vêm depois
-desse fechamento, conforme
+mantém os limites estatísticos. O diagnóstico e a reamostragem nativa por blocos
+foram revisados: **o escopo exploratório está concluído**, com todas as réplicas
+definidas e faixas da AP entre aproximadamente 0,579 e 0,667 ao comparar os quatro
+comprimentos. Essas faixas não têm cobertura de generalização demonstrada.
+Seguimos para exportação da referência, Docker e Prefect, conforme
 o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).

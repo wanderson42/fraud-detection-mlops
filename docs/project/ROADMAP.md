@@ -24,9 +24,11 @@ de execução e evidência própria. O marco de organização/serving foi integr
 referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
 precisão diária @100 de 54,93% e recall médio diário de 72,89%, sem refit.
 O autor aprovou 362 testes/94 avisos e forneceu o diagnóstico de dependência.
-A janela foi consumida; 16–30/09 continua
-reservada para replay. Teste temporal formal e intervalo de generalização
-continuam pendentes.
+A análise nativa por blocos foi executada e revisada, com todas as réplicas
+definidas: este escopo exploratório está concluído. A janela foi consumida;
+16–30/09 continua reservada para replay. Cobertura de generalização não foi
+estabelecida; confirmação de outro modelo exige candidato elegível, desenho
+próprio e janela preservada.
 
 **Escopo acordado:** interface para novos modelos, otimização limitada com Optuna,
 streaming com estado, feedback atrasado, monitoramento e atualização controlada
@@ -54,7 +56,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
 | Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../../references/evidence/freeze_execution_2026-10-08.json). |
 | Avaliação final | Executado e verificado localmente; CSV diário revisado | AP 0,640703 e precisão diária @100 de 55%; critérios atingidos, sem refit ou promoção em produção. [Evidência](../../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](../modeling/MODEL_CARD.md). |
-| Análise estatística e testes de hipóteses | Diagnóstico nativo revisado; sensibilidade por blocos implementada; AP reamostrada nativa a conferir | Avaliação preservada de 134.467 transações. Blocos de dias completos e grid 2/3/4/7, com quantis exploratórios; não demonstram cobertura futura. O fechamento desta janela registra alcance e limitações. Confirmação de candidato exige outro ciclo e janela preservada. [Análise de incerteza](../modeling/EVALUATION_PROTOCOL.md#sensibilidade-de-reamostragem-e-fechamento-do-escopo). |
+| Análise estatística e testes de hipóteses | Escopo exploratório concluído; reamostragem nativa revisada; confirmação futura condicional | AP 0,621312, precisão diária @100 de 54,93% e recall de 72,89%. Todas as 2.000 réplicas por configuração 2/3/4/7 ficaram definidas. Quantis exploratórios não demonstram cobertura futura; não houve teste temporal formal ou confirmação de candidato. [Resultado e fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento). |
 | Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](../modeling/CONTRIBUTING_MODELS.md). |
 | Validação temporal e otimização do HGB com Optuna | Estudo concluído no relatório do autor; referência conservada | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
 | Contrato de inferência e Docker | API/exportação implementadas; checks sintéticos e wheel conferidos; Docker pendente | Recebe 19 features, devolve score identificado e rejeita entradas inválidas. Paridade JSON/HTTP, health/readiness e wheel fora do checkout conferidos na preparação. Falta exportar a referência no Alienware e medir a imagem Docker. [Contrato e execução](../operations/SERVING_CONTRACT.md). |
@@ -71,20 +73,16 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Executar a sensibilidade por blocos sobre as previsões verificadas e registrar
-   todas as configurações, inclusive a AP agrupada. O diagnóstico nativo foi
-   revisado e as métricas diárias fornecidas já permitiram os cálculos secundários.
-   Fechar este escopo com quantis exploratórios e declaração explícita de que
-   cobertura de generalização não foi estabelecida. Essa entrega precede Docker;
-   a confirmação de candidato é condicional a outro ciclo. [Método e fechamento](../modeling/EVALUATION_PROTOCOL.md#sensibilidade-de-reamostragem-e-fechamento-do-escopo).
-2. Publicar a branch da avaliação com o relato do autor e conferir a CI antes
+1. Exportar os bytes do HGB congelado com paridade sobre a validação já usada e
+   conferir HTTP/wheel identificado. O diagnóstico e a reamostragem nativa foram
+   revisados, fechando o escopo exploratório e seus limites. Construir e medir
+   Docker: usuário sem root, modelo somente leitura, memória, latência e
+   recuperação. O [procedimento](../operations/SERVING_CONTRACT.md) mantém o
+   escopo de laboratório.
+2. Publicar a branch da avaliação com os relatos nativos e conferir a CI antes
    da integração. A execução e a verificação nativas foram informadas; preservar
    manifesto, auditoria e predições no Alienware. [Resultado](../modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor).
-3. Exportar os bytes do HGB congelado com paridade sobre a validação já usada e
-   conferir HTTP/wheel identificado. Construir e medir Docker: usuário sem root,
-   modelo somente leitura, memória, latência e recuperação. O
-   [procedimento](../operations/SERVING_CONTRACT.md) mantém o escopo de laboratório.
-4. Encadear operações estáveis com um fluxo pequeno de Prefect, conferindo retries
+3. Encadear operações estáveis com um fluxo pequeno de Prefect, conferindo retries
    e retomada sem duplicação. Depois implementar replay causal e monitoramento
    com feedback atrasado, sob seus contratos próprios.
 

@@ -5,6 +5,12 @@ sem refit e wheel fora do checkout foram conferidos com dados sintéticos.
 A exportação da referência no Alienware e Docker permanecem checks pendentes.
 O gate offline autoriza revisão de laboratório; não promove o modelo em produção.
 
+O [escopo estatístico exploratório](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento)
+foi fechado após revisar a reamostragem nativa em 2026-10-09, mantendo explícita
+a ausência de cobertura de generalização demonstrada. A próxima execução é a
+exportação abaixo; preservar seu recibo para conferir a identidade na API e na
+imagem Docker.
+
 ## Entradas, saída e responsabilidade
 
 | Elemento | Contrato implementado |

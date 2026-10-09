@@ -826,3 +826,45 @@ transforma a hipótese de regime local em cobertura demonstrada para o futuro.
 Essa incerteza mais ampla fica condicionada a desenho/dados que sustentem a
 inferência. Comparação confirmatória de outro modelo exige candidato elegível,
 outra janela preservada e seu protocolo. Não há teste formal ou promoção neste ciclo.
+
+### Resultado nativo da reamostragem e fechamento
+
+Em 2026-10-09, o autor executou `reference_uncertainty_analysis analyze` e
+forneceu o JSON completo. A revisão confirmou a mesma avaliação, hashes de modelo
+e previsões, janela, grade, seed e hashes da implementação entregue. Precisão e
+recall coincidiram exatamente com a reamostragem secundária registrada antes;
+todas as métricas tiveram 2.000 réplicas definidas por configuração, sem supressão.
+O recall teve 14 dias definidos em todas as réplicas.
+
+| Bloco | Faixa central da AP agrupada | Precisão média diária @100 | Recall médio diário |
+| --- | --- | --- | --- |
+| 2 dias | 0,583389–0,661410 | 53,07%–56,57% | 70,99%–74,95% |
+| 3 dias | 0,579289–0,664576 | 53,43%–56,43% | 70,54%–75,11% |
+| 4 dias | 0,580198–0,666739 | 53,43%–56,43% | 70,77%–75,18% |
+| 7 dias | 0,584160–0,659657 | 53,86%–56,00% | 70,83%–74,77% |
+
+Os valores observados permanecem AP **0,621312**, precisão **54,93%** e recall
+**72,89%**. O desvio padrão reamostrado da AP vai de 0,019899 a 0,022273. A grade
+mostra como os quantis mudam ao reponderar os dias; não identifica um bloco ótimo,
+não corrige o modelo e não demonstra estabilidade para períodos futuros. A faixa
+mais estreita com sete dias não justifica preferir essa configuração.
+
+O [recibo da revisão](../../references/evidence/reference_uncertainty_author_validation_2026-10-09.json)
+preserva o relatório completo, hash do arquivo recebido, verificações e limites.
+Os bytes nativos das previsões não foram recebidos: a AP reamostrada é resultado
+da execução do autor, com implementação conferida por hash; não foi recalculada
+independentemente nesta revisão. Os hashes de modelo e previsões no relatório
+coincidem com os relatos anteriores e o executor verifica o bundle localmente.
+Não foi fornecido novo resultado de pytest ou CI nesta mensagem.
+
+**Este escopo exploratório está concluído:** avaliação, diagnóstico, grade inteira,
+resultados nativos e insuficiência para cobertura futura estão documentados.
+`generalization_confidence_interval: null`, teste temporal formal e promoção
+continuam falsos. Generalização e confirmação de outro modelo exigem desenho e
+dados adequados; candidato elegível e janela preservada seguem condicionais.
+Não será reaberta esta janela para selecionar um candidato.
+
+O benefício é substituir apenas estimativas pontuais por uma descrição auditável
+de sensibilidade e de dependência, e explicitar o que a evidência permite afirmar.
+Podemos prosseguir com a **exportação da referência existente e Docker de
+laboratório**, conforme o [contrato de serving](../operations/SERVING_CONTRACT.md).

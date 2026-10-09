@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "stage": "reference_uncertainty_analysis_v1_author_validation",
+  "recorded_date": "2026-10-09",
+  "uploaded_report_sha256": "5da0f952b4aac29c5053b0d7efe7ec6c1c686f0757faa78dcab26c6b173b1f14",
+  "prepared_implementation_commit": "3d38d3ff972ef81a5df001bcb546b348478d9ddc",
+  "author_report": {
+    "analysis_environment": {
+      "numpy": "2.5.3",
+      "python": "3.14.4",
+      "scikit-learn": "1.9.1"
+    },
+    "analysis_implementation_sha256": {
+      "evaluation/temporal_block_resampling.py": "acd5b1ae16f665e1b0d55e93c0cedc6f377df08a0074f4d04ac69ae468b1e47b",
+      "modeling/experiments/reference_uncertainty_analysis.py": "e40e2004dce2f943eab62d2c9108d3d34ad964098388defde5809410779b4c2c"
+    },
+    "analysis_scope": "post_assessment_exploratory_resampling_sensitivity",
+    "assessment_git_revision": "d2a40aac949fc273fab28f4ba40c86460097d06a",
+    "assessment_id": "7af4b6be089cb8318adbadb0ad6b503f6bbd76a30acf88d40c7834fbae31e864",
+    "assessment_window": {
+      "end_exclusive": "2018-09-16",
+      "start": "2018-09-02"
+    },
+    "assumptions_not_established_by_diagnostics": [
+      "local_stationarity_of_the_joint_daily_score_label_process",
+      "dependence_relevant_to_each_statistic_is_adequately_represented_by_the_block_grid",
+      "same_recurrent_entity_population_and_fixed_model_context",
+      "circular_end_to_start_adjacency_is_an_acceptable_resampling_approximation"
+    ],
+    "block_lengths_days": [
+      2,
+      3,
+      4,
+      7
+    ],
+    "calendar_days": 14,
+    "configurations": [
+      {
+        "block_length_days": 2,
+        "blocks_drawn_per_replicate": 7,
+        "metrics": {
+          "mean_daily_customer_precision_at_100": {
+            "central_resampling_interval": {
+              "lower": 0.5307142857142857,
+              "upper": 0.5657142857142856
+            },
+            "coverage_validated": false,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.5492857142857142,
+            "replicate_mean": 0.5496832142857142,
+            "replicate_standard_deviation": 0.009062855915606337,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          },
+          "mean_daily_customer_recall_at_100": {
+            "central_resampling_interval": {
+              "lower": 0.7099460704074265,
+              "upper": 0.7495359156779852
+            },
+            "coverage_validated": false,
+            "defined_day_counts_max": 14,
+            "defined_day_counts_min": 14,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.72892744863614,
+            "replicate_mean": 0.7288597768063649,
+            "replicate_standard_deviation": 0.010190415159874058,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          },
+          "pooled_average_precision": {
+            "central_resampling_interval": {
+              "lower": 0.583388556774345,
+              "upper": 0.6614104745655487
+            },
+            "coverage_validated": false,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.6213118747307486,
+            "replicate_mean": 0.6216727885075843,
+            "replicate_standard_deviation": 0.019898979227934106,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          }
+        },
+        "truncated_last_block": false
+      },
+      {
+        "block_length_days": 3,
+        "blocks_drawn_per_replicate": 5,
+        "metrics": {
+          "mean_daily_customer_precision_at_100": {
+            "central_resampling_interval": {
+              "lower": 0.5342857142857143,
+              "upper": 0.5642857142857143
+            },
+            "coverage_validated": false,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.5492857142857142,
+            "replicate_mean": 0.5493796428571429,
+            "replicate_standard_deviation": 0.007689980256284698,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          },
+          "mean_daily_customer_recall_at_100": {
+            "central_resampling_interval": {
+              "lower": 0.7053551424084593,
+              "upper": 0.7510902488104596
+            },
+            "coverage_validated": false,
+            "defined_day_counts_max": 14,
+            "defined_day_counts_min": 14,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.72892744863614,
+            "replicate_mean": 0.729029135500413,
+            "replicate_standard_deviation": 0.011512484772155687,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          },
+          "pooled_average_precision": {
+            "central_resampling_interval": {
+              "lower": 0.5792894696461028,
+              "upper": 0.6645762700152128
+            },
+            "coverage_validated": false,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.6213118747307486,
+            "replicate_mean": 0.6219118526308903,
+            "replicate_standard_deviation": 0.021868172055599246,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          }
+        },
+        "truncated_last_block": true
+      },
+      {
+        "block_length_days": 4,
+        "blocks_drawn_per_replicate": 4,
+        "metrics": {
+          "mean_daily_customer_precision_at_100": {
+            "central_resampling_interval": {
+              "lower": 0.5342857142857143,
+              "upper": 0.5642857142857142
+            },
+            "coverage_validated": false,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.5492857142857142,
+            "replicate_mean": 0.5490653571428571,
+            "replicate_standard_deviation": 0.007770775478154562,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          },
+          "mean_daily_customer_recall_at_100": {
+            "central_resampling_interval": {
+              "lower": 0.7077149473604982,
+              "upper": 0.7517773035922375
+            },
+            "coverage_validated": false,
+            "defined_day_counts_max": 14,
+            "defined_day_counts_min": 14,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.72892744863614,
+            "replicate_mean": 0.7291103016356439,
+            "replicate_standard_deviation": 0.011449581396432762,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          },
+          "pooled_average_precision": {
+            "central_resampling_interval": {
+              "lower": 0.5801983729296492,
+              "upper": 0.6667392564497495
+            },
+            "coverage_validated": false,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.6213118747307486,
+            "replicate_mean": 0.6221368224059941,
+            "replicate_standard_deviation": 0.022273074541642277,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          }
+        },
+        "truncated_last_block": true
+      },
+      {
+        "block_length_days": 7,
+        "blocks_drawn_per_replicate": 2,
+        "metrics": {
+          "mean_daily_customer_precision_at_100": {
+            "central_resampling_interval": {
+              "lower": 0.5385714285714286,
+              "upper": 0.5599999999999999
+            },
+            "coverage_validated": false,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.5492857142857142,
+            "replicate_mean": 0.5492157142857141,
+            "replicate_standard_deviation": 0.005826516853070577,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          },
+          "mean_daily_customer_recall_at_100": {
+            "central_resampling_interval": {
+              "lower": 0.7083139307200351,
+              "upper": 0.7477383047460836
+            },
+            "coverage_validated": false,
+            "defined_day_counts_max": 14,
+            "defined_day_counts_min": 14,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.72892744863614,
+            "replicate_mean": 0.7287902097337225,
+            "replicate_standard_deviation": 0.011095940742232198,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          },
+          "pooled_average_precision": {
+            "central_resampling_interval": {
+              "lower": 0.5841597250632385,
+              "upper": 0.6596569292916893
+            },
+            "coverage_validated": false,
+            "defined_replicates": 2000,
+            "interval_suppressed_reason": null,
+            "nominal_mass": 0.95,
+            "observed": 0.6213118747307486,
+            "replicate_mean": 0.621417029908074,
+            "replicate_standard_deviation": 0.022065494667200942,
+            "replicates": 2000,
+            "undefined_replicates": 0
+          }
+        },
+        "truncated_last_block": false
+      }
+    ],
+    "interpretation": {
+      "bootstrap_replicates_do_not_add_observed_days": true,
+      "dependence_between_blocks_is_not_fully_preserved": true,
+      "formal_superiority_claim": false,
+      "formal_temporal_hypothesis_test": false,
+      "generalization_confidence_interval": null,
+      "nominal_mass_is_not_demonstrated_coverage": true,
+      "production_promotion": false,
+      "whole_days_preserve_within_day_cross_entity_structure": true
+    },
+    "method": "whole_day_circular_block_bootstrap",
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "predictions_sha256": "9400ffcd44142f51789a0d08c96ac79fd94ba7882095eb5fdb90e608967e69d9",
+    "replicates_per_configuration": 2000,
+    "resampling_end_to_start_wrap": true,
+    "resampling_rebuilds_features_or_refits": false,
+    "rng": "numpy_PCG64_SeedSequence_seed_and_block_length",
+    "rows": 134467,
+    "seed": 42,
+    "selected_optimal_block_length": null,
+    "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+    "status": "success",
+    "targets": {
+      "mean_daily_customer_precision_at_100": "equal-day-weighted mean daily queue precision in that local regime",
+      "mean_daily_customer_recall_at_100": "equal-day-weighted mean customer recall over defined days",
+      "pooled_average_precision": "transaction-weighted AP in a hypothetical 14-day local-regime window"
+    },
+    "version": "reference_uncertainty_analysis_v1"
+  },
+  "review_checks": {
+    "assessment_identity_and_source_match_previous_report": true,
+    "model_and_prediction_hashes_match_previous_report": true,
+    "implementation_hashes_match_delivered_code": true,
+    "window_grid_seed_and_replicates_match_prepared_method": true,
+    "secondary_precision_and_recall_summaries_match_exactly": true,
+    "observed_AP_matches_original_assessment": true,
+    "all_12_metric_configuration_combinations_have_2000_defined_replicates": true,
+    "recall_has_14_defined_days_in_every_replicate": true,
+    "interval_order_bounds_and_observed_values_consistent": true,
+    "code_and_tests_modified_by_closure": false,
+    "new_native_pytest_or_CI_result_provided": false
+  },
+  "review_limitations": {
+    "native_prediction_bytes_received": false,
+    "native_manifest_and_audit_bytes_received": false,
+    "pooled_AP_resampling_independently_recomputed_by_assistant": false,
+    "execution_git_revision_recorded_in_report": false,
+    "post_assessment_exploratory_analysis": true,
+    "coverage_validated": false,
+    "generalization_confidence_interval": null,
+    "formal_temporal_hypothesis_test": false,
+    "production_promotion": false
+  },
+  "closure": {
+    "exploratory_assessment_dependence_and_resampling_scope": "completed_and_reviewed",
+    "generalization_coverage": "not_established",
+    "future_candidate_confirmation": "conditional_on_eligible_candidate_appropriate_design_and_preserved_window",
+    "September_16_to_30_replay": "preserved",
+    "next_action": "Export the frozen reference bytes for laboratory serving, check validation parity and isolated HTTP/wheel, then build and measure Docker before Prefect."
+  }
+}

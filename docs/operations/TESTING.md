@@ -242,6 +242,14 @@ de conexões SQLite não fechadas em testes existentes; não houve falhas. O
 registra hashes e cenários, incluindo um check sintético de capacidade. Esses
 checks não substituem o relatório reamostrado das previsões nativas.
 
+O autor agora forneceu esse relatório nativo: as quatro configurações e seus
+hashes foram revisados, sem métricas indefinidas. O
+[recibo](../../references/evidence/reference_uncertainty_author_validation_2026-10-09.json)
+distingue resultados fornecidos, verificações de revisão e bytes não recebidos.
+O fechamento altera documentação/evidência; executores e testes permanecem
+idênticos à preparação de 379 testes. Nenhum novo resultado de suíte nativa foi
+informado junto ao JSON.
+
 ## Evidências anteriores
 
 As evidências abaixo identificam revisões anteriores, com paths e hashes históricos
