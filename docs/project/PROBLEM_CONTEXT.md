@@ -232,7 +232,7 @@ o diagnóstico e a reamostragem nativa foram concluídos, com
 [escopo exploratório e limites explícitos](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
 16–30/09 continua reservado para replay. As faixas de reamostragem não demonstram
 cobertura futura ou superioridade confirmatória. A referência foi exportada e
-validada por HTTP no wheel isolado pelo autor; após integrar o PR estatístico,
+validada por HTTP no wheel isolado pelo autor. A etapa foi integrada pelo PR #2;
 Docker é a próxima verificação operacional.
 
 ## Para que este projeto pode ser útil

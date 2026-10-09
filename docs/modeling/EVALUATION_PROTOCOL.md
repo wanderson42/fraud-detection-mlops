@@ -672,7 +672,7 @@ coerente, sem apagar a auditoria para aparentar um primeiro acesso.
 
 O executor não instala um gate de promoção ou teste de superioridade. Após revisar
 os resultados nativos, o autor exportou a referência e validou HTTP/wheel isolado.
-O fechamento do PR precede Docker e Prefect; o replay
+O PR #2 integrou a etapa; seguimos para Docker e Prefect. O replay
 terá seu contrato de eventos. [Recibo dos checks](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json)
 e [etapa 15](../../notebooks/stages/15_reference_assessment_execution.ipynb).
 
@@ -877,5 +877,6 @@ Não será reaberta esta janela para selecionar um candidato.
 O benefício é substituir apenas estimativas pontuais por uma descrição auditável
 de sensibilidade e de dependência, e explicitar o que a evidência permite afirmar.
 A referência existente foi exportada e seu HTTP/wheel foi validado pelo autor.
-Após integrar o PR desta etapa, seguimos para **Docker de laboratório**, conforme
-o [contrato de serving](../operations/SERVING_CONTRACT.md).
+A etapa foi integrada pelo [PR #2](https://github.com/wanderson42/fraud-detection-mlops/pull/2)
+com validação e CI aprovadas. Seguimos para **Docker de laboratório**, conforme
+o [contrato de serving](../operations/SERVING_CONTRACT.md#construir-e-verificar-docker).

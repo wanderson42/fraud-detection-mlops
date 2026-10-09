@@ -18,8 +18,9 @@ de 19 features. **A avaliação final foi executada e verificada pelo autor:**
 AP 0,640703 e precisão diária @100 de 55%, com gate de laboratório aprovado.
 O holdout de maio foi consumido; as métricas diárias foram revisadas. O autor
 exportou a referência real e validou HTTP/wheel fora do checkout, com 67.255 linhas
-de paridade no exportador. Docker, streaming, CD e CT ainda precisam de execução
-e evidência própria. O marco de organização/serving foi integrado pelo
+de paridade no exportador. Docker está preparado e aguarda build/run e medições
+locais; streaming, CD e CT ainda precisam de implementação e evidência própria.
+O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
 referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
 precisão diária @100 de 54,93% e recall médio diário de 72,89%, sem refit.
@@ -28,7 +29,9 @@ A análise nativa por blocos foi executada e revisada, com todas as réplicas
 definidas: este escopo exploratório está concluído. A janela foi consumida;
 16–30/09 continua reservada para replay. Cobertura de generalização não foi
 estabelecida; confirmação de outro modelo exige candidato elegível, desenho
-próprio e janela preservada.
+próprio e janela preservada. A etapa estatística foi integrada pelo
+[PR #2](https://github.com/wanderson42/fraud-detection-mlops/pull/2), após 379 testes
+nativos/94 avisos e CI da revisão final e de main aprovadas.
 
 **Escopo acordado:** interface para novos modelos, otimização limitada com Optuna,
 streaming com estado, feedback atrasado, monitoramento e atualização controlada
@@ -51,7 +54,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Meta | Estado | Entrega que permite concluir |
 | --- | --- | --- |
 | Dados reproduzíveis: Bronze, Silver e Gold | Validado localmente | Fonte fixada, integridade, contratos, reconciliação, features causais e separação temporal. [Pipeline](../data/DATA_PIPELINE.md), [dicionário](../data/DATA_DICTIONARY.md) e [Gold](../data/GOLD_CONTRACT.md). |
-| Qualidade do software e CI | Marco anterior integrado em main; diagnóstico aprovado pelo autor; CI da revisão a conferir | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O autor aprovou 362 testes/94 avisos e executou o diagnóstico nativo. A CI precisa conferir a revisão publicada antes da integração. [Testing](../operations/TESTING.md). |
+| Qualidade do software e CI | Etapa estatística integrada em main; 379 testes nativos e CI aprovados | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O PR #2 integra a revisão `2e64419`, com CI do push, PR e merge aprovada. O incremento Docker exige sua validação nativa e CI próprias. [Testing](../operations/TESTING.md). |
 | Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](../modeling/BASELINE.md), [MLflow](../operations/MLFLOW.md) e [diagnóstico](../modeling/DIAGNOSTICS.md). |
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
 | Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../../references/evidence/freeze_execution_2026-10-08.json). |
@@ -59,7 +62,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Análise estatística e testes de hipóteses | Escopo exploratório concluído; reamostragem nativa revisada; confirmação futura condicional | AP 0,621312, precisão diária @100 de 54,93% e recall de 72,89%. Todas as 2.000 réplicas por configuração 2/3/4/7 ficaram definidas. Quantis exploratórios não demonstram cobertura futura; não houve teste temporal formal ou confirmação de candidato. [Resultado e fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento). |
 | Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](../modeling/CONTRIBUTING_MODELS.md). |
 | Validação temporal e otimização do HGB com Optuna | Estudo concluído no relatório do autor; referência conservada | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
-| Contrato de inferência e Docker | Referência exportada e HTTP/wheel validados pelo autor; Docker pendente | 67.255 linhas de paridade no exportador e score HTTP identificado fora do checkout. Construção, recuperação e medições da imagem entram após integrar o PR estatístico. [Contrato e execução](../operations/SERVING_CONTRACT.md). |
+| Contrato de inferência e Docker | Referência exportada e HTTP/wheel validados pelo autor; Docker preparado para execução local | 67.255 linhas de paridade no exportador e score HTTP identificado fora do checkout. Dockerfile e verificador de falhas/reinício/proteções disponíveis; falta construir e medir a imagem no Alienware. [Contrato e execução](../operations/SERVING_CONTRACT.md). |
 | Orquestração com Prefect | Planejado; escolha do projeto | Prefect auto-hospedado para encadear os módulos Python, registrar dependências e falhas, testar retries e retomada sem duplicação. Manter lógica independente do orquestrador e medir recursos. O consumidor de streaming terá contrato próprio. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
 | Streaming por replay histórico e paridade de features | Planejado; entrega central | Publicar transações e feedback como eventos separados; consumidor com estado causal e relógio explícito. Demonstrar duplicidade, empates, atraso, reinício e retomada; comparar features/scores offline e online e medir lag/recursos. Replay acelerado preserva os sete dias no relógio dos eventos. O replay será identificado como simulação. |
@@ -73,15 +76,14 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Fechar a revisão de `feat/reference-uncertainty-analysis`, já publicada pelo
-   autor: incluir a síntese revisada do notebook e o relato de exportação/wheel,
-   validar a revisão final e conferir sua CI no PR antes da integração em `main`.
-   Preservar manifesto, auditoria e predições no Alienware.
-   [Resultado](../modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor).
-2. Atualizar `main` local após o merge e abrir a branch Docker a partir dela.
-   Construir e medir a imagem com a release já exportada: usuário sem root,
-   modelo somente leitura, memória, latência e recuperação. O
-   [procedimento](../operations/SERVING_CONTRACT.md) mantém o escopo de laboratório.
+1. Construir e medir Docker em branch a partir da base integrada no PR #2, com a
+   release já exportada: usuário sem root, modelo somente leitura, memória,
+   latência, falhas de carga e recuperação. O
+   [procedimento](../operations/SERVING_CONTRACT.md#construir-e-verificar-docker)
+   registra o ID da imagem e mantém o escopo de laboratório.
+2. Revisar o recibo nativo Docker, registrar seus resultados e limites e conferir
+   a CI dessa revisão no PR antes da integração. Preservar release, manifesto,
+   auditoria e predições no Alienware.
 3. Encadear operações estáveis com um fluxo pequeno de Prefect, conferindo retries
    e retomada sem duplicação. Depois implementar replay causal e monitoramento
    com feedback atrasado, sob seus contratos próprios.
@@ -168,8 +170,8 @@ foi concluído: diagnóstico de dependência e grade de reamostragem nativa revi
 com todas as réplicas definidas. As faixas não estabelecem cobertura de generalização
 ou número de observações independentes. A comparação confirmatória de outro modelo
 permanece condicional a candidato elegível, desenho próprio e janela preservada.
-Exportação e HTTP/wheel da referência foram validados pelo autor. A integração
-do PR estatístico precede a próxima verificação operacional, com Docker.
+Exportação e HTTP/wheel da referência foram validados pelo autor. O PR #2 integrou
+a etapa estatística; Docker é a próxima verificação operacional.
 
 ## Sequência operacional e controle de custo
 

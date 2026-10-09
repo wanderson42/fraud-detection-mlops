@@ -39,8 +39,9 @@ mantém os limites estatísticos. O diagnóstico e a reamostragem nativa por blo
 foram revisados: **o escopo exploratório está concluído**, com todas as réplicas
 definidas e faixas da AP entre aproximadamente 0,579 e 0,667 ao comparar os quatro
 comprimentos. Essas faixas não têm cobertura de generalização demonstrada.
-Fechamos agora o PR estatístico com revisão e CI da ponta final. Docker vem em
-uma branch a partir de `main` atualizada; depois Prefect, conforme
+O [PR #2](https://github.com/wanderson42/fraud-detection-mlops/pull/2) integrou essa
+etapa, após 379 testes nativos e CI aprovados. Docker está preparado para build,
+checks e medições no Alienware; depois Prefect, conforme
 o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).

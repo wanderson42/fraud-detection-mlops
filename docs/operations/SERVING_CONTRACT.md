@@ -147,16 +147,79 @@ registra saídas de terminal: o assistente não recebeu os bytes nativos nem o
 SHA do wheel. O check mede paridade de um caso HTTP; a paridade das 67.255 linhas
 pertence ao exportador. São verificações com alcances diferentes.
 
-## Evidências e próximo marco
+## Construir e verificar Docker
+
+O Dockerfile fica em `docker/serving/`; o verificador operacional em
+`scripts/serving/`. O contexto de build exclui dados, tracking, notebooks e testes.
+O builder usa Poetry 2.4.3 e o lockfile; o runtime contém o wheel e as dependências
+`main`. A imagem não contém modelo, Poetry ou checkout de desenvolvimento.
+O pacote Python conserva seus módulos offline, cujas dependências não são instaladas.
+
+Use Docker Linux com engine local acessível pelo usuário (socket Unix). Confira
+`docker info` antes do build. O container usa UID/GID `10001:10001`, um worker e
+quatro threads numéricas. A base `python:3.14.4-slim-trixie` conserva a versão exata
+exigida pelo manifesto. A tag não é um pin de bytes: para reprodução da base,
+forneça `PYTHON_IMAGE=python:3.14.4-slim-trixie@sha256:<digest verificado>`.
+O recibo fixa o ID da imagem construída e registra os digests disponíveis.
+
+Na raiz do projeto, depois de aplicar o incremento e validar o software:
+
+```bash
+make build-serving-image
+make validate-serving-docker \
+  RELEASE_PATH="$PWD/data/serving/reference-v1" \
+  MANIFEST_SHA256="1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263"
+```
+
+O destino padrão é `data/serving/docker-check.json`, fora da release. O recibo deve
+ser novo: em uma repetição, use `DOCKER_REPORT=data/serving/docker-check-02.json`.
+Pode também fornecer `SERVING_IMAGE=<tag-ou-ID>` aos dois comandos. O verificador
+resolve a tag para ID uma vez, sem puxar outra imagem durante os cenários.
+
+| Check | Critério registrado |
+| --- | --- |
+| Inicialização | `/health`, `/ready`, `/info` e HEALTHCHECK aprovados; identidade da release correta |
+| Runtime | UID/GID `10001`, módulo instalado em `/opt/runtime`, dependências offline ausentes |
+| Proteções | Raiz read-only, montagem `/model` read-only, capabilities removidas e no-new-privileges; tentativas de escrita rejeitadas |
+| Paridade HTTP | Caso de `smoke.json` com erro absoluto ≤ `1e-12`; entrada inválida retorna 422 |
+| Recuperação | Reinício controlado, readiness recuperado e mesma resposta de controle |
+| Falhas de carga | SHA do manifesto incorreto, modelo alterado e modelo ausente abortam por erro do contrato; OOM/ImportError não contam como aprovação |
+| Preservação | Arquivos originais com os mesmos hashes; corrupção ocorre em cópias temporárias |
+| Recursos | Tamanho da imagem, snapshot de memória/CPU e latências p50/p95/p99 após dez requisições de aquecimento |
+
+São 100 requisições sequenciais ao mesmo caso, incluindo transporte HTTP local;
+não são um teste de carga ou SLA. `docker stats` é um snapshot, não pico de RSS.
+Os limites declarados são 2 GiB, quatro CPUs, 128 processos e tmpfs de 64 MiB.
+O engine precisa suportar os limites de memória, swap e CPU. A porta publicada
+usa apenas `127.0.0.1`, com alocação dinâmica, sem disputar a porta de um serviço
+existente. Não há política de reinício automático nesta medição.
+
+Os comandos Docker têm timeout de 30 s; readiness e falhas de carga têm deadline
+de 60 s por cenário. Falhas encerram o check sem emitir recibo de sucesso. O
+cleanup remove apenas containers com nomes únicos criados nesta invocação;
+não executa prune. Se houver encerramento externo abrupto, identifique o container
+`fraud-serving-check-...` daquele check antes de removê-lo. Se o modelo não puder
+ser lido por UID 10001, revise permissões de leitura da release; não execute como
+root nem altere seus bytes para contornar a falha.
+
+Uma divergência de ambiente exige restaurar a versão fixada, sem atualizar o
+manifesto para fazer o check passar. A execução não abre Gold/tracking, não ajusta
+o modelo e não consome a janela de replay. Prefect entra após revisar este recibo.
+
+Referências oficiais: [build em estágios](https://docs.docker.com/build/building/multi-stage/),
+[opções de execução](https://docs.docker.com/reference/cli/docker/container/run/) e
+[Dockerfile/HEALTHCHECK](https://docs.docker.com/reference/dockerfile/).
+
+## Evidências e limites
 
 [Preparação](../../references/evidence/laboratory_serving_preparation_2026-10-09.json):
 paridade HTTP sintética e exportação nativa MLflow/skops em 160 linhas de validação,
 com fit bloqueado e partições de treino/teste removidas antes da exportação.
 O wheel pontuou num runtime isolado. A avaliação final original continua preservada.
 
-Após fechar o PR estatístico com validação e CI da ponta final, atualizar `main`
-local e abrir uma branch própria para Docker. Docker não foi construído nesta
-preparação. A próxima entrega deve conferir imagem
-identificada, usuário sem root, modelo somente leitura, recuperação e medições de
-tamanho, memória e latência. O serviço atual usa loopback e não define autenticação,
-TLS, fila de investigação ou objetivo de disponibilidade para produção.
+A etapa estatística foi integrada pelo [PR #2](https://github.com/wanderson42/fraud-detection-mlops/pull/2),
+com 379 testes nativos aprovados e CI da revisão final e de main aprovadas. Este
+incremento Docker usa essa base. A preparação não dispõe de engine; seus checks
+controlados não substituem build/run no Alienware. A [etapa 16](../../notebooks/stages/16_laboratory_docker.ipynb)
+acompanha a entrega. O serviço não define autenticação, TLS, fila de investigação
+ou objetivo de disponibilidade para produção.

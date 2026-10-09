@@ -61,6 +61,22 @@ validate-serving-wheel:
 	poetry build --format wheel
 	poetry run python scripts/check_serving_wheel.py dist/fraud_detection_mlops-0.0.1-py3-none-any.whl --release "$(RELEASE_PATH)" --manifest-sha256 "$(MANIFEST_SHA256)"
 
+SERVING_IMAGE ?= fraud-detection-mlops:serving-lab
+PYTHON_IMAGE ?= python:3.14.4-slim-trixie
+DOCKER_REPORT ?= data/serving/docker-check.json
+
+## Build the inference image from locked dependencies; requires a local Docker engine
+.PHONY: build-serving-image
+build-serving-image:
+	docker build --file docker/serving/Dockerfile --build-arg "PYTHON_IMAGE=$(PYTHON_IMAGE)" --tag "$(SERVING_IMAGE)" .
+
+## Check the image against an immutable release and save a new report
+.PHONY: validate-serving-docker
+validate-serving-docker:
+	@test -n "$(RELEASE_PATH)" || (echo "Set RELEASE_PATH"; exit 1)
+	@test -n "$(MANIFEST_SHA256)" || (echo "Set MANIFEST_SHA256"; exit 1)
+	poetry run python scripts/serving/check_docker_runtime.py --image "$(SERVING_IMAGE)" --release "$(RELEASE_PATH)" --manifest-sha256 "$(MANIFEST_SHA256)" --output "$(DOCKER_REPORT)"
+
 
 ## Set up Python interpreter environment
 .PHONY: create_environment

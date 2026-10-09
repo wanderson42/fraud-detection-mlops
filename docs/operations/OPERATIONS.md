@@ -15,7 +15,7 @@ O autor já executou e verificou 02–15/09; diagnóstico e reamostragem também
 revisados. Consulte o [fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
 A janela foi consumida e não exige nova pontuação para atualizar documentação.
 16–30/09 segue reservado para replay. O autor validou a exportação e HTTP/wheel;
-Docker será conferido após integrar o PR estatístico e tem seu
+O PR #2 integrou a etapa estatística; Docker é o próximo check e tem seu
 [procedimento próprio](SERVING_CONTRACT.md).
 
 ```bash

@@ -99,10 +99,11 @@ compatibilidade com a refatoração.
 Poetry separa `main` (inferência), `pipeline` (dados/experimentos) e `dev` (checks).
 A instalação padrão conserva todos os grupos. O wheel HTTP foi conferido em
 ambiente só com `main`, fora do checkout. Isso não empacota os protocolos externos
-dos workflows offline. Uma mudança para `src/` permanece decisão futura;
-O autor validou o wheel com a referência real. Docker entra em branch própria
-após integrar o PR estatístico; replay e orquestração seguem o
-[mural](project/ROADMAP.md).
+dos workflows offline. Uma mudança para `src/` permanece decisão futura.
+O autor validou o wheel com a referência real. `docker/serving/` define o build
+em estágios; `scripts/serving/` contém a verificação operacional com a release
+montada somente para leitura. O build/run nativo aguarda execução. Replay e
+orquestração seguem o [mural](project/ROADMAP.md).
 
 ## Documentação e testes
 

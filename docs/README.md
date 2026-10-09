@@ -15,7 +15,7 @@ Leia o [README do projeto](../README.md) para começar e a
 | O que dizem os diagnósticos e limites do modelo? | [Diagnóstico](modeling/DIAGNOSTICS.md) e [Model Card](modeling/MODEL_CARD.md) |
 | Como executar, recuperar e migrar? | [Operações](operations/OPERATIONS.md), [ablações](operations/EXPERIMENT_EXECUTION.md), [MLflow](operations/MLFLOW.md) |
 | Como verificar uma mudança? | [Testing](operations/TESTING.md) |
-| Como exportar, iniciar e conferir a API de pontuação? | [Serving](operations/SERVING_CONTRACT.md) |
+| Como exportar, iniciar e conferir HTTP/wheel/Docker? | [Serving](operations/SERVING_CONTRACT.md) |
 
 Os protocolos executáveis e recibos históricos estão em
 [`references/`](../references/). Os notebooks mantêm narrativa e resultados
