@@ -221,8 +221,26 @@ rejeitados antes do acesso. Esses checks não determinam o método de incerteza.
 A preparação aprovou **362 testes**, com 94 avisos; os 14 checks novos passaram
 também isoladamente. Ruff, formatação e lockfile passaram no tox `py314`.
 O [recibo de preparação](../../references/evidence/reference_dependence_preparation_2026-10-09.json)
-registra hashes e cenários. O diagnóstico com as previsões nativas do autor
-ainda precisa ser executado e revisado.
+registra hashes e cenários. O autor executou o diagnóstico em `70a0acc`, após
+aprovar 362 testes/94 avisos; o JSON nativo foi revisado nesta entrega e registrado
+no [relato do autor](../../references/evidence/reference_dependence_author_validation_2026-10-09.json).
+
+## Sensibilidade por blocos de dias completos
+
+Os checks verificam blocos circulares, multiplicidades, truncamento da última
+extração e reprodutibilidade. A AP agrupada otimizada é comparada com réplicas
+que duplicam explicitamente as linhas e usam o scikit-learn, incluindo empates
+de score e tamanhos diários distintos; não é a média das APs diárias. Classes
+únicas e pesos inválidos não geram faixas válidas. Réplicas indefinidas suprimem
+a faixa e preservam as contagens. A integração funciona com a Silver removida,
+sem novas cargas/pontuações ou mudanças nos bytes da avaliação original.
+
+A preparação passou **379 testes/134 avisos**, Ruff (147 arquivos formatados),
+Poetry/lockfile e tox `py314`, em 156,00 s. O run inclui avisos de depreciação e
+de conexões SQLite não fechadas em testes existentes; não houve falhas. O
+[recibo](../../references/evidence/reference_uncertainty_preparation_2026-10-09.json)
+registra hashes e cenários, incluindo um check sintético de capacidade. Esses
+checks não substituem o relatório reamostrado das previsões nativas.
 
 ## Evidências anteriores
 

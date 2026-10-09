@@ -23,7 +23,8 @@ de execução e evidência própria. O marco de organização/serving foi integr
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
 referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
 precisão diária @100 de 54,93% e recall médio diário de 72,89%, sem refit.
-O autor aprovou 348 testes/94 avisos. A janela foi consumida; 16–30/09 continua
+O autor aprovou 362 testes/94 avisos e forneceu o diagnóstico de dependência.
+A janela foi consumida; 16–30/09 continua
 reservada para replay. Teste temporal formal e intervalo de generalização
 continuam pendentes.
 
@@ -48,12 +49,12 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Meta | Estado | Entrega que permite concluir |
 | --- | --- | --- |
 | Dados reproduzíveis: Bronze, Silver e Gold | Validado localmente | Fonte fixada, integridade, contratos, reconciliação, features causais e separação temporal. [Pipeline](../data/DATA_PIPELINE.md), [dicionário](../data/DATA_DICTIONARY.md) e [Gold](../data/GOLD_CONTRACT.md). |
-| Qualidade do software e CI | Marco anterior integrado em main; nova suíte aprovada pelo autor; CI da revisão a conferir | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O autor aprovou 348 testes/94 avisos antes do commit da avaliação. A CI precisa conferir a revisão publicada antes da integração. [Testing](../operations/TESTING.md). |
+| Qualidade do software e CI | Marco anterior integrado em main; diagnóstico aprovado pelo autor; CI da revisão a conferir | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O autor aprovou 362 testes/94 avisos e executou o diagnóstico nativo. A CI precisa conferir a revisão publicada antes da integração. [Testing](../operations/TESTING.md). |
 | Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](../modeling/BASELINE.md), [MLflow](../operations/MLFLOW.md) e [diagnóstico](../modeling/DIAGNOSTICS.md). |
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
 | Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../../references/evidence/freeze_execution_2026-10-08.json). |
 | Avaliação final | Executado e verificado localmente; CSV diário revisado | AP 0,640703 e precisão diária @100 de 55%; critérios atingidos, sem refit ou promoção em produção. [Evidência](../../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](../modeling/MODEL_CARD.md). |
-| Análise estatística e testes de hipóteses | Avaliação da referência executada e verificada pelo autor; teste temporal formal e intervalo de generalização pendentes | Modelo de abril e regras fixados antes do acesso; 134.467 transações e 769 capturas por cliente/dia. Referência condicional de fila aleatória não estima incerteza temporal do modelo. Nenhum candidato elegível ou teste confirmatório executado. [Resultado e limites](../modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor). |
+| Análise estatística e testes de hipóteses | Diagnóstico nativo revisado; sensibilidade por blocos implementada; AP reamostrada nativa a conferir | Avaliação preservada de 134.467 transações. Blocos de dias completos e grid 2/3/4/7, com quantis exploratórios; não demonstram cobertura futura. O fechamento desta janela registra alcance e limitações. Confirmação de candidato exige outro ciclo e janela preservada. [Análise de incerteza](../modeling/EVALUATION_PROTOCOL.md#sensibilidade-de-reamostragem-e-fechamento-do-escopo). |
 | Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](../modeling/CONTRIBUTING_MODELS.md). |
 | Validação temporal e otimização do HGB com Optuna | Estudo concluído no relatório do autor; referência conservada | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
 | Contrato de inferência e Docker | API/exportação implementadas; checks sintéticos e wheel conferidos; Docker pendente | Recebe 19 features, devolve score identificado e rejeita entradas inválidas. Paridade JSON/HTTP, health/readiness e wheel fora do checkout conferidos na preparação. Falta exportar a referência no Alienware e medir a imagem Docker. [Contrato e execução](../operations/SERVING_CONTRACT.md). |
@@ -70,11 +71,12 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Fechar a análise de incerteza da referência antes de Docker: inspecionar
-   recorrência de entidades, autocorrelação e influência dos dias nas previsões
-   salvas; definir alvo da inferência, método, pressupostos e precisão sustentada
-   pela janela. Gerar intervalos com alcance explícito ou registrar a insuficiência
-   demonstrada para o alvo escolhido. [Diagnóstico](../modeling/EVALUATION_PROTOCOL.md#diagnóstico-de-dependência-e-análise-de-incerteza).
+1. Executar a sensibilidade por blocos sobre as previsões verificadas e registrar
+   todas as configurações, inclusive a AP agrupada. O diagnóstico nativo foi
+   revisado e as métricas diárias fornecidas já permitiram os cálculos secundários.
+   Fechar este escopo com quantis exploratórios e declaração explícita de que
+   cobertura de generalização não foi estabelecida. Essa entrega precede Docker;
+   a confirmação de candidato é condicional a outro ciclo. [Método e fechamento](../modeling/EVALUATION_PROTOCOL.md#sensibilidade-de-reamostragem-e-fechamento-do-escopo).
 2. Publicar a branch da avaliação com o relato do autor e conferir a CI antes
    da integração. A execução e a verificação nativas foram informadas; preservar
    manifesto, auditoria e predições no Alienware. [Resultado](../modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor).

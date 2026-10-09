@@ -748,3 +748,81 @@ O fechamento entrega intervalos com pressupostos/alcance declarados ou uma razã
 documentada de insuficiência para o alvo escolhido. Análises escolhidas após
 inspecionar setembro mantêm caráter exploratório. Uma confirmação de superioridade
 de outro modelo exige candidato elegível e outra janela preservada.
+
+### Sensibilidade de reamostragem e fechamento do escopo
+
+O autor aprovou 362 testes/94 avisos, commitou o diagnóstico em `70a0acc` e
+forneceu seu JSON nativo. A identidade é a mesma avaliação de 134.467 transações;
+o hash das previsões informado é
+`9400ffcd44142f51789a0d08c96ac79fd94ba7882095eb5fdb90e608967e69d9`.
+Contagens, histogramas e autocorrelações diárias foram reconciliados a partir do
+[relatório fornecido](../../references/evidence/reference_dependence_author_validation_2026-10-09.json).
+Os bytes nativos das previsões, manifesto e auditoria não foram recebidos.
+
+Dos 4.907 clientes, 4.803 (97,88%) aparecem em múltiplos dias; dos 9.999 terminais,
+9.998 se repetem. A sobreposição média de clientes com o dia anterior é 83,31%.
+A autocorrelação de precisão @100 na defasagem de um dia é −0,694; AP diária tem
+0,132 e 0,225 nas defasagens de um e dois dias. Isso não valida independência ou
+estacionariedade. Ao retirar cada dia, a AP agrupada fica entre 0,611106 e
+0,633239; essa sensibilidade descritiva não é um intervalo de confiança.
+
+Escolhemos, **depois de observar o diagnóstico**, o bootstrap circular de dias
+completos como análise exploratória de sensibilidade, com blocos de **2, 3, 4 e
+7 dias**, 2.000 réplicas por configuração, seed 42 e quantis 2,5%/97,5%.
+Não selecionamos um bloco ótimo ou a faixa mais favorável. Dias completos conservam
+a estrutura entre entidades dentro do dia e a ordem dentro de cada bloco; relações
+entre blocos não são integralmente conservadas. O método faz a transição circular
+do último ao primeiro dia, uma aproximação de reamostragem, não uma continuidade
+observada ou um replay causal. Blocos de sete dias deixam apenas duas extrações
+por réplica; isso não é uma contagem de grupos independentes.
+
+O [bootstrap circular](https://arch.readthedocs.io/en/stable/bootstrap/generated/arch.bootstrap.CircularBlockBootstrap.html)
+evita a sub-representação das bordas do bootstrap móvel sem retorno circular,
+mas adiciona essa aproximação de adjacência. A
+[dependência dos resultados no comprimento de bloco](https://arxiv.org/abs/1204.1035)
+motiva a grade de sensibilidade. Não adotamos bootstrap IID de transações nem
+clusters de clientes isolados, que não preservariam a estrutura temporal e entre
+clientes/terminais da mesma maneira. A grade não prova que cobre toda dependência.
+
+O alvo hipotético é uma janela de 14 dias de um **regime local comparável**, com o
+mesmo modelo fixo e população recorrente: AP agrupada ponderada por transações,
+precisão média diária @100 e recall médio nos dias em que está definido. Supõe
+estacionariedade local e dependência adequadamente representada pelos blocos;
+os 14 dias não estabeleceram esses pressupostos ou a cobertura frequentista.
+Portanto, publicamos **faixas centrais de reamostragem com massa nominal de 95%**,
+com `coverage_validated: false`, e não um intervalo de generalização validado.
+Aumentar réplicas reduz erro de Monte Carlo; não acrescenta dias observados.
+
+Nas métricas diárias recebidas, calculamos:
+
+| Bloco | Faixa de reamostragem da precisão média @100 | Faixa do recall médio diário |
+| --- | --- | --- |
+| 2 dias | 53,07%–56,57% | 70,99%–74,95% |
+| 3 dias | 53,43%–56,43% | 70,54%–75,11% |
+| 4 dias | 53,43%–56,43% | 70,77%–75,18% |
+| 7 dias | 53,86%–56,00% | 70,83%–74,77% |
+
+Esses cálculos usam apenas as métricas diárias fornecidas. A AP agrupada não é a
+média das APs diárias e exige as previsões nativas. O executor calcula a AP exata
+com multiplicidades de dias, incluindo empates de score, sem duplicar os Parquets
+por réplica ou reconstruir features. Confere seu cálculo contra a AP original.
+Réplicas indefinidas têm contagens explícitas e suprimem a faixa da métrica;
+não são descartadas para produzir um intervalo condicionado silenciosamente.
+
+```bash
+ASSESSMENT_PATH="data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1"
+poetry run python -m fraud_detection_mlops.modeling.experiments.reference_uncertainty_analysis analyze "$ASSESSMENT_PATH"
+```
+
+O comando verifica o bundle, usa as previsões salvas e escreve no diretório irmão
+`reference_uncertainty_analysis_v1/report.json`. Mantém quatro threads, registra
+hashes da implementação, ambiente, identidade, hash das previsões e a grade inteira.
+Não consulta modelo, Silver, replay ou tracking e não altera a avaliação original.
+
+O fechamento desta janela exige execução nativa com a AP e todas as configurações
+registradas, revisão das faixas e das indefinições, e preservação de relatório e
+proveniência. A entrega conclui **a análise exploratória e seus limites**; não
+transforma a hipótese de regime local em cobertura demonstrada para o futuro.
+Essa incerteza mais ampla fica condicionada a desenho/dados que sustentem a
+inferência. Comparação confirmatória de outro modelo exige candidato elegível,
+outra janela preservada e seu protocolo. Não há teste formal ou promoção neste ciclo.

@@ -29,12 +29,14 @@ fixa 2–15/09 para avaliação e 16–30/09 para replay. O
 [executor auditável](docs/modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada)
 foi executado e verificado pelo autor em 02–15/09/2018: **134.467 transações**,
 AP **0,621312**, precisão diária @100 de **54,93%** e recall médio diário de clientes
-fraudulentos de **72,89%**, sem refit ou novas runs. O autor aprovou **348 testes**,
+fraudulentos de **72,89%**, sem refit ou novas runs. O autor aprovou **362 testes**,
 com 94 avisos. Essa janela foi consumida; **16–30/09 continua reservado para replay**.
 O [relato da execução](docs/modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor)
-mantém os limites estatísticos. A próxima entrega é o diagnóstico de dependência
-das previsões salvas e a análise de incerteza da referência. Exportação, Docker e
-Prefect vêm depois desse fechamento, conforme
+mantém os limites estatísticos. O diagnóstico nativo de dependência foi revisado;
+a análise exploratória de reamostragem por blocos está implementada e aguarda
+execução sobre as previsões nativas para conferir a AP agrupada. As faixas não têm
+cobertura de generalização demonstrada. Exportação, Docker e Prefect vêm depois
+desse fechamento, conforme
 o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).
