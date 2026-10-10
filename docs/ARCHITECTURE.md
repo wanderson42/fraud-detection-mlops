@@ -96,8 +96,7 @@ exporta os mesmos bytes. Não ajusta nem publica outro modelo. O recibo históri
 permanece igual; os hashes de código da época não são recalculados para aparentar
 compatibilidade com a refatoração.
 
-Poetry separa `main` (inferência), `pipeline` (dados/experimentos),
-`orchestration` (Prefect 3.8.8) e `dev` (checks).
+Poetry separa `main` (inferência), `pipeline` (dados/experimentos) e `dev` (checks).
 A instalação padrão conserva todos os grupos. O wheel HTTP foi conferido em
 ambiente só com `main`, fora do checkout. Isso não empacota os protocolos externos
 dos workflows offline. Uma mudança para `src/` permanece decisão futura.
@@ -106,18 +105,12 @@ em estágios; `scripts/serving/` contém a verificação operacional com a relea
 montada somente para leitura. O autor validou o build/run nativo com paridade
 HTTP, recuperação e rejeição dos três cenários de carga inválida. O recibo registra
 o ID da imagem, a identidade do modelo e medições de laboratório.
-`operations/contracts/serving_validation_contract.py` define a operação e o recibo.
-`operations/serving_validation.py` confere os três arquivos da release, usa HTTP
-local com timeout e publica JSON atômico sem sobrescrita. A CLI funciona sem Prefect.
-`orchestration/serving_validation_flow.py` compõe três tasks: inspeção, consulta
-e publicação. Só a consulta repete erros transitórios, até três tentativas.
-A direção das dependências é orquestração → operação → contratos de serving;
-serving não importa Prefect. O grupo `main` e suas versões não mudaram.
-Um ID de operação vincula manifesto, controle, URL local e código da operação.
-A retomada aceita apenas um recibo íntegro e compatível; concorrentes publicam
-um único JSON completo em disco local, mas podem repetir a consulta de controle.
-Um novo ID solicita uma verificação nova. Replay e consumo da reserva exigem
-contratos e execução próprios.
+A verificação de serving permanece em scripts independentes. O incremento que
+introduzia Prefect apenas para verificar release/serviço foi retirado: seu custo
+operacional não se justifica para essa checagem isolada. O próximo executor será
+o replay causal, com contratos de eventos, estado e recuperação definidos antes
+do acesso à reserva. Uma futura camada de orquestração deve coordenar processos
+com dependências e recorrência demonstradas, preservando a lógica independente.
 O [mural](project/ROADMAP.md) define essa ordem.
 
 ## Documentação e testes

@@ -19,11 +19,8 @@ O PR #2 integrou a etapa estatística. O autor concluiu a validação Docker com
 paridade, recuperação e três falhas de carga aprovadas. Preserve o recibo
 `data/serving/docker-check.json` e a release; sua atualização documental não
 exige reexportação ou nova inferência. O [procedimento de serving](SERVING_CONTRACT.md)
-concentra permissões, medições e limites. O PR #3 integrou Docker em `main`.
-O [primeiro fluxo Prefect](SERVING_CONTRACT.md#primeiro-fluxo-prefect) usa a imagem e
-a release existentes. Servidor Prefect e recibos ficam em `data/orchestration/`,
-fora da imagem de inferência. Mesmo ID retoma um resultado anterior; novo ID
-consulta a saúde atual. A execução nativa do fluxo ainda deve ser registrada.
+concentra permissões, medições e limites. A validação final e a CI do PR Docker
+antecedem a branch de orquestração.
 
 ```bash
 poetry install

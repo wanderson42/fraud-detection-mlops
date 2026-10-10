@@ -1,6 +1,6 @@
 # Mural de metas — Fraud Detection MLOps
 
-Atualizado em 2026-10-10. Este é o **backlog principal do projeto**: metas, estado,
+Atualizado em 2026-10-09. Este é o **backlog principal do projeto**: metas, estado,
 ordem de trabalho e critérios de conclusão. O [README](../../README.md) é a entrada;
 a [arquitetura](../ARCHITECTURE.md) descreve o que existe e os contratos fixam as regras.
 
@@ -20,10 +20,10 @@ O holdout de maio foi consumido; as métricas diárias foram revisadas. O autor
 exportou a referência real e validou HTTP/wheel fora do checkout, com 67.255 linhas
 de paridade no exportador. O build/run Docker também foi validado pelo autor,
 incluindo reinício, integridade e proteções. Imagem: 166,8 MiB; memória observada:
-178,5 MiB; p95: 4,74 ms em teste sequencial local. O PR #3 integrou Docker.
-O primeiro fluxo Prefect foi preparado sobre essa base; sua execução nativa com
-a referência real ainda precisa ser registrada. Streaming, CD e CT precisam
-de implementação e evidência própria.
+178,5 MiB; p95: 4,74 ms em teste sequencial local. O PR Docker foi integrado
+pelo autor. O incremento de Prefect para checagem isolada de serving foi retirado
+por custo desproporcional ao benefício; contratos de eventos e estado para replay
+são a próxima etapa. Streaming, CD e CT precisam de implementação e evidência própria.
 O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
 referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
@@ -58,7 +58,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Meta | Estado | Entrega que permite concluir |
 | --- | --- | --- |
 | Dados reproduzíveis: Bronze, Silver e Gold | Validado localmente | Fonte fixada, integridade, contratos, reconciliação, features causais e separação temporal. [Pipeline](../data/DATA_PIPELINE.md), [dicionário](../data/DATA_DICTIONARY.md) e [Gold](../data/GOLD_CONTRACT.md). |
-| Qualidade do software e CI | Etapa estatística integrada em main; 379 testes nativos e CI aprovados | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O PR #2 integra a revisão `2e64419`, com CI do push, PR e merge aprovada. O PR #3 integrou Docker; este incremento Prefect exige validação nativa e CI próprias. [Testing](../operations/TESTING.md). |
+| Qualidade do software e CI | Etapa estatística integrada em main; 379 testes nativos e CI aprovados | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O PR #2 integra a revisão `2e64419`, com CI do push, PR e merge aprovada. O incremento Docker exige sua validação nativa e CI próprias. [Testing](../operations/TESTING.md). |
 | Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](../modeling/BASELINE.md), [MLflow](../operations/MLFLOW.md) e [diagnóstico](../modeling/DIAGNOSTICS.md). |
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
 | Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../../references/evidence/freeze_execution_2026-10-08.json). |
@@ -66,10 +66,10 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Análise estatística e testes de hipóteses | Escopo exploratório concluído; reamostragem nativa revisada; confirmação futura condicional | AP 0,621312, precisão diária @100 de 54,93% e recall de 72,89%. Todas as 2.000 réplicas por configuração 2/3/4/7 ficaram definidas. Quantis exploratórios não demonstram cobertura futura; não houve teste temporal formal ou confirmação de candidato. [Resultado e fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento). |
 | Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](../modeling/CONTRIBUTING_MODELS.md). |
 | Validação temporal e otimização do HGB com Optuna | Estudo concluído no relatório do autor; referência conservada | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
-| Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados pelo autor; PR #3 integrado em main | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
-| Orquestração com Prefect | Primeiro fluxo implementado; validação nativa e CI do incremento pendentes | Inspeção da release, consulta HTTP e publicação atômica de recibo por operação. Consulta: até três tentativas para falhas transitórias; corrupção e incompatibilidade encerram a execução. Mesmo ID retoma o recibo histórico sem HTTP; novo ID faz nova consulta. Regras independentes do Prefect. [Executar](../operations/SERVING_CONTRACT.md#primeiro-fluxo-prefect). Consumidor de streaming ainda terá contrato próprio. |
+| Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados localmente pelo autor; incremento integrado | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
+| Orquestração de processos | Condicional; escolha de ferramenta adiada | Justificar por dependências, recorrência, recuperação e gestão de execução dos processos de dados, avaliação ou treinamento. Prefect permanece uma opção futura; o fluxo isolado de verificação de serving foi retirado. Manter executores e contratos independentes. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
-| Streaming por replay histórico e paridade de features | Planejado; entrega central | Publicar transações e feedback como eventos separados; consumidor com estado causal e relógio explícito. Demonstrar duplicidade, empates, atraso, reinício e retomada; comparar features/scores offline e online e medir lag/recursos. Replay acelerado preserva os sete dias no relógio dos eventos. O replay será identificado como simulação. |
+| Streaming por replay histórico e paridade de features | Próximo: contratos e executor independente; entrega central | Publicar transações e feedback como eventos separados; consumidor com estado causal e relógio explícito. Demonstrar duplicidade, empates, atraso, reinício e retomada; comparar features/scores offline e online e medir lag/recursos. Replay acelerado preserva os sete dias no relógio dos eventos. O replay será identificado como simulação. |
 | Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
 | Monitoramento e dashboards | Planejado | Prometheus/Grafana para serviço, latência, erros e atraso do processamento; pipeline para qualidade, drift e desempenho quando os rótulos chegarem. Painel de investigação com orçamento, acertos e fraudes perdidas. Demonstrar alertas e recuperação em falhas controladas. |
 | CD e governança de promoção | Planejado | Entregar imagem e modelo identificados, executar smoke tests e gates de dados/modelo/serviço, controlar a promoção e demonstrar rollback. Registry/aliases MLflow entram com o fluxo de release; o gate exploratório atual não autoriza deployment. |
@@ -80,17 +80,16 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Aplicar o incremento Prefect a partir da `main` do PR #3 e executar a suíte
-   completa. Iniciar servidor local e serviço Docker existente; executar o fluxo
-   contra a referência real, conferir o recibo e repetir o mesmo ID para demonstrar
-   retomada. A referência e o histórico estatístico ficam preservados.
-2. Registrar o resultado nativo, publicar a branch e abrir PR. Conferir CI e
-   integrar somente a revisão aprovada. O fluxo atual verifica serving; workers,
-   agendamento, armazenamento compartilhado e replay exigem incrementos próprios.
-3. Definir o contrato de eventos e estado antes de abrir 16–30/09. Implementar
-   replay causal com feedback atrasado, paridade offline/online e recuperação;
-   depois acrescentar monitoramento. O orquestrador não será o consumidor de
-   eventos nem modificará scores já emitidos.
+1. Definir contratos de transação e feedback, relógio dos eventos, disponibilidade
+   dos rótulos, política de duplicatas/atrasos e estado necessário às features.
+   Não abrir 16–30/09 nessa preparação; usar dados sintéticos nos checks.
+2. Implementar um executor de replay independente de orquestrador. Demonstrar
+   causalidade, checkpoints, reinício, retomada e paridade offline/online sob a
+   mesma política de eventos. Preservar scores já emitidos.
+3. Fixar o protocolo operacional e validar cenários de falha antes da execução
+   autorizada na reserva. Depois acrescentar monitoramento com feedback amadurecido.
+   Avaliar orquestração quando existirem processos e necessidades concretas para
+   coordenar; nenhuma instalação de Prefect é pré-requisito desses passos.
 
 O [resultado nativo Docker](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09)
 fecha a verificação operacional local. Ele não substitui a CI final da branch,
@@ -144,9 +143,10 @@ emitidos. Comparar com o cálculo offline sob a mesma política de eventos.
 com rótulos disponíveis, nas mesmas janelas de avaliação. Retreinar pode reutilizar
 hiperparâmetros aprovados; não executar uma busca Optuna a cada chegada de dados.
 Promoção exige os gates definidos, identidade de release e possibilidade de rollback.
-Prefect coordenará jobs de treinamento, avaliação e agregação; o consumidor de
-eventos terá seu próprio processo. Não precisamos instalar Kubernetes para iniciar
-essa demonstração.
+Uma camada de orquestração poderá coordenar jobs de treinamento, avaliação e
+agregação quando houver necessidade demonstrada; a ferramenta será escolhida
+nessa etapa. O consumidor de eventos terá seu próprio processo. Não precisamos
+instalar Kubernetes para iniciar essa demonstração.
 
 Uma demonstração de portfólio deve mostrar o percurso completo: eventos chegando,
 predições identificadas, feedback atrasado, painel de desempenho e recursos,
@@ -179,16 +179,17 @@ com todas as réplicas definidas. As faixas não estabelecem cobertura de genera
 ou número de observações independentes. A comparação confirmatória de outro modelo
 permanece condicional a candidato elegível, desenho próprio e janela preservada.
 Exportação e HTTP/wheel da referência foram validados pelo autor. O PR #2 integrou
-a etapa estatística. O autor concluiu a verificação Docker, integrada pelo PR #3.
-O primeiro fluxo Prefect está implementado; execução nativa e integração do
-incremento são a próxima ação.
+a etapa estatística. O autor concluiu a verificação Docker e integrou o
+incremento. O fluxo Prefect de verificação isolada foi retirado; o próximo marco
+define os contratos e o executor causal do replay.
 
 ## Sequência operacional e controle de custo
 
 O protocolo estatístico antecede a retomada da infraestrutura e o acesso reservado.
-Serving/empacotamento antecedem a implantação. Prefect e armazenamento compartilhado
-podem ser desenvolvidos nesse bloco, com interfaces pequenas. O replay estabelece
-estado e disponibilidade das features; monitoramento e CD vêm com uma operação
+Serving/empacotamento antecedem a implantação. O replay estabelece estado e
+disponibilidade das features, inicialmente com um executor independente.
+Orquestração e armazenamento compartilhado exigem necessidade demonstrada;
+monitoramento e CD vêm com uma operação
 observável. CT depende de feedback, avaliação e promoção já definidos. kind e
 Terraform entram quando esses contratos estiverem estáveis e seu uso for justificado.
 

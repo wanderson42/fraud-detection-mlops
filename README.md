@@ -46,15 +46,12 @@ A imagem reportada tem **166,8 MiB**; o snapshot de memória foi **178,5 MiB** e
 a latência p95 **4,74 ms** em 100 requisições sequenciais ao caso de controle.
 São medições locais, sem validação de carga concorrente ou SLA.
 O [recibo nativo](references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json)
-preserva o resultado e seu alcance. O
-[PR #3](https://github.com/wanderson42/fraud-detection-mlops/pull/3) integrou Docker.
-O primeiro fluxo Prefect verifica a release e o serviço e publica um recibo por
-operação, com retries limitados a indisponibilidade transitória. A execução com a
-release real no Alienware ainda precisa de relato nativo.
-[Procedimento](docs/operations/SERVING_CONTRACT.md#primeiro-fluxo-prefect).
+preserva o resultado e seu alcance. O PR Docker foi integrado pelo autor.
+A próxima etapa define contratos de eventos e estado para replay causal, conforme
+o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta). A adoção de um
+orquestrador depende de necessidade operacional demonstrada.
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
-recuperação do estado do streaming e monitoramento continuam no
-[mural de metas](docs/project/ROADMAP.md).
+orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).
 A organização inicial usou
 [Cookiecutter Data Science](https://cookiecutter-data-science.drivendata.org/).
 
@@ -88,9 +85,6 @@ tracking juntos; `data/` é ignorado pelo Git.
 | `evaluation/` | Métricas de ranking, comparações pareadas e diagnósticos |
 | `integrations/` | MLflow, persistência skops e exportação da referência |
 | `serving/` | Contrato HTTP, carga da release e pontuação sem estado |
-| `operations/contracts/` | Identidade da operação e schema do recibo |
-| `operations/serving_validation.py` | Integridade, cliente HTTP e publicação atômica sem Prefect |
-| `orchestration/serving_validation_flow.py` | Tasks e fluxo Prefect de verificação do serviço |
 
 Os caminhos são relativos a `fraud_detection_mlops/`. A
 [arquitetura](docs/ARCHITECTURE.md) explica dependências e migração. Os adaptadores

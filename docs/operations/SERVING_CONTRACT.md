@@ -245,8 +245,11 @@ root nem altere seus bytes para contornar a falha.
 
 Uma divergência de ambiente exige restaurar a versão fixada, sem atualizar o
 manifesto para fazer o check passar. A execução não abre Gold/tracking, não ajusta
-o modelo e não consome a janela de replay. O recibo nativo foi revisado;
-O PR #3 integrou Docker. O primeiro fluxo Prefect está descrito abaixo.
+o modelo e não consome a janela de replay. O recibo nativo foi revisado e o
+incremento Docker foi integrado pelo autor. A verificação continua executável
+diretamente pelos scripts existentes; não requer servidor ou dependências de
+Prefect. O incremento de orquestração dessa checagem foi retirado. Contratos de
+eventos e estado do replay são a próxima entrega.
 
 Referências oficiais: [build em estágios](https://docs.docker.com/build/building/multi-stage/),
 [opções de execução](https://docs.docker.com/reference/cli/docker/container/run/) e
@@ -298,104 +301,3 @@ engine, captura de stdout/stderr e estado de saída, e permissões de leitura da
 release. O aviso do TestClient é tratado com `httpx2` no grupo `dev` e um check
 que converte a depreciação do Starlette em erro. A suíte final e a CI da revisão
 publicada são verificações próprias, necessárias antes da integração.
-
-
-## Primeiro fluxo Prefect
-
-Base: `main` após o PR #3 (`42f23a6`). Prefect **3.8.8** fica no grupo
-`orchestration`; a imagem continua instalando somente `main`. A adição ao lockfile
-conservou todas as versões anteriores. Não é necessário reconstruir a imagem
-validada para executar este fluxo no host.
-
-`operations/serving_validation.py` pode ser chamado diretamente, sem Prefect.
-O adaptador em `orchestration/serving_validation_flow.py` fornece histórico de
-flow/tasks e retries. Ele inspeciona a release sem carregar o modelo, consulta
-`/health`, `/ready`, `/info` e pontua **apenas o caso de controle** via `/score`.
-O recibo vincula ID de operação, hashes do manifesto e controle, identidade da
-release, URL, hash do código da operação, resultado e horário UTC. Não lê datasets,
-não ajusta o modelo, não cria runs MLflow e não abre 16–30/09.
-
-### Iniciar os três processos locais
-
-Use três terminais na raiz do projeto. Instale os grupos necessários com
-`poetry sync --only main,pipeline,orchestration,dev`. Mantenha as portas 4200 e 8000
-livres. Não interrompa outros serviços para liberá-las automaticamente.
-
-**Terminal 1 — servidor Prefect:**
-
-```bash
-export PREFECT_HOME="$PWD/data/orchestration/prefect"
-export PREFECT_SERVER_ANALYTICS_ENABLED=false
-poetry run prefect server start --host 127.0.0.1 --port 4200
-```
-
-UI: `http://127.0.0.1:4200`. O SQLite do laboratório fica no `PREFECT_HOME` local;
-interromper esse processo não apaga o histórico. Não há worker ou agendamento
-neste incremento: o comando do fluxo inicia a execução diretamente.
-
-**Terminal 2 — serviço existente:** use o ID da imagem registrado no check nativo.
-O bind mount é somente para leitura e os arquivos devem ser legíveis pelo UID
-10001, conforme o procedimento Docker anterior.
-
-```bash
-docker run --rm --name fraud-serving-prefect-lab --pull=never \
-  --read-only --cap-drop=ALL --security-opt no-new-privileges \
-  --memory=2g --memory-swap=2g --cpus=4 --pids-limit=128 \
-  --tmpfs /tmp:rw,noexec,nosuid,size=64m \
-  --publish 127.0.0.1:8000:8000 \
-  --mount "type=bind,src=$PWD/data/serving/reference-v1,dst=/model,readonly" \
-  --env FRAUD_SERVING_MANIFEST_SHA256=1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263 \
-  sha256:db2e2ed60c2b3102041d55a93ca5dba0b0d9c5624c14bd7581947c1de0b600ab
-```
-
-**Terminal 3 — fluxo:**
-
-```bash
-export PREFECT_API_URL=http://127.0.0.1:4200/api
-export PREFECT_HOME="$PWD/data/orchestration/prefect"
-export PREFECT_SERVER_ANALYTICS_ENABLED=false
-poetry run python -m fraud_detection_mlops.orchestration.serving_validation_flow \
-  --release "$PWD/data/serving/reference-v1" \
-  --manifest-sha256 1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263 \
-  --service-url http://127.0.0.1:8000 \
-  --operation-id reference-control-001 \
-  --output-root "$PWD/data/orchestration/serving"
-```
-
-Sucesso: `status: success`, `reused: false` e um arquivo
-`data/orchestration/serving/reference-control-001/receipt.json`. Repetir exatamente
-o comando produz `reused: true` e conserva os mesmos bytes do recibo. **Isso retoma
-uma verificação anterior; não comprova a saúde atual.** Para outra verificação,
-use um ID novo, como `reference-control-002`.
-
-Se o processo parar depois da publicação e antes de registrar sucesso no Prefect,
-reexecutar o ID encontra o recibo íntegro. Um ID já existente com outra release,
-URL ou código da operação falha sem sobrescrever evidência. Preserve o conflito
-para revisão; não apague recibos para contornar a verificação.
-
-### Falhas e alcance
-
-| Situação | Comportamento |
-| --- | --- |
-| Timeout, conexão indisponível, HTTP 408/429/500/502/503/504 transitório | Só a task HTTP repete: até três tentativas, pausas de 1 e 2 segundos, timeout de 5 segundos por requisição |
-| HTTP 503 com `model_contract_failure`, demais erros HTTP ou JSON inválido | Encerra sem retry e sem recibo de sucesso |
-| Hash, features, readiness, `/info` ou score divergentes | Encerra sem retry; tolerância absoluta do controle `1e-12` |
-| Release alterada entre inspeção e publicação | Nova checagem rejeita a publicação |
-| Falha ao gravar o recibo | Encerra sem retry automático; uma nova execução pode retomar após resolver a causa |
-| Publicadores concorrentes do mesmo ID | Um único JSON completo é publicado; o outro aceita somente um recibo compatível |
-
-A publicação usa arquivo temporário e hard link sem sobrescrita no filesystem
-local. Consultas HTTP de controle podem se repetir sob concorrência ou interrupção
-antes da publicação: não há promessa de execução única distribuída ou durabilidade
-contra falta de energia. Não use esse mecanismo como contrato de eventos ou
-exatamente uma entrega do futuro streaming. Resultados Prefect não usam cache ou
-persistência de payload; o recibo da operação é a referência da retomada.
-
-A CLI exige API Prefect e serviço em HTTP loopback com porta explícita. Não segue
-redirecionamentos nem usa proxy para consultar o serviço. A execução nativa com a
-referência real ainda está pendente; a preparação usa releases sintéticas e backend
-Prefect isolado. O fluxo não valida SLA, carga concorrente de inferência ou promoção.
-
-Referências: [retries](https://docs.prefect.io/v3/how-to-guides/workflows/retries),
-[testes de workflows](https://docs.prefect.io/v3/how-to-guides/workflows/test-workflows)
-e [servidor local](https://docs.prefect.io/v3/how-to-guides/self-hosted/server-cli).
