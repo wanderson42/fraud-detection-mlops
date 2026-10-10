@@ -1,9 +1,10 @@
 # Model Card — referência temporal de detecção de fraude
 
-Atualizada em 2026-10-09. Estado: **avaliação final executada e verificada pelo autor;
+Atualizada em 2026-10-10. Estado: **avaliação final executada e verificada pelo autor;
 gate de laboratório aprovado; avaliação de 02–15/09 e reamostragem exploratória
 revisadas; referência exportada e HTTP/wheel isolado validados pelo autor**.
-Docker está preparado para construção e medição no host, ainda pendentes. O
+Docker foi construído e validado pelo autor e integrado pelo PR #3. O primeiro
+fluxo Prefect foi preparado; sua execução nativa com a referência ainda é pendente. O
 [contrato de serving](../operations/SERVING_CONTRACT.md) define esses checks.
 Esta síntese curada usa as saídas de terminal, o CSV diário de maio e os relatórios
 de setembro fornecidos pelo autor. A revisão direta dos bytes da Model Card gerada permanece

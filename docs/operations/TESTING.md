@@ -80,7 +80,7 @@ O [guia de contribuição](../modeling/CONTRIBUTING_MODELS.md) define a interfac
 1. tox cria ou reutiliza `.tox/py314`, separado da `.venv` de desenvolvimento.
 2. [check_test_environment.py](../../scripts/check_test_environment.py) confirma que Poetry aponta para o Python do tox.
 3. `poetry check --lock` exige coerência entre projeto e lockfile.
-4. `poetry sync --only main,pipeline,dev` instala as versões fixadas e o projeto editável.
+4. `poetry sync --only main,pipeline,orchestration,dev` instala as versões fixadas e o projeto editável.
 5. O mesmo Python executa Ruff e pytest; falhas interrompem a validação.
 
 O tox define `VIRTUAL_ENV` e impede outro ambiente Poetry. `sync` pode remover
@@ -305,3 +305,27 @@ arquiva o log da validação completa por hash e registra os totais observados,
 sem inferir novos totais a partir das suites anteriores. Alterações no lockfile
 devem conservar as versões `main` da imagem validada; uma mudança de runtime
 exige novo build/run e recibo próprio. A CI precisa aprovar o SHA final do PR.
+
+
+## Primeiro fluxo Prefect
+
+`tests/operations/` verifica a lógica sem Prefect: HTTP real em loopback,
+classificação de falhas, hashes, tamanho de resposta limitado, score de controle,
+retomada após interrupção e publicação concorrente sem sobrescrita. As releases
+são geradas a partir de exemplos sintéticos, sem abrir o Handbook.
+`tests/orchestration/` executa flows/tasks de verdade contra o
+`prefect_test_harness`, com API e SQLite temporários; não se limita a chamar `.fn`.
+Esses testes conferem retries transitórios, esgotamento de tentativas, ausência de
+retry em falha permanente, rejeição antes do HTTP e retomada após publicação.
+O backend de teste não usa o `PREFECT_HOME` operacional nem seus recibos reais.
+O tox limita OpenMP, OpenBLAS e MKL a quatro threads, inclusive nas fixtures que
+chamam `fit` diretamente, para evitar excesso de paralelismo em runners limitados.
+
+```bash
+poetry run pytest -q tests/operations tests/orchestration
+make validate
+```
+
+A [preparação](../../references/evidence/serving_orchestration_preparation_2026-10-10.json)
+registra a validação do incremento. A execução nativa com release/imagem reais
+é um check separado, descrito no [runbook](SERVING_CONTRACT.md#primeiro-fluxo-prefect).

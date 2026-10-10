@@ -381,7 +381,8 @@ de 47% a 61%. A [Model Card](MODEL_CARD.md#revisão-diária-da-fila-de-investiga
 concentra a tabela, unidades e interpretação, sem alterar o gate.
 A conferência direta dos bytes da Model Card gerada e do vínculo do CSV ao
 manifesto nativo continua pendente. O autor exportou a referência real e validou
-HTTP/wheel fora do checkout; construir e medir Docker permanece pendente.
+HTTP/wheel fora do checkout e o build/run Docker, integrado pelo PR #3. A execução
+nativa do primeiro fluxo Prefect ainda precisa ser registrada.
 O [contrato de serving](../operations/SERVING_CONTRACT.md) separa os checks
 sintéticos do relato de execução com a referência existente.
 

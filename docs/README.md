@@ -16,6 +16,7 @@ Leia o [README do projeto](../README.md) para começar e a
 | Como executar, recuperar e migrar? | [Operações](operations/OPERATIONS.md), [ablações](operations/EXPERIMENT_EXECUTION.md), [MLflow](operations/MLFLOW.md) |
 | Como verificar uma mudança? | [Testing](operations/TESTING.md) |
 | Como exportar, iniciar e conferir HTTP/wheel/Docker? | [Serving](operations/SERVING_CONTRACT.md) |
+| Como orquestrar uma verificação e retomar seu recibo? | [Primeiro fluxo Prefect](operations/SERVING_CONTRACT.md#primeiro-fluxo-prefect) |
 
 Os protocolos executáveis e recibos históricos estão em
 [`references/`](../references/). Os notebooks mantêm narrativa e resultados
