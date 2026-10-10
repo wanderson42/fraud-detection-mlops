@@ -279,3 +279,29 @@ protegem um risco concreto; dados pequenos limitam o custo. O checkout editável
 `package = "skip"` no tox não comprovam um wheel independente nem recursos de
 `references/` empacotados. Latência, disponibilidade, streaming e eficácia antifraude
 real terão verificações próprias, conforme o [mural](../project/ROADMAP.md).
+
+## Validação Docker e TestClient
+
+O autor aprovou a preparação Docker com 393 testes/94 avisos. Após as correções
+do preflight e da captura de logs, informou 82 testes focados/1 aviso. O build/run
+nativo posterior aprovou HTTP, integridade, reinício e proteções, conservando os
+arquivos da release. O [resultado e os limites](SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09)
+separam testes sintéticos, execução Docker e medições sequenciais.
+
+O `TestClient` do Starlette prefere `httpx2`; a depreciação aparece quando utiliza
+o cliente antigo. `httpx2==2.13.1` pertence ao grupo `dev`. O procedimento final
+verifica o cliente selecionado e executa:
+
+```bash
+poetry run python -m pytest -q tests/serving \
+  -W error::starlette.exceptions.StarletteDeprecationWarning
+make validate
+git diff --check
+```
+
+A [documentação do TestClient](https://starlette.dev/testclient/) descreve essa
+seleção. Os avisos de outras dependências continuam visíveis. O fechamento
+arquiva o log da validação completa por hash e registra os totais observados,
+sem inferir novos totais a partir das suites anteriores. Alterações no lockfile
+devem conservar as versões `main` da imagem validada; uma mudança de runtime
+exige novo build/run e recibo próprio. A CI precisa aprovar o SHA final do PR.

@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "author_native_docker_receipt_archive",
+  "source_report": "data/serving/docker-check.json",
+  "source_report_sha256": "84cd74358db946edba320ce8336d699835dc2b57e1121ec1c7c7d97c13b5540d",
+  "source_git_revision_before_closure": "4681471e267a3083b1a1d0fa76010d9dfc746acd",
+  "assistant_executed_native_docker": false,
+  "docker_check": {
+    "schema_version": 1,
+    "version": "laboratory_serving_docker_check_v1",
+    "status": "success",
+    "recorded_at_utc": "2026-10-09T23:42:29Z",
+    "image": {
+      "requested": "fraud-detection-mlops:serving-lab",
+      "id": "sha256:db2e2ed60c2b3102041d55a93ca5dba0b0d9c5624c14bd7581947c1de0b600ab",
+      "repo_digests": [
+        "fraud-detection-mlops@sha256:db2e2ed60c2b3102041d55a93ca5dba0b0d9c5624c14bd7581947c1de0b600ab"
+      ],
+      "size_bytes": 174861582,
+      "architecture": "amd64",
+      "os": "linux"
+    },
+    "engine": {
+      "version": "29.1.3",
+      "context": "default",
+      "operating_system": "Ubuntu 26.04.1 LTS",
+      "kernel_version": "7.0.0-38-generic",
+      "warnings": null
+    },
+    "manifest_sha256": "1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263",
+    "serving_release_id": "b3deb7e7bb6d4189bc7671453f8643d2",
+    "evidence_kind": "verified_reference",
+    "http_score": {
+      "schema_version": 1,
+      "transaction_id": 335910,
+      "score": 0.4178630794049542,
+      "score_semantics": "uncalibrated_ranking",
+      "model_id": "hist_gradient_boosting",
+      "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+      "feature_contract_version": "gold_v1",
+      "serving_release_id": "b3deb7e7bb6d4189bc7671453f8643d2"
+    },
+    "runtime": {
+      "uid": 10001,
+      "gid": 10001,
+      "installed_module": "/opt/runtime/lib/python3.14/site-packages/fraud_detection_mlops/serving/http_service.py",
+      "excluded_packages": [
+        "mlflow",
+        "shap",
+        "duckdb",
+        "matplotlib",
+        "optuna",
+        "typer"
+      ],
+      "readonly_write_probes": "passed"
+    },
+    "runtime_environment": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "pyarrow": "25.0.1",
+      "python": "3.14.4",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "skops": "0.16.0"
+    },
+    "parity_tolerance": 1e-12,
+    "invalid_input_http_status": 422,
+    "restart_recovery": "passed",
+    "failure_scenarios": {
+      "wrong_manifest_sha256": {
+        "startup_rejected": true,
+        "exit_code": 3,
+        "reason_matched": "Release bytes changed: manifest.json"
+      },
+      "corrupt_model": {
+        "startup_rejected": true,
+        "exit_code": 3,
+        "reason_matched": "Release bytes changed: pipeline.skops"
+      },
+      "missing_model": {
+        "startup_rejected": true,
+        "exit_code": 3,
+        "reason_matched": "No such file or directory: '/model/pipeline.skops'"
+      }
+    },
+    "resources": {
+      "memory_limit_bytes": 2147483648,
+      "cpus": 4,
+      "docker_stats_snapshot": {
+        "BlockIO": "0B / 0B",
+        "CPUPerc": "20.61%",
+        "Container": "fraud-serving-check-cd7773df7226497aa5a6ad5ed8444a4c-valid",
+        "ID": "4c6906772415",
+        "MemPerc": "8.71%",
+        "MemUsage": "178.5MiB / 2GiB",
+        "Name": "fraud-serving-check-cd7773df7226497aa5a6ad5ed8444a4c-valid",
+        "NetIO": "187kB / 106kB",
+        "PIDs": "15"
+      },
+      "peak_memory_measured": false
+    },
+    "latency": {
+      "warmup_requests": 10,
+      "unit": "milliseconds",
+      "requests": 100,
+      "mean": 4.373489279823843,
+      "p50": 4.316991995438002,
+      "p95": 4.7433839936275035,
+      "p99": 5.089576996397227,
+      "scope": "sequential_single_client_repeated_control_request_including_http",
+      "sla_validated": false
+    },
+    "refit": false,
+    "production_promotion": false,
+    "release_files_unchanged": true,
+    "check_script_sha256": "3023956cfed2db573c51f42191a59b662e4121600eecc4cc59816945a956619d"
+  },
+  "release_permissions_at_archive": {
+    ".": "0o775",
+    "manifest.json": "0o644",
+    "pipeline.skops": "0o664",
+    "smoke.json": "0o644"
+  },
+  "software_validation": {
+    "status": "success",
+    "command": "make validate",
+    "pytest_passed": 405,
+    "warnings": 93,
+    "log_sha256": "cad5d2d0e15ef8ba6f7ca7ee19f7f34e8eba254a29762739879aacea375905dd",
+    "log_path": "data/serving/docker-close-validation.qxuzrRW8.log"
+  },
+  "testclient_validation": {
+    "dependency": "httpx2==2.13.1",
+    "group": "dev",
+    "command": "poetry run python -m pytest -q tests/serving -W error::starlette.exceptions.StarletteDeprecationWarning",
+    "status": "passed_by_closure_script"
+  },
+  "closure_files_sha256": {
+    "README.md": "f9c1464bd58b01f8c0d94099ffdf0730cab66bd5044b90892bb5df724b663aa2",
+    "docs/ARCHITECTURE.md": "56b103a5c29000f58b96a000cf5ecc1e1ebb168065e106ee537e8dfaa48ea4b9",
+    "docs/operations/OPERATIONS.md": "225ef2d69c9755329652669e516ccdb8f8a040c2abab1cf7306435c9af25aae1",
+    "docs/operations/SERVING_CONTRACT.md": "8dc5815c86eb887f98ca962e51af4a5e27439974693dc78259d63ef42becdeef",
+    "docs/operations/TESTING.md": "54a582fcfddd4542428afda1d3274dc3448a4397d31674a361a09d6f602054bc",
+    "docs/project/ROADMAP.md": "bb350039302d8e417403f7e9f0f6aae257e4685f0f4d5937adc63545952e3ef9",
+    "notebooks/stages/16_laboratory_docker.ipynb": "67f66496dab25e64edfe4d8bdb0bae2d763b568f0f7828bd7912f94718873399",
+    "pyproject.toml": "0127d552bf12989c318589e1591d14ca819ee76c96bc5d8b3a034c9bf68a8635",
+    "poetry.lock": "c4cdf885190ad00f35eb61c83f57d6e0a3d7cde097f956bfdf01d154c2842584"
+  },
+  "runtime_locked_versions_preserved": true,
+  "ci_final_revision": "requires_GitHub_PR_check",
+  "production_promotion": false,
+  "operational_replay_evaluated": false
+}

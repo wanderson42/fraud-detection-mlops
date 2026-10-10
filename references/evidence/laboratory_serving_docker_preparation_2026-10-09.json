@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "recorded_date": "2026-10-09",
+  "origin": "assistant_preparation_in_isolated_workspace",
+  "stage": "laboratory_serving_docker_preparation",
+  "base_revision": "daecd2064196936abcfe6664ba5c9ea2fae8800d",
+  "checks": {
+    "focused_checker_tests_after_final_failure_message_tightening": {
+      "tests": 14,
+      "status": "passed"
+    },
+    "real_http_with_synthetic_release": "passed",
+    "controlled_invalid_release_loader_checks_without_refit": "passed",
+    "wrong_failure_reason_and_oom_rejected": "passed",
+    "partial_container_start_cleanup_controlled": "passed",
+    "readiness_wrong_release_rejected": "passed",
+    "missing_docker_and_existing_receipt_preservation": "passed",
+    "atomic_receipt_refuses_overwrite": "passed",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "local_document_notebook_file_links": {
+      "checked": 253,
+      "status": "passed"
+    },
+    "existing_notebook_execution_cells_outputs_metadata": "preserved",
+    "native_docker_build_and_run": "not_executed_no_engine_available",
+    "earlier_full_suite_same_sources": {
+      "status": "passed",
+      "tests": 393,
+      "warnings": 94,
+      "pytest_wall_seconds": 142.95,
+      "tox_wall_seconds": 152.62,
+      "prepared_revision": "56bdb5760ff4902851927c86301f52ec24a697e8"
+    },
+    "post_merge_focused_checker_tests": {
+      "tests": 14,
+      "status": "passed",
+      "pytest_wall_seconds": 1.76
+    },
+    "post_merge_same_python_dependency_contract_build_sources": {
+      "files": 118,
+      "status": "identical_to_previous_preparation"
+    }
+  },
+  "environment": {
+    "python": "3.12.14"
+  },
+  "implementation_sha256": {
+    ".dockerignore": "90fa72bf41927de1eb93d402816d381bc3a7694342a37bc5f06bf297856057b7",
+    "docker/serving/Dockerfile": "54045bff14d283e8ec88d4164c37815a0d762a38cd0d287e005e82ffe84a6bbb",
+    "scripts/serving/check_docker_runtime.py": "d6f0f1ed7b22d2a75fa0aa8f252600e7555ba8e13efae372b59f5f1162941f53",
+    "tests/serving/test_docker_runtime_checks.py": "04a5f934c9f28dae26820673c0593dd5149f1e10b8f388ef491bd9dedf5a068e",
+    "Makefile": "1b089948b8bd3eaccd347e324038b591d1248fbb45d08fdcfac92b92e271c4df"
+  },
+  "execution_scope": {
+    "docker_built_or_measured": false,
+    "real_model_bytes_received": false,
+    "new_handbook_fit": false,
+    "holdout_or_replay_window_opened": false,
+    "production_promotion": false,
+    "test_data": "generated_synthetic_only"
+  },
+  "native_prior_stage_evidence": "laboratory_serving_native_validation_2026-10-09.json",
+  "limitations": [
+    "No Docker engine is installed in the preparation environment; actual build/run and resource measurements require the author host.",
+    "Controlled checker tests do not establish container isolation or image correctness.",
+    "Sequential latency is a local control-case measurement, not a load test or SLA.",
+    "Docker stats is a snapshot, not peak process RSS.",
+    "The Python image version tag is not a byte digest; a verified digest can be supplied at build time."
+  ],
+  "base_tree": "9b5bb5e326750fb40ad03020319d88fd35de3af9",
+  "merged_base_validation": {
+    "author_native_tests": 379,
+    "author_native_warnings": 94,
+    "author_native_tox": "passed",
+    "commit": "2e644192ed74e9538860332a00c544b26332f65c",
+    "pr": 2,
+    "merge_commit": "daecd2064196936abcfe6664ba5c9ea2fae8800d",
+    "ci_push_run": 37992295042,
+    "ci_pr_run": 37992789065,
+    "ci_main_run": 37992806539,
+    "ci_conclusions": "success"
+  }
+}

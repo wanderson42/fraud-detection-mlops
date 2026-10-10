@@ -15,8 +15,12 @@ O autor já executou e verificou 02–15/09; diagnóstico e reamostragem também
 revisados. Consulte o [fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
 A janela foi consumida e não exige nova pontuação para atualizar documentação.
 16–30/09 segue reservado para replay. O autor validou a exportação e HTTP/wheel;
-Docker será conferido após integrar o PR estatístico e tem seu
-[procedimento próprio](SERVING_CONTRACT.md).
+O PR #2 integrou a etapa estatística. O autor concluiu a validação Docker com
+paridade, recuperação e três falhas de carga aprovadas. Preserve o recibo
+`data/serving/docker-check.json` e a release; sua atualização documental não
+exige reexportação ou nova inferência. O [procedimento de serving](SERVING_CONTRACT.md)
+concentra permissões, medições e limites. A validação final e a CI do PR Docker
+antecedem a branch de orquestração.
 
 ```bash
 poetry install

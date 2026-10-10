@@ -1,0 +1,13 @@
+# Allow only the sources needed to build the inference wheel.
+**
+!pyproject.toml
+!poetry.lock
+!README.md
+!fraud_detection_mlops/
+!fraud_detection_mlops/**
+!docker/
+!docker/serving/
+!docker/serving/Dockerfile
+**/__pycache__/**
+**/*.pyc
+**/*.pyo
