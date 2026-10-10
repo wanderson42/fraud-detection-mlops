@@ -54,7 +54,8 @@ dev = [
     "ruff (>=0.16.10,<0.17.0)",
     "tox (==4.32.0)",
     "ipykernel (>=7.4.0,<8.0.0)",
-    "httpx (==0.28.1)"
+    "httpx (==0.28.1)",
+    "httpx2 (==2.13.1)"
 ]
 
 [tool.pytest.ini_options]

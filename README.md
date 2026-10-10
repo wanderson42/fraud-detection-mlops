@@ -40,9 +40,14 @@ foram revisados: **o escopo exploratório está concluído**, com todas as répl
 definidas e faixas da AP entre aproximadamente 0,579 e 0,667 ao comparar os quatro
 comprimentos. Essas faixas não têm cobertura de generalização demonstrada.
 O [PR #2](https://github.com/wanderson42/fraud-detection-mlops/pull/2) integrou essa
-etapa, após 379 testes nativos e CI aprovados. Docker está preparado para build,
-checks e medições no Alienware; depois Prefect, conforme
-o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
+etapa, após 379 testes nativos e CI aprovados. O autor também construiu e validou
+Docker: paridade HTTP, reinício, proteções e três falhas de carga passaram.
+A imagem reportada tem **166,8 MiB**; o snapshot de memória foi **178,5 MiB** e
+a latência p95 **4,74 ms** em 100 requisições sequenciais ao caso de controle.
+São medições locais, sem validação de carga concorrente ou SLA.
+O [recibo nativo](references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json)
+preserva o resultado e seu alcance. Fechar o PR Docker precede o primeiro fluxo
+Prefect, conforme o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).
 A organização inicial usou

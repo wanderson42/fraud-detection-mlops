@@ -102,8 +102,13 @@ ambiente só com `main`, fora do checkout. Isso não empacota os protocolos exte
 dos workflows offline. Uma mudança para `src/` permanece decisão futura.
 O autor validou o wheel com a referência real. `docker/serving/` define o build
 em estágios; `scripts/serving/` contém a verificação operacional com a release
-montada somente para leitura. O build/run nativo aguarda execução. Replay e
-orquestração seguem o [mural](project/ROADMAP.md).
+montada somente para leitura. O autor validou o build/run nativo com paridade
+HTTP, recuperação e rejeição dos três cenários de carga inválida. O recibo registra
+o ID da imagem, a identidade do modelo e medições de laboratório.
+A orquestração seguirá em módulo próprio, mantendo regras e I/O testáveis sem
+Prefect. O primeiro fluxo verificará release e serviço e publicará recibos
+idempotentes; replay e consumo da reserva exigem contratos e execução próprios.
+O [mural](project/ROADMAP.md) define essa ordem.
 
 ## Documentação e testes
 

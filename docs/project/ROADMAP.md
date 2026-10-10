@@ -18,8 +18,10 @@ de 19 features. **A avaliação final foi executada e verificada pelo autor:**
 AP 0,640703 e precisão diária @100 de 55%, com gate de laboratório aprovado.
 O holdout de maio foi consumido; as métricas diárias foram revisadas. O autor
 exportou a referência real e validou HTTP/wheel fora do checkout, com 67.255 linhas
-de paridade no exportador. Docker está preparado e aguarda build/run e medições
-locais; streaming, CD e CT ainda precisam de implementação e evidência própria.
+de paridade no exportador. O build/run Docker também foi validado pelo autor,
+incluindo reinício, integridade e proteções. Imagem: 166,8 MiB; memória observada:
+178,5 MiB; p95: 4,74 ms em teste sequencial local. Fechamento do PR Docker e CI
+antecedem Prefect; streaming, CD e CT precisam de implementação e evidência própria.
 O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
 referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
@@ -62,8 +64,8 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Análise estatística e testes de hipóteses | Escopo exploratório concluído; reamostragem nativa revisada; confirmação futura condicional | AP 0,621312, precisão diária @100 de 54,93% e recall de 72,89%. Todas as 2.000 réplicas por configuração 2/3/4/7 ficaram definidas. Quantis exploratórios não demonstram cobertura futura; não houve teste temporal formal ou confirmação de candidato. [Resultado e fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento). |
 | Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](../modeling/CONTRIBUTING_MODELS.md). |
 | Validação temporal e otimização do HGB com Optuna | Estudo concluído no relatório do autor; referência conservada | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
-| Contrato de inferência e Docker | Referência exportada e HTTP/wheel validados pelo autor; Docker preparado para execução local | 67.255 linhas de paridade no exportador e score HTTP identificado fora do checkout. Dockerfile e verificador de falhas/reinício/proteções disponíveis; falta construir e medir a imagem no Alienware. [Contrato e execução](../operations/SERVING_CONTRACT.md). |
-| Orquestração com Prefect | Planejado; escolha do projeto | Prefect auto-hospedado para encadear os módulos Python, registrar dependências e falhas, testar retries e retomada sem duplicação. Manter lógica independente do orquestrador e medir recursos. O consumidor de streaming terá contrato próprio. |
+| Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados localmente pelo autor; integração do incremento pendente | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
+| Orquestração com Prefect | Próxima implementação, após integrar Docker | Primeiro fluxo: verificar release/serviço, pontuar o caso de controle e publicar recibo por identidade. Retries apenas em falhas transitórias; corrupção e incompatibilidade encerram a execução. Demonstrar repetição e retomada sem duplicação, mantendo lógica independente do orquestrador. O consumidor de streaming terá contrato próprio. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
 | Streaming por replay histórico e paridade de features | Planejado; entrega central | Publicar transações e feedback como eventos separados; consumidor com estado causal e relógio explícito. Demonstrar duplicidade, empates, atraso, reinício e retomada; comparar features/scores offline e online e medir lag/recursos. Replay acelerado preserva os sete dias no relógio dos eventos. O replay será identificado como simulação. |
 | Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
@@ -76,17 +78,23 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Construir e medir Docker em branch a partir da base integrada no PR #2, com a
-   release já exportada: usuário sem root, modelo somente leitura, memória,
-   latência, falhas de carga e recuperação. O
-   [procedimento](../operations/SERVING_CONTRACT.md#construir-e-verificar-docker)
-   registra o ID da imagem e mantém o escopo de laboratório.
-2. Revisar o recibo nativo Docker, registrar seus resultados e limites e conferir
-   a CI dessa revisão no PR antes da integração. Preservar release, manifesto,
-   auditoria e predições no Alienware.
-3. Encadear operações estáveis com um fluxo pequeno de Prefect, conferindo retries
-   e retomada sem duplicação. Depois implementar replay causal e monitoramento
-   com feedback atrasado, sob seus contratos próprios.
+1. Arquivar o recibo nativo Docker e executar a validação final da branch,
+   incluindo a migração do TestClient para `httpx2` no grupo `dev`. Publicar o PR,
+   conferir sua CI e integrar somente a revisão aprovada. Preservar release,
+   manifesto, tracking e o recibo original no Alienware.
+2. Abrir a branch de Prefect a partir da `main` integrada. Implementar um primeiro
+   fluxo de verificação da release e do serviço, pontuação do caso de controle e
+   publicação idempotente do recibo. A lógica e os contratos ficam fora dos
+   decorators; falhas permanentes não recebem retry. Validar indisponibilidade
+   transitória, repetição, retomada e concorrência sem duplicar a publicação.
+3. Definir o contrato de eventos e estado antes de abrir 16–30/09. Implementar
+   replay causal com feedback atrasado, paridade offline/online e recuperação;
+   depois acrescentar monitoramento. O orquestrador não será o consumidor de
+   eventos nem modificará scores já emitidos.
+
+O [resultado nativo Docker](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09)
+fecha a verificação operacional local. Ele não substitui a CI final da branch,
+testes de carga, promoção em produção ou evidência de streaming.
 
 O [resultado fornecido](../modeling/EVALUATION_PROTOCOL.md#resultado-da-busca-informado-pelo-autor)
 registra 20 trials, 63 fits, nenhuma falha e `retain_reference`. Não houve confirmação
@@ -171,7 +179,8 @@ com todas as réplicas definidas. As faixas não estabelecem cobertura de genera
 ou número de observações independentes. A comparação confirmatória de outro modelo
 permanece condicional a candidato elegível, desenho próprio e janela preservada.
 Exportação e HTTP/wheel da referência foram validados pelo autor. O PR #2 integrou
-a etapa estatística; Docker é a próxima verificação operacional.
+a etapa estatística. O autor concluiu a verificação Docker; integrar esse
+incremento antecede a implementação do primeiro fluxo Prefect.
 
 ## Sequência operacional e controle de custo
 

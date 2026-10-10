@@ -3,13 +3,15 @@
 `precomputed_features_v1` recebe features prontas em `POST /score`. O autor exportou
 a referência congelada e conferiu HTTP/wheel fora do checkout no Alienware.
 O [relato nativo](../../references/evidence/laboratory_serving_native_validation_2026-10-09.json)
-preserva identidade e paridade. Construção e medição Docker permanecem pendentes.
+preserva identidade e paridade. O autor também concluiu a validação Docker;
+o [resultado](#resultado-nativo-docker--2026-10-09) registra paridade, recuperação,
+proteções, três falhas de carga e medições locais.
 O gate offline autoriza revisão de laboratório; não promove o modelo em produção.
 
 O [escopo estatístico exploratório](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento)
 foi fechado após revisar a reamostragem nativa em 2026-10-09, mantendo explícita
 a ausência de cobertura de generalização demonstrada. A exportação abaixo já foi
-relatada com sucesso; preservar a release e seu recibo para a próxima etapa Docker.
+relatada com sucesso; preservar a release e os recibos de wheel e Docker.
 
 ## Entradas, saída e responsabilidade
 
@@ -162,6 +164,45 @@ exigida pelo manifesto. A tag não é um pin de bytes: para reprodução da base
 forneça `PYTHON_IMAGE=python:3.14.4-slim-trixie@sha256:<digest verificado>`.
 O recibo fixa o ID da imagem construída e registra os digests disponíveis.
 
+O `docker build` atual usa Buildx/BuildKit. O comando explícito `docker buildx build`
+permite selecionar builders e configurar outras saídas; a construção local
+`linux/amd64` foi suficiente para esta validação. A documentação oficial de
+[Docker Build](https://docs.docker.com/build/concepts/overview/) explica essa relação.
+
+### Permissões da release no host
+
+O container lê arquivos do host com UID/GID `10001:10001`. A gravação atômica dos
+JSONs usa arquivos temporários privados; no diagnóstico nativo, o manifesto não
+podia ser lido pelo serviço. Liberar leitura nos três arquivos e acesso ao
+diretório resolveu a inicialização, conservando todos os hashes.
+
+Para a release identificada, confira o manifesto e preserve um recibo dos hashes
+antes de ajustar permissões. Execute na raiz do projeto:
+
+```bash
+(
+  set -e
+  serving_checksums_file="$(mktemp)"
+  trap 'rm -f -- "$serving_checksums_file"' EXIT
+  cd data/serving/reference-v1
+  printf '%s  manifest.json\n' \
+    "1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263" \
+    | sha256sum --check
+  sha256sum manifest.json pipeline.skops smoke.json > "$serving_checksums_file"
+  chmod a+rx .
+  chmod a+r manifest.json pipeline.skops smoke.json
+  sha256sum --check "$serving_checksums_file"
+)
+```
+
+Esses comandos acrescentam leitura e acesso ao diretório, preservando os demais
+bits existentes. A montagem permanece somente leitura no container. Esse ajuste
+se aplica à release destinada ao laboratório; não muda a política de gravação
+dos artefatos de dados e tracking. O recibo nativo reportou diretório `775`, JSONs
+`644` e modelo `664`; as provas de escrita no container foram rejeitadas.
+
+### Construção e execução
+
 Na raiz do projeto, depois de aplicar o incremento e validar o software:
 
 ```bash
@@ -204,7 +245,8 @@ root nem altere seus bytes para contornar a falha.
 
 Uma divergência de ambiente exige restaurar a versão fixada, sem atualizar o
 manifesto para fazer o check passar. A execução não abre Gold/tracking, não ajusta
-o modelo e não consome a janela de replay. Prefect entra após revisar este recibo.
+o modelo e não consome a janela de replay. O recibo nativo foi revisado;
+Prefect entra após validar e integrar o incremento Docker.
 
 Referências oficiais: [build em estágios](https://docs.docker.com/build/building/multi-stage/),
 [opções de execução](https://docs.docker.com/reference/cli/docker/container/run/) e
@@ -219,7 +261,40 @@ O wheel pontuou num runtime isolado. A avaliação final original continua prese
 
 A etapa estatística foi integrada pelo [PR #2](https://github.com/wanderson42/fraud-detection-mlops/pull/2),
 com 379 testes nativos aprovados e CI da revisão final e de main aprovadas. Este
-incremento Docker usa essa base. A preparação não dispõe de engine; seus checks
-controlados não substituem build/run no Alienware. A [etapa 16](../../notebooks/stages/16_laboratory_docker.ipynb)
-acompanha a entrega. O serviço não define autenticação, TLS, fila de investigação
+incremento Docker usa essa base. A preparação não dispõe de engine; o autor
+executou o build/run no Alienware e forneceu o recibo de sucesso. A
+[etapa 16](../../notebooks/stages/16_laboratory_docker.ipynb) acompanha a entrega. O serviço não define autenticação, TLS, fila de investigação
 ou objetivo de disponibilidade para produção.
+
+## Resultado nativo Docker — 2026-10-09
+
+O autor forneceu a saída de `data/serving/docker-check.json`, registrada às
+23:42:29 UTC de 2026-10-09 (20:42:29 em Belém). O procedimento de fechamento
+arquiva esse arquivo após conferir sua identidade e a integridade da release:
+[recibo versionado](../../references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json).
+O resultado é uma execução nativa do autor; o assistente não executou Docker
+nem recebeu os bytes do modelo.
+
+| Item | Resultado |
+| --- | --- |
+| Imagem | `sha256:db2e2ed60c2b3102041d55a93ca5dba0b0d9c5624c14bd7581947c1de0b600ab`, Linux amd64 |
+| Tamanho reportado pelo engine | 174.861.582 bytes, aproximadamente 166,8 MiB |
+| Runtime | Python 3.14.4, UID/GID 10001; ferramentas offline ausentes |
+| Paridade HTTP | Evento 335910, score 0,4178630794049542, tolerância absoluta 1e-12 |
+| Entrada inválida | HTTP 422 |
+| Recuperação | Reinício aprovado e mesma resposta de controle |
+| Integridade | Manifesto incorreto, modelo corrompido e modelo ausente abortaram com exit code 3 e motivo esperado |
+| Proteções | Provas de escrita rejeitadas; arquivos originais conservaram os hashes |
+| Recursos | Limites de 2 GiB e quatro CPUs; snapshot de 178,5 MiB, sem pico medido |
+| Latência HTTP | Média 4,37 ms; p50 4,32 ms; p95 4,74 ms; p99 5,09 ms |
+
+São dez requisições de aquecimento e 100 sequenciais ao mesmo caso. Os percentis
+incluem HTTP local; não validam carga concorrente ou SLA. O tamanho é o valor
+reportado pelo engine, não uma medição do tamanho comprimido em registry.
+Não houve refit, promoção em produção ou abertura da janela de replay.
+
+O fechamento preserva três correções operacionais: chave JSON `CpuCfsQuota` do
+engine, captura de stdout/stderr e estado de saída, e permissões de leitura da
+release. O aviso do TestClient é tratado com `httpx2` no grupo `dev` e um check
+que converte a depreciação do Starlette em erro. A suíte final e a CI da revisão
+publicada são verificações próprias, necessárias antes da integração.
