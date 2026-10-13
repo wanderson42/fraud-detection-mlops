@@ -194,7 +194,9 @@ próprio. Não reutilizar o checkpoint de features como se já contivesse alerta
 
 O [protocolo operacional](../../references/causal_replay_protocol_v1.json)
 registra estas decisões e mantém `native_execution_authorized: false`.
-O desenho está preparado; **o limiar nativo ainda não foi calculado/congelado**.
+O autor executou e verificou o seletor: **limiar 0,8826493808370081**.
+A [configuração identificada](../../references/customer_day_alert_policy_v1.json)
+registra o valor e a release; integração durável e replay nativo seguem pendentes.
 Os testes usam 0,7 como valor artificial, sem recomendar esse número para a referência.
 
 Para definir o limiar, pontuar **a mesma release congelada de abril** nas três
@@ -258,6 +260,35 @@ Não há ajuste de modelo, AP, precisão com rótulos, nova run MLflow ou abertu
 reserva. O JSON do protocolo continua com limiar nulo: o valor fica na configuração
 identificada, e a execução nativa de replay permanece desabilitada.
 
+## Resultado do limiar informado pelo autor — 2026-10-13
+
+O autor aprovou **502 testes/93 avisos** (pytest em 89,06 s; tox `py314` em
+94,14 s), commitou e publicou `d40d839`. O seletor pontuou **201.155 transações
+nos 21 dias autorizados** e retornou sucesso na preparação e verificação. A mediana
+dos cortes foi **0,8826493808370081**, ao orçamento de cem clientes/dia.
+[Relato e escopo](../../references/evidence/development_alert_threshold_author_validation_2026-10-13.json).
+
+| Vínculo | Identidade |
+| --- | --- |
+| Política canônica | `e9872e37ea944eb6e3322867a6c311e270e8d93bb829baaa18182da281eef578` |
+| Manifesto do resultado nativo | `6fc96c1550c0c7840701215541d168928bac660d34c8fa2d06c655d95d0a1afa` |
+| Configuração registrada | [customer_day_alert_policy_v1.json](../../references/customer_day_alert_policy_v1.json) |
+
+A mediana e o hash canônico da configuração foram conferidos independentemente
+com os números fornecidos. Os scores/manifesto nativos não foram recebidos para
+inspeção independente; o recibo registra o relato do autor e seu digest externo.
+O protocolo original permanece preservado, inclusive seu placeholder de limiar;
+o valor selecionado está no arquivo de configuração próprio. Essa separação
+mantém o verificador compatível com o protocolo fixado antes da seleção.
+
+O corte é uma **heurística de capacidade**, não 88,26% de probabilidade de fraude.
+Não garante cem alertas futuros, precisão mínima ou captura no momento útil.
+A execução não mediu qualidade com os alvos atuais, latência de streaming nem
+persistência de alertas. Não houve refit ou abertura de setembro. Não repetir
+`prepare` nem apagar a saída; para rever o resultado, usar `verify` com o digest
+registrado. A próxima entrega deve vincular a política e o manifesto antes de
+integrar score/alerta/checkpoint e validar a recuperação com fixtures.
+
 ## Avaliar a implementação operacional
 
 Separar três verificações:
@@ -288,12 +319,12 @@ provará perdas financeiras evitadas, superioridade formal ou promoção em prod
 
 ## Próxima implementação
 
-Executar e verificar o seletor acima com a release congelada, registrar o limiar
-e seus hashes antes da reserva; depois
-implementar o adaptador restrito e a persistência atômica das decisões. Conferir
-paridade, duplicatas e recuperação com fixtures antes de executar a reserva.
-16–30/09 continua reservado. A política foi preparada com fixtures; sua integração
-durável e o limiar nativo ainda estão pendentes.
+Registrar este fechamento na branch publicada e exigir CI/revisão do SHA final.
+O limiar e sua configuração estão documentados; não repetir a seleção. Implementar
+o adaptador restrito e a persistência atômica de score/alerta/checkpoint, vinculando
+política e manifesto nativo. Conferir paridade, duplicatas e recuperação com fixtures
+antes do acesso reservado. **16–30/09 continua reservado**; utilidade e latência da
+fila causal ainda não foram avaliadas.
 
 Referências: [transações SQLite](https://www.sqlite.org/transactional.html) e
 [API `sqlite3` do Python 3.14](https://docs.python.org/3.14/library/sqlite3.html).

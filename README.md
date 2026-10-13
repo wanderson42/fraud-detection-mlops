@@ -56,9 +56,11 @@ permaneceram gravados; a repetição aceitou zero eventos e reaproveitou 22 entr
 Executor e relato foram integrados pelo
 [PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4). A política de
 alerta no primeiro cruzamento de limiar está preparada com fixtures: até cem
-clientes/dia, sem substituição posterior. O limiar nativo e a integração durável
-ficam pendentes. O seletor restrito ao desenvolvimento está preparado com fixtures;
-a execução nativa ainda precisa de relato e configuração identificada.
+clientes/dia, sem substituição posterior. O autor validou 502 testes e executou/
+verificou o seletor em 201.155 transações de 21 dias de desenvolvimento: limiar
+**0,8826493808370081**, com configuração identificada. A integração durável e
+a qualidade/latência da fila causal seguem pendentes.
+[Resultado e limites](docs/operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13).
 [Regras e avaliação](docs/operations/CAUSAL_REPLAY.md#política-operacional-de-triagem).
 O replay nativo continua pendente e 16–30/09 permanece reservado, conforme o
 [mural](docs/project/ROADMAP.md#próxima-entrega-concreta). A adoção de um
