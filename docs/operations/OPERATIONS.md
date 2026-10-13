@@ -441,3 +441,11 @@ código de features, embora `gold verify` continue válido. Essa rejeição prot
 reutilização: reproduza o build na revisão histórica, ou prepare uma saída em outra
 raiz para uma nova execução autorizada. A refatoração também não autoriza retomar
 o Optuna com código diferente, alterar recibos ou acessar a confirmação.
+
+## Replay causal local
+
+O [runbook de replay](CAUSAL_REPLAY.md) concentra contratos, demonstração gerada,
+retomada e limites. O executor mantém estado local e aceita o runtime de serving
+em processo; não introduz orquestrador ou acesso à janela reservada. Antes da
+execução nativa, janela, contexto, release e política de investigação terão
+protocolo próprio.

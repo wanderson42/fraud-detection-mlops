@@ -34,6 +34,7 @@ Só declaramos suporte ao Python 3.14; sua ausência causa falha.
 | `modeling/contracts/`, `modeling/experiments/` | `tests/modeling/contracts/`, `tests/modeling/experiments/` |
 | `evaluation/`, `integrations/` | `tests/evaluation/`, `tests/integrations/` |
 | `serving/` | `tests/serving/` e integração da exportação |
+| `streaming/contracts/`, `streaming/features/`, `streaming/replay/` | `tests/streaming/`; fixtures geradas e release sintética compartilhadas no conftest da área |
 | Comandos atuais e paths padrão | `tests/data/test_entry_points.py`, `tests/modeling/test_entry_points.py` |
 | Escrita atômica e identidade dos arquivos | `tests/test_artifacts.py` |
 
@@ -58,6 +59,7 @@ O pytest usa `--import-mode=importlib`.
 | Congelamento e avaliação final | Identidades commitadas, modelo fixo, inputs autorizados, acesso registrado, retries e recomputação offline |
 | Optuna | SQLite real, orçamento global, lock, falhas, trial abandonado, retomada determinística do TPE e mudança de identidade |
 | Serving | Validação antes da predição, paridade HTTP, readiness, hashes/tipos antes da carga e exportação sem fit ou novas runs |
+| Replay causal local | Eventos sem alvo, feedback separado, paridade Gold e scores sintéticos, bordas/empates, duplicatas/conflitos, atraso rejeitado, checkpoint e rollback após falha/saída abrupta |
 
 A preparação de desenvolvimento usa bytes reservados inválidos para demonstrar
 que setembro não é aberto. A comparação TPE usa o runner público numa chamada e

@@ -1,6 +1,6 @@
 # Mural de metas — Fraud Detection MLOps
 
-Atualizado em 2026-10-09. Este é o **backlog principal do projeto**: metas, estado,
+Atualizado em 2026-10-13. Este é o **backlog principal do projeto**: metas, estado,
 ordem de trabalho e critérios de conclusão. O [README](../../README.md) é a entrada;
 a [arquitetura](../ARCHITECTURE.md) descreve o que existe e os contratos fixam as regras.
 
@@ -22,8 +22,10 @@ de paridade no exportador. O build/run Docker também foi validado pelo autor,
 incluindo reinício, integridade e proteções. Imagem: 166,8 MiB; memória observada:
 178,5 MiB; p95: 4,74 ms em teste sequencial local. O PR Docker foi integrado
 pelo autor. O incremento de Prefect para checagem isolada de serving foi retirado
-por custo desproporcional ao benefício; contratos de eventos e estado para replay
-são a próxima etapa. Streaming, CD e CT precisam de implementação e evidência própria.
+por custo desproporcional ao benefício. Contratos de transação/feedback e executor
+local SQLite foram preparados e conferidos com dados sintéticos, incluindo
+paridade e recuperação. Replay nativo, transporte, política de investigação,
+monitoramento, CD e CT ainda precisam de implementação/protocolo e evidência própria.
 O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
 referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
@@ -69,7 +71,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados localmente pelo autor; incremento integrado | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
 | Orquestração de processos | Condicional; escolha de ferramenta adiada | Justificar por dependências, recorrência, recuperação e gestão de execução dos processos de dados, avaliação ou treinamento. Prefect permanece uma opção futura; o fluxo isolado de verificação de serving foi retirado. Manter executores e contratos independentes. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
-| Streaming por replay histórico e paridade de features | Próximo: contratos e executor independente; entrega central | Publicar transações e feedback como eventos separados; consumidor com estado causal e relógio explícito. Demonstrar duplicidade, empates, atraso, reinício e retomada; comparar features/scores offline e online e medir lag/recursos. Replay acelerado preserva os sete dias no relógio dos eventos. O replay será identificado como simulação. |
+| Streaming por replay histórico e paridade de features | Contratos/executor local conferidos com fixtures; protocolo e execução nativa pendentes | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
 | Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
 | Monitoramento e dashboards | Planejado | Prometheus/Grafana para serviço, latência, erros e atraso do processamento; pipeline para qualidade, drift e desempenho quando os rótulos chegarem. Painel de investigação com orçamento, acertos e fraudes perdidas. Demonstrar alertas e recuperação em falhas controladas. |
 | CD e governança de promoção | Planejado | Entregar imagem e modelo identificados, executar smoke tests e gates de dados/modelo/serviço, controlar a promoção e demonstrar rollback. Registry/aliases MLflow entram com o fluxo de release; o gate exploratório atual não autoriza deployment. |
@@ -80,16 +82,16 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Definir contratos de transação e feedback, relógio dos eventos, disponibilidade
-   dos rótulos, política de duplicatas/atrasos e estado necessário às features.
-   Não abrir 16–30/09 nessa preparação; usar dados sintéticos nos checks.
-2. Implementar um executor de replay independente de orquestrador. Demonstrar
-   causalidade, checkpoints, reinício, retomada e paridade offline/online sob a
-   mesma política de eventos. Preservar scores já emitidos.
-3. Fixar o protocolo operacional e validar cenários de falha antes da execução
-   autorizada na reserva. Depois acrescentar monitoramento com feedback amadurecido.
-   Avaliar orquestração quando existirem processos e necessidades concretas para
-   coordenar; nenhuma instalação de Prefect é pré-requisito desses passos.
+1. Aplicar, validar e commitar a preparação do replay local; executar a demonstração
+   sintética interrompida/retomada e registrar sua saída. Revisar o contrato e a
+   paridade, preservando release, tracking, recibos e a reserva.
+2. Fixar antes do acesso o protocolo operacional nativo: janela, contexto de até
+   14 dias, release identificada, emissão de scores e política de investigação no
+   instante da decisão. Definir comparação offline sob a mesma informação disponível.
+3. Implementar o adaptador nativo sob esse protocolo e conferir suas restrições com
+   fixtures. Só então executar a janela autorizada, medir recursos e recuperação;
+   depois agregar monitoramento com feedback amadurecido. Ferramenta de orquestração
+   permanece condicional à necessidade operacional demonstrada.
 
 O [resultado nativo Docker](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09)
 fecha a verificação operacional local. Ele não substitui a CI final da branch,
@@ -180,8 +182,8 @@ ou número de observações independentes. A comparação confirmatória de outr
 permanece condicional a candidato elegível, desenho próprio e janela preservada.
 Exportação e HTTP/wheel da referência foram validados pelo autor. O PR #2 integrou
 a etapa estatística. O autor concluiu a verificação Docker e integrou o
-incremento. O fluxo Prefect de verificação isolada foi retirado; o próximo marco
-define os contratos e o executor causal do replay.
+incremento. O fluxo Prefect de verificação isolada foi retirado; os contratos e o executor local foram conferidos com fixtures. O próximo marco
+fixa o protocolo do replay nativo antes do acesso à reserva.
 
 ## Sequência operacional e controle de custo
 

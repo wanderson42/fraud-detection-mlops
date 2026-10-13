@@ -107,9 +107,13 @@ HTTP, recuperação e rejeição dos três cenários de carga inválida. O recib
 o ID da imagem, a identidade do modelo e medições de laboratório.
 A verificação de serving permanece em scripts independentes. O incremento que
 introduzia Prefect apenas para verificar release/serviço foi retirado: seu custo
-operacional não se justifica para essa checagem isolada. O próximo executor será
-o replay causal, com contratos de eventos, estado e recuperação definidos antes
-do acesso à reserva. Uma futura camada de orquestração deve coordenar processos
+operacional não se justifica para essa checagem isolada. O executor local está em
+`streaming/replay/temporal_replay_executor.py`; contratos ficam em
+`streaming/contracts/transaction_events.py` e o cálculo incremental em
+`streaming/features/causal_feature_state.py`. O núcleo grava histórico, decisão e
+checkpoint na mesma transação SQLite e reutiliza a pontuação de serving em processo
+quando um runtime identificado é fornecido. A CLI demonstra somente fixtures
+sintéticas; não lê Handbook ou a reserva. [Semântica e execução](operations/CAUSAL_REPLAY.md). Uma futura camada de orquestração deve coordenar processos
 com dependências e recorrência demonstradas, preservando a lógica independente.
 O [mural](project/ROADMAP.md) define essa ordem.
 

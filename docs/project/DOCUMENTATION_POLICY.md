@@ -32,6 +32,7 @@ substanciais e documentos por responsabilidade em `docs/project/`, `docs/data/`,
 | [Diagnóstico](../modeling/DIAGNOSTICS.md) | Inspeção da validação, orçamento, interpretação e limites estatísticos | Mudança da análise ou resultados reais |
 | [Contribuição de modelos](../modeling/CONTRIBUTING_MODELS.md) | Interface executável, regras de integração e exemplo | Mudança da interface ou entrada de contribuição |
 | [Serving](../operations/SERVING_CONTRACT.md) | Contrato HTTP, exportação, execução e checks do runtime | Mudança do contrato ou procedimento |
+| [Replay causal](../operations/CAUSAL_REPLAY.md) | Eventos, disponibilidade do feedback, estado, repetição e retomada do executor local | Mudança do contrato, transporte ou execução; distinguir fixtures de acesso nativo |
 | [Arquitetura](../ARCHITECTURE.md) | Responsabilidades, organização e controle de complexidade | Mudança estrutural |
 | [Testing](../operations/TESTING.md) | Isolamento tox–Poetry, checks, seleção de testes e limites | Mudança de validação ou CI |
 | `docs/operations/INFRASTRUCTURE.md` | Arquitetura, configuração, persistência e resiliência | Quando a infraestrutura for implementada |
