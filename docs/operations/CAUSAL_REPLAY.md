@@ -127,6 +127,37 @@ de falha física de disco ou garantias distribuídas. O banco retém todo o hist
 compactação, retenção e migração de estado não foram implementadas. Use um arquivo
 local por execução; armazenamento compartilhado e múltiplos hosts ficam fora do escopo.
 
+## Execução no ambiente do autor — 2026-10-13
+
+O autor aprovou 448 testes com 93 avisos, pytest em 88,35 s e tox `py314`
+aprovado em 94,24 s. Commitou a implementação em `23c863e` e executou o demo
+interrompido, sua retomada, a repetição completa e `inspect`. A branch informada
+é `feat/causal-replay-executor`; publicação e CI dessa revisão ainda são pendentes.
+[Recibo do relato](../../references/evidence/causal_replay_author_validation_2026-10-13.json).
+
+| Fase | Eventos únicos / requests / feedbacks | Aceitos / reaproveitados na chamada |
+| --- | --- | --- |
+| Interrupção após seis entregas | 6 / 5 / 1 | 6 / 0 |
+| Retomada completa | 20 / 10 / 10 | 14 / 8 |
+| Repetição das 22 entregas | 20 / 10 / 10 | 0 / 22 |
+| Inspeção somente para leitura | 20 / 10 / 10 | Sem processamento de eventos |
+
+Os hashes de código e entrada coincidem com a preparação. SQLite foi `3.46.1`
+no ambiente do autor, enquanto a preparação usou `3.50.4`; os relatórios conservam
+cada versão. Isso não exige mudar o código nem transplantar o checkpoint entre
+ambientes. O banco do autor não foi recebido para inspeção independente; esta
+evidência registra suas saídas, sem substituir o recibo de preparação.
+
+`scoring: null` indica que o demo gravou requests de atributos, sem pontuar um
+modelo. `feature_parity_evaluated: false` e `score_parity_evaluated: false`
+descrevem essa invocação: a comparação foi coberta pelos testes sintéticos da
+suíte, não executada novamente pelo demo. A conclusão local é retomada e
+repetição do executor com fixtures, não uma avaliação da referência do autor.
+Não foram gerados alertas, avaliados períodos novos do Handbook ou consumida
+a reserva. O código do executor permanece igual ao da validação informada.
+
+## Próximo protocolo
+
 Antes do replay nativo, precisamos fixar o protocolo: janela e contexto de
 aquecimento, release, emissão de scores, política de investigação no instante da
 decisão e comparação com o offline sob a mesma disponibilidade de informação.

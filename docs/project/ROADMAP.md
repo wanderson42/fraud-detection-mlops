@@ -23,8 +23,9 @@ incluindo reinício, integridade e proteções. Imagem: 166,8 MiB; memória obse
 178,5 MiB; p95: 4,74 ms em teste sequencial local. O PR Docker foi integrado
 pelo autor. O incremento de Prefect para checagem isolada de serving foi retirado
 por custo desproporcional ao benefício. Contratos de transação/feedback e executor
-local SQLite foram preparados e conferidos com dados sintéticos, incluindo
-paridade e recuperação. Replay nativo, transporte, política de investigação,
+local SQLite foram preparados e conferidos com dados sintéticos. O autor aprovou
+448 testes e commitou `23c863e`; interrupção, retomada e repetição do demo conferiram.
+Publicação/CI da branch ainda são pendentes. Replay nativo, transporte, política de investigação,
 monitoramento, CD e CT ainda precisam de implementação/protocolo e evidência própria.
 O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
@@ -60,7 +61,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Meta | Estado | Entrega que permite concluir |
 | --- | --- | --- |
 | Dados reproduzíveis: Bronze, Silver e Gold | Validado localmente | Fonte fixada, integridade, contratos, reconciliação, features causais e separação temporal. [Pipeline](../data/DATA_PIPELINE.md), [dicionário](../data/DATA_DICTIONARY.md) e [Gold](../data/GOLD_CONTRACT.md). |
-| Qualidade do software e CI | Etapa estatística integrada em main; 379 testes nativos e CI aprovados | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. O PR #2 integra a revisão `2e64419`, com CI do push, PR e merge aprovada. O incremento Docker exige sua validação nativa e CI próprias. [Testing](../operations/TESTING.md). |
+| Qualidade do software e CI | Marcos anteriores integrados; replay local aprovado pelo autor com 448 testes; CI da branch pendente | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. Validação do autor em `23c863e`: 448 testes/93 avisos e demo sintético retomado/repetido. Publicar a branch e exigir CI/revisão do SHA final antes de integrar. [Testing](../operations/TESTING.md). |
 | Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](../modeling/BASELINE.md), [MLflow](../operations/MLFLOW.md) e [diagnóstico](../modeling/DIAGNOSTICS.md). |
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
 | Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../../references/evidence/freeze_execution_2026-10-08.json). |
@@ -71,7 +72,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados localmente pelo autor; incremento integrado | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
 | Orquestração de processos | Condicional; escolha de ferramenta adiada | Justificar por dependências, recorrência, recuperação e gestão de execução dos processos de dados, avaliação ou treinamento. Prefect permanece uma opção futura; o fluxo isolado de verificação de serving foi retirado. Manter executores e contratos independentes. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
-| Streaming por replay histórico e paridade de features | Contratos/executor local conferidos com fixtures; protocolo e execução nativa pendentes | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
+| Streaming por replay histórico e paridade de features | Executor local validado pelo autor com fixtures; publicação/CI, protocolo e execução nativa pendentes | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
 | Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
 | Monitoramento e dashboards | Planejado | Prometheus/Grafana para serviço, latência, erros e atraso do processamento; pipeline para qualidade, drift e desempenho quando os rótulos chegarem. Painel de investigação com orçamento, acertos e fraudes perdidas. Demonstrar alertas e recuperação em falhas controladas. |
 | CD e governança de promoção | Planejado | Entregar imagem e modelo identificados, executar smoke tests e gates de dados/modelo/serviço, controlar a promoção e demonstrar rollback. Registry/aliases MLflow entram com o fluxo de release; o gate exploratório atual não autoriza deployment. |
@@ -82,9 +83,9 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Aplicar, validar e commitar a preparação do replay local; executar a demonstração
-   sintética interrompida/retomada e registrar sua saída. Revisar o contrato e a
-   paridade, preservando release, tracking, recibos e a reserva.
+1. Commitar o registro da validação fornecida pelo autor, publicar a branch do
+   replay local e revisar o PR. Exigir CI do SHA final antes de integrar em main.
+   Preservar checkpoint sintético, release, tracking, recibos e a reserva.
 2. Fixar antes do acesso o protocolo operacional nativo: janela, contexto de até
    14 dias, release identificada, emissão de scores e política de investigação no
    instante da decisão. Definir comparação offline sob a mesma informação disponível.
