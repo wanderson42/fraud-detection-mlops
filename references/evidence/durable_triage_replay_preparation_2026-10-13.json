@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "version": "durable_triage_replay_preparation_v1",
+  "recorded_date": "2026-10-13",
+  "repository_base_commit": "a5528966d3e5a9567de2cef6b00730b1db8fbcbc",
+  "branch": "feat/durable-triage-replay",
+  "data_scope": "generated_events_and_synthetic_release_only",
+  "source_sha256": "ff994d6d9cea458c21937662cdb3071c8a9366f55bf2f1710037619afc10cba6",
+  "legacy_source_sha256_unchanged": "1ee063aa986ef3a6326706b2deeda0cdd7857baa64dfc1c196e90e82d2ed397a",
+  "validation": {
+    "command": "tox -e py314",
+    "python": "3.14.4",
+    "status": "success",
+    "passed": 532,
+    "warnings": 93,
+    "pytest_seconds": 167.76,
+    "tox_environment_seconds": 202.71,
+    "new_tests": 30,
+    "ruff_check": "passed",
+    "ruff_format": "177_files_formatted",
+    "lockfile": "passed"
+  },
+  "demonstration": {
+    "identity": {
+      "version": "durable_triage_replay_v1",
+      "schema_version": 2,
+      "data_scope": "synthetic_fixture",
+      "policy": {
+        "daily_customer_budget": 100,
+        "model_sha256": "4d8a4667cb9de01a508573dae88ad54e5a39569fe6dbd509c9a6423335fceca4",
+        "schema_version": 1,
+        "score_threshold": 0.7,
+        "serving_release_id": "8f7dce1b7cee4f50a4e999483b5654c4",
+        "version": "first_crossing_customer_day_v1"
+      },
+      "policy_sha256": "e8216d3a8565eefc1c9f4e4d3c546c04fa5348b8272e8ab990667bee96d421c5",
+      "source_sha256": "ff994d6d9cea458c21937662cdb3071c8a9366f55bf2f1710037619afc10cba6",
+      "input_sha256": "ecae9a305413fb2fa501eca813298177b6e091ec199338a9652bc4fab40a9fac",
+      "python": "3.14.4",
+      "sqlite": "3.50.4"
+    },
+    "phases": {
+      "partial": {
+        "counts": {
+          "events": 6,
+          "transactions": 5,
+          "feedback": 1,
+          "decisions": 5,
+          "alert_decisions": 5,
+          "alerts": 1
+        },
+        "last_event_order": [
+          1523145600000000000,
+          0,
+          0
+        ],
+        "accepted_this_invocation": 6,
+        "reused_this_invocation": 0,
+        "complete": false
+      },
+      "resumed": {
+        "counts": {
+          "events": 20,
+          "transactions": 10,
+          "feedback": 10,
+          "decisions": 10,
+          "alert_decisions": 10,
+          "alerts": 1
+        },
+        "last_event_order": [
+          1524355200000000001,
+          0,
+          9
+        ],
+        "accepted_this_invocation": 14,
+        "reused_this_invocation": 8,
+        "complete": true
+      },
+      "repeated": {
+        "counts": {
+          "events": 20,
+          "transactions": 10,
+          "feedback": 10,
+          "decisions": 10,
+          "alert_decisions": 10,
+          "alerts": 1
+        },
+        "last_event_order": [
+          1524355200000000001,
+          0,
+          9
+        ],
+        "accepted_this_invocation": 0,
+        "reused_this_invocation": 22,
+        "complete": true
+      },
+      "inspected": {
+        "counts": {
+          "events": 20,
+          "transactions": 10,
+          "feedback": 10,
+          "decisions": 10,
+          "alert_decisions": 10,
+          "alerts": 1
+        },
+        "last_event_order": [
+          1524355200000000001,
+          0,
+          9
+        ]
+      }
+    }
+  },
+  "checks": [
+    "requests_scores_and_alerts_match_legacy_and_memory_policy",
+    "daily_budget_after_restart",
+    "duplicates_without_rescoring_or_budget_change",
+    "SQL_and_scorer_failure_roll_back_all_rows",
+    "actual_process_exit_before_commit_recovers_empty_pending_state",
+    "actual_process_exit_after_commit_reuses_confirmed_alert",
+    "two_writers_same_identity_one_score_and_alert",
+    "warmup_without_scoring_and_feedback_drain",
+    "changed_identity_and_scoring_window_rejected",
+    "legacy_schema_preserved_and_resumable",
+    "native_release_rejected_by_demo_before_model_load"
+  ],
+  "limits": {
+    "native_adapter_implemented": false,
+    "native_replay_evaluated": false,
+    "native_alert_policy_evaluated": false,
+    "external_alerts_published": false,
+    "production_promotion": false,
+    "refit_native_reference": false,
+    "new_dependencies": false,
+    "load_performance_evaluated": false,
+    "retention_compaction_implemented": false
+  }
+}

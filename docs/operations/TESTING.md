@@ -357,3 +357,18 @@ protocolos históricos nem saídas. A validação nativa já relatada permanece 
 para o código preservado. Conferir JSON, narrativa, hashes e diff; a CI do SHA
 final continua necessária antes do merge. Não confundir o resultado do seletor
 com avaliação de alertas duráveis, latência ou consumo da reserva.
+
+## Replay de triagem durável
+
+`tests/streaming/replay/test_durable_triage_replay.py` usa modelos/eventos gerados.
+Confere paridade de requests/scores com o executor v1 e decisões/IDs com o redutor;
+reinício, orçamento, duplicatas/conflitos, ordem, feedback e mudanças de identidade.
+Um processo separado termina abruptamente antes e depois do commit: o primeiro
+reverte todos os registros; o segundo retorna a decisão já confirmada sem rescoring.
+Falhas após inserir alerta e antes do checkpoint também desfazem a transação.
+
+Os checks cobrem aquecimento sem pontuar, limite da janela, escoamento de feedback,
+escritores concorrentes da mesma identidade, inspeção sem criar banco e rejeição
+preservando o schema legado. O demo rejeita a release nativa antes de carregar o
+modelo. Esses testes não consomem a reserva, não usam a referência do autor para
+novas avaliações e não estabelecem garantias de transporte ou falha física de disco.

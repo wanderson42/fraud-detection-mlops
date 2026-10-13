@@ -183,12 +183,11 @@ atingem o limiar cedo podem ocupar vagas de casos mais fortes que chegam depois.
 A comparação com top-100 ao fim do dia medirá esse compromisso. Ela muda tanto
 o momento quanto a política de seleção; não isola o efeito causal do transporte.
 
-O componente é um **redutor determinístico em memória**, verificado com scores
-gerados. Não está acoplado à CLI do replay, não grava alertas em SQLite e não
-publica mensagens. Reprocessar o prefixo completo de scores confirmados reconstrói
-as decisões e seus IDs. A integração nativa deverá confirmar score, alerta e
-checkpoint atomicamente; um publicador externo precisará de contrato de entrega
-próprio. Não reutilizar o checkpoint de features como se já contivesse alertas.
+O redutor em memória permanece disponível. Sua função de decisão é compartilhada
+com o [novo executor durável](#scores-alertas-e-checkpoint-duráveis), que grava
+as decisões localmente na mesma transação do score e checkpoint. O demo original
+continua sendo de features; seus checkpoints não passam a conter alertas. Publicação
+externa ainda exige um contrato de entrega próprio.
 
 ## Protocolo antes do acesso nativo
 
@@ -317,14 +316,73 @@ usando **os mesmos scores**, máximo por cliente e top-100. Reportar diferenças
 captura, clientes escolhidos e disponibilidade do alerta. Nenhum desses resultados
 provará perdas financeiras evitadas, superioridade formal ou promoção em produção.
 
+## Scores, alertas e checkpoint duráveis
+
+`streaming/replay/durable_triage_replay.py` compõe o runtime de serving, o cálculo
+causal e a mesma função de decisão usada pelo redutor em memória. Não lê datasets,
+reajusta modelos ou publica mensagens. Cada evento aceito confirma em uma única
+transação SQLite:
+
+- Transação/feedback e histórico necessário para as features.
+- Request, score identificado e decisão de triagem, quando houver pontuação.
+- Alerta único por cliente/dia, quando elegível e com capacidade.
+- Evento com resultado original e cursor completo de retomada.
+
+O cursor ordena `(relógio, feedback antes de transação, ID crescente)`. O produtor
+precisa conservar essa ordem; o lock de escrita não ordena produtores distintos.
+Duplicatas idênticas retornam o resultado confirmado, mesmo após avançar o relógio;
+conflitos/eventos novos fora de ordem são rejeitados. Falha antes do commit desfaz
+histórico, score, alerta e progresso. Se o processo termina depois do commit e antes
+da resposta, a nova entrega retorna o mesmo alerta sem pontuar novamente.
+
+O banco usa **schema 2** e uma identidade `durable_triage_replay_v1`, vinculando
+entrada, política, release, código e ambiente. Precisa de um **caminho novo**;
+recusa schema 1, sem migrar/escrever seus checkpoints. O executor anterior conserva
+seus bytes e fingerprint, e pode continuar retomando seus estados. O novo estado
+também inclui janela de pontuação e declaração de escopo do chamador; isso não
+confere autorização para consumir datasets. Mudanças de identidade bloqueiam retomada.
+
+A API aceita uma janela de pontuação semiaberta. Transações anteriores ao início
+alimentam somente o histórico, sem chamar o modelo, emitir alertas ou gastar orçamento.
+Transações no fim ou depois dele são rejeitadas. Feedback das transações já observadas
+pode continuar chegando para completar os rótulos. O adaptador futuro fixará os 14
+dias de contexto e restringirá as datas físicas antes de entregar os eventos.
+
+Os testes usam release/eventos gerados: paridade com o executor anterior e redutor,
+orçamento após reinício, duplicatas/conflitos, ordem/feedback, corrupção de identidade,
+falhas SQL/scorer e processo encerrado antes/depois do commit. Cobrem dois escritores
+entregando a mesma identidade e aquecimento sem pontuação. O ensaio não simula falha
+física de disco ou estabelece throughput, pico de memória, SLA ou qualidade nativa.
+
+### Demonstração com release gerada
+
+O pacote fornece `demo.sh`: cria uma release explicitamente sintética em um destino
+novo, grava seu digest e executa interrupção em seis entregas, retomada, repetição e
+inspeção. Modelo, banco e recibo ficam em `data/replay/durable-demo-v1/`; nenhum
+artefato de `data/serving/reference-v1` é usado. O limiar **0,7 é apenas fixture**;
+a configuração nativa 0,8826493808370081 permanece registrada para o futuro adaptador.
+
+A CLI recebe somente release marcada `synthetic_smoke`; rejeita a referência antes
+de carregar o modelo. Também permite inspecionar o banco sem criar um arquivo ausente:
+
+```bash
+poetry run python -m \
+  fraud_detection_mlops.streaming.replay.durable_triage_replay \
+  inspect data/replay/durable-demo-v1/checkpoint.sqlite
+```
+
+O demo mantém os mesmos 22 recebimentos/20 eventos únicos da etapa anterior, agora
+com dez scores e dez decisões de triagem persistidos. Repetir não deve alterar
+orçamento, IDs ou contadores. A recuperação local não garante publicação exatamente
+uma vez em um broker ou API: não há publicador externo nesta entrega.
+
 ## Próxima implementação
 
-Registrar este fechamento na branch publicada e exigir CI/revisão do SHA final.
-O limiar e sua configuração estão documentados; não repetir a seleção. Implementar
-o adaptador restrito e a persistência atômica de score/alerta/checkpoint, vinculando
-política e manifesto nativo. Conferir paridade, duplicatas e recuperação com fixtures
-antes do acesso reservado. **16–30/09 continua reservado**; utilidade e latência da
-fila causal ainda não foram avaliadas.
+O PR #5 integrou o limiar e seu registro. Validar/publicar o incremento durável
+e exigir CI/revisão do SHA final. Depois implementar o adaptador restrito, vinculando
+política, manifesto nativo e janela. Conferir sua paridade independente e restrições
+de acesso com fixtures antes da reserva. **16–30/09 continua reservado**; utilidade
+e latência da fila causal ainda não foram avaliadas.
 
 Referências: [transações SQLite](https://www.sqlite.org/transactional.html) e
 [API `sqlite3` do Python 3.14](https://docs.python.org/3.14/library/sqlite3.html).
