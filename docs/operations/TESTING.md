@@ -333,3 +333,14 @@ persistência de alertas no checkpoint, utilidade nos dados nativos ou latência
 O protocolo mantém acesso nativo desabilitado até congelar limiar e integrar o
 adaptador/persistência. Os recibos de 448 testes e demo de features continuam
 históricos; não passam a representar alertas que aquela execução não produziu.
+
+## Seleção do limiar — desenvolvimento restrito
+
+Os novos checks exercitam máximo por cliente/dia, mediana dos 21 cortes, empates,
+cobertura e exclusão de alvos. Uma Gold gerada tem somente as 21 partições físicas
+permitidas; as demais existem apenas no manifesto, para detectar leitura ampliada.
+O teste de ponta a ponta usa um modelo ajustado somente em exemplos sintéticos.
+Projeção, corrupção, redirecionamento, datas/domínios, release incorreta, alteração
+em execução, publicação sem saída parcial e lock local são conferidos. A verificação
+reproduz a seleção sem carregar o modelo ou pontuar novamente.
+Esses checks não calculam o limiar nativo nem avaliam o replay reservado.

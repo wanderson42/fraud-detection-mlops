@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "version": "development_alert_threshold_preparation_v1",
+  "recorded_date": "2026-10-13",
+  "repository_base_commit": "f89b32681ade1f8da9db1811330f0df93e590df3",
+  "published_main_at_preparation": "721a4bb537432ccd2cdcf71f3bc63ada14034919",
+  "delivery_branch": "feat/streaming-triage-policy",
+  "data_scope": "generated_gold_partitions_and_synthetic_fitted_release_only",
+  "validation": {
+    "command": "tox -e py314",
+    "python": "3.14.4",
+    "status": "success",
+    "passed": 502,
+    "warnings": 93,
+    "pytest_seconds": 166.49,
+    "tox_environment_seconds": 177.14,
+    "new_tests": 29,
+    "ruff_check": "passed",
+    "ruff_format": "175_files_formatted",
+    "lockfile": "passed"
+  },
+  "selected_hashes": {
+    "fraud_detection_mlops/data/datasets/development_scoring_dataset.py": "96ac8840bc035c7d47ca414a11e034813b96836f6f055fb94214e5e7601597f4",
+    "fraud_detection_mlops/streaming/decisions/development_threshold_selection.py": "91d8a864c6c2275c5b59d13741f91bd51d0e7ecb98777910fc2a016433a85d45",
+    "fraud_detection_mlops/streaming/preparation/development_alert_threshold.py": "6467076361ec754c847b0462568db4eb16dc97c272726a6bec0cfb03f33f1814"
+  },
+  "protocol_sha256_unchanged": "a932d674509444665cbafb093225c6255ce6f0b0ef109cc6a3b2dcac3af43cc3",
+  "checks": [
+    "21_projected_partitions_no_current_target_or_label_availability_values",
+    "non_selected_native_partition_access_impossible_in_fixture_missing_files",
+    "daily_customer_maximum_100th_cutoff_median_and_tie_order",
+    "missing_dates_customers_duplicates_labels_and_invalid_scores_rejected",
+    "input_output_and_protocol_integrity_pinned",
+    "wrong_model_or_fold_release_rejected_before_partition_decode",
+    "input_and_code_change_during_scoring_prevent_publication",
+    "scorer_failure_preserves_inputs_and_no_partial_output",
+    "single_writer_output_lock",
+    "verification_without_model_load_or_rescoring"
+  ],
+  "native_scope": {
+    "selector_implemented": true,
+    "native_selection_executed": false,
+    "native_score_threshold": null,
+    "gold_rebuilt": false,
+    "refit": false,
+    "reserved_replay_accessed": false,
+    "native_replay_evaluated": false,
+    "new_tracking_runs": 0,
+    "new_dependencies": false,
+    "production_promotion": false
+  },
+  "next_action": "author_validate_commit_then_prepare_and_verify_development_threshold_before_reserved_access"
+}

@@ -30,7 +30,10 @@ local SQLite foram preparados e conferidos com dados sintéticos. O autor aprovo
 Implementação e relato foram integrados em `721a4bb`, pelo
 [PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4). A política de
 primeiro cruzamento de limiar e o protocolo operacional estão preparados com
-fixtures. Limiar nativo, integração durável de alertas, replay nativo, transporte,
+fixtures e publicados na branch `feat/streaming-triage-policy` em `f89b326`;
+a main conferida continua em `721a4bb`. O seletor do limiar está preparado com
+fixtures, restrito às 21 partições da Gold de desenvolvimento. Execução/registro
+do limiar nativo, integração durável de alertas, replay nativo, transporte,
 monitoramento, CD e CT ainda precisam de implementação e evidência própria.
 O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
@@ -77,7 +80,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados localmente pelo autor; incremento integrado | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
 | Orquestração de processos | Condicional; escolha de ferramenta adiada | Justificar por dependências, recorrência, recuperação e gestão de execução dos processos de dados, avaliação ou treinamento. Prefect permanece uma opção futura; o fluxo isolado de verificação de serving foi retirado. Manter executores e contratos independentes. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
-| Política causal de investigação | Primeiro cruzamento preparado com fixtures; limiar nativo e integração durável pendentes | Até 100 clientes/dia, um alerta por cliente/dia, sem substituição posterior. Selecionar limiar nos 21 dias de desenvolvimento com a mesma release de abril; sem rótulos nem setembro. Avaliar ocupação, capturas/perdas e tempo até alerta. [Política e protocolo](../operations/CAUSAL_REPLAY.md#política-operacional-de-triagem). |
+| Política causal de investigação | Política publicada em f89b326; seletor do limiar preparado com fixtures; execução nativa e integração durável pendentes | Até 100 clientes/dia, um alerta por cliente/dia, sem substituição posterior. Selecionar limiar nos 21 dias de desenvolvimento com a mesma release de abril; sem rótulos nem setembro. Avaliar ocupação, capturas/perdas e tempo até alerta. [Política e protocolo](../operations/CAUSAL_REPLAY.md#política-operacional-de-triagem). |
 | Streaming por replay histórico e paridade de features | Executor local integrado pelo PR #4; protocolo operacional preparado; execução nativa pendente | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
 | Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
 | Monitoramento e dashboards | Planejado | Prometheus/Grafana para serviço, latência, erros e atraso do processamento; pipeline para qualidade, drift e desempenho quando os rótulos chegarem. Painel de investigação com orçamento, acertos e fraudes perdidas. Demonstrar alertas e recuperação em falhas controladas. |
@@ -89,13 +92,13 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Validar e integrar a política causal de triagem e este alinhamento operacional.
-   A publicação do executor e do relato já foi concluída pelo PR #4; não repetir
-   esse marco nem reescrever seus recibos. Exigir CI do SHA final de cada incremento.
-2. Implementar a seleção do limiar com a release congelada de abril nas três
-   janelas de desenvolvimento já usadas (21 dias). Aplicar a regra de mediana dos
-   cortes do 100º cliente, sem rótulos nem setembro. Commitar limiar, hashes e
-   configuração da política antes do acesso reservado.
+1. Validar e commitar o incremento do seletor na mesma branch publicada da
+   política (`feat/streaming-triage-policy`). Ele amplia a revisão existente;
+   não pressupõe merge da política em main. Exigir CI do SHA final antes de integrar.
+2. Executar e verificar o seletor com a release congelada de abril nas três
+   janelas de desenvolvimento (21 dias). O código reutiliza somente essas partições
+   da Gold existente e não decodifica seus alvos. Registrar resultado, configuração
+   e hashes antes do acesso reservado; o limiar nativo ainda não foi informado.
 3. Implementar o adaptador nativo restrito, persistindo score, alerta e checkpoint
    atomicamente. Conferir paridade, duplicatas, conflitos e recuperação com fixtures.
    Completar e commitar o protocolo executável antes de abrir 16–30/09.

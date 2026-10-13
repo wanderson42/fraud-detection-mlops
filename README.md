@@ -57,7 +57,9 @@ Executor e relato foram integrados pelo
 [PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4). A política de
 alerta no primeiro cruzamento de limiar está preparada com fixtures: até cem
 clientes/dia, sem substituição posterior. O limiar nativo e a integração durável
-ficam pendentes. [Regras e avaliação](docs/operations/CAUSAL_REPLAY.md#política-operacional-de-triagem).
+ficam pendentes. O seletor restrito ao desenvolvimento está preparado com fixtures;
+a execução nativa ainda precisa de relato e configuração identificada.
+[Regras e avaliação](docs/operations/CAUSAL_REPLAY.md#política-operacional-de-triagem).
 O replay nativo continua pendente e 16–30/09 permanece reservado, conforme o
 [mural](docs/project/ROADMAP.md#próxima-entrega-concreta). A adoção de um
 orquestrador depende de necessidade operacional demonstrada.

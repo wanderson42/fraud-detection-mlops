@@ -204,7 +204,11 @@ Não usar os scores dos modelos reajustados por fold do Optuna. Para cada um dos
 a mediana dos 21 cortes. Faltar um dia ou haver menos de 100 clientes interrompe
 a seleção. A regra usa scores e capacidade, sem consultar rótulos ou setembro.
 É uma heurística de ocupação; não garante cem alertas futuros nem precisão mínima.
-O adaptador dessa seleção será a próxima implementação; não é um comando desta entrega.
+O seletor está em `streaming/preparation/development_alert_threshold.py`. Ele
+reutiliza somente as 21 partições da Gold de desenvolvimento já existente, sem
+reconstruir features nem carregar os modelos de cada fold. Projeta identidades,
+relógio e 19 features; não decodifica `TX_FRAUD` ou `LABEL_AVAILABLE_AT`. Os valores
+de feedback passado incorporados nas features permanecem parte do contrato causal.
 
 Registrar hashes das entradas e release, limiar numérico, configuração e código
 antes de integrar o adaptador que abrirá 16–30/09. O contexto 02–15/09 alimentará
@@ -212,6 +216,47 @@ somente históricos, sem alertas nem nova avaliação de qualidade. Até 14 dias
 prévios são necessários para as features de terminal. O escoamento de feedback
 vai até antes de 08/10, sem ler transações de outubro: os rótulos dos eventos já
 observados serão agendados pelo adaptador e liberados sete dias depois.
+
+## Selecionar e verificar o limiar no desenvolvimento
+
+Depois de validar e **commitar** o código, na raiz do projeto:
+
+```bash
+DEVELOPMENT_PATH="$PWD/data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/development_gold_v2/9f86edf1e8f2408098c5377456e8968e3a7ca5925a20222b8ab8547ef94cbaf9"
+THRESHOLD_PATH="$PWD/data/replay/policies/development-threshold-v1"
+
+poetry run python -m \
+  fraud_detection_mlops.streaming.preparation.development_alert_threshold \
+  prepare "$DEVELOPMENT_PATH" \
+  --release "$PWD/data/serving/reference-v1" \
+  --output "$THRESHOLD_PATH" \
+  --project-root "$PWD"
+```
+
+Guardar o `manifest_sha256` retornado. Verificar usando **esse digest externo**:
+
+```bash
+poetry run python -m \
+  fraud_detection_mlops.streaming.preparation.development_alert_threshold \
+  verify "$THRESHOLD_PATH" \
+  --manifest-sha256 "DIGEST_RETORNADO_PELO_PREPARE" \
+  --project-root "$PWD"
+```
+
+O pacote de entrega também fornece `prepare-threshold.sh`, que reserva um recibo
+novo, captura o digest do resultado e executa a verificação sem substituir saídas.
+Preparação recusa um destino existente; repetir a verificação não pontua o modelo.
+A verificação é offline sobre os artefatos salvos: não relê a Gold nem reconstrói
+ou autentica o dataset original. Sua identidade/hashes foram registrados na preparação.
+
+`policy.json` vincula limiar, release e orçamento; `scores.parquet` guarda somente
+ID da transação, ID do cliente, relógio e score; `report.json` guarda os 21 cortes;
+`manifest.json` vincula entradas, protocolo, código commitado, ambiente e hashes.
+Mudança de entrada, release ou código durante seleção impede publicação. Um lock
+local impede escritores concorrentes; a saída é publicada inteira após a verificação.
+Não há ajuste de modelo, AP, precisão com rótulos, nova run MLflow ou abertura da
+reserva. O JSON do protocolo continua com limiar nulo: o valor fica na configuração
+identificada, e a execução nativa de replay permanece desabilitada.
 
 ## Avaliar a implementação operacional
 
@@ -243,7 +288,8 @@ provará perdas financeiras evitadas, superioridade formal ou promoção em prod
 
 ## Próxima implementação
 
-Pontuar o desenvolvimento com a release congelada e fixar o limiar; depois
+Executar e verificar o seletor acima com a release congelada, registrar o limiar
+e seus hashes antes da reserva; depois
 implementar o adaptador restrito e a persistência atômica das decisões. Conferir
 paridade, duplicatas e recuperação com fixtures antes de executar a reserva.
 16–30/09 continua reservado. A política foi preparada com fixtures; sua integração
