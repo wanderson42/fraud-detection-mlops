@@ -117,9 +117,12 @@ sintéticas; não lê Handbook ou a reserva. [Semântica e execução](operation
 com dependências e recorrência demonstradas, preservando a lógica independente.
 `streaming/contracts/customer_day_alerts.py` identifica o limiar, orçamento e
 release; `streaming/decisions/customer_day_alert_policy.py` recebe somente transação
-e score e aplica a regra causal de cliente/dia em memória. Não importa treino,
-loaders de dados, SQLite ou transporte; não recebe feedback. A integração durável
-com o executor permanece pendente e preservará os checkpoints anteriores.
+e score e aplica a regra causal de cliente/dia em memória. A função pura de
+decisão é compartilhada com `streaming/replay/durable_triage_replay.py`, que grava
+score, decisão, alerta e checkpoint em uma transação SQLite. A política não importa
+loaders, SQLite, treino ou transporte; o executor recebe feedback separado. O schema
+durável tem identidade e caminhos próprios, sem migrar o estado anterior. Adaptador
+nativo e publicador externo ficam pendentes.
 O [protocolo operacional](operations/CAUSAL_REPLAY.md#protocolo-antes-do-acesso-nativo)
 define seleção do limiar e critérios de comparação antes do acesso à reserva.
 `streaming/preparation/development_alert_threshold.py` compõe release congelada,

@@ -31,6 +31,51 @@ class CustomerDayAlertDecision:
     alert_id: str | None
 
 
+def decide_customer_day_alert(
+    config: CustomerDayAlertConfig,
+    transaction: TransactionEvent,
+    response: ScoreResponse,
+    *,
+    already_alerted: bool,
+    daily_budget_used: int,
+) -> CustomerDayAlertDecision:
+    """Pure decision over validated scores and caller-owned committed day state."""
+    if (
+        type(already_alerted) is not bool
+        or type(daily_budget_used) is not int
+        or not 0 <= daily_budget_used <= config.daily_customer_budget
+        or (already_alerted and daily_budget_used == 0)
+        or response.transaction_id != transaction.transaction_id
+        or response.model_sha256 != config.model_sha256
+        or response.serving_release_id != config.serving_release_id
+    ):
+        raise AlertPolicyError("Alert context or score identity differs from the fixed policy")
+    clock = pd.Timestamp(transaction.event_clock_ns)
+    day = clock.strftime("%Y-%m-%d")
+    alert_id = None
+    if already_alerted:
+        status = "already_alerted"
+    elif response.score < config.score_threshold:
+        status = "below_threshold"
+    elif daily_budget_used >= config.daily_customer_budget:
+        status = "budget_exhausted"
+    else:
+        status = "alert"
+        alert_id = hashlib.sha256(
+            f"{config.policy_sha256}:{day}:{transaction.customer_id}".encode()
+        ).hexdigest()
+    return CustomerDayAlertDecision(
+        policy_sha256=config.policy_sha256,
+        transaction_id=transaction.transaction_id,
+        customer_id=transaction.customer_id,
+        decision_clock=clock.isoformat(),
+        score=response.score,
+        status=status,
+        daily_budget_used=daily_budget_used + int(status == "alert"),
+        alert_id=alert_id,
+    )
+
+
 class CustomerDayAlertPolicy:
     """A deterministic in-memory reducer; no broker publication or durable checkpoint.
 
@@ -79,29 +124,14 @@ class CustomerDayAlertPolicy:
         clock = pd.Timestamp(order[0])
         day = clock.strftime("%Y-%m-%d")
         alerted = self._alerted.get(day, set())
-        alert_id = None
-        if transaction.customer_id in alerted:
-            status = "already_alerted"
-        elif response.score < self.config.score_threshold:
-            status = "below_threshold"
-        elif len(alerted) >= self.config.daily_customer_budget:
-            status = "budget_exhausted"
-        else:
-            status = "alert"
-            alert_id = hashlib.sha256(
-                f"{self.config.policy_sha256}:{day}:{transaction.customer_id}".encode()
-            ).hexdigest()
-        decision = CustomerDayAlertDecision(
-            policy_sha256=self.config.policy_sha256,
-            transaction_id=transaction.transaction_id,
-            customer_id=transaction.customer_id,
-            decision_clock=clock.isoformat(),
-            score=response.score,
-            status=status,
-            daily_budget_used=len(alerted) + int(status == "alert"),
-            alert_id=alert_id,
+        decision = decide_customer_day_alert(
+            self.config,
+            transaction,
+            response,
+            already_alerted=transaction.customer_id in alerted,
+            daily_budget_used=len(alerted),
         )
-        if status == "alert":
+        if decision.status == "alert":
             self._alerted.setdefault(day, set()).add(transaction.customer_id)
         self._seen[transaction.transaction_id] = (digest, decision)
         self._last_order = order

@@ -31,11 +31,13 @@ Implementação e relato foram integrados em `721a4bb`, pelo
 [PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4). A política de
 primeiro cruzamento de limiar e o protocolo operacional estão preparados com
 fixtures e publicados na branch `feat/streaming-triage-policy`, agora em `d40d839`;
-a main conferida continua em `721a4bb`. O autor aprovou 502 testes/93 avisos e
+o marco foi integrado pelo [PR #5](https://github.com/wanderson42/fraud-detection-mlops/pull/5),
+na main `a552896`. O autor aprovou 502 testes/93 avisos e
 preparou/verificou o limiar 0,8826493808370081 sobre 201.155 transações nos 21 dias
 de desenvolvimento. Mediana e identidade da configuração foram conferidas com
 o relato; scores nativos não foram recebidos para inspeção independente.
-Integração durável de alertas, replay nativo, transporte,
+A integração durável de scores/decisões/alertas/checkpoint está preparada com
+fixtures em um executor de schema próprio. Adaptador e replay nativo, transporte,
 monitoramento, CD e CT ainda precisam de implementação e evidência própria.
 O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
@@ -82,7 +84,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados localmente pelo autor; incremento integrado | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
 | Orquestração de processos | Condicional; escolha de ferramenta adiada | Justificar por dependências, recorrência, recuperação e gestão de execução dos processos de dados, avaliação ou treinamento. Prefect permanece uma opção futura; o fluxo isolado de verificação de serving foi retirado. Manter executores e contratos independentes. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
-| Política causal de investigação | Política/seletor publicados em d40d839; limiar nativo executado/verificado pelo autor e registrado; integração durável pendente | Limiar 0,8826493808370081 nos 21 dias, 201.155 scores, mesma release de abril, sem alvos atuais na seleção. Até 100 clientes/dia, sem substituição posterior. Configuração identificada; ocupação, capturas/perdas e tempo até alerta ainda serão avaliados. [Resultado e limites](../operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13). |
+| Política causal de investigação | Política/limiar integrados pelo PR #5; integração durável preparada com fixtures | Limiar 0,8826493808370081 nos 21 dias, 201.155 scores, mesma release de abril, sem alvos atuais na seleção. Até 100 clientes/dia, sem substituição posterior. Configuração identificada; ocupação, capturas/perdas e tempo até alerta ainda serão avaliados. [Resultado e limites](../operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13). |
 | Streaming por replay histórico e paridade de features | Executor local integrado pelo PR #4; protocolo operacional preparado; execução nativa pendente | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
 | Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
 | Monitoramento e dashboards | Planejado | Prometheus/Grafana para serviço, latência, erros e atraso do processamento; pipeline para qualidade, drift e desempenho quando os rótulos chegarem. Painel de investigação com orçamento, acertos e fraudes perdidas. Demonstrar alertas e recuperação em falhas controladas. |
@@ -94,16 +96,17 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Commitar o relato do autor e a configuração identificada nesta mesma branch.
-   Código e execução já estão publicados em `d40d839`; não repetir seleção ou testes
-   completos por este fechamento documental. Publicar o registro, abrir/atualizar
-   o PR e exigir CI/revisão do SHA final antes de integrar em main.
-2. Usar o limiar registrado e o manifesto nativo como entradas identificadas da
-   próxima entrega. Preservar artefatos e protocolo original; conferir os vínculos
-   antes de integrar alertas. Não recalibrar o corte usando setembro.
-3. Implementar o adaptador nativo restrito, persistindo score, alerta e checkpoint
-   atomicamente. Conferir paridade, duplicatas, conflitos e recuperação com fixtures.
-   Completar e commitar o protocolo executável antes de abrir 16–30/09.
+1. Validar o novo executor durável e seu demo com release/eventos gerados, commitar,
+   publicar a branch `feat/durable-triage-replay` e exigir CI do SHA final. O PR #5
+   já integrou política, seletor e registro; não repetir a seleção do limiar.
+2. Preparar o adaptador nativo restrito, vinculando release, configuração fixada e
+   manifesto do limiar. O núcleo já confirma score/alerta/checkpoint atomicamente,
+   oferece aquecimento sem pontuação e recusa transações após o fim da janela.
+   Conferir restrições de acesso, paridade independente e contexto com fixtures.
+3. Completar e commitar o protocolo executável antes de abrir 16–30/09. A integração
+   durável local não substitui o adaptador, a autorização de janela ou a verificação
+   dos artefatos nativos do limiar. Preservar estados anteriores; não migrar ou apagar
+   checkpoints para demonstrar uma retomada.
 4. Executar a reserva sob o protocolo final: comparar paridade técnica, utilidade
    da triagem e entrega/custo. Medir latência com emissão programada e ritmo 1x;
    alvo inicial de laboratório p95 ≤ 1 s, ainda não validado. Medir aceleração
@@ -162,8 +165,8 @@ receber rótulos posteriores e atualizar métricas. O replay não entrega o rót
 junto à transação. A política preparada usa o instante da primeira transação
 elegível; a fila retrospectiva de um dia completo não vira uma decisão instantânea.
 A política preparada usa primeiro cruzamento de limiar, até cem clientes por
-dia e nenhuma substituição posterior. O limiar será fixado no desenvolvimento;
-a integração durável está pendente. O pipeline deverá recuperar estado após
+dia e nenhuma substituição posterior. O limiar já foi fixado no desenvolvimento;
+o núcleo durável foi preparado com fixtures e seu adaptador nativo está pendente. O pipeline deverá recuperar estado após
 reinício, tratar duplicatas e aplicar uma
 política explícita para eventos atrasados, sem alterar silenciosamente scores já
 emitidos. Comparar com o cálculo offline sob a mesma política de eventos.
@@ -209,8 +212,8 @@ ou número de observações independentes. A comparação confirmatória de outr
 permanece condicional a candidato elegível, desenho próprio e janela preservada.
 Exportação e HTTP/wheel da referência foram validados pelo autor. O PR #2 integrou
 a etapa estatística. O autor concluiu a verificação Docker e integrou o
-incremento. O fluxo Prefect de verificação isolada foi retirado; os contratos e o executor local foram conferidos com fixtures. A preparação operacional fixa política e método de escolha do limiar; o próximo
-marco calcula esse limiar no desenvolvimento e completa o adaptador antes da reserva.
+incremento. O fluxo Prefect de verificação isolada foi retirado; os contratos e o executor local foram conferidos com fixtures. O PR #5 integrou o limiar. O núcleo durável foi preparado com fixtures; o próximo
+marco completa o adaptador restrito e o protocolo antes da reserva.
 
 ## Sequência operacional e controle de custo
 
