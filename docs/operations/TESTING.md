@@ -318,3 +318,18 @@ scores foi coberta com fixtures e release sintética pelos testes da suíte.
 [Recibo do relato](../../references/evidence/causal_replay_author_validation_2026-10-13.json).
 Isso é evidência local fornecida pelo autor; a CI da branch ainda precisa aprovar
 o SHA final, e a avaliação operacional nativa do Handbook permanece pendente.
+
+## Política causal de triagem — preparação
+
+`tests/streaming/decisions/test_customer_day_alert_policy.py` usa transações e
+scores gerados. Confere cruzamento inclusive no limiar, cliente repetido, teto
+por dia, reset à meia-noite, esgotamento sem substituição, duplicatas idênticas e
+conflitantes, identidade da release, ordem/empates, estabilidade do prefixo e
+reconstrução determinística. Configuração sem limiar, não finita ou com rótulo
+é rejeitada. IDs de alerta vinculam configuração, cliente e dia.
+
+Esses checks validam o redutor em memória. Não demonstram publicação externa,
+persistência de alertas no checkpoint, utilidade nos dados nativos ou latência.
+O protocolo mantém acesso nativo desabilitado até congelar limiar e integrar o
+adaptador/persistência. Os recibos de 448 testes e demo de features continuam
+históricos; não passam a representar alertas que aquela execução não produziu.

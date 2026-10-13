@@ -115,6 +115,13 @@ checkpoint na mesma transação SQLite e reutiliza a pontuação de serving em p
 quando um runtime identificado é fornecido. A CLI demonstra somente fixtures
 sintéticas; não lê Handbook ou a reserva. [Semântica e execução](operations/CAUSAL_REPLAY.md). Uma futura camada de orquestração deve coordenar processos
 com dependências e recorrência demonstradas, preservando a lógica independente.
+`streaming/contracts/customer_day_alerts.py` identifica o limiar, orçamento e
+release; `streaming/decisions/customer_day_alert_policy.py` recebe somente transação
+e score e aplica a regra causal de cliente/dia em memória. Não importa treino,
+loaders de dados, SQLite ou transporte; não recebe feedback. A integração durável
+com o executor permanece pendente e preservará os checkpoints anteriores.
+O [protocolo operacional](operations/CAUSAL_REPLAY.md#protocolo-antes-do-acesso-nativo)
+define seleção do limiar e critérios de comparação antes do acesso à reserva.
 O [mural](project/ROADMAP.md) define essa ordem.
 
 ## Documentação e testes

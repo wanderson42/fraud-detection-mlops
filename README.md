@@ -2,7 +2,8 @@
 
 Laboratório de MLOps para priorização de investigação de fraude, desenvolvido por
 Wanderson Ferreira. Usa dados simulados do Fraud Detection Handbook, histórico
-causal, feedback atrasado e evidências auditáveis.
+causal, feedback atrasado e evidências auditáveis. A inferência por streaming
+para triagem próxima do tempo real é um objetivo central do projeto.
 
 Com capacidade limitada de investigação, quais clientes priorizar usando apenas
 a informação disponível no momento da decisão?
@@ -52,6 +53,11 @@ O autor validou e commitou os contratos e o executor local de replay em
 retomada e repetida. Ao final, 20 eventos únicos e dez requests de atributos
 permaneceram gravados; a repetição aceitou zero eventos e reaproveitou 22 entregas.
 [Relato e limites](docs/operations/CAUSAL_REPLAY.md#execução-no-ambiente-do-autor--2026-10-13).
+Executor e relato foram integrados pelo
+[PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4). A política de
+alerta no primeiro cruzamento de limiar está preparada com fixtures: até cem
+clientes/dia, sem substituição posterior. O limiar nativo e a integração durável
+ficam pendentes. [Regras e avaliação](docs/operations/CAUSAL_REPLAY.md#política-operacional-de-triagem).
 O replay nativo continua pendente e 16–30/09 permanece reservado, conforme o
 [mural](docs/project/ROADMAP.md#próxima-entrega-concreta). A adoção de um
 orquestrador depende de necessidade operacional demonstrada.
@@ -90,6 +96,7 @@ tracking juntos; `data/` é ignorado pelo Git.
 | `evaluation/` | Métricas de ranking, comparações pareadas e diagnósticos |
 | `integrations/` | MLflow, persistência skops e exportação da referência |
 | `serving/` | Contrato HTTP, carga da release e pontuação sem estado |
+| `streaming/contracts/`, `features/`, `replay/`, `decisions/` | Eventos, estado causal, replay local e política de investigação |
 
 Os caminhos são relativos a `fraud_detection_mlops/`. A
 [arquitetura](docs/ARCHITECTURE.md) explica dependências e migração. Os adaptadores

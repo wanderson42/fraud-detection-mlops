@@ -132,7 +132,8 @@ local por execução; armazenamento compartilhado e múltiplos hosts ficam fora 
 O autor aprovou 448 testes com 93 avisos, pytest em 88,35 s e tox `py314`
 aprovado em 94,24 s. Commitou a implementação em `23c863e` e executou o demo
 interrompido, sua retomada, a repetição completa e `inspect`. A branch informada
-é `feat/causal-replay-executor`; publicação e CI dessa revisão ainda são pendentes.
+é `feat/causal-replay-executor`. A implementação e o relato foram integrados pelo
+[PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4), em `721a4bb`.
 [Recibo do relato](../../references/evidence/causal_replay_author_validation_2026-10-13.json).
 
 | Fase | Eventos únicos / requests / feedbacks | Aceitos / reaproveitados na chamada |
@@ -156,15 +157,97 @@ repetição do executor com fixtures, não uma avaliação da referência do aut
 Não foram gerados alertas, avaliados períodos novos do Handbook ou consumida
 a reserva. O código do executor permanece igual ao da validação informada.
 
-## Próximo protocolo
+## Política operacional de triagem
 
-Antes do replay nativo, precisamos fixar o protocolo: janela e contexto de
-aquecimento, release, emissão de scores, política de investigação no instante da
-decisão e comparação com o offline sob a mesma disponibilidade de informação.
-O primeiro score nativo precisa de até 14 dias prévios de transações/feedback
-para as features de terminal. Apenas zeros por ausência de contexto não demonstram
-paridade. 16–30/09 continua reservado. A fila retrospectiva de cem clientes por
-dia ainda não foi convertida em política instantânea de alerta.
+O objetivo é **pontuar transações conforme chegam e apoiar investigação próxima
+do tempo real**. A autorização do pagamento, bloqueio automático e atendimento
+ao cliente ficam fora deste laboratório. O score continua sendo ranking sem
+calibração de probabilidade. HTTP é a interface de pontuação; processamento por
+eventos acrescenta estado causal, decisões e feedback.
+
+`streaming/contracts/customer_day_alerts.py` identifica configuração, release,
+limiar e orçamento. `streaming/decisions/customer_day_alert_policy.py` aplica:
+
+1. Na primeira transação cujo score seja **maior ou igual ao limiar fixado**,
+   alertar o cliente, se ainda houver capacidade naquele dia.
+2. Usar até **100 clientes distintos por dia**, seguindo relógio do evento e
+   `TRANSACTION_ID` crescente em empates. Novas transações de um cliente já
+   alertado continuam pontuadas, sem consumir outra posição.
+3. Quando o orçamento acabar, registrar a supressão; continuar calculando scores
+   e recebendo feedback. Não substituir um alerta anterior por um caso posterior.
+4. Reiniciar a capacidade à meia-noite do calendário da fonte. Não completar
+   vagas ao fim do dia nem transferir capacidade não utilizada para amanhã.
+
+Essa escolha permite encaminhamento imediato, com custo explícito: casos que
+atingem o limiar cedo podem ocupar vagas de casos mais fortes que chegam depois.
+A comparação com top-100 ao fim do dia medirá esse compromisso. Ela muda tanto
+o momento quanto a política de seleção; não isola o efeito causal do transporte.
+
+O componente é um **redutor determinístico em memória**, verificado com scores
+gerados. Não está acoplado à CLI do replay, não grava alertas em SQLite e não
+publica mensagens. Reprocessar o prefixo completo de scores confirmados reconstrói
+as decisões e seus IDs. A integração nativa deverá confirmar score, alerta e
+checkpoint atomicamente; um publicador externo precisará de contrato de entrega
+próprio. Não reutilizar o checkpoint de features como se já contivesse alertas.
+
+## Protocolo antes do acesso nativo
+
+O [protocolo operacional](../../references/causal_replay_protocol_v1.json)
+registra estas decisões e mantém `native_execution_authorized: false`.
+O desenho está preparado; **o limiar nativo ainda não foi calculado/congelado**.
+Os testes usam 0,7 como valor artificial, sem recomendar esse número para a referência.
+
+Para definir o limiar, pontuar **a mesma release congelada de abril** nas três
+janelas de validação de desenvolvimento: 15–21/07, 29/07–04/08 e 12–18/08.
+Não usar os scores dos modelos reajustados por fold do Optuna. Para cada um dos
+21 dias, agregar máximo score por cliente e extrair o 100º maior score; selecionar
+a mediana dos 21 cortes. Faltar um dia ou haver menos de 100 clientes interrompe
+a seleção. A regra usa scores e capacidade, sem consultar rótulos ou setembro.
+É uma heurística de ocupação; não garante cem alertas futuros nem precisão mínima.
+O adaptador dessa seleção será a próxima implementação; não é um comando desta entrega.
+
+Registrar hashes das entradas e release, limiar numérico, configuração e código
+antes de integrar o adaptador que abrirá 16–30/09. O contexto 02–15/09 alimentará
+somente históricos, sem alertas nem nova avaliação de qualidade. Até 14 dias
+prévios são necessários para as features de terminal. O escoamento de feedback
+vai até antes de 08/10, sem ler transações de outubro: os rótulos dos eventos já
+observados serão agendados pelo adaptador e liberados sete dias depois.
+
+## Avaliar a implementação operacional
+
+Separar três verificações:
+
+- **Paridade técnica:** features/scores contra cálculo offline independente com
+  a mesma informação disponível; decisões contra aplicação da mesma política,
+  mesma ordem, limiar e orçamento. Duplicatas e recuperação devem preservar IDs.
+- **Utilidade da triagem:** ocupação, precisão sobre alertas realmente emitidos,
+  recall de cliente/dia, supressões, capturas/perdas e horário do alerta em relação
+  à primeira transação fraudulenta. Sem alertas, precisão é indefinida; sem clientes
+  fraudulentos, recall é indefinido. Manter todos os 15 dias no relatório.
+- **Entrega e custo:** tempo monotônico de parede entre emissão programada e
+  decisão persistida, p50/p95/p99, backlog/lag, throughput, pico de memória, CPU,
+  crescimento do banco e tempo de recuperação. Medir ritmo 1x e aceleração
+  separadamente; o relógio de 2018 não mede latência de processamento.
+
+Adotamos **p95 até 1 segundo** como alvo inicial de laboratório para triagem,
+incluindo espera na fila, features, score e persistência. Não é SLA de produção;
+o alvo ainda não foi testado. O p95 HTTP de 4,74 ms não cobre esse percurso.
+O ensaio em ritmo 1x precisa registrar o início/âncora e usar emissão programada,
+para contabilizar atraso que se acumule em vez de medir só o tempo de execução.
+O contexto é carregado antes dessa medição; falhas/recuperação têm ensaio próprio.
+
+Comparar a política causal com uma lista batch produzida após o fechamento diário
+usando **os mesmos scores**, máximo por cliente e top-100. Reportar diferenças de
+captura, clientes escolhidos e disponibilidade do alerta. Nenhum desses resultados
+provará perdas financeiras evitadas, superioridade formal ou promoção em produção.
+
+## Próxima implementação
+
+Pontuar o desenvolvimento com a release congelada e fixar o limiar; depois
+implementar o adaptador restrito e a persistência atômica das decisões. Conferir
+paridade, duplicatas e recuperação com fixtures antes de executar a reserva.
+16–30/09 continua reservado. A política foi preparada com fixtures; sua integração
+durável e o limiar nativo ainda estão pendentes.
 
 Referências: [transações SQLite](https://www.sqlite.org/transactional.html) e
 [API `sqlite3` do Python 3.14](https://docs.python.org/3.14/library/sqlite3.html).
