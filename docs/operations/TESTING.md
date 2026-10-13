@@ -372,3 +372,18 @@ escritores concorrentes da mesma identidade, inspeção sem criar banco e rejei�
 preservando o schema legado. O demo rejeita a release nativa antes de carregar o
 modelo. Esses testes não consomem a reserva, não usam a referência do autor para
 novas avaliações e não estabelecem garantias de transporte ou falha física de disco.
+
+## Adaptador nativo e avaliação da fila causal
+
+`tests/streaming/replay/test_native_causal_replay.py` usa Silver e release gerados,
+com datas fora do escopo deliberadamente inválidas. Confere plano sem acesso a
+Parquet/modelo, vínculos antes do acesso, schema/domínios/datas/IDs, eventos sem
+alvo atual, feedback com atraso exato, paridade Gold/score/decisão e retomada do
+sufixo sem duplicar scores. A avaliação rejeita alterações em features, scores,
+feedback, eventos, alertas e política persistidos; o verificador não reabre Silver.
+
+Também confere precisão com denominador real, capacidade ociosa, ausência de
+fraudes/alertas e captura de cliente-dia com fraude posterior ao alerta. Falha de
+avaliação mantém o checkpoint; publicação final por diretório evita resultado sem
+recibo. Os protocolos e fingerprints dos executores anteriores são preservados.
+As fixtures não fornecem evidência de eficácia, latência 1x ou replay nativo.

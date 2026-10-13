@@ -60,8 +60,10 @@ clientes/dia, sem substituição posterior. O autor validou 502 testes e executo
 verificou o seletor em 201.155 transações de 21 dias de desenvolvimento: limiar
 **0,8826493808370081**, com configuração identificada. A fila nativa e
 a avaliação de sua qualidade/latência seguem pendentes. O [PR #5](https://github.com/wanderson42/fraud-detection-mlops/pull/5)
-integrou o marco. Um executor com scores/alertas/checkpoint atômicos está preparado
-com fixtures; adaptador nativo e publicação externa ainda estão pendentes.
+integrou o marco. O [PR #6](https://github.com/wanderson42/fraud-detection-mlops/pull/6)
+integrou scores/alertas/checkpoint atômicos. O adaptador restrito e o protocolo
+executável acelerado estão preparados com fixtures; execução nativa e publicação
+externa permanecem pendentes. [Procedimento](docs/operations/CAUSAL_REPLAY.md#adaptador-nativo-restrito-e-avaliação-acelerada).
 [Resultado e limites](docs/operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13).
 [Regras e avaliação](docs/operations/CAUSAL_REPLAY.md#política-operacional-de-triagem).
 O replay nativo continua pendente e 16–30/09 permanece reservado, conforme o
@@ -102,7 +104,7 @@ tracking juntos; `data/` é ignorado pelo Git.
 | `evaluation/` | Métricas de ranking, comparações pareadas e diagnósticos |
 | `integrations/` | MLflow, persistência skops e exportação da referência |
 | `serving/` | Contrato HTTP, carga da release e pontuação sem estado |
-| `streaming/contracts/`, `features/`, `replay/`, `decisions/` | Eventos, estado causal, replay local e política de investigação |
+| `streaming/contracts/`, `features/`, `replay/`, `decisions/`, `evaluation/` | Eventos, estado causal, replay durável, triagem e avaliação da fila emitida |
 
 Os caminhos são relativos a `fraud_detection_mlops/`. A
 [arquitetura](docs/ARCHITECTURE.md) explica dependências e migração. Os adaptadores

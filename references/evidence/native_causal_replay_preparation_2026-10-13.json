@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "version": "native_causal_replay_preparation_v1",
+  "recorded_date": "2026-10-13",
+  "base_commit": "2d08c4b63ea92a92d51a36f47a4bfccea60727c8",
+  "base_integration": "PR #6 durable triage replay",
+  "branch": "feat/native-causal-replay",
+  "implementation_files_sha256": {
+    "fraud_detection_mlops/data/datasets/native_replay_dataset.py": "f504a74998b8123bc9378b6c31c4bd6e7d9ab3ea5895b5ba2d7b1bbdf3a6b0a9",
+    "fraud_detection_mlops/streaming/contracts/native_replay_execution.py": "71011c6a127c173a4c9dfbc7508eee178f5c44a62e42cc6a309f0409b8cb13b8",
+    "fraud_detection_mlops/streaming/replay/native_causal_replay.py": "c458bdf365493a8e3005dd70b301f771701c29ec5d4445748821d18b39549370",
+    "fraud_detection_mlops/streaming/evaluation/native_triage_assessment.py": "c91bd5e0207a3ba2709d009163c3fed3d2ca57daf4abd6923a5af82e5b8f6b1c",
+    "references/native_causal_replay_execution_v1.json": "762d10cea3bebdcddde3d94b67846e0f239bda5fcfcd8b547cf3225058ba5ff5"
+  },
+  "validation": {
+    "python": "3.14.4",
+    "command": "tox -e py314",
+    "status": "success",
+    "passed": 564,
+    "warnings": 93,
+    "pytest_seconds": 178.28,
+    "tox_total_seconds": 188.48,
+    "ruff_check": "passed",
+    "ruff_format_files": 183,
+    "poetry_check_lock": "passed",
+    "git_diff_check": "passed",
+    "new_adapter_tests": 32,
+    "input_scope": "generated_Silver_and_release_only"
+  },
+  "implemented": [
+    "metadata_only_plan",
+    "restricted_29_Silver_partitions",
+    "pinned_release_configuration_and_native_threshold_receipt_before_partition_access",
+    "label_separated_total_order_event_stream",
+    "independent_DuckDB_Gold_and_offline_score_oracle",
+    "resume_uncommitted_suffix_of_durable_ledger",
+    "independent_feature_score_decision_parity",
+    "actual_alert_customer_day_quality_and_descriptive_batch_comparison",
+    "atomic_assessment_directory_publication_and_external_digest_verification",
+    "accelerated_local_cost_measurement_with_explicit_latency_exclusions"
+  ],
+  "native_partition_bytes_opened": false,
+  "native_replay_evaluated": false,
+  "paced_1x_evaluated": false,
+  "end_to_end_latency_evaluated": false,
+  "sla_validated": false,
+  "refit": false,
+  "production_promotion": false,
+  "native_commands_prerequisite": "committed_final_protocol_and_code_plus_successful_CI",
+  "remaining": [
+    "native_input_preparation_run_and_verification_by_author",
+    "native_result_review_before_documented_quality_claims",
+    "scheduled_emission_pacing_backlog_lag_and_recovery_measurement",
+    "external_transport_publication_and_monitoring_when_justified"
+  ]
+}

@@ -121,8 +121,14 @@ e score e aplica a regra causal de cliente/dia em memória. A função pura de
 decisão é compartilhada com `streaming/replay/durable_triage_replay.py`, que grava
 score, decisão, alerta e checkpoint em uma transação SQLite. A política não importa
 loaders, SQLite, treino ou transporte; o executor recebe feedback separado. O schema
-durável tem identidade e caminhos próprios, sem migrar o estado anterior. Adaptador
-nativo e publicador externo ficam pendentes.
+durável tem identidade e caminhos próprios, sem migrar o estado anterior.
+`data/datasets/native_replay_dataset.py` restringe as partições e materializa eventos
+ordenados com rótulos somente no feedback. `streaming/replay/native_causal_replay.py`
+compõe artefatos identificados, oracle Gold independente e executor durável;
+`streaming/evaluation/native_triage_assessment.py` confere paridade e avalia os
+alertas efetivamente gravados. O código está conferido com fixtures; resultados
+nativos e publicador externo ainda estão pendentes. O protocolo executável separado
+preserva os bytes dos protocolos e checkpoints anteriores.
 O [protocolo operacional](operations/CAUSAL_REPLAY.md#protocolo-antes-do-acesso-nativo)
 define seleção do limiar e critérios de comparação antes do acesso à reserva.
 `streaming/preparation/development_alert_threshold.py` compõe release congelada,

@@ -376,13 +376,96 @@ com dez scores e dez decisões de triagem persistidos. Repetir não deve alterar
 orçamento, IDs ou contadores. A recuperação local não garante publicação exatamente
 uma vez em um broker ou API: não há publicador externo nesta entrega.
 
-## Próxima implementação
+## Adaptador nativo restrito e avaliação acelerada
 
-O PR #5 integrou o limiar e seu registro. Validar/publicar o incremento durável
-e exigir CI/revisão do SHA final. Depois implementar o adaptador restrito, vinculando
-política, manifesto nativo e janela. Conferir sua paridade independente e restrições
-de acesso com fixtures antes da reserva. **16–30/09 continua reservado**; utilidade
-e latência da fila causal ainda não foram avaliadas.
+O [PR #6](https://github.com/wanderson42/fraud-detection-mlops/pull/6) integrou o
+núcleo durável. O novo adaptador usa esse núcleo e acrescenta restrição de acesso,
+proveniência da entrada e avaliação independente. Foi validado com dados e modelo
+gerados; nenhuma execução nativa foi realizada nesta preparação.
+
+O protocolo `native_causal_replay_execution_v1.json` vincula por SHA-256 o
+protocolo causal original, a configuração escolhida, o manifesto do limiar e a
+release de abril. O original continua imutável para preservar o verificador do
+limiar. Não há novo fit, seleção, calibração ou modelo alternativo.
+
+| Comando | Acesso e efeito |
+| --- | --- |
+| `plan` | Lê contratos, inventory e manifesto Silver; não abre nem calcula hash dos Parquets ou carrega modelo |
+| `prepare` | Após verificar artefatos e código commitado, lê apenas as 29 partições 02–30/09, gera eventos separados e oracle Gold DuckDB; publica entrada nova por renomeação de diretório |
+| `run` | Usa a entrada materializada, sem reabrir Silver; aquece 02–15/09 sem pontuar, processa 16–30/09 e drena feedback antes de 08/10; confirma score/alerta/checkpoint localmente |
+| `verify` | Lê somente entrada materializada, checkpoint e relatório; exige digests externos e reproduz paridade e métricas sem refit, scorer ou novo acesso a Silver |
+
+A preparação já acessa a reserva: só executá-la após commit/revisão e CI do SHA
+final. Alterações no código, no protocolo, na política ou na entrada bloqueiam a
+retomada; preserve os artefatos. Configurações pessoais do editor podem permanecer
+staged. Não se deve excluir o checkpoint para aparentar recuperação.
+
+A entrada inclui um SQLite de eventos, Parquets diários do oracle e scores offline.
+Os rótulos existem no artefato offline para avaliação, mas somente `FeedbackEvent`
+os entrega ao executor, exatamente sete dias após a transação. A transação e o
+request do scorer não os aceitam. Empates seguem feedback primeiro e ID crescente;
+histórico no instante exato da decisão fica excluído. Nenhuma transação de outubro
+é aberta para completar rótulos de setembro.
+
+`--stop-after` conta novos eventos confirmados. A retomada lê somente o sufixo ainda
+não confirmado; o banco persistido mantém o prefixo. Entradas e estados antigos não
+são migrados. O resultado final e seu recibo são publicados juntos em um diretório
+`assessment/` novo; falha anterior à publicação conserva o checkpoint para retomada.
+
+### Procedimento local
+
+Primeiro aplique/valide/commite o pacote incremental e publique a branch. Exija CI
+aprovada para o SHA final **antes de `prepare`**. O pacote separa os comandos para
+que a instalação/validação não abra a reserva automaticamente:
+
+```bash
+# Metadados apenas, depois do commit local:
+poetry run python -m fraud_detection_mlops.streaming.replay.native_causal_replay plan
+
+# Depois da CI aprovada, usando os artefatos nativos já existentes:
+bash ~/Downloads/fraud-native-causal-replay/prepare-native.sh
+
+# Interromper de forma controlada e depois retomar o mesmo banco:
+bash ~/Downloads/fraud-native-causal-replay/run-native.sh --stop-after 5000
+bash ~/Downloads/fraud-native-causal-replay/run-native.sh
+
+# Verificação somente para leitura, usando o digest do recibo final:
+bash ~/Downloads/fraud-native-causal-replay/verify-native.sh
+```
+
+O preparo usa `data/serving/reference-v1` e
+`data/replay/policies/development-threshold-v1`. Publica entrada e digest em
+`data/replay/native-input-v1/` e `data/replay/native-input-receipt.json`, sem
+sobrescrever destinos existentes. A execução mantém
+`data/replay/native-september-v1/checkpoint.sqlite`. Os scripts preservam o recibo
+externo final em `data/replay/native-result-receipt.json` e recusam seu conflito.
+Podem ser necessárias vários minutos de processamento; o adaptador informa cada
+5.000 novos eventos confirmados. Interromper e retomar não muda a política nem
+reabre partições Silver. Não considerar resultado parcial como avaliação completa.
+
+### Interpretação do relatório
+
+A verificação exige as 15 datas e todos os feedbacks maduros. Confere features
+contra Gold DuckDB independente (inteiros exatos, floats rtol 1e-12/atol 1e-9),
+scores com diferença absoluta até 1e-12 e decisões contra simulação independente da
+mesma ordem/limiar/orçamento. Falha de paridade impede publicar avaliação concluída.
+
+A precisão divide capturas por **alertas realmente emitidos**, e é nula quando
+não há alertas. O recall é nulo quando não há clientes com fraude naquele dia.
+Captura de cliente-dia significa qualquer transação fraudulenta do cliente no dia,
+inclusive após o alerta; não equivale à fraude da transação que disparou o alerta.
+O relatório inclui capacidade ociosa/esgotamento, clientes elegíveis suprimidos,
+capturas/perdas e horário do alerta relativo à primeira fraude daquele cliente-dia.
+Diferenças para o top-100 retrospectivo combinam momento de entrega e política de
+seleção; são descritivas, sem alegação causal de superioridade do streaming.
+
+Esta execução é acelerada e sem pacing: duração local do handler inclui commit,
+mas não emissão programada, transporte ou fila. CPU e RSS são do processo; RSS é
+seu pico acumulado de vida, não memória exclusiva do scorer. São guardados os custos
+de cada invocação, inclusive retomadas, e o tamanho do checkpoint. O ensaio 1x,
+backlog/lag e tempo de recuperação continuam pendentes; p95 local não valida o
+alvo de laboratório de 1 s desde emissão nem SLA de produção. Não há publicação
+externa, teste temporal formal, economia monetária ou promoção de produção.
 
 Referências: [transações SQLite](https://www.sqlite.org/transactional.html) e
 [API `sqlite3` do Python 3.14](https://docs.python.org/3.14/library/sqlite3.html).
