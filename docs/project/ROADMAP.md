@@ -9,7 +9,9 @@ a [arquitetura](../ARCHITECTURE.md) descreve o que existe e os contratos fixam a
 Construir um laboratório de priorização de investigação que percorra **dados →
 features → modelo → inferência → feedback atrasado → monitoramento → atualização
 controlada**, com execução reproduzível, recuperação de falhas e custo mensurado.
-O objetivo do portfólio é demonstrar decisões de engenharia e operação de ML.
+A inferência por streaming é um objetivo central: pontuar cada transação conforme
+chega e apoiar investigação próxima do tempo real. O objetivo do portfólio é
+demonstrar decisões de engenharia e operação de ML.
 A fonte é simulada; a utilidade e os limites estão no [contexto](PROBLEM_CONTEXT.md).
 
 **Onde estamos:** pipeline offline, tracking e primeiro ciclo de experimentação
@@ -25,8 +27,16 @@ pelo autor. O incremento de Prefect para checagem isolada de serving foi retirad
 por custo desproporcional ao benefício. Contratos de transação/feedback e executor
 local SQLite foram preparados e conferidos com dados sintéticos. O autor aprovou
 448 testes e commitou `23c863e`; interrupção, retomada e repetição do demo conferiram.
-Publicação/CI da branch ainda são pendentes. Replay nativo, transporte, política de investigação,
-monitoramento, CD e CT ainda precisam de implementação/protocolo e evidência própria.
+Implementação e relato foram integrados em `721a4bb`, pelo
+[PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4). A política de
+primeiro cruzamento de limiar e o protocolo operacional estão preparados com
+fixtures e publicados na branch `feat/streaming-triage-policy`, agora em `d40d839`;
+a main conferida continua em `721a4bb`. O autor aprovou 502 testes/93 avisos e
+preparou/verificou o limiar 0,8826493808370081 sobre 201.155 transações nos 21 dias
+de desenvolvimento. Mediana e identidade da configuração foram conferidas com
+o relato; scores nativos não foram recebidos para inspeção independente.
+Integração durável de alertas, replay nativo, transporte,
+monitoramento, CD e CT ainda precisam de implementação e evidência própria.
 O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
 referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
@@ -61,7 +71,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Meta | Estado | Entrega que permite concluir |
 | --- | --- | --- |
 | Dados reproduzíveis: Bronze, Silver e Gold | Validado localmente | Fonte fixada, integridade, contratos, reconciliação, features causais e separação temporal. [Pipeline](../data/DATA_PIPELINE.md), [dicionário](../data/DATA_DICTIONARY.md) e [Gold](../data/GOLD_CONTRACT.md). |
-| Qualidade do software e CI | Marcos anteriores integrados; replay local aprovado pelo autor com 448 testes; CI da branch pendente | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. Validação do autor em `23c863e`: 448 testes/93 avisos e demo sintético retomado/repetido. Publicar a branch e exigir CI/revisão do SHA final antes de integrar. [Testing](../operations/TESTING.md). |
+| Qualidade do software e CI | Replay local e relato integrados pelo PR #4; política de triagem preparada para revisão | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. Validação do autor em `23c863e`: 448 testes/93 avisos e demo sintético retomado/repetido. Cada incremento exige validação nativa, revisão e CI do SHA final. [Testing](../operations/TESTING.md). |
 | Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](../modeling/BASELINE.md), [MLflow](../operations/MLFLOW.md) e [diagnóstico](../modeling/DIAGNOSTICS.md). |
 | Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
 | Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../../references/evidence/freeze_execution_2026-10-08.json). |
@@ -72,7 +82,8 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados localmente pelo autor; incremento integrado | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
 | Orquestração de processos | Condicional; escolha de ferramenta adiada | Justificar por dependências, recorrência, recuperação e gestão de execução dos processos de dados, avaliação ou treinamento. Prefect permanece uma opção futura; o fluxo isolado de verificação de serving foi retirado. Manter executores e contratos independentes. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
-| Streaming por replay histórico e paridade de features | Executor local validado pelo autor com fixtures; publicação/CI, protocolo e execução nativa pendentes | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
+| Política causal de investigação | Política/seletor publicados em d40d839; limiar nativo executado/verificado pelo autor e registrado; integração durável pendente | Limiar 0,8826493808370081 nos 21 dias, 201.155 scores, mesma release de abril, sem alvos atuais na seleção. Até 100 clientes/dia, sem substituição posterior. Configuração identificada; ocupação, capturas/perdas e tempo até alerta ainda serão avaliados. [Resultado e limites](../operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13). |
+| Streaming por replay histórico e paridade de features | Executor local integrado pelo PR #4; protocolo operacional preparado; execução nativa pendente | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
 | Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
 | Monitoramento e dashboards | Planejado | Prometheus/Grafana para serviço, latência, erros e atraso do processamento; pipeline para qualidade, drift e desempenho quando os rótulos chegarem. Painel de investigação com orçamento, acertos e fraudes perdidas. Demonstrar alertas e recuperação em falhas controladas. |
 | CD e governança de promoção | Planejado | Entregar imagem e modelo identificados, executar smoke tests e gates de dados/modelo/serviço, controlar a promoção e demonstrar rollback. Registry/aliases MLflow entram com o fluxo de release; o gate exploratório atual não autoriza deployment. |
@@ -83,16 +94,28 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Commitar o registro da validação fornecida pelo autor, publicar a branch do
-   replay local e revisar o PR. Exigir CI do SHA final antes de integrar em main.
-   Preservar checkpoint sintético, release, tracking, recibos e a reserva.
-2. Fixar antes do acesso o protocolo operacional nativo: janela, contexto de até
-   14 dias, release identificada, emissão de scores e política de investigação no
-   instante da decisão. Definir comparação offline sob a mesma informação disponível.
-3. Implementar o adaptador nativo sob esse protocolo e conferir suas restrições com
-   fixtures. Só então executar a janela autorizada, medir recursos e recuperação;
-   depois agregar monitoramento com feedback amadurecido. Ferramenta de orquestração
-   permanece condicional à necessidade operacional demonstrada.
+1. Commitar o relato do autor e a configuração identificada nesta mesma branch.
+   Código e execução já estão publicados em `d40d839`; não repetir seleção ou testes
+   completos por este fechamento documental. Publicar o registro, abrir/atualizar
+   o PR e exigir CI/revisão do SHA final antes de integrar em main.
+2. Usar o limiar registrado e o manifesto nativo como entradas identificadas da
+   próxima entrega. Preservar artefatos e protocolo original; conferir os vínculos
+   antes de integrar alertas. Não recalibrar o corte usando setembro.
+3. Implementar o adaptador nativo restrito, persistindo score, alerta e checkpoint
+   atomicamente. Conferir paridade, duplicatas, conflitos e recuperação com fixtures.
+   Completar e commitar o protocolo executável antes de abrir 16–30/09.
+4. Executar a reserva sob o protocolo final: comparar paridade técnica, utilidade
+   da triagem e entrega/custo. Medir latência com emissão programada e ritmo 1x;
+   alvo inicial de laboratório p95 ≤ 1 s, ainda não validado. Medir aceleração
+   separadamente. Depois agregar monitoramento com feedback amadurecido e transporte.
+   Orquestração permanece condicional à necessidade demonstrada.
+
+A [especificação operacional](../../references/causal_replay_protocol_v1.json)
+fixa as escolhas e mantém execução nativa desabilitada nesta preparação.
+O placeholder no protocolo original permanece nulo; a configuração selecionada
+registra 0,8826493808370081. O valor 0,7 continua somente fixture. A política consome capacidade na
+primeira transação elegível e pode perder casos mais fortes que chegam depois;
+não deve herdar a precisão do top-100 retrospectivo como promessa operacional.
 
 O [resultado nativo Docker](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09)
 fecha a verificação operacional local. Ele não substitui a CI final da branch,
@@ -136,9 +159,12 @@ protocolo próprio e respeito à dependência temporal e por entidade.
 
 **Streaming:** o marco é processar eventos, produzir features causais e scores,
 receber rótulos posteriores e atualizar métricas. O replay não entrega o rótulo
-junto à transação. A política de investigação será definida em relação ao momento
-de decisão; a fila retrospectiva de um dia completo não vira uma decisão instantânea.
-O pipeline deverá recuperar estado após reinício, tratar duplicatas e aplicar uma
+junto à transação. A política preparada usa o instante da primeira transação
+elegível; a fila retrospectiva de um dia completo não vira uma decisão instantânea.
+A política preparada usa primeiro cruzamento de limiar, até cem clientes por
+dia e nenhuma substituição posterior. O limiar será fixado no desenvolvimento;
+a integração durável está pendente. O pipeline deverá recuperar estado após
+reinício, tratar duplicatas e aplicar uma
 política explícita para eventos atrasados, sem alterar silenciosamente scores já
 emitidos. Comparar com o cálculo offline sob a mesma política de eventos.
 
@@ -183,8 +209,8 @@ ou número de observações independentes. A comparação confirmatória de outr
 permanece condicional a candidato elegível, desenho próprio e janela preservada.
 Exportação e HTTP/wheel da referência foram validados pelo autor. O PR #2 integrou
 a etapa estatística. O autor concluiu a verificação Docker e integrou o
-incremento. O fluxo Prefect de verificação isolada foi retirado; os contratos e o executor local foram conferidos com fixtures. O próximo marco
-fixa o protocolo do replay nativo antes do acesso à reserva.
+incremento. O fluxo Prefect de verificação isolada foi retirado; os contratos e o executor local foram conferidos com fixtures. A preparação operacional fixa política e método de escolha do limiar; o próximo
+marco calcula esse limiar no desenvolvimento e completa o adaptador antes da reserva.
 
 ## Sequência operacional e controle de custo
 

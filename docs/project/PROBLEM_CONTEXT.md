@@ -1,6 +1,6 @@
 # Detecção de fraude: contexto, propósito e decisões do projeto
 
-Atualizado em 2026-10-09. A tese deste projeto é construir um **laboratório
+Atualizado em 2026-10-13. A tese deste projeto é construir um **laboratório
 reproduzível de MLOps para priorização de investigação de fraude**, com histórico
 temporal, feedback atrasado e evidências auditáveis. A contribuição pretendida
 é permitir que outra pessoa reproduza, questione e evolua esse sistema.
@@ -9,9 +9,11 @@ A pergunta que orienta o trabalho é: **com capacidade limitada de investigaçã
 quais clientes devemos priorizar usando somente a informação disponível naquele
 momento, e como manter essa decisão confiável quando dados e padrões mudam?**
 
-O ponto de partida é fraude em cartões simulada pelo Handbook. O que já existe
-é uma avaliação offline de ranking e um pipeline rastreável. Replay, inferência
-online, monitoramento e política de promoção são próximos marcos concretos.
+O ponto de partida é fraude em cartões simulada pelo Handbook. A inferência
+por streaming é um objetivo central: pontuar cada transação observada e apoiar
+triagem próxima do tempo real, com estado e feedback atrasado. Avaliação offline,
+pipeline rastreável, serving HTTP/Docker e replay local com fixtures já existem.
+Transporte contínuo, replay nativo, monitoramento e promoção são próximos marcos.
 
 ## Antes dos modelos: cliente, transação e terminal
 
@@ -178,6 +180,15 @@ O ranking diário atual é calculado **offline, com o dia completo**. Sua precis
 é uma medida de priorização retrospectiva; não prova que uma fila ao vivo teria
 selecionado os mesmos casos antes da liquidação. Features causais são necessárias,
 mas não bastam para validar uma política de decisão em tempo real.
+
+A política operacional preparada encaminha o cliente na primeira transação cujo
+score atinja um limiar fixado no desenvolvimento, até cem clientes distintos por
+dia. Não substitui alertas já emitidos; pode esgotar a capacidade antes de casos
+mais fortes chegarem. O limiar e a integração durável ainda estão pendentes.
+[Regras e critérios de avaliação](../operations/CAUSAL_REPLAY.md#política-operacional-de-triagem).
+Latência, tempo até alerta e capturas sob essa regra serão avaliados separadamente
+da qualidade retrospectiva do ranking. Não estimamos pagamentos bloqueados ou
+perdas financeiras evitadas.
 
 ## O que os dados simulam, e o que deixam de fora
 

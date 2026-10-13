@@ -132,7 +132,8 @@ local por execução; armazenamento compartilhado e múltiplos hosts ficam fora 
 O autor aprovou 448 testes com 93 avisos, pytest em 88,35 s e tox `py314`
 aprovado em 94,24 s. Commitou a implementação em `23c863e` e executou o demo
 interrompido, sua retomada, a repetição completa e `inspect`. A branch informada
-é `feat/causal-replay-executor`; publicação e CI dessa revisão ainda são pendentes.
+é `feat/causal-replay-executor`. A implementação e o relato foram integrados pelo
+[PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4), em `721a4bb`.
 [Recibo do relato](../../references/evidence/causal_replay_author_validation_2026-10-13.json).
 
 | Fase | Eventos únicos / requests / feedbacks | Aceitos / reaproveitados na chamada |
@@ -156,15 +157,174 @@ repetição do executor com fixtures, não uma avaliação da referência do aut
 Não foram gerados alertas, avaliados períodos novos do Handbook ou consumida
 a reserva. O código do executor permanece igual ao da validação informada.
 
-## Próximo protocolo
+## Política operacional de triagem
 
-Antes do replay nativo, precisamos fixar o protocolo: janela e contexto de
-aquecimento, release, emissão de scores, política de investigação no instante da
-decisão e comparação com o offline sob a mesma disponibilidade de informação.
-O primeiro score nativo precisa de até 14 dias prévios de transações/feedback
-para as features de terminal. Apenas zeros por ausência de contexto não demonstram
-paridade. 16–30/09 continua reservado. A fila retrospectiva de cem clientes por
-dia ainda não foi convertida em política instantânea de alerta.
+O objetivo é **pontuar transações conforme chegam e apoiar investigação próxima
+do tempo real**. A autorização do pagamento, bloqueio automático e atendimento
+ao cliente ficam fora deste laboratório. O score continua sendo ranking sem
+calibração de probabilidade. HTTP é a interface de pontuação; processamento por
+eventos acrescenta estado causal, decisões e feedback.
+
+`streaming/contracts/customer_day_alerts.py` identifica configuração, release,
+limiar e orçamento. `streaming/decisions/customer_day_alert_policy.py` aplica:
+
+1. Na primeira transação cujo score seja **maior ou igual ao limiar fixado**,
+   alertar o cliente, se ainda houver capacidade naquele dia.
+2. Usar até **100 clientes distintos por dia**, seguindo relógio do evento e
+   `TRANSACTION_ID` crescente em empates. Novas transações de um cliente já
+   alertado continuam pontuadas, sem consumir outra posição.
+3. Quando o orçamento acabar, registrar a supressão; continuar calculando scores
+   e recebendo feedback. Não substituir um alerta anterior por um caso posterior.
+4. Reiniciar a capacidade à meia-noite do calendário da fonte. Não completar
+   vagas ao fim do dia nem transferir capacidade não utilizada para amanhã.
+
+Essa escolha permite encaminhamento imediato, com custo explícito: casos que
+atingem o limiar cedo podem ocupar vagas de casos mais fortes que chegam depois.
+A comparação com top-100 ao fim do dia medirá esse compromisso. Ela muda tanto
+o momento quanto a política de seleção; não isola o efeito causal do transporte.
+
+O componente é um **redutor determinístico em memória**, verificado com scores
+gerados. Não está acoplado à CLI do replay, não grava alertas em SQLite e não
+publica mensagens. Reprocessar o prefixo completo de scores confirmados reconstrói
+as decisões e seus IDs. A integração nativa deverá confirmar score, alerta e
+checkpoint atomicamente; um publicador externo precisará de contrato de entrega
+próprio. Não reutilizar o checkpoint de features como se já contivesse alertas.
+
+## Protocolo antes do acesso nativo
+
+O [protocolo operacional](../../references/causal_replay_protocol_v1.json)
+registra estas decisões e mantém `native_execution_authorized: false`.
+O autor executou e verificou o seletor: **limiar 0,8826493808370081**.
+A [configuração identificada](../../references/customer_day_alert_policy_v1.json)
+registra o valor e a release; integração durável e replay nativo seguem pendentes.
+Os testes usam 0,7 como valor artificial, sem recomendar esse número para a referência.
+
+Para definir o limiar, pontuar **a mesma release congelada de abril** nas três
+janelas de validação de desenvolvimento: 15–21/07, 29/07–04/08 e 12–18/08.
+Não usar os scores dos modelos reajustados por fold do Optuna. Para cada um dos
+21 dias, agregar máximo score por cliente e extrair o 100º maior score; selecionar
+a mediana dos 21 cortes. Faltar um dia ou haver menos de 100 clientes interrompe
+a seleção. A regra usa scores e capacidade, sem consultar rótulos ou setembro.
+É uma heurística de ocupação; não garante cem alertas futuros nem precisão mínima.
+O seletor está em `streaming/preparation/development_alert_threshold.py`. Ele
+reutiliza somente as 21 partições da Gold de desenvolvimento já existente, sem
+reconstruir features nem carregar os modelos de cada fold. Projeta identidades,
+relógio e 19 features; não decodifica `TX_FRAUD` ou `LABEL_AVAILABLE_AT`. Os valores
+de feedback passado incorporados nas features permanecem parte do contrato causal.
+
+Registrar hashes das entradas e release, limiar numérico, configuração e código
+antes de integrar o adaptador que abrirá 16–30/09. O contexto 02–15/09 alimentará
+somente históricos, sem alertas nem nova avaliação de qualidade. Até 14 dias
+prévios são necessários para as features de terminal. O escoamento de feedback
+vai até antes de 08/10, sem ler transações de outubro: os rótulos dos eventos já
+observados serão agendados pelo adaptador e liberados sete dias depois.
+
+## Selecionar e verificar o limiar no desenvolvimento
+
+Depois de validar e **commitar** o código, na raiz do projeto:
+
+```bash
+DEVELOPMENT_PATH="$PWD/data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/development_gold_v2/9f86edf1e8f2408098c5377456e8968e3a7ca5925a20222b8ab8547ef94cbaf9"
+THRESHOLD_PATH="$PWD/data/replay/policies/development-threshold-v1"
+
+poetry run python -m \
+  fraud_detection_mlops.streaming.preparation.development_alert_threshold \
+  prepare "$DEVELOPMENT_PATH" \
+  --release "$PWD/data/serving/reference-v1" \
+  --output "$THRESHOLD_PATH" \
+  --project-root "$PWD"
+```
+
+Guardar o `manifest_sha256` retornado. Verificar usando **esse digest externo**:
+
+```bash
+poetry run python -m \
+  fraud_detection_mlops.streaming.preparation.development_alert_threshold \
+  verify "$THRESHOLD_PATH" \
+  --manifest-sha256 "DIGEST_RETORNADO_PELO_PREPARE" \
+  --project-root "$PWD"
+```
+
+O pacote de entrega também fornece `prepare-threshold.sh`, que reserva um recibo
+novo, captura o digest do resultado e executa a verificação sem substituir saídas.
+Preparação recusa um destino existente; repetir a verificação não pontua o modelo.
+A verificação é offline sobre os artefatos salvos: não relê a Gold nem reconstrói
+ou autentica o dataset original. Sua identidade/hashes foram registrados na preparação.
+
+`policy.json` vincula limiar, release e orçamento; `scores.parquet` guarda somente
+ID da transação, ID do cliente, relógio e score; `report.json` guarda os 21 cortes;
+`manifest.json` vincula entradas, protocolo, código commitado, ambiente e hashes.
+Mudança de entrada, release ou código durante seleção impede publicação. Um lock
+local impede escritores concorrentes; a saída é publicada inteira após a verificação.
+Não há ajuste de modelo, AP, precisão com rótulos, nova run MLflow ou abertura da
+reserva. O JSON do protocolo continua com limiar nulo: o valor fica na configuração
+identificada, e a execução nativa de replay permanece desabilitada.
+
+## Resultado do limiar informado pelo autor — 2026-10-13
+
+O autor aprovou **502 testes/93 avisos** (pytest em 89,06 s; tox `py314` em
+94,14 s), commitou e publicou `d40d839`. O seletor pontuou **201.155 transações
+nos 21 dias autorizados** e retornou sucesso na preparação e verificação. A mediana
+dos cortes foi **0,8826493808370081**, ao orçamento de cem clientes/dia.
+[Relato e escopo](../../references/evidence/development_alert_threshold_author_validation_2026-10-13.json).
+
+| Vínculo | Identidade |
+| --- | --- |
+| Política canônica | `e9872e37ea944eb6e3322867a6c311e270e8d93bb829baaa18182da281eef578` |
+| Manifesto do resultado nativo | `6fc96c1550c0c7840701215541d168928bac660d34c8fa2d06c655d95d0a1afa` |
+| Configuração registrada | [customer_day_alert_policy_v1.json](../../references/customer_day_alert_policy_v1.json) |
+
+A mediana e o hash canônico da configuração foram conferidos independentemente
+com os números fornecidos. Os scores/manifesto nativos não foram recebidos para
+inspeção independente; o recibo registra o relato do autor e seu digest externo.
+O protocolo original permanece preservado, inclusive seu placeholder de limiar;
+o valor selecionado está no arquivo de configuração próprio. Essa separação
+mantém o verificador compatível com o protocolo fixado antes da seleção.
+
+O corte é uma **heurística de capacidade**, não 88,26% de probabilidade de fraude.
+Não garante cem alertas futuros, precisão mínima ou captura no momento útil.
+A execução não mediu qualidade com os alvos atuais, latência de streaming nem
+persistência de alertas. Não houve refit ou abertura de setembro. Não repetir
+`prepare` nem apagar a saída; para rever o resultado, usar `verify` com o digest
+registrado. A próxima entrega deve vincular a política e o manifesto antes de
+integrar score/alerta/checkpoint e validar a recuperação com fixtures.
+
+## Avaliar a implementação operacional
+
+Separar três verificações:
+
+- **Paridade técnica:** features/scores contra cálculo offline independente com
+  a mesma informação disponível; decisões contra aplicação da mesma política,
+  mesma ordem, limiar e orçamento. Duplicatas e recuperação devem preservar IDs.
+- **Utilidade da triagem:** ocupação, precisão sobre alertas realmente emitidos,
+  recall de cliente/dia, supressões, capturas/perdas e horário do alerta em relação
+  à primeira transação fraudulenta. Sem alertas, precisão é indefinida; sem clientes
+  fraudulentos, recall é indefinido. Manter todos os 15 dias no relatório.
+- **Entrega e custo:** tempo monotônico de parede entre emissão programada e
+  decisão persistida, p50/p95/p99, backlog/lag, throughput, pico de memória, CPU,
+  crescimento do banco e tempo de recuperação. Medir ritmo 1x e aceleração
+  separadamente; o relógio de 2018 não mede latência de processamento.
+
+Adotamos **p95 até 1 segundo** como alvo inicial de laboratório para triagem,
+incluindo espera na fila, features, score e persistência. Não é SLA de produção;
+o alvo ainda não foi testado. O p95 HTTP de 4,74 ms não cobre esse percurso.
+O ensaio em ritmo 1x precisa registrar o início/âncora e usar emissão programada,
+para contabilizar atraso que se acumule em vez de medir só o tempo de execução.
+O contexto é carregado antes dessa medição; falhas/recuperação têm ensaio próprio.
+
+Comparar a política causal com uma lista batch produzida após o fechamento diário
+usando **os mesmos scores**, máximo por cliente e top-100. Reportar diferenças de
+captura, clientes escolhidos e disponibilidade do alerta. Nenhum desses resultados
+provará perdas financeiras evitadas, superioridade formal ou promoção em produção.
+
+## Próxima implementação
+
+Registrar este fechamento na branch publicada e exigir CI/revisão do SHA final.
+O limiar e sua configuração estão documentados; não repetir a seleção. Implementar
+o adaptador restrito e a persistência atômica de score/alerta/checkpoint, vinculando
+política e manifesto nativo. Conferir paridade, duplicatas e recuperação com fixtures
+antes do acesso reservado. **16–30/09 continua reservado**; utilidade e latência da
+fila causal ainda não foram avaliadas.
 
 Referências: [transações SQLite](https://www.sqlite.org/transactional.html) e
 [API `sqlite3` do Python 3.14](https://docs.python.org/3.14/library/sqlite3.html).

@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "version": "streaming_triage_policy_preparation_v1",
+  "recorded_date": "2026-10-13",
+  "repository_base_commit": "721a4bb537432ccd2cdcf71f3bc63ada14034919",
+  "base_scope": "published_main_with_causal_replay_and_author_receipt_integrated_PR_4",
+  "data_scope": "synthetic_transactions_and_scores_only",
+  "validation": {
+    "command": "tox -e py314",
+    "python": "3.14.4",
+    "passed": 473,
+    "warnings": 93,
+    "pytest_seconds": 153.11,
+    "tox_environment_seconds": 164.37,
+    "status": "success",
+    "lockfile": "passed",
+    "ruff_check": "passed",
+    "ruff_format": "169_files_formatted",
+    "new_policy_tests": 25
+  },
+  "selected_hashes": {
+    "fraud_detection_mlops/streaming/contracts/customer_day_alerts.py": "c4123c71eac52c0470ce24eec42df85bf9bc6fac5d80c0d72ea46adecb4d5cb7",
+    "fraud_detection_mlops/streaming/decisions/customer_day_alert_policy.py": "45650255b2df3e361601ddeaaa036a1f5180c65d830efa96339c8e54b964ae10",
+    "tests/streaming/decisions/test_customer_day_alert_policy.py": "a1a1306dfdf0436da1ad3b48aa6ef2e036a73a522e7a9664717fa81577e099bd",
+    "references/causal_replay_protocol_v1.json": "a932d674509444665cbafb093225c6255ce6f0b0ef109cc6a3b2dcac3af43cc3"
+  },
+  "existing_replay_source_sha256_unchanged": "1ee063aa986ef3a6326706b2deeda0cdd7857baa64dfc1c196e90e82d2ed397a",
+  "scope": {
+    "policy_reducer": "deterministic_in_memory_first_crossing_customer_day",
+    "fixture_score_threshold": 0.7,
+    "native_score_threshold": null,
+    "threshold_selection_method_fixed": true,
+    "threshold_selection_executor_implemented": false,
+    "alerts_integrated_in_existing_replay": false,
+    "alert_durable_checkpoint_implemented": false,
+    "external_publication_implemented": false,
+    "new_dependencies": false,
+    "refit": false,
+    "native_development_accessed": false,
+    "reserved_replay_accessed": false,
+    "native_replay_evaluated": false,
+    "laboratory_latency_target_p95_ms": 1000,
+    "latency_target_evaluated": false,
+    "production_sla_validated": false,
+    "production_promotion": false
+  },
+  "next_action": "implement_and_execute_development_only_threshold_selection_before_restricted_native_adapter"
+}

@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "version": "causal_replay_protocol_v1",
+  "stage": "policy_preparation_pending_development_threshold",
+  "native_execution_authorized": false,
+  "operational_goal": "near_real_time_customer_investigation_triage_after_transaction_observation",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "reference": {
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "serving_release_id": "b3deb7e7bb6d4189bc7671453f8643d2",
+    "manifest_sha256": "1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263",
+    "feature_contract_version": "gold_v1",
+    "refit": false,
+    "calibration": false
+  },
+  "windows": {
+    "context": {
+      "start": "2018-09-02",
+      "end_exclusive": "2018-09-16"
+    },
+    "scored_replay": {
+      "start": "2018-09-16",
+      "end_exclusive": "2018-10-01"
+    },
+    "feedback_drain_end_exclusive": "2018-10-08T00:00:00",
+    "context_usage": "features_only_no_alerts_no_new_fit_no_quality_metrics",
+    "feedback_drain_usage": "mature_labels_of_previously_observed_transactions_only_no_october_transactions"
+  },
+  "event_policy": {
+    "version": "transaction_feedback_v1",
+    "label_delay_days": 7,
+    "known_label_rule": "feedback_received_and_available_at_strictly_before_decision_clock",
+    "transaction_history_rule": "strictly_before_decision_clock",
+    "source_order": [
+      "event_clock_ns",
+      "feedback_before_transaction",
+      "transaction_id_ascending"
+    ],
+    "equal_clock_history": "excluded_even_if_already_received",
+    "identical_duplicate": "reuse_original_committed_score_and_decision",
+    "conflicting_duplicate": "reject_preserve_original",
+    "unseen_late_event": "reject_without_retroactive_score_or_alert_changes",
+    "transport_reordering_buffer": false
+  },
+  "investigation_policy": {
+    "version": "first_crossing_customer_day_v1",
+    "score_threshold": null,
+    "threshold_status": "must_be_frozen_from_development_before_native_replay",
+    "threshold_comparison": "score_greater_than_or_equal_to_threshold",
+    "daily_customer_budget": 100,
+    "day_boundary": "source_calendar_midnight_no_inferred_timezone",
+    "customer_rule": "at_most_one_alert_per_customer_per_source_calendar_day",
+    "allocation": "first_qualifying_transactions_in_fixed_event_order",
+    "already_alerted_customer": "no_extra_budget_consumption",
+    "budget_exhausted": "record_suppression_continue_scoring_and_feedback",
+    "unused_budget": "report_no_end_of_day_fill_no_carry_to_next_day",
+    "replacement_or_retraction": false,
+    "payment_authorization": false,
+    "automatic_customer_blocking": false,
+    "score_semantics": "uncalibrated_ranking_not_fraud_probability"
+  },
+  "threshold_selection": {
+    "reference": "same_frozen_April_release_not_Optuna_fold_refits",
+    "windows": [
+      {
+        "start": "2018-07-15",
+        "end_exclusive": "2018-07-22"
+      },
+      {
+        "start": "2018-07-29",
+        "end_exclusive": "2018-08-05"
+      },
+      {
+        "start": "2018-08-12",
+        "end_exclusive": "2018-08-19"
+      }
+    ],
+    "required_days": 21,
+    "customer_day_score": "maximum_transaction_score",
+    "daily_cutoff": "100th_highest_customer_day_score_ties_by_customer_id_ascending",
+    "selected_threshold": "median_of_21_daily_cutoff_scores",
+    "missing_day_or_fewer_than_100_customers": "stop_report_no_silent_day_omission",
+    "label_use": false,
+    "september_use": false,
+    "fallback_threshold": null,
+    "interpretation": "development_capacity_heuristic_not_probability_calibration_or_guaranteed_future_occupancy"
+  },
+  "comparison": {
+    "feature_score_parity": "independent_offline_calculation_same_clock_context_labels_and_fixed_model",
+    "causal_decision_parity": "same_order_threshold_and_budget_on_identical_scores",
+    "daily_batch_baseline": "identical_scores_customer_day_maximum_top_100_after_day_close",
+    "daily_batch_interpretation": "different_delivery_time_and_selection_policy_descriptive_tradeoff_not_causal_streaming_effect",
+    "formal_superiority_claim": false
+  },
+  "reporting": {
+    "quality_after_feedback": [
+      "pooled_transaction_average_precision",
+      "daily_actual_alert_count_budget_occupancy_and_exhaustion_clock",
+      "daily_customer_alert_precision_null_if_no_alerts",
+      "daily_customer_recall_null_if_no_fraudulent_customers",
+      "captured_missed_and_nonfraudulent_alert_customer_days",
+      "qualified_customers_suppressed_by_budget",
+      "alert_clock_relative_to_first_fraudulent_transaction_same_customer_day",
+      "daily_batch_top100_customer_overlap_and_descriptive_capture_difference"
+    ],
+    "all_replay_days_required": 15,
+    "event_time_vs_wall_time": "source_clock_is_not_wall_clock_latency",
+    "latency_clock": "monotonic_wall_clock_from_scheduled_emission_to_durable_score_and_alert_decision",
+    "paced_run": "source_interarrival_timing_at_1x_context_loaded_before_measurement",
+    "laboratory_latency_target": {
+      "p95_ms": 1000,
+      "production_sla": false
+    },
+    "cost": [
+      "p50_p95_p99_wall_latency",
+      "backlog_and_lag",
+      "processing_throughput",
+      "peak_rss",
+      "cpu_and_disk_growth",
+      "checkpoint_recovery_seconds"
+    ],
+    "accelerated_run": "separate_capacity_measurement_report_speed_factor_and_resources_no_real_time_claim",
+    "money_saved": null,
+    "generalization_confidence_interval": null,
+    "production_promotion": false
+  },
+  "remaining_before_native_execution": [
+    "score_only_prespecified_development_windows_with_frozen_release_and_causal_context",
+    "commit_threshold_receipt_input_hashes_and_identified_policy_configuration",
+    "implement_restricted_native_adapter_and_atomic_score_alert_checkpoint_storage",
+    "verify_adapter_decision_parity_duplicates_and_crash_recovery_with_fixtures",
+    "commit_final_execution_protocol_code_and_pass_CI_before_reserved_access"
+  ]
+}

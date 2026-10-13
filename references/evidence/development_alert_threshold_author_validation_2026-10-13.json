@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "version": "development_alert_threshold_author_validation_v1",
+  "recorded_date": "2026-10-13",
+  "verification_scope": "author_supplied_terminal_output_with_independent_median_and_configuration_hash_check",
+  "git_revision": "d40d8390821d86db159d72385c4279158e13a51f",
+  "branch": "feat/streaming-triage-policy",
+  "publication": "remote_branch_commit_verified",
+  "validation": {
+    "command": "make validate / tox py314",
+    "passed": 502,
+    "warnings": 93,
+    "pytest_seconds": 89.06,
+    "tox_environment_seconds": 94.14,
+    "tox_total_seconds": 94.16,
+    "status": "success"
+  },
+  "selection": {
+    "version": "development_alert_threshold_v1",
+    "status": "success",
+    "days": 21,
+    "rows": 201155,
+    "score_threshold": 0.8826493808370081,
+    "daily_customer_budget": 100,
+    "daily_cutoffs": [
+      {
+        "date": "2018-07-15",
+        "customers": 3705,
+        "cutoff_customer_id": 4494,
+        "cutoff_score": 0.956811855084421
+      },
+      {
+        "date": "2018-07-16",
+        "customers": 3722,
+        "cutoff_customer_id": 2673,
+        "cutoff_score": 0.9550987799761966
+      },
+      {
+        "date": "2018-07-17",
+        "customers": 3743,
+        "cutoff_customer_id": 3872,
+        "cutoff_score": 0.9087406140953498
+      },
+      {
+        "date": "2018-07-18",
+        "customers": 3669,
+        "cutoff_customer_id": 1595,
+        "cutoff_score": 0.9238857315929129
+      },
+      {
+        "date": "2018-07-19",
+        "customers": 3692,
+        "cutoff_customer_id": 4102,
+        "cutoff_score": 0.8862044735302091
+      },
+      {
+        "date": "2018-07-20",
+        "customers": 3729,
+        "cutoff_customer_id": 2575,
+        "cutoff_score": 0.8806055973098731
+      },
+      {
+        "date": "2018-07-21",
+        "customers": 3689,
+        "cutoff_customer_id": 2998,
+        "cutoff_score": 0.9091562357586014
+      },
+      {
+        "date": "2018-07-29",
+        "customers": 3719,
+        "cutoff_customer_id": 2090,
+        "cutoff_score": 0.8343985433540531
+      },
+      {
+        "date": "2018-07-30",
+        "customers": 3682,
+        "cutoff_customer_id": 3122,
+        "cutoff_score": 0.9597573500503851
+      },
+      {
+        "date": "2018-07-31",
+        "customers": 3732,
+        "cutoff_customer_id": 2496,
+        "cutoff_score": 0.8508258533139762
+      },
+      {
+        "date": "2018-08-01",
+        "customers": 3693,
+        "cutoff_customer_id": 3846,
+        "cutoff_score": 0.9278061509034079
+      },
+      {
+        "date": "2018-08-02",
+        "customers": 3724,
+        "cutoff_customer_id": 4174,
+        "cutoff_score": 0.9353318755596168
+      },
+      {
+        "date": "2018-08-03",
+        "customers": 3726,
+        "cutoff_customer_id": 1086,
+        "cutoff_score": 0.852817927337093
+      },
+      {
+        "date": "2018-08-04",
+        "customers": 3711,
+        "cutoff_customer_id": 1564,
+        "cutoff_score": 0.878558765915885
+      },
+      {
+        "date": "2018-08-12",
+        "customers": 3696,
+        "cutoff_customer_id": 1692,
+        "cutoff_score": 0.8529500657858655
+      },
+      {
+        "date": "2018-08-13",
+        "customers": 3716,
+        "cutoff_customer_id": 3297,
+        "cutoff_score": 0.8487795035838376
+      },
+      {
+        "date": "2018-08-14",
+        "customers": 3733,
+        "cutoff_customer_id": 3501,
+        "cutoff_score": 0.8193031066121276
+      },
+      {
+        "date": "2018-08-15",
+        "customers": 3721,
+        "cutoff_customer_id": 2338,
+        "cutoff_score": 0.8826493808370081
+      },
+      {
+        "date": "2018-08-16",
+        "customers": 3698,
+        "cutoff_customer_id": 1849,
+        "cutoff_score": 0.9315754196865126
+      },
+      {
+        "date": "2018-08-17",
+        "customers": 3734,
+        "cutoff_customer_id": 129,
+        "cutoff_score": 0.8520254017572868
+      },
+      {
+        "date": "2018-08-18",
+        "customers": 3717,
+        "cutoff_customer_id": 3716,
+        "cutoff_score": 0.8513362746637495
+      }
+    ],
+    "policy_sha256": "e9872e37ea944eb6e3322867a6c311e270e8d93bb829baaa18182da281eef578",
+    "result_path": "data/replay/policies/development-threshold-v1",
+    "manifest_sha256": "6fc96c1550c0c7840701215541d168928bac660d34c8fa2d06c655d95d0a1afa",
+    "prepare_and_verify_reported_success": true,
+    "native_artifacts_independently_read": false
+  },
+  "recorded_configuration": {
+    "path": "references/customer_day_alert_policy_v1.json",
+    "policy_sha256": "e9872e37ea944eb6e3322867a6c311e270e8d93bb829baaa18182da281eef578",
+    "origin": "reconstructed_from_author_threshold_and_predeclared_reference_identity"
+  },
+  "scope": {
+    "model": "same_frozen_April_reference",
+    "rule": "median_of_21_daily_100th_customer_maximum_scores",
+    "refit": false,
+    "current_labels_used": false,
+    "native_replay_evaluated": false,
+    "production_promotion": false,
+    "original_causal_replay_protocol_unchanged": true,
+    "ci_final_documentation_commit": "pending",
+    "pr_search": "no_pr_returned_for_this_branch"
+  },
+  "limitations": [
+    "Capacity cutoff is not calibrated fraud probability or a guarantee of future alert count or precision.",
+    "Native scores/manifest were not supplied for independent artifact inspection; their external manifest digest is recorded from the author's output.",
+    "Operational alert persistence, native replay, throughput, latency and alert quality remain unevaluated."
+  ]
+}

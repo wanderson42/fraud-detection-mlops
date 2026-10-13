@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "version": "first_crossing_customer_day_v1",
+  "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+  "serving_release_id": "b3deb7e7bb6d4189bc7671453f8643d2",
+  "score_threshold": 0.8826493808370081,
+  "daily_customer_budget": 100
+}

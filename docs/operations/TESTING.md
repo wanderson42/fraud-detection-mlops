@@ -318,3 +318,42 @@ scores foi coberta com fixtures e release sintética pelos testes da suíte.
 [Recibo do relato](../../references/evidence/causal_replay_author_validation_2026-10-13.json).
 Isso é evidência local fornecida pelo autor; a CI da branch ainda precisa aprovar
 o SHA final, e a avaliação operacional nativa do Handbook permanece pendente.
+
+## Política causal de triagem — preparação
+
+`tests/streaming/decisions/test_customer_day_alert_policy.py` usa transações e
+scores gerados. Confere cruzamento inclusive no limiar, cliente repetido, teto
+por dia, reset à meia-noite, esgotamento sem substituição, duplicatas idênticas e
+conflitantes, identidade da release, ordem/empates, estabilidade do prefixo e
+reconstrução determinística. Configuração sem limiar, não finita ou com rótulo
+é rejeitada. IDs de alerta vinculam configuração, cliente e dia.
+
+Esses checks validam o redutor em memória. Não demonstram publicação externa,
+persistência de alertas no checkpoint, utilidade nos dados nativos ou latência.
+O protocolo mantém acesso nativo desabilitado até congelar limiar e integrar o
+adaptador/persistência. Os recibos de 448 testes e demo de features continuam
+históricos; não passam a representar alertas que aquela execução não produziu.
+
+## Seleção do limiar — desenvolvimento restrito
+
+Os novos checks exercitam máximo por cliente/dia, mediana dos 21 cortes, empates,
+cobertura e exclusão de alvos. Uma Gold gerada tem somente as 21 partições físicas
+permitidas; as demais existem apenas no manifesto, para detectar leitura ampliada.
+O teste de ponta a ponta usa um modelo ajustado somente em exemplos sintéticos.
+Projeção, corrupção, redirecionamento, datas/domínios, release incorreta, alteração
+em execução, publicação sem saída parcial e lock local são conferidos. A verificação
+reproduz a seleção sem carregar o modelo ou pontuar novamente.
+Esses checks não calculam o limiar nativo nem avaliam o replay reservado.
+
+## Validação do autor e registro do limiar — 2026-10-13
+
+O autor aprovou 502 testes/93 avisos em `d40d839`: pytest em 89,06 s e tox
+`py314` em 94,14 s. A preparação/verificação nativa do limiar também retornou
+sucesso nos 21 dias e 201.155 transações. O [recibo](../../references/evidence/development_alert_threshold_author_validation_2026-10-13.json)
+registra o relato; mediana e hash da configuração foram conferidos separadamente.
+O dataset de scores/manifesto nativo não foi recebido para inspeção independente.
+Este fechamento muda documentos/JSON e narrativa; não altera código, dependências,
+protocolos históricos nem saídas. A validação nativa já relatada permanece válida
+para o código preservado. Conferir JSON, narrativa, hashes e diff; a CI do SHA
+final continua necessária antes do merge. Não confundir o resultado do seletor
+com avaliação de alertas duráveis, latência ou consumo da reserva.
