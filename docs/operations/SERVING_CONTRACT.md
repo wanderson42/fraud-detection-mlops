@@ -245,8 +245,11 @@ root nem altere seus bytes para contornar a falha.
 
 Uma divergência de ambiente exige restaurar a versão fixada, sem atualizar o
 manifesto para fazer o check passar. A execução não abre Gold/tracking, não ajusta
-o modelo e não consome a janela de replay. O recibo nativo foi revisado;
-Prefect entra após validar e integrar o incremento Docker.
+o modelo e não consome a janela de replay. O recibo nativo foi revisado e o
+incremento Docker foi integrado pelo autor. A verificação continua executável
+diretamente pelos scripts existentes; não requer servidor ou dependências de
+Prefect. O incremento de orquestração dessa checagem foi retirado. Contratos de
+eventos e estado do replay são a próxima entrega.
 
 Referências oficiais: [build em estágios](https://docs.docker.com/build/building/multi-stage/),
 [opções de execução](https://docs.docker.com/reference/cli/docker/container/run/) e

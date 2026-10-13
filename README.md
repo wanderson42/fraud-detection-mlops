@@ -46,8 +46,15 @@ A imagem reportada tem **166,8 MiB**; o snapshot de memória foi **178,5 MiB** e
 a latência p95 **4,74 ms** em 100 requisições sequenciais ao caso de controle.
 São medições locais, sem validação de carga concorrente ou SLA.
 O [recibo nativo](references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json)
-preserva o resultado e seu alcance. Fechar o PR Docker precede o primeiro fluxo
-Prefect, conforme o [mural](docs/project/ROADMAP.md#próxima-entrega-concreta).
+preserva o resultado e seu alcance. O PR Docker foi integrado pelo autor.
+O autor validou e commitou os contratos e o executor local de replay em
+`23c863e`: **448 testes aprovados** e demonstração sintética interrompida,
+retomada e repetida. Ao final, 20 eventos únicos e dez requests de atributos
+permaneceram gravados; a repetição aceitou zero eventos e reaproveitou 22 entregas.
+[Relato e limites](docs/operations/CAUSAL_REPLAY.md#execução-no-ambiente-do-autor--2026-10-13).
+O replay nativo continua pendente e 16–30/09 permanece reservado, conforme o
+[mural](docs/project/ROADMAP.md#próxima-entrega-concreta). A adoção de um
+orquestrador depende de necessidade operacional demonstrada.
 [Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
 orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).
 A organização inicial usou

@@ -34,6 +34,7 @@ Só declaramos suporte ao Python 3.14; sua ausência causa falha.
 | `modeling/contracts/`, `modeling/experiments/` | `tests/modeling/contracts/`, `tests/modeling/experiments/` |
 | `evaluation/`, `integrations/` | `tests/evaluation/`, `tests/integrations/` |
 | `serving/` | `tests/serving/` e integração da exportação |
+| `streaming/contracts/`, `streaming/features/`, `streaming/replay/` | `tests/streaming/`; fixtures geradas e release sintética compartilhadas no conftest da área |
 | Comandos atuais e paths padrão | `tests/data/test_entry_points.py`, `tests/modeling/test_entry_points.py` |
 | Escrita atômica e identidade dos arquivos | `tests/test_artifacts.py` |
 
@@ -58,6 +59,7 @@ O pytest usa `--import-mode=importlib`.
 | Congelamento e avaliação final | Identidades commitadas, modelo fixo, inputs autorizados, acesso registrado, retries e recomputação offline |
 | Optuna | SQLite real, orçamento global, lock, falhas, trial abandonado, retomada determinística do TPE e mudança de identidade |
 | Serving | Validação antes da predição, paridade HTTP, readiness, hashes/tipos antes da carga e exportação sem fit ou novas runs |
+| Replay causal local | Eventos sem alvo, feedback separado, paridade Gold e scores sintéticos, bordas/empates, duplicatas/conflitos, atraso rejeitado, checkpoint e rollback após falha/saída abrupta |
 
 A preparação de desenvolvimento usa bytes reservados inválidos para demonstrar
 que setembro não é aberto. A comparação TPE usa o runner público numa chamada e
@@ -305,3 +307,14 @@ arquiva o log da validação completa por hash e registra os totais observados,
 sem inferir novos totais a partir das suites anteriores. Alterações no lockfile
 devem conservar as versões `main` da imagem validada; uma mudança de runtime
 exige novo build/run e recibo próprio. A CI precisa aprovar o SHA final do PR.
+
+## Replay local — validação informada pelo autor
+
+Em 2026-10-13, o autor aprovou `make validate`/tox `py314`: 448 testes, 93 avisos,
+pytest em 88,35 s e tox em 94,24 s. A implementação foi commitada em `23c863e`.
+O demo passou de seis para 20 eventos únicos; a repetição reaproveitou 22 entregas,
+sem nova decisão. A pontuação era desabilitada no demo. Paridade de atributos e
+scores foi coberta com fixtures e release sintética pelos testes da suíte.
+[Recibo do relato](../../references/evidence/causal_replay_author_validation_2026-10-13.json).
+Isso é evidência local fornecida pelo autor; a CI da branch ainda precisa aprovar
+o SHA final, e a avaliação operacional nativa do Handbook permanece pendente.

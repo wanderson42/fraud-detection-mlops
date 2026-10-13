@@ -672,8 +672,9 @@ coerente, sem apagar a auditoria para aparentar um primeiro acesso.
 
 O executor não instala um gate de promoção ou teste de superioridade. Após revisar
 os resultados nativos, o autor exportou a referência e validou HTTP/wheel isolado.
-O PR #2 integrou a etapa; seguimos para Docker e Prefect. O replay
-terá seu contrato de eventos. [Recibo dos checks](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json)
+O PR #2 integrou a etapa; Docker foi validado e integrado posteriormente.
+A próxima etapa define contratos de eventos e estado para replay causal.
+A adoção de um orquestrador permanece condicional à necessidade operacional. [Recibo dos checks](../../references/evidence/reference_assessment_execution_preparation_2026-10-09.json)
 e [etapa 15](../../notebooks/stages/15_reference_assessment_execution.ipynb).
 
 ### Resultado da referência em setembro — relato do autor
