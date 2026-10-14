@@ -469,3 +469,13 @@ externa, teste temporal formal, economia monetária ou promoção de produção.
 
 Referências: [transações SQLite](https://www.sqlite.org/transactional.html) e
 [API `sqlite3` do Python 3.14](https://docs.python.org/3.14/library/sqlite3.html).
+
+## Falha numérica e execução corretiva — 2026-10-13
+
+O autor completou 556.824 eventos, mas o gate final reprovou 2 dos 143.945 scores.
+O diagnóstico confirmou diferenças nas médias entre SQLite e DuckDB atravessando
+cortes do HGB. A elegibilidade ao limiar não mudou; isso não aprova o gate.
+Preserve o checkpoint original. O [runbook corretivo](NUMERICAL_CORRECTIVE_REPLAY.md)
+define uma média binária exata, oráculo independente e execução separada sobre os
+eventos já materializados, sem reabrir Silver ou alterar modelo/limiar/tolerância.
+A execução corretiva real e a consolidação de qualidade ainda aguardam o autor.

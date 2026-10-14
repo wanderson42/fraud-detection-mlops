@@ -39,8 +39,10 @@ o relato; scores nativos não foram recebidos para inspeção independente.
 A integração durável de scores/decisões/alertas/checkpoint foi integrada em
 `2d08c4b` pelo [PR #6](https://github.com/wanderson42/fraud-detection-mlops/pull/6).
 O adaptador restrito, a avaliação independente e o protocolo executável acelerado
-estão preparados com fixtures. Replay nativo, emissão programada/lag, transporte,
-monitoramento, CD e CT ainda precisam de evidência própria.
+foram preparados com fixtures e executados pelo autor. O processamento nativo
+completou os eventos, mas reprovou a paridade de dois scores. A correção numérica
+e a consolidação da qualidade aguardam execução/verificação. Emissão programada/lag,
+transporte, monitoramento, CD e CT ainda precisam de evidência própria.
 O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
 referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
@@ -48,7 +50,9 @@ precisão diária @100 de 54,93% e recall médio diário de 72,89%, sem refit.
 O autor aprovou 362 testes/94 avisos e forneceu o diagnóstico de dependência.
 A análise nativa por blocos foi executada e revisada, com todas as réplicas
 definidas: este escopo exploratório está concluído. A janela foi consumida;
-16–30/09 continua reservada para replay. Cobertura de generalização não foi
+16–30/09 também foi materializada e processada no replay original; não é mais uma
+janela intocada. A execução corretiva é técnica, sem nova seleção. Cobertura de
+generalização não foi
 estabelecida; confirmação de outro modelo exige candidato elegível, desenho
 próprio e janela preservada. A etapa estatística foi integrada pelo
 [PR #2](https://github.com/wanderson42/fraud-detection-mlops/pull/2), após 379 testes
@@ -87,7 +91,7 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Orquestração de processos | Condicional; escolha de ferramenta adiada | Justificar por dependências, recorrência, recuperação e gestão de execução dos processos de dados, avaliação ou treinamento. Prefect permanece uma opção futura; o fluxo isolado de verificação de serving foi retirado. Manter executores e contratos independentes. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
 | Política causal de investigação | Política/limiar e integração durável integrados pelos PRs #5/#6; avaliação nativa pendente | Limiar 0,8826493808370081 nos 21 dias, 201.155 scores, mesma release de abril, sem alvos atuais na seleção. Até 100 clientes/dia, sem substituição posterior. Configuração identificada; ocupação, capturas/perdas e tempo até alerta ainda serão avaliados. [Resultado e limites](../operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13). |
-| Streaming por replay histórico e paridade de features | Executor durável integrado pelo PR #6; adaptador/protocolo acelerado preparados com fixtures; execução nativa pendente | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
+| Streaming por replay histórico e paridade de features | Executor durável integrado pelo PR #6; execução original completou eventos, mas reprovou paridade; correção numérica preparada, execução corretiva pendente | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
 | Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
 | Monitoramento e dashboards | Planejado | Prometheus/Grafana para serviço, latência, erros e atraso do processamento; pipeline para qualidade, drift e desempenho quando os rótulos chegarem. Painel de investigação com orçamento, acertos e fraudes perdidas. Demonstrar alertas e recuperação em falhas controladas. |
 | CD e governança de promoção | Planejado | Entregar imagem e modelo identificados, executar smoke tests e gates de dados/modelo/serviço, controlar a promoção e demonstrar rollback. Registry/aliases MLflow entram com o fluxo de release; o gate exploratório atual não autoriza deployment. |
@@ -98,18 +102,18 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Validar e commitar o incremento `feat/native-causal-replay`, publicar o SHA final
-   e exigir CI aprovada antes de abrir as partições reservadas. O PR #6 já integrou
-   a persistência durável; não repetir a seleção do limiar nem migrar checkpoints.
-2. Executar `plan` para conferir somente metadados. Depois da CI, `prepare` verifica
-   release, manifesto nativo do limiar, configuração e código commitado antes de ler
-   exclusivamente 02–30/09. Contexto 02–15/09 não produz scores/alertas; a janela
-   avaliada é 16–30/09, com feedback completo antes de 08/10 e sem transações de outubro.
-3. Executar/retomar o replay acelerado e verificar o resultado: paridade independente
-   de features/scores/decisões, alertas reais, ocupação, capturas/perdas e comparação
-   descritiva com top-100 retrospectivo. Receber o relatório do autor antes de registrar
-   resultado nativo ou concluir a utilidade da fila. O preparo materializa a reserva;
-   falhas não autorizam retunar limiar/modelo ou apagar estado para repetir o ensaio.
+1. Validar e commitar a correção `fix/deterministic-replay-features`, publicar o SHA
+   final e exigir CI aprovada. A execução original confirmou 556.824 eventos e
+   1.453 alertas, mas o gate reprovou 2/143.945 scores. O diagnóstico identificou
+   diferenças de ponto flutuante nas médias; nenhuma elegibilidade ao limiar mudou.
+2. Preservar o checkpoint original e preparar a entrada corretiva usando somente
+   os eventos já materializados, sem repetir `prepare-native.sh` nem reabrir Silver.
+   Modelo, limiar e tolerância permanecem congelados. A regra soma os valores
+   binários exatamente, divide pela contagem e arredonda uma vez para float64.
+3. Executar/retomar o replay corretivo com estado próprio e verificar igualdade
+   exata de features, paridade de scores, decisões, hashes e mudanças em relação
+   à execução original. Receber o relatório do autor para consolidar qualidade,
+   capturas/perdas e custo. [Procedimento](../operations/NUMERICAL_CORRECTIVE_REPLAY.md).
 4. Medir emissão programada, fila/lag e recuperação em ensaio separado. A execução
    acelerada mede duração local até commit, throughput, CPU, pico RSS do processo e
    tamanho do checkpoint; não mede latência desde emissão nem valida SLA. O requisito

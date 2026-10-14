@@ -11,12 +11,13 @@ Leia o [README do projeto](../README.md) para começar e a
 | O que significam os campos e os achados? | [Dicionário](data/DATA_DICTIONARY.md) e [EDA](data/EDA.md) |
 | Como adicionar um modelo? | [Contrato e contribuição](modeling/CONTRIBUTING_MODELS.md) |
 | Como avaliamos e selecionamos? | [Baseline](modeling/BASELINE.md), [avaliação temporal/Optuna](modeling/EVALUATION_PROTOCOL.md), [ablações](modeling/EXPERIMENT_PROTOCOL.md) |
-| O que concluímos em setembro e qual janela continua reservada? | [Resultado e limites](modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento); [protocolo original](modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1) |
+| O que concluímos em setembro e quais janelas foram consumidas? | [Resultado e limites](modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento); [protocolo original](modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1); [replay e correção](operations/NUMERICAL_CORRECTIVE_REPLAY.md) |
 | O que dizem os diagnósticos e limites do modelo? | [Diagnóstico](modeling/DIAGNOSTICS.md) e [Model Card](modeling/MODEL_CARD.md) |
 | Como executar, recuperar e migrar? | [Operações](operations/OPERATIONS.md), [ablações](operations/EXPERIMENT_EXECUTION.md), [MLflow](operations/MLFLOW.md) |
 | Como verificar uma mudança? | [Testing](operations/TESTING.md) |
 | Como exportar, iniciar e conferir HTTP/wheel/Docker? | [Serving](operations/SERVING_CONTRACT.md) |
 | Como separar transação/feedback e retomar o replay causal local? | [Contratos, executor e limites](operations/CAUSAL_REPLAY.md) |
+| Como corrigir a paridade numérica preservando a execução anterior? | [Correção versionada e retomada](operations/NUMERICAL_CORRECTIVE_REPLAY.md) |
 
 Os protocolos executáveis e recibos históricos estão em
 [`references/`](../references/). Os notebooks mantêm narrativa e resultados

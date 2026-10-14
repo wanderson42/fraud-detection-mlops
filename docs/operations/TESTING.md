@@ -387,3 +387,20 @@ fraudes/alertas e captura de cliente-dia com fraude posterior ao alerta. Falha d
 avaliação mantém o checkpoint; publicação final por diretório evita resultado sem
 recibo. Os protocolos e fingerprints dos executores anteriores são preservados.
 As fixtures não fornecem evidência de eficácia, latência 1x ou replay nativo.
+
+## Correção numérica versionada
+
+`tests/features/test_exact_binary_mean.py` compara a média com uma especificação
+racional independente, incluindo subnormais, máximos finitos, ordem de inserção,
+zero e valores inválidos. Árvores HGB geradas demonstram mudanças de score por
+uma ULP nos dois cortes encontrados no diagnóstico; o modelo congelado não é
+retreinado. `test_deterministic_causal_history.py` compara os 19 atributos entre
+janelas DuckDB independentes e histórico SQLite, com timestamps pares, fronteiras
+em nanossegundos, feedback exatamente disponível e ordem offline invertida.
+
+`tests/streaming/replay/test_numerical_corrective_replay.py` preserva uma execução
+original gerada, remove Silver antes do preparo corretivo, interrompe/retoma,
+verifica igualdade exata, hashes externos, publicações atômicas e rejeição de
+adulteração. Também confere que verificações e retomadas completas não recalculam
+scores. O checkpoint original conserva o mesmo SHA-256. Esses checks não afirmam
+que o replay corretivo passou na janela real do autor.
