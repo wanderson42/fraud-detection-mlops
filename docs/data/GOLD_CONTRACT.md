@@ -209,3 +209,18 @@ treino dentro do pipeline. A validação comparará escolhas e ablações; o tes
 usado após congelar as escolhas. Não é obrigatório adiar um controle de qualidade
 necessário até o baseline: o que exige evidência própria é uma intervenção para
 melhorar desempenho ou mudar a população avaliada.
+
+## Regra numérica específica do replay corretivo
+
+A Gold original, o treinamento e seus recibos conservam a implementação
+`gold_v1` congelada. O replay corretivo versiona separadamente a aritmética
+`exact_binary64_mean_v1`, mantendo os mesmos 19 preditores e suas fronteiras
+causais. A soma dos valores binários é exata, seguida de uma conversão para
+float64 após dividir pela contagem; razões usam essa média já arredondada.
+
+Essa regra resolveu o incidente SQLite/DuckDB no ensaio de 16–30/09, sem refazer
+treino ou sobrescrever a Gold histórica. O oráculo DuckDB e o histórico SQLite
+produziram features exatamente iguais e scores dentro da tolerância original.
+Novas construções e avaliações precisam identificar qual regra numérica utilizam;
+não tratar os artefatos antigos como se tivessem sido recalculados.
+[Definição, resultado e limites](../operations/NUMERICAL_CORRECTIVE_REPLAY.md).

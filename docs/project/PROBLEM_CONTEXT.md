@@ -181,13 +181,14 @@ O ranking diário atual é calculado **offline, com o dia completo**. Sua precis
 selecionado os mesmos casos antes da liquidação. Features causais são necessárias,
 mas não bastam para validar uma política de decisão em tempo real.
 
-A política operacional preparada encaminha o cliente na primeira transação cujo
+A política operacional executada no replay encaminha o cliente na primeira transação cujo
 score atinja um limiar fixado no desenvolvimento, até cem clientes distintos por
 dia. Não substitui alertas já emitidos; pode esgotar a capacidade antes de casos
-mais fortes chegarem. O limiar e a integração durável ainda estão pendentes.
+mais fortes chegarem. O limiar foi fixado no desenvolvimento e a integração
+durável foi exercitada no replay corretivo verificado pelo autor.
 [Regras e critérios de avaliação](../operations/CAUSAL_REPLAY.md#política-operacional-de-triagem).
-Latência, tempo até alerta e capturas sob essa regra serão avaliados separadamente
-da qualidade retrospectiva do ranking. Não estimamos pagamentos bloqueados ou
+As capturas dessa regra foram consolidadas separadamente do ranking retrospectivo.
+Latência desde emissão, fila/lag e recuperação cronometrada continuam pendentes. Não estimamos pagamentos bloqueados ou
 perdas financeiras evitadas.
 
 ## O que os dados simulam, e o que deixam de fora
@@ -241,7 +242,10 @@ aprovado; a [Model Card](../modeling/MODEL_CARD.md) concentra a interpretação.
 O ciclo Optuna de junho–agosto conservou a referência. A avaliação de 02–15/09,
 o diagnóstico e a reamostragem nativa foram concluídos, com
 [escopo exploratório e limites explícitos](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
-16–30/09 continua reservado para replay. As faixas de reamostragem não demonstram
+16–30/09 também foi consumido pelo replay corretivo, com paridade aprovada
+e qualidade da fila consolidada no relato do autor. A fila emitiu 1.453 alertas,
+capturou 768 clientes-dia fraudulentos e perdeu 358 (precisão agregada 52,86%;
+recall agregado 68,21%). [Resultado e limites](../operations/NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13). As faixas de reamostragem não demonstram
 cobertura futura ou superioridade confirmatória. A referência foi exportada e
 validada por HTTP no wheel isolado pelo autor. A etapa foi integrada pelo PR #2;
 Docker é a próxima verificação operacional.

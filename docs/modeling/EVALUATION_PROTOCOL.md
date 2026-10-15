@@ -12,7 +12,10 @@ Referência executável: [temporal_protocol_v1.json](../../references/temporal_p
 autor; diagnóstico e reamostragem nativa revisados; escopo exploratório concluído.
 O [resultado e seus limites](#resultado-nativo-da-reamostragem-e-fechamento) são a
 síntese vigente. As seções anteriores de preparação preservam o desenho histórico;
-16–30/09 permanece reservado para replay. A próxima ação é a exportação da referência.
+16–30/09 foi consumido pelo replay causal corretivo, informado e verificado pelo
+autor em 13/10: 143.945 scores, 1.453 alertas e paridade aprovada.
+[Resultado e limites](../operations/NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13).
+A próxima etapa operacional é definir emissão programada, fila/lag e monitoramento.
 
 ## Objetivo e janelas
 
@@ -381,7 +384,9 @@ de 47% a 61%. A [Model Card](MODEL_CARD.md#revisão-diária-da-fila-de-investiga
 concentra a tabela, unidades e interpretação, sem alterar o gate.
 A conferência direta dos bytes da Model Card gerada e do vínculo do CSV ao
 manifesto nativo continua pendente. O autor exportou a referência real e validou
-HTTP/wheel fora do checkout; construir e medir Docker permanece pendente.
+HTTP/wheel fora do checkout. Posteriormente validou Docker com imagem de
+166,8 MiB, snapshot de memória de 178,5 MiB e p95 HTTP de 4,74 ms em teste
+sequencial local; essas medições não validam latência do fluxo de eventos.
 O [contrato de serving](../operations/SERVING_CONTRACT.md) separa os checks
 sintéticos do relato de execução com a referência existente.
 
@@ -416,7 +421,7 @@ As janelas de treino e as entidades se repetem: os cortes não são amostras ind
 | --- | --- | --- |
 | Futuro treino confirmatório | 29/07–25/08 | Sem novo fit; parte coincide com desenvolvimento |
 | Confirmação originalmente reservada | 02–15/09 | Consumida pela avaliação da referência; não houve confirmação de candidato |
-| Replay operacional | 16–30/09 | Não lido; política de eventos/feedback ainda pendente |
+| Replay operacional | 16–30/09 | Consumido; replay corretivo e verify aprovados no relato de 13/10 |
 
 A reserva de setembro é temporal, com os mesmos clientes/terminais possíveis.
 Não representa validação em novas entidades. A reserva inicial de 14 dias não
@@ -538,7 +543,7 @@ comparação histórica descritiva, pois seu teste já foi consumido.
 | --- | --- | --- |
 | Contexto da avaliação | 19/08–01/09, 14 dias | Somente histórico causal; sem treino ou métricas de avaliação |
 | Avaliação da referência | 02–15/09, 14 dias | Todas as transações; conservar os 14 dias no relatório |
-| Replay operacional | 16–30/09, 15 dias | Continua reservado; execução depende do contrato de eventos |
+| Replay operacional | 16–30/09, 15 dias | Consumido em replay causal; resultado corretivo verificado pelo autor |
 
 “Reservado” significa sem uso na avaliação/seleção do modelo: a Silver já passou
 por aceitação estrutural da fonte inteira. Não significa novos clientes ou que
@@ -708,7 +713,10 @@ A AP de maio (0,640703) e a precisão de 55% são comparações históricas desc
 a diferença entre períodos não identifica, por si só, uma degradação significativa.
 
 Não houve refit, novas runs, confirmação de candidato, reabertura do teste de
-maio ou promoção. **02–15/09 foi consumida; 16–30/09 continua reservada para replay.**
+maio ou promoção. **02–15/09 foi consumida; 16–30/09 também foi consumida pelo replay corretivo.**
+O relato de 13/10 consolidou 768 capturas e 358 perdas de clientes-dia fraudulentos
+na fila causal, com paridade técnica aprovada. Esse ensaio operacional não é uma
+nova confirmação estatística de outro candidato.
 Na revisão inicial desse resultado, o diagnóstico e a análise de incerteza eram
 os próximos passos. Ambos foram executados e revisados posteriormente, fechando
 o [escopo exploratório](#resultado-nativo-da-reamostragem-e-fechamento). Cobertura

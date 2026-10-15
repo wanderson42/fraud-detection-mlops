@@ -10,68 +10,53 @@ a informação disponível no momento da decisão?
 
 ## Estado do projeto
 
-O pipeline offline Bronze → Silver → Gold, a baseline, o tracking MLflow/skops,
-os diagnósticos e as ablações estão implementados. A referência conserva as 19
-features; a avaliação final informada pelo autor obteve AP **0,640703** e precisão
-diária @100 de **55%**, com gate de laboratório aprovado. O teste foi consumido.
+Atualizado em **2026-10-15**. O laboratório percorre Bronze → Silver → Gold,
+validação temporal, tracking MLflow/skops, serving HTTP/Docker e replay causal com
+feedback atrasado. A referência HGB (Histogram-based Gradient Boosting) de 19 features foi conservada após ablações e
+20 trials Optuna/63 fits: nenhum candidato passou os gates de substituição.
 
-A busca temporal com Optuna concluiu **20 trials e 63 fits, sem falhas** no
-relatório fornecido pelo autor. Nenhum trial passou o gate: **`retain_reference`**.
-A confirmação não foi avaliada. A evidência está no
-[protocolo de avaliação](docs/modeling/EVALUATION_PROTOCOL.md#resultado-da-busca-informado-pelo-autor).
-Esses resultados simulados não demonstram desempenho em produção.
+**O replay corretivo de 16–30/09/2018 foi executado e verificado pelo autor.**
+São 556.824 eventos, 143.945 transações pontuadas e 1.453 alertas. A regra
+`exact_binary64_mean_v1` resolveu a divergência SQLite/DuckDB: os 19 atributos
+coincidem exatamente e os scores passaram o gate original (`atol=1e-12`, `rtol=0`).
+O checkpoint anterior, o modelo e o limiar permaneceram preservados.
 
-O serving de laboratório recebe as 19 features e devolve score identificado.
-O autor exportou a referência congelada com 67.255 linhas de paridade e validou
-HTTP/wheel fora do checkout, sem as dependências de experimentação. O
-[relato nativo](references/evidence/laboratory_serving_native_validation_2026-10-09.json)
-preserva identidade e limites. A suíte local do marco anterior aprovou 302 testes,
-e esse marco foi integrado em `main` pelo
-[PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1).
-O [protocolo estatístico da referência](docs/modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1)
-fixa 2–15/09 para avaliação e 16–30/09 para replay. O
-[executor auditável](docs/modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada)
-foi executado e verificado pelo autor em 02–15/09/2018: **134.467 transações**,
-AP **0,621312**, precisão diária @100 de **54,93%** e recall médio diário de clientes
-fraudulentos de **72,89%**, sem refit ou novas runs. O autor aprovou **362 testes**,
-com 94 avisos. Essa janela foi consumida; **16–30/09 continua reservado para replay**.
-O [relato da execução](docs/modeling/EVALUATION_PROTOCOL.md#resultado-da-referência-em-setembro--relato-do-autor)
-mantém os limites estatísticos. O diagnóstico e a reamostragem nativa por blocos
-foram revisados: **o escopo exploratório está concluído**, com todas as réplicas
-definidas e faixas da AP entre aproximadamente 0,579 e 0,667 ao comparar os quatro
-comprimentos. Essas faixas não têm cobertura de generalização demonstrada.
-O [PR #2](https://github.com/wanderson42/fraud-detection-mlops/pull/2) integrou essa
-etapa, após 379 testes nativos e CI aprovados. O autor também construiu e validou
-Docker: paridade HTTP, reinício, proteções e três falhas de carga passaram.
-A imagem reportada tem **166,8 MiB**; o snapshot de memória foi **178,5 MiB** e
-a latência p95 **4,74 ms** em 100 requisições sequenciais ao caso de controle.
-São medições locais, sem validação de carga concorrente ou SLA.
-O [recibo nativo](references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json)
-preserva o resultado e seu alcance. O PR Docker foi integrado pelo autor.
-O autor validou e commitou os contratos e o executor local de replay em
-`23c863e`: **448 testes aprovados** e demonstração sintética interrompida,
-retomada e repetida. Ao final, 20 eventos únicos e dez requests de atributos
-permaneceram gravados; a repetição aceitou zero eventos e reaproveitou 22 entregas.
-[Relato e limites](docs/operations/CAUSAL_REPLAY.md#execução-no-ambiente-do-autor--2026-10-13).
-Executor e relato foram integrados pelo
-[PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4). A política de
-alerta no primeiro cruzamento de limiar está preparada com fixtures: até cem
-clientes/dia, sem substituição posterior. O autor validou 502 testes e executou/
-verificou o seletor em 201.155 transações de 21 dias de desenvolvimento: limiar
-**0,8826493808370081**, com configuração identificada. A fila nativa e
-a avaliação de sua qualidade/latência seguem pendentes. O [PR #5](https://github.com/wanderson42/fraud-detection-mlops/pull/5)
-integrou o marco. O [PR #6](https://github.com/wanderson42/fraud-detection-mlops/pull/6)
-integrou scores/alertas/checkpoint atômicos. O adaptador restrito e o protocolo
-executável acelerado estão preparados com fixtures; execução nativa e publicação
-externa permanecem pendentes. [Procedimento](docs/operations/CAUSAL_REPLAY.md#adaptador-nativo-restrito-e-avaliação-acelerada).
-[Resultado e limites](docs/operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13).
-[Regras e avaliação](docs/operations/CAUSAL_REPLAY.md#política-operacional-de-triagem).
-O replay nativo continua pendente e 16–30/09 permanece reservado, conforme o
-[mural](docs/project/ROADMAP.md#próxima-entrega-concreta). A adoção de um
-orquestrador depende de necessidade operacional demonstrada.
-[Contrato e execução](docs/operations/SERVING_CONTRACT.md). Replay por eventos,
-orquestração e monitoramento continuam no [mural de metas](docs/project/ROADMAP.md).
-A organização inicial usou
+| Resultado nos 15 dias | Fila causal | Top-100 retrospectivo |
+| --- | ---: | ---: |
+| Alertas de cliente-dia | 1.453 | 1.500 |
+| Clientes-dia fraudulentos capturados | 768 | 800 |
+| Clientes-dia fraudulentos fora dos alertas | 358 | 326 |
+| Precisão agregada | 52,86% | 53,33% |
+| Recall agregado | 68,21% | 71,05% |
+
+A fila usa o primeiro cruzamento do limiar e até 100 clientes por dia. O
+retrospectivo ordena pelo máximo score após observar o dia completo. A comparação
+é descritiva; as 32 capturas adicionais não provam superioridade operacional.
+Cliente-dia não é pessoa única, e captura não equivale a perda financeira evitada.
+AP transacional no replay: **0,578783**; ROC AUC: **0,876322**. Os resultados de
+maio (AP 0,640703) e de 02–15/09 (AP 0,621312) pertencem a outras janelas e não
+constituem, isoladamente, evidência de degradação. Essas janelas foram consumidas.
+
+A [evidência reconciliada](references/evidence/native_numerical_correction_author_validation_2026-10-13.json)
+transcreve o `run` e o `verify` fornecidos pelo autor. Os bytes dos checkpoints,
+scores e arquivos de medição continuam locais e não foram inspecionados pelo
+assistente. [Resultado, procedimento e limites](docs/operations/NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13).
+
+HTTP/wheel e Docker também foram validados pelo autor. A imagem reportada tem
+166,8 MiB; o snapshot de memória foi 178,5 MiB e o p95 HTTP foi 4,74 ms em 100
+requisições sequenciais ao caso de controle. Essa medição é de serving local e
+não mede a latência do fluxo de eventos. [Serving](docs/operations/SERVING_CONTRACT.md).
+A preparação da correção aprovou **595 testes/93 avisos**, com tox `py314`, Ruff,
+formatação e lockfile; isso é evidência de fixtures, separada do replay nativo.
+
+**Próximos marcos:** emissão programada e fila/lag, recuperação cronometrada,
+monitoramento com feedback amadurecido, CD/rollback e CT controlado. Ritmo 1x,
+latência desde emissão e SLA permanecem pendentes. Feature store, orquestrador,
+Kubernetes e cloud dependem de necessidade demonstrada e custo compatível.
+O [mural](docs/project/ROADMAP.md) mantém critérios e prioridades; a
+[síntese para stakeholders](docs/project/STAKEHOLDERS.md) explica a utilidade.
+A fonte é simulada; não há operação bancária real, publicação externa de alertas
+ou promoção em produção. A organização inicial usou
 [Cookiecutter Data Science](https://cookiecutter-data-science.drivendata.org/).
 
 ## Começar

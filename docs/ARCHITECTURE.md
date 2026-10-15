@@ -158,3 +158,21 @@ A CLI de plano conserva seu escopo de metadados. O executor de setembro aplica
 outro snapshot de autorização, verifica o modelo antes das partições e persiste
 resultados sem novas runs. `evaluation/temporal_reference_metrics.py` recebe scores
 e metadados; não lê dados nem carrega modelos. [Execução e limites](modeling/EVALUATION_PROTOCOL.md#executor-auditável-da-janela-fixada).
+
+## Correção numérica e evidência operacional
+
+`features/exact_binary_mean.py` define `exact_binary64_mean_v1`;
+`features/deterministic_causal_history.py` calcula o oráculo com janelas DuckDB
+independentes. `streaming/features/deterministic_feature_state.py` aplica a mesma
+regra numérica às consultas SQLite, mantendo as fronteiras causais existentes.
+`streaming/replay/numerical_corrective_replay.py` vincula os hashes originais,
+prepara oráculo próprio sobre eventos materializados e mantém checkpoint separado.
+A identidade da execução inclui a regra e a proveniência do código.
+
+O autor executou e verificou o replay corretivo de 16–30/09: os 19 atributos
+coincidem exatamente e o gate de scores foi aprovado, sem mudar os 1.453 alertas.
+Os cálculos/executores e protocolos anteriores não foram reescritos. A atualização
+documental posterior acrescenta evidência, preservando os bytes de código e dos
+contratos usados na execução. [Runbook e limites](operations/NUMERICAL_CORRECTIVE_REPLAY.md).
+O relato prova o ensaio acelerado local; transporte, pacing e monitoramento
+continuam como fronteiras operacionais pendentes.

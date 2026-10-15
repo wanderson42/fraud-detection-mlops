@@ -195,7 +195,8 @@ O [protocolo operacional](../../references/causal_replay_protocol_v1.json)
 registra estas decisões e mantém `native_execution_authorized: false`.
 O autor executou e verificou o seletor: **limiar 0,8826493808370081**.
 A [configuração identificada](../../references/customer_day_alert_policy_v1.json)
-registra o valor e a release; integração durável e replay nativo seguem pendentes.
+registra o valor e a release. Naquele marco, integração durável e replay nativo
+ainda eram pendentes; o resultado corretivo posterior está registrado abaixo.
 Os testes usam 0,7 como valor artificial, sem recomendar esse número para a referência.
 
 Para definir o limiar, pontuar **a mesma release congelada de abril** nas três
@@ -478,4 +479,7 @@ cortes do HGB. A elegibilidade ao limiar não mudou; isso não aprova o gate.
 Preserve o checkpoint original. O [runbook corretivo](NUMERICAL_CORRECTIVE_REPLAY.md)
 define uma média binária exata, oráculo independente e execução separada sobre os
 eventos já materializados, sem reabrir Silver ou alterar modelo/limiar/tolerância.
-A execução corretiva real e a consolidação de qualidade ainda aguardam o autor.
+A execução corretiva e a verificação foram concluídas pelo autor em 13/10.
+O relato concordante consolidou 1.453 alertas, 768 capturas e 358 perdas de
+clientes-dia fraudulentos, com igualdade exata das 19 features e gate de scores
+aprovado. [Evidência e limites](NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13).

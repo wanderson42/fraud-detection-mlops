@@ -17,7 +17,7 @@ Leia o [README do projeto](../README.md) para começar e a
 | Como verificar uma mudança? | [Testing](operations/TESTING.md) |
 | Como exportar, iniciar e conferir HTTP/wheel/Docker? | [Serving](operations/SERVING_CONTRACT.md) |
 | Como separar transação/feedback e retomar o replay causal local? | [Contratos, executor e limites](operations/CAUSAL_REPLAY.md) |
-| Como corrigir a paridade numérica preservando a execução anterior? | [Correção versionada e retomada](operations/NUMERICAL_CORRECTIVE_REPLAY.md) |
+| Como corrigir e conferir a paridade numérica? | [Correção versionada](operations/NUMERICAL_CORRECTIVE_REPLAY.md) e [resultado nativo](operations/NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13) |
 
 Os protocolos executáveis e recibos históricos estão em
 [`references/`](../references/). Os notebooks mantêm narrativa e resultados

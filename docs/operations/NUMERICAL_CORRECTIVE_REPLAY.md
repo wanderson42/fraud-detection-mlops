@@ -85,17 +85,94 @@ O relatório exige cobertura integral dos eventos e feedbacks, 15 dias avaliados
 paridade independente e preservação do hash original. `comparison_to_original`
 conta mudanças de features/scores, elegibilidade, status de triagem, alertas
 adicionados/removidos e alteração da transação que disparou cada alerta.
-A ausência de mudança de elegibilidade no diagnóstico original não garante o
-mesmo resultado depois da nova regra: essa comparação deve ser medida.
+A comparação foi medida: um score mudou em relação ao original, sem mudança
+de elegibilidade, status ou alertas; isso é distinto da paridade offline/online.
 
 `quality` consolida alertas reais, precisão, recall de cliente-dia, capturas/perdas,
-ocupação e comparação retrospectiva. Seu resultado só será evidência nativa depois
-da execução e verificação no ambiente do autor. Os testes gerados demonstram os
-mecanismos, incluindo os cortes 33,769999999999996 e 79,545; não demonstram que a
-reserva real já passou pelo replay corretivo.
+ocupação e comparação retrospectiva. O resultado informado em 13/10 fornece
+evidência nativa do ensaio acelerado no ambiente do autor, com os limites de
+inspeção registrados abaixo. Os testes gerados demonstram os mecanismos, incluindo
+os cortes 33,769999999999996 e 79,545; a evidência nativa é um registro separado.
 
 Os custos medidos continuam referentes ao processamento serial acelerado, sem
 pacing. Latência desde emissão, transporte, backlog, recuperação cronometrada e
 SLA continuam pendentes. Não somar as métricas da execução original às da corretiva
 como se fossem um único ensaio, nem comparar throughput sem considerar o custo
 da nova agregação exata. Não há publicação de alertas em sistemas externos.
+
+## Resultado nativo informado pelo autor — 2026-10-13
+
+O autor forneceu `run` e `verify` com `status: success` e `complete: true`.
+Os relatórios coincidem, excluindo `reused`, presente apenas no retorno do run.
+A [evidência reconciliada](../../references/evidence/native_numerical_correction_author_validation_2026-10-13.json)
+preserva o resultado verificado e o hash do texto fornecido. Os 556.824 eventos
+compreendem 278.412 transações e 278.412 feedbacks, incluindo aquecimento;
+143.945 transações foram pontuadas na janela de 16–30/09.
+
+A paridade exata dos 19 atributos e o gate original de scores passaram. O
+checkpoint original conservou SHA-256
+`908dd5a063c4d8d1ebd708c7c7da76ca5e19c1858f15298807d9a235b18a00cd`.
+O manifesto corretivo foi identificado por
+`87b42e291fc7d3f8b21f2c7048b08aaf9142cd6c06d151c9489d5b65330eb519`
+e o recibo final por
+`ec1a8281753e4be5c0cd5ebf8d413b3c9ba9b4c79388b9abcff0e6e590e54665`.
+Esses hashes foram reportados pelo executor do autor; os arquivos nativos
+não foram transferidos para inspeção independente do assistente.
+
+Em relação ao estado original, um score mudou, com diferença máxima
+0,015877364027437224. Esse campo compara versões persistidas; não é uma falha
+de paridade restante. Não houve mudança de elegibilidade, status, alertas
+adicionados/removidos ou transação disparadora. Os 1.453 alertas foram mantidos.
+
+| Indicador nos 15 dias | Fila causal | Top-100 retrospectivo |
+| --- | ---: | ---: |
+| Alertas | 1.453 | 1.500 |
+| Clientes-dia fraudulentos capturados | 768 | 800 |
+| Clientes-dia fraudulentos perdidos | 358 | 326 |
+| Precisão agregada | 52,86% | 53,33% |
+| Recall agregado | 68,21% | 71,05% |
+
+A fila usou 96,87% da capacidade; sobraram 47 vagas e 9 dias esgotaram o
+orçamento. Houve 91 clientes-dia elegíveis suprimidos pelo limite, sem implicar
+que todos fossem fraudulentos. O ranking transacional obteve AP 0,578783 e
+ROC AUC 0,876322 em 1.256 transações fraudulentas. Há 1.126 clientes-dia
+fraudulentos; as métricas não usam o mesmo denominador.
+
+A precisão agregada da fila é 768/1.453 e o recall agregado é 768/1.126. As
+médias diárias são, respectivamente, 52,8433% e 68,6395%; não confundir com
+as taxas agregadas ou com a precisão diária @100 retrospectiva de 53,33%.
+Captura considera fraude em qualquer momento do cliente-dia, inclusive depois
+do alerta, e não equivale a prevenção ou recuperação financeira.
+
+As duas invocações registradas confirmaram primeiro 5.000 e depois 556.824 eventos.
+Seus nomes constam no resultado, mas o conteúdo dos arquivos de duração, CPU,
+RSS e latência não foi fornecido; não há custo ou throughput nativo consolidado
+nesta atualização. A publicação `c819d65` e a [CI aprovada](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/38487732538)
+foram conferidas separadamente; a saída de terminal não comprova
+independentemente o SHA do checkout usado na execução.
+
+Este marco encerra o incidente técnico neste ensaio e consolida a qualidade
+descritiva da fila. Pacing 1x, emissão programada, backlog, transporte, SLA e
+recuperação cronometrada continuam pendentes. Não execute novamente o replay
+para atualizar esta documentação; preserve entradas, checkpoints e recibos.
+
+### Verificação posterior ao fechamento documental
+
+Os scripts do pacote corretivo original conferem também os hashes dos documentos
+incluídos naquela entrega. Após esta atualização documental, uma auditoria do
+resultado existente deve usar a CLI nativa abaixo, que verifica os artefatos
+operacionais e a implementação preservada, sem depender dos hashes antigos dos
+documentos. Não é necessário executar essa auditoria para aplicar a atualização.
+
+Na raiz do projeto, com o ambiente e os artefatos originais preservados:
+
+```bash
+poetry run python -m fraud_detection_mlops.streaming.replay.numerical_corrective_replay verify \
+  --input data/replay/native-input-numerical-v1 \
+  --manifest-sha256 87b42e291fc7d3f8b21f2c7048b08aaf9142cd6c06d151c9489d5b65330eb519 \
+  --output data/replay/native-september-numerical-v1 \
+  --receipt-digest ec1a8281753e4be5c0cd5ebf8d413b3c9ba9b4c79388b9abcff0e6e590e54665
+```
+
+O comando é somente de verificação: lê os eventos e checkpoints existentes e
+recompõe a avaliação, sem nova inferência, preparo, refit ou acesso a Silver.

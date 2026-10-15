@@ -404,3 +404,14 @@ verifica igualdade exata, hashes externos, publicações atômicas e rejeição 
 adulteração. Também confere que verificações e retomadas completas não recalculam
 scores. O checkpoint original conserva o mesmo SHA-256. Esses checks não afirmam
 que o replay corretivo passou na janela real do autor.
+
+## Evidência nativa posterior à preparação numérica
+
+A preparação da correção aprovou 595 testes/93 avisos em Python 3.14.4, com tox,
+Ruff, formatação e lockfile. Em 13/10 o autor forneceu as saídas concordantes de
+`run` e `verify` reais: 556.824 eventos, 143.945 scores, 19 features exatas, gate
+de scores aprovado e 1.453 alertas preservados. A evidência nativa é separada dos
+testes de fixtures e está no [recibo transcrito](../../references/evidence/native_numerical_correction_author_validation_2026-10-13.json).
+A atualização documental de 15/10 não altera runtime, dependências ou protocolos
+executáveis e não exige nova pontuação. Os bytes dos checkpoints, scores e custos
+do autor não foram inspecionados diretamente pelo assistente.

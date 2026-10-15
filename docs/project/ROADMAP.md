@@ -1,6 +1,6 @@
 # Mural de metas — Fraud Detection MLOps
 
-Atualizado em 2026-10-13. Este é o **backlog principal do projeto**: metas, estado,
+Atualizado em 2026-10-15. Este é o **backlog principal do projeto**: metas, estado,
 ordem de trabalho e critérios de conclusão. O [README](../../README.md) é a entrada;
 a [arquitetura](../ARCHITECTURE.md) descreve o que existe e os contratos fixam as regras.
 
@@ -40,8 +40,10 @@ A integração durável de scores/decisões/alertas/checkpoint foi integrada em
 `2d08c4b` pelo [PR #6](https://github.com/wanderson42/fraud-detection-mlops/pull/6).
 O adaptador restrito, a avaliação independente e o protocolo executável acelerado
 foram preparados com fixtures e executados pelo autor. O processamento nativo
-completou os eventos, mas reprovou a paridade de dois scores. A correção numérica
-e a consolidação da qualidade aguardam execução/verificação. Emissão programada/lag,
+completou os eventos, mas reprovou a paridade de dois scores. O autor executou e
+verificou a correção: 19 atributos exatos, gate de scores aprovado e 1.453 alertas
+preservados; 768 capturas/358 perdas de clientes-dia fraudulentos.
+[Evidência](../../references/evidence/native_numerical_correction_author_validation_2026-10-13.json). Emissão programada/lag,
 transporte, monitoramento, CD e CT ainda precisam de evidência própria.
 O marco de organização/serving foi integrado pelo
 [PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
@@ -90,9 +92,9 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 | Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados localmente pelo autor; incremento integrado | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
 | Orquestração de processos | Condicional; escolha de ferramenta adiada | Justificar por dependências, recorrência, recuperação e gestão de execução dos processos de dados, avaliação ou treinamento. Prefect permanece uma opção futura; o fluxo isolado de verificação de serving foi retirado. Manter executores e contratos independentes. |
 | Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
-| Política causal de investigação | Política/limiar e integração durável integrados pelos PRs #5/#6; avaliação nativa pendente | Limiar 0,8826493808370081 nos 21 dias, 201.155 scores, mesma release de abril, sem alvos atuais na seleção. Até 100 clientes/dia, sem substituição posterior. Configuração identificada; ocupação, capturas/perdas e tempo até alerta ainda serão avaliados. [Resultado e limites](../operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13). |
-| Streaming por replay histórico e paridade de features | Executor durável integrado pelo PR #6; execução original completou eventos, mas reprovou paridade; correção numérica preparada, execução corretiva pendente | Eventos separados e checkpoint SQLite independente de orquestrador. Checks sintéticos de paridade Gold/scores, empates, duplicatas/conflitos, rejeição de atraso e recuperação passaram. Fixar contexto, release e política de investigação antes de abrir a reserva; executar e medir replay nativo. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
-| Gestão de features e eventual feature store | Capacidade planejada; ferramenta condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
+| Política causal de investigação | Política/limiar integrados pelos PRs #5/#6; avaliação nativa acelerada verificada pelo autor | Limiar 0,8826493808370081 nos 21 dias, 201.155 scores, mesma release de abril, sem alvos atuais na seleção. Até 100 clientes/dia, sem substituição posterior. Configuração identificada: 1.453 alertas; 768 capturas/358 perdas; precisão agregada 52,86%, recall agregado 68,21% e ocupação 96,87%. Latência desde emissão ainda não avaliada. [Resultado e limites](../operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13). |
+| Streaming por replay histórico e paridade de features | Replay corretivo executado e verificado pelo autor; paridade técnica aprovada | Eventos separados e checkpoint SQLite independente de orquestrador. 556.824 eventos e 143.945 scores; igualdade exata das 19 features e gate de scores original aprovado. Checkpoint original preservado; nenhum alerta mudou. A janela foi consumida. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
+| Gestão de features e eventual feature store | Estado causal e paridade demonstrados no replay; serviço de feature store condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
 | Monitoramento e dashboards | Planejado | Prometheus/Grafana para serviço, latência, erros e atraso do processamento; pipeline para qualidade, drift e desempenho quando os rótulos chegarem. Painel de investigação com orçamento, acertos e fraudes perdidas. Demonstrar alertas e recuperação em falhas controladas. |
 | CD e governança de promoção | Planejado | Entregar imagem e modelo identificados, executar smoke tests e gates de dados/modelo/serviço, controlar a promoção e demonstrar rollback. Registry/aliases MLflow entram com o fluxo de release; o gate exploratório atual não autoriza deployment. |
 | CT: treinamento contínuo controlado | Planejado | Definir gatilhos, disponibilidade dos rótulos, orçamento e avaliação temporal do candidato. Orquestrar treinamento, comparação e decisão auditável; manter a referência quando os gates falharem. Drift isolado não basta para promover modelo. |
@@ -102,30 +104,28 @@ não representa uma tecnologia instalada nem uma aprovação em produção.
 
 ## Próxima entrega concreta
 
-1. Validar e commitar a correção `fix/deterministic-replay-features`, publicar o SHA
-   final e exigir CI aprovada. A execução original confirmou 556.824 eventos e
-   1.453 alertas, mas o gate reprovou 2/143.945 scores. O diagnóstico identificou
-   diferenças de ponto flutuante nas médias; nenhuma elegibilidade ao limiar mudou.
-2. Preservar o checkpoint original e preparar a entrada corretiva usando somente
-   os eventos já materializados, sem repetir `prepare-native.sh` nem reabrir Silver.
-   Modelo, limiar e tolerância permanecem congelados. A regra soma os valores
-   binários exatamente, divide pela contagem e arredonda uma vez para float64.
-3. Executar/retomar o replay corretivo com estado próprio e verificar igualdade
-   exata de features, paridade de scores, decisões, hashes e mudanças em relação
-   à execução original. Receber o relatório do autor para consolidar qualidade,
-   capturas/perdas e custo. [Procedimento](../operations/NUMERICAL_CORRECTIVE_REPLAY.md).
-4. Medir emissão programada, fila/lag e recuperação em ensaio separado. A execução
-   acelerada mede duração local até commit, throughput, CPU, pico RSS do processo e
-   tamanho do checkpoint; não mede latência desde emissão nem valida SLA. O requisito
-   de ritmo 1x e o alvo de laboratório p95 ≤ 1 s permanecem pendentes. Depois agregar
-   monitoramento com feedback amadurecido e transporte. Orquestração permanece
-   condicional à necessidade operacional demonstrada.
+1. Registrar e versionar o resultado de 13/10 no notebook principal, stakeholders,
+   Model Card e evidência auditável. O replay corretivo e sua verificação passaram;
+   o encerramento é técnico e descritivo, sem promoção de produção.
+2. Definir o ensaio de emissão programada antes de executá-lo: relógio de emissão,
+   escala temporal, fila/lag, limites de carga, interrupção/retomada e latência
+   até decisão/commit. Preservar modelo/política; reuso da entrada materializada
+   testa operação, sem criar uma nova avaliação independente de qualidade.
+3. Medir o ensaio e consolidar custos das invocações existentes quando fornecidos.
+   Ritmo 1x, p95 desde emissão ≤ 1 s, backlog, throughput sustentado, CPU/RSS e
+   recuperação cronometrada continuam pendentes; p95 HTTP local não aprova esse alvo.
+4. Implantar observabilidade de serviço, dados e scores e juntar rótulos somente
+   quando amadurecidos. Demonstrar alarmes e resposta a falhas, depois CD/rollback
+   e CT com gates. Orquestrador, feature store, Kubernetes e cloud continuam
+   condicionados à necessidade e ao custo demonstrados.
 
 O [protocolo operacional original](../../references/causal_replay_protocol_v1.json)
 permanece imutável, com seu placeholder histórico. O novo
 [protocolo executável acelerado](../../references/native_causal_replay_execution_v1.json)
 vincula o manifesto nativo do limiar, a configuração registrada e a release.
-Ele delimita acesso e avaliação; não declara que a janela já foi executada.
+Ele delimita acesso e avaliação. O resultado da execução e da correção fica no
+[recibo posterior](../../references/evidence/native_numerical_correction_author_validation_2026-10-13.json),
+sem alterar o protocolo original.
 O limiar é 0,8826493808370081; 0,7 continua somente fixture. A política consome
 capacidade na primeira transação elegível e pode perder casos mais fortes que
 chegam depois. Não herda a precisão do top-100 retrospectivo como promessa operacional.
