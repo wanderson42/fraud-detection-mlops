@@ -176,3 +176,24 @@ documental posterior acrescenta evidência, preservando os bytes de código e do
 contratos usados na execução. [Runbook e limites](operations/NUMERICAL_CORRECTIVE_REPLAY.md).
 O relato prova o ensaio acelerado local; transporte, pacing e monitoramento
 continuam como fronteiras operacionais pendentes.
+
+## Replay programado e observabilidade local — preparação de 2026-10-15
+
+`scripts/replay/` envolve o núcleo congelado; `scripts/monitoring/` mantém journal,
+coleta read-only e HTTP agregado sem dependência de ML no exporter.
+`infra/observability/` provisiona Prometheus, Grafana e perfil RustFS opcional.
+Os scripts operacionais e seu protocolo têm identidade própria, exigida antes do
+ensaio nativo. O pacote original, dependências, protocolos e evidências históricas
+não mudam; o verificador corretivo continua usando suas identidades congeladas.
+
+O produtor programa eventos com relógio monotônico e aplica backpressure numa fila
+limitada; o consumidor confirma decisões pelo executor durável existente. O
+checkpoint governa retomada. Telemetria separada reconhece o intervalo entre
+commit de decisão e registro de tempo, marcando lacunas sem fabricar duração.
+O exporter não monta oráculo/Silver/release e não pontua. As métricas individuais
+não saem do ledger: HTTP expõe agregados com cardinalidade limitada.
+
+Prometheus conserva séries locais por 48 h/512 MB; Grafana provisiona operação e
+qualidade madura/scores. RustFS não é backend do SQLite ativo: seu próximo marco
+é arquivamento de artefatos e backups consistentes com restauração verificada.
+[Contrato de métricas e execução](operations/OBSERVABILITY.md).

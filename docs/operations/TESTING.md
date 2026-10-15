@@ -415,3 +415,15 @@ testes de fixtures e está no [recibo transcrito](../../references/evidence/nati
 A atualização documental de 15/10 não altera runtime, dependências ou protocolos
 executáveis e não exige nova pontuação. Os bytes dos checkpoints, scores e custos
 do autor não foram inspecionados diretamente pelo assistente.
+
+
+## Monitoramento e replay programado
+
+`tests/monitoring/` cobre fila, retomada, falha após commit, produtor, 1x curto,
+qualidade por coorte, empates de AP, distribuição de scores, HTTP read-only e
+credenciais locais. `tests/streaming/replay/test_paced_native_assessment.py` usa
+fonte gerada, remove Silver e verifica o novo ensaio, paridade e recibo sem
+alterar o checkpoint anterior. Não acessa a entrada nativa do autor.
+Regras de alerta têm fixtures próprias para `promtool test rules`; dashboards
+são provisionados por JSON e PromQL. [Escopo observado da preparação](../../references/evidence/local_observability_preparation_2026-10-15.json).
+Docker/RustFS e execução nativa continuam com validação local separada.

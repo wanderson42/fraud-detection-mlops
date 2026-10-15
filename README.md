@@ -49,10 +49,14 @@ não mede a latência do fluxo de eventos. [Serving](docs/operations/SERVING_CON
 A preparação da correção aprovou **595 testes/93 avisos**, com tox `py314`, Ruff,
 formatação e lockfile; isso é evidência de fixtures, separada do replay nativo.
 
-**Próximos marcos:** emissão programada e fila/lag, recuperação cronometrada,
-monitoramento com feedback amadurecido, CD/rollback e CT controlado. Ritmo 1x,
-latência desde emissão e SLA permanecem pendentes. Feature store, orquestrador,
-Kubernetes e cloud dependem de necessidade demonstrada e custo compatível.
+**Incremento atual:** replay com emissão programada/fila limitada, telemetria,
+exporter, Prometheus e dois dashboards Grafana preparados e validados com dados
+gerados. Execução nativa e ritmo 1x/SLA continuam pendentes.
+[Procedimento e limites](docs/operations/OBSERVABILITY.md).
+**Sequência revista:** medir operação/monitoramento → RustFS S3 local e restauração
+→ CD/rollback → dados/features e CT. Feature store tem spike condicionado a
+reutilização e correção temporal; orquestração e Kubernetes vêm depois da necessidade.
+Não há custo obrigatório de serviço cloud nesta fase.
 O [mural](docs/project/ROADMAP.md) mantém critérios e prioridades; a
 [síntese para stakeholders](docs/project/STAKEHOLDERS.md) explica a utilidade.
 A fonte é simulada; não há operação bancária real, publicação externa de alertas

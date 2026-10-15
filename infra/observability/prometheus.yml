@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+rule_files: [/etc/prometheus/alerts.yml]
+scrape_configs:
+  - job_name: fraud-replay
+    static_configs:
+      - targets: [exporter:19100]

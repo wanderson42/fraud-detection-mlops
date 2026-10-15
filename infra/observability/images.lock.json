@@ -1,0 +1,26 @@
+{
+  "verified_on": "2026-10-15",
+  "source": "Docker Hub registry v2 manifest/index resolved by tag; image bytes not executed here",
+  "images": {
+    "prom/prometheus": {
+      "tag": "v3.15.0",
+      "digest": "sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e",
+      "media_type": "application/vnd.docker.distribution.manifest.list.v2+json"
+    },
+    "grafana/grafana": {
+      "tag": "13.2.4",
+      "digest": "sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f",
+      "media_type": "application/vnd.docker.distribution.manifest.list.v2+json"
+    },
+    "rustfs/rustfs": {
+      "tag": "1.0.1",
+      "digest": "sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+      "media_type": "application/vnd.oci.image.index.v1+json"
+    },
+    "library/python": {
+      "tag": "3.14.4-slim",
+      "digest": "sha256:2ca02f32b4d9d893863367ce07ec1972819f476dd38d8612f2a9cb6a41cbb727",
+      "media_type": "application/vnd.oci.image.index.v1+json"
+    }
+  }
+}

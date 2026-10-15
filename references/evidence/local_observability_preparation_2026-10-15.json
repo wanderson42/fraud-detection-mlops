@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-15",
+  "kind": "assistant_preparation_generated_fixtures_and_local_configuration_validation",
+  "base_revision": "fc8bba2d4a4e02cafa8f0a405b9ed96e97e90908",
+  "operational_code_sha256": {
+    "scripts/monitoring/collector.py": "1ac1fe3332e2758944814de5cd5798b1c1eb159b685d6024ddc54acd0a21e3a4",
+    "scripts/monitoring/local_stack.py": "fd82684cdbb38361345c6bee2cb0d5bbac36716286409d11c956dc4902a7a8e3",
+    "scripts/monitoring/monitoring_exporter.py": "ef722d60b2197c1825bdf229c6863ba7d578b8df4075aea7f63156659ee67881",
+    "scripts/monitoring/statistics.py": "1f4a6a05d7df1afa54e8db646b6fd480eb2978445ed6c3e562e7834e88e6861b",
+    "scripts/monitoring/telemetry.py": "0e47dfc993f76d3ca51a7df24382780d7b7f538ec5d3c1ea8c557d03637d0f07",
+    "scripts/replay/assess_paced_replay.py": "c6598231f903be89f38a8b9853185f15cfb46ba4511dc9a58778c2d2912550ba",
+    "scripts/replay/paced_triage_replay.py": "62a29acdd15d8d9289220815fdc299d23df45e5eb3438ce2d8e59416de257766",
+    "references/paced_monitoring_protocol_v1.json": "f6bf6209fcfc0449b5537450cbaf685651f913958343454c1e7fe58d7a95e4a6"
+  },
+  "validation": {
+    "tox_py314": "passed",
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "tests_passed": 616,
+    "warnings": 93,
+    "lint": "passed",
+    "format": "passed",
+    "poetry_lock_check": "passed",
+    "focused_monitoring_and_assessment_tests": 21,
+    "semantic_checks": [
+      "bounded queue and per-thread source cursor",
+      "pause/resume exactly once",
+      "independent DuckDB nineteen-feature and score parity",
+      "source events and alert policy parity",
+      "failure after atomic commit records timing gap",
+      "failure before commit retries without false gap",
+      "warmup excluded from timings",
+      "short generated 1x source intervals",
+      "whole-day mature label cohorts and AP ties",
+      "read-only aggregate HTTP and explicit collector failure",
+      "final assessment and receipt reuse/tamper guard"
+    ],
+    "stack": {
+      "demo": {
+        "version": "paced_monitoring_v1",
+        "status": "success",
+        "complete": true,
+        "counts": {
+          "events": 20,
+          "transactions": 10,
+          "feedback": 10,
+          "decisions": 10,
+          "alert_decisions": 10,
+          "alerts": 1
+        },
+        "new_warmup_events": 0,
+        "new_paced_events": 20,
+        "speed": 1000000000.0,
+        "measurement_scope": "local_scheduled_emission_to_decision_commit_no_external_broker",
+        "sla_validated": false,
+        "production_promotion": false,
+        "source": "generated fixture only; not native fraud data or frozen reference model"
+      },
+      "prometheus_metrics": "passed",
+      "compose_config": "passed",
+      "prometheus_config": "passed using temporary host paths; tracked container configuration preserved",
+      "alert_rules": "SUCCESS",
+      "grafana": {
+        "version": "13.2.4",
+        "database": "ok",
+        "provisioned_dashboards": 2,
+        "datasources": 1,
+        "scope": "native API health, datasource and dashboard file provisioning only",
+        "backend_plugin_queries_validated": false,
+        "browser_rendering_validated": false,
+        "limitation": "sandbox disallows Unix sockets used by Grafana backend plugins; 27 dashboard expressions executed directly against Prometheus"
+      },
+      "dashboard_promql_queries": 27,
+      "docker_runtime_executed": false,
+      "rustfs_runtime_executed": false
+    }
+  },
+  "preservation": {
+    "existing_fraud_detection_mlops_files_unchanged": true,
+    "existing_tests_unchanged": true,
+    "pyproject_and_lock_unchanged": true,
+    "historical_protocols_and_evidence_unchanged": true,
+    "author_native_artifacts_accessed": false,
+    "remote_repository_modified": false
+  },
+  "not_validated": [
+    "native operational replay and its resource/latency cost",
+    "continuous native 1x local target",
+    "production SLA",
+    "Docker build and runtime",
+    "Grafana backend datasource queries and browser rendering",
+    "RustFS runtime and S3 upload/download/restore",
+    "feature-distribution and freshness monitoring",
+    "external broker delivery",
+    "CD rollback and CT promotion"
+  ],
+  "production_promotion": false,
+  "new_independent_quality_confirmation": false
+}

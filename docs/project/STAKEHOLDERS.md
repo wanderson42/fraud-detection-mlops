@@ -73,12 +73,35 @@ mudança de elegibilidade, status de triagem ou dos 1.453 alertas. O checkpoint
 original conservou o hash. Essa correção demonstra diagnóstico, regressão e
 recuperação auditável, sem substituir a evidência da falha anterior.
 
+## Próximo diferencial: operação visível e recuperável
+
+A entrega atual prepara emissão programada, fila limitada, Prometheus e dois
+painéis Grafana: operação e qualidade com rótulos maduros. O monitor separa falha
+de coleta de qualidade zero; exibe suporte, atraso/fila, lacunas de medição e
+mudança nos scores. Precisão/recall/AP só aparecem com coortes completas.
+Testes gerados e checks de configuração são preparação; ainda precisamos dos
+resultados de custo, falhas e recuperação no ambiente nativo do autor.
+
+O roadmap foi reordenado: **operação/monitoramento → objetos S3 locais e
+restauração → entrega/rollback → gestão de features e atualização controlada**.
+RustFS foi escolhido como backend local inicial, com perfil opcional preparado.
+Armazenamento de objetos exige upload, hashes e recuperação demonstrados, ainda
+pendentes. Não há conta cloud ou serviço pago obrigatório; a máquina consome
+recursos locais. Um único nó não protege contra perda do disco/máquina.
+
+Uma feature store pode ajudar se houver reutilização entre consumidores e gestão
+de frescor/materialização. O spike precisa preservar as 19 definições causais,
+a disponibilidade de rótulos e a paridade offline/online, e justificar seu custo.
+Kubernetes e novas buscas de modelos ficam abaixo desses requisitos operacionais.
+[Critérios e prioridades](ROADMAP.md), [runbook](../operations/OBSERVABILITY.md).
+
 ## O que continua em aberto
 
 | Próximo marco | Evidência necessária |
 | --- | --- |
 | Operação no ritmo de chegada | Emissão programada, filas/lag, latência desde emissão, erros e recuperação cronometrada |
-| Observabilidade | Saúde do serviço, dados e scores; qualidade com rótulos amadurecidos; alertas e resposta a falhas |
+| Observabilidade | Validar stack e alarmes no ambiente do autor; medir coleta em volume nativo e ampliar monitoramento de dados/features |
+| Persistência S3 local | RustFS preparado como perfil; arquivamento idempotente, checksum e restauração ainda necessários |
 | Entrega e reversão | Imagem/modelo identificados, gates e demonstração de rollback |
 | Atualização controlada | Gatilhos, orçamento, disponibilidade de rótulos e avaliação temporal do candidato antes de promoção |
 

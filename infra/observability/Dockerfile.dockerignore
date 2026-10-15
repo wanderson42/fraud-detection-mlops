@@ -1,0 +1,9 @@
+# This Dockerfile-specific allowlist overrides the serving-only root context.
+**
+!scripts/
+!scripts/monitoring/
+!scripts/monitoring/*.py
+!infra/
+!infra/observability/
+!infra/observability/Dockerfile
+!infra/observability/Dockerfile.dockerignore

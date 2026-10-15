@@ -1,264 +1,129 @@
 # Mural de metas — Fraud Detection MLOps
 
-Atualizado em 2026-10-15. Este é o **backlog principal do projeto**: metas, estado,
-ordem de trabalho e critérios de conclusão. O [README](../../README.md) é a entrada;
-a [arquitetura](../ARCHITECTURE.md) descreve o que existe e os contratos fixam as regras.
+Atualizado em **2026-10-15**. Backlog principal, em ordem de dependência e valor
+para a demonstração. O [README](../../README.md) apresenta o projeto; a
+[arquitetura](../ARCHITECTURE.md) descreve os componentes e os
+[stakeholders](STAKEHOLDERS.md) interpretam os resultados.
 
 ## O que queremos demonstrar
 
-Construir um laboratório de priorização de investigação que percorra **dados →
-features → modelo → inferência → feedback atrasado → monitoramento → atualização
-controlada**, com execução reproduzível, recuperação de falhas e custo mensurado.
-A inferência por streaming é um objetivo central: pontuar cada transação conforme
-chega e apoiar investigação próxima do tempo real. O objetivo do portfólio é
-demonstrar decisões de engenharia e operação de ML.
-A fonte é simulada; a utilidade e os limites estão no [contexto](PROBLEM_CONTEXT.md).
+Priorizar investigação com dados e features causais, modelo identificado,
+feedback atrasado, operação observável, recuperação e atualização controlada.
+O diferencial de portfólio é conseguir explicar uma decisão e demonstrar o que
+acontece quando o processo para, os dados mudam ou um candidato é rejeitado.
+O painel torna essas evidências visíveis. Dados simulados e laboratório local
+não comprovam eficácia antifraude real nem SLA de uma instituição.
 
-**Onde estamos:** pipeline offline, tracking e primeiro ciclo de experimentação
-validados localmente. As três ablações não passaram o gate; conservamos a referência
-de 19 features. **A avaliação final foi executada e verificada pelo autor:**
-AP 0,640703 e precisão diária @100 de 55%, com gate de laboratório aprovado.
-O holdout de maio foi consumido; as métricas diárias foram revisadas. O autor
-exportou a referência real e validou HTTP/wheel fora do checkout, com 67.255 linhas
-de paridade no exportador. O build/run Docker também foi validado pelo autor,
-incluindo reinício, integridade e proteções. Imagem: 166,8 MiB; memória observada:
-178,5 MiB; p95: 4,74 ms em teste sequencial local. O PR Docker foi integrado
-pelo autor. O incremento de Prefect para checagem isolada de serving foi retirado
-por custo desproporcional ao benefício. Contratos de transação/feedback e executor
-local SQLite foram preparados e conferidos com dados sintéticos. O autor aprovou
-448 testes e commitou `23c863e`; interrupção, retomada e repetição do demo conferiram.
-Implementação e relato foram integrados em `721a4bb`, pelo
-[PR #4](https://github.com/wanderson42/fraud-detection-mlops/pull/4). A política de
-primeiro cruzamento de limiar e o protocolo operacional estão preparados com
-fixtures e publicados na branch `feat/streaming-triage-policy`, agora em `d40d839`;
-o marco foi integrado pelo [PR #5](https://github.com/wanderson42/fraud-detection-mlops/pull/5),
-na main `a552896`. O autor aprovou 502 testes/93 avisos e
-preparou/verificou o limiar 0,8826493808370081 sobre 201.155 transações nos 21 dias
-de desenvolvimento. Mediana e identidade da configuração foram conferidas com
-o relato; scores nativos não foram recebidos para inspeção independente.
-A integração durável de scores/decisões/alertas/checkpoint foi integrada em
-`2d08c4b` pelo [PR #6](https://github.com/wanderson42/fraud-detection-mlops/pull/6).
-O adaptador restrito, a avaliação independente e o protocolo executável acelerado
-foram preparados com fixtures e executados pelo autor. O processamento nativo
-completou os eventos, mas reprovou a paridade de dois scores. O autor executou e
-verificou a correção: 19 atributos exatos, gate de scores aprovado e 1.453 alertas
-preservados; 768 capturas/358 perdas de clientes-dia fraudulentos.
-[Evidência](../../references/evidence/native_numerical_correction_author_validation_2026-10-13.json). Emissão programada/lag,
-transporte, monitoramento, CD e CT ainda precisam de evidência própria.
-O marco de organização/serving foi integrado pelo
-[PR #1](https://github.com/wanderson42/fraud-detection-mlops/pull/1). O protocolo da
-referência foi executado e verificado pelo autor em 02–15/09: AP 0,621312,
-precisão diária @100 de 54,93% e recall médio diário de 72,89%, sem refit.
-O autor aprovou 362 testes/94 avisos e forneceu o diagnóstico de dependência.
-A análise nativa por blocos foi executada e revisada, com todas as réplicas
-definidas: este escopo exploratório está concluído. A janela foi consumida;
-16–30/09 também foi materializada e processada no replay original; não é mais uma
-janela intocada. A execução corretiva é técnica, sem nova seleção. Cobertura de
-generalização não foi
-estabelecida; confirmação de outro modelo exige candidato elegível, desenho
-próprio e janela preservada. A etapa estatística foi integrada pelo
-[PR #2](https://github.com/wanderson42/fraud-detection-mlops/pull/2), após 379 testes
-nativos/94 avisos e CI da revisão final e de main aprovadas.
+## Marcos concluídos e evidência preservada
 
-**Escopo acordado:** interface para novos modelos, otimização limitada com Optuna,
-streaming com estado, feedback atrasado, monitoramento e atualização controlada
-são entregas do projeto. Aprovar a referência offline não encerra o trabalho.
-Controlar complexidade significa implementar essas capacidades com componentes
-pequenos e medir seu custo. Redes neurais, serviços de feature store e infraestrutura
-adicional continuam condicionados a uma necessidade demonstrada.
+| Marco | Estado e limite |
+| --- | --- |
+| Bronze, Silver e Gold | 183 dias; 1.754.155 transações; 19 preditores causais; contratos, manifestos e verificadores |
+| Referência e experimentos | HGB congelado, três ablações e 20 trials/63 fits; nenhum candidato elegível |
+| Avaliação temporal | Maio: AP 0,640703; referência de 02–15/09: AP 0,621312; reservas consumidas |
+| Estatística exploratória | Dependência e reamostragem documentadas; sem intervalo de generalização ou superioridade formal |
+| Tracking e serving | MLflow/skops, HTTP/wheel e Docker validados pelo autor; imagem e release identificadas |
+| Política e estado causal | Primeiro cruzamento do limiar 0,8826493808370081; até 100 clientes/dia; feedback separado sete dias depois |
+| Replay nativo e correção | 556.824 eventos/143.945 scores; 19 features exatas e gate de scores aprovado; 1.453 alertas preservados |
+| Resultado descritivo da fila | 768 capturas/358 perdas de clientes-dia fraudulentos em 16–30/09; precisão 52,86% e recall 68,21% agregados |
 
-**HGB = Histogram-based Gradient Boosting**, ou boosting de árvores baseado em
-histogramas. Neste projeto é o `HistGradientBoostingClassifier` do scikit-learn.
-A sigla identifica a referência atual; novos modelos dependem de hipótese e protocolo.
+O replay corretivo já foi executado e verificado pelo autor. Não volta ao backlog
+como execução futura. [Recibo e origem](../../references/evidence/native_numerical_correction_author_validation_2026-10-13.json).
+Os protocolos, os resultados anteriores e seus checkpoints permanecem preservados.
+Os números de testes históricos descrevem a entrega correspondente, não a CI de
+um commit ainda não publicado.
 
-## Metas e critérios de conclusão
+## Backlog ordenado
 
-Estados: **validado localmente** = execução relatada e evidência registrada;
-**próximo** = trabalho prioritário ainda pendente; **planejado** = capacidade a construir;
-**condicional** = escolha que precisa justificar custo e benefício. Uma meta planejada
-não representa uma tecnologia instalada nem uma aprovação em produção.
+| Ordem | Entrega | Estado atual | Critério de conclusão |
+| --- | --- | --- | --- |
+| 1 | Replay com emissão programada e recuperação medida | Adaptador, protocolo e testes gerados preparados nesta entrega; execução nativa pendente | Reusar entrada materializada, registrar velocidade/capacidade/latências/CPU/RSS, interromper e retomar, verificar as 19 features, scores e decisões sem alterar o histórico |
+| 2 | Monitoramento e dashboards locais | Exporter, Prometheus, dois painéis Grafana e regras preparados; validação descrita no runbook | Demonstrar suporte/maturidade, filas e decomposição de latência; provocar falhas controladas, observar alarme, recuperar e registrar evidência no ambiente do autor |
+| 3 | Armazenamento de objetos e recuperação | RustFS local escolhido; perfil Compose opcional preparado | Upload idempotente, manifesto/checksums, credenciais fora do Git, download e restauração verificável de artefatos; medir espaço e tempo; provar recuperação após perda do diretório de trabalho |
+| 4 | CD e rollback de release | Backlog | Imagem e modelo identificados, gates de integridade/paridade/saúde, troca controlada e retorno à release anterior, com falha injetada e evidência |
+| 5 | Monitoramento de dados/features e gestão de features | Contratos e paridade existentes; próxima extensão após métricas operacionais | Medir schema, ausência, frescor/atraso e distribuições de features com suporte; baseline temporal versionado e testes de resposta. Não confundir score drift com feature drift |
+| 6 | CT controlado | Backlog, depende de 2–5 | Gatilho explícito, labels disponíveis, orçamento, treino e avaliação temporal comparável; candidato rejeitado ou promovido com gates e rollback. Drift sozinho não promove |
+| 7 | Orquestração de jobs | Condicional à composição real de jobs | Coordenar treino/avaliação/publicação, retries e estados; escolher ferramenta pelo problema demonstrado. O consumidor de eventos continua processo próprio |
+| 8 | Spike de feature store | Condicional aos critérios abaixo | Demonstrar reutilização, joins point-in-time corretos, disponibilidade/frescor online, paridade, recuperação e custo comparados à solução atual |
+| 9 | Transporte externo e carga sustentada | Condicional à necessidade demonstrada | Broker, política de atraso/reentrega, backpressure, falha e recuperação medidos sob carga declarada; não inferir entrega distribuída a partir de uma fila em processo |
+| 10 | Kubernetes/kind e IaC | Adiado até operação local e rollback estáveis | Justificar custo/complexidade; provar ganho de implantação e recuperação. Terraform/cloud não são pré-requisitos do laboratório |
+| 11 | Novo ciclo de modelos e confirmação estatística | Condicional a hipótese/candidato e avaliação preservada | Novo desenho antes do acesso, efeito relevante e dependência temporal/por entidade tratados; não reutilizar maio ou setembro como confirmação nova |
 
-| Meta | Estado | Entrega que permite concluir |
-| --- | --- | --- |
-| Dados reproduzíveis: Bronze, Silver e Gold | Validado localmente | Fonte fixada, integridade, contratos, reconciliação, features causais e separação temporal. [Pipeline](../data/DATA_PIPELINE.md), [dicionário](../data/DATA_DICTIONARY.md) e [Gold](../data/GOLD_CONTRACT.md). |
-| Qualidade do software e CI | Replay local e relato integrados pelo PR #4; política de triagem preparada para revisão | Poetry/lockfile, tox, Ruff e pytest; workflow de CI. Validação do autor em `23c863e`: 448 testes/93 avisos e demo sintético retomado/repetido. Cada incremento exige validação nativa, revisão e CI do SHA final. [Testing](../operations/TESTING.md). |
-| Baseline, MLflow e explicabilidade | Validado localmente | Comparação na validação, pipelines skops, recarga, SHAP e permutação. [Baseline](../modeling/BASELINE.md), [MLflow](../operations/MLFLOW.md) e [diagnóstico](../modeling/DIAGNOSTICS.md). |
-| Seleção de features por ablação | Primeiro ciclo concluído | Três fits sob política congelada; nenhuma ablação elegível; referência preservada, sem promover modelo. [Decisão e evidência](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08). |
-| Congelamento da referência | Concluído | Build/verify informados pelo autor, recibo versionado em `623dc86` antes do acesso ao teste. [Evidência](../../references/evidence/freeze_execution_2026-10-08.json). |
-| Avaliação final | Executado e verificado localmente; CSV diário revisado | AP 0,640703 e precisão diária @100 de 55%; critérios atingidos, sem refit ou promoção em produção. [Evidência](../../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](../modeling/MODEL_CARD.md). |
-| Análise estatística e testes de hipóteses | Escopo exploratório concluído; reamostragem nativa revisada; confirmação futura condicional | AP 0,621312, precisão diária @100 de 54,93% e recall de 72,89%. Todas as 2.000 réplicas por configuração 2/3/4/7 ficaram definidas. Quantis exploratórios não demonstram cobertura futura; não houve teste temporal formal ou confirmação de candidato. [Resultado e fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento). |
-| Interface para colaboradores adicionarem modelos | Implementado; exemplo sintético executado pelo autor | Factory pequena para estimator/Pipeline compatível com scikit-learn; features, classe positiva, parâmetros, seed e persistência explícitos. Adicionar um modelo de exemplo pelo mesmo fluxo, sem duplicar tracking, avaliação ou gates. [Fronteira de modelagem](../modeling/CONTRIBUTING_MODELS.md). |
-| Validação temporal e otimização do HGB com Optuna | Estudo concluído no relatório do autor; referência conservada | Fixar novas janelas de desenvolvimento e avaliação antes da busca; respeitar disponibilidade de rótulos em cada corte. Estudo persistente com orçamento global, MLflow, métricas por janela e comparação justa com a referência. Primeiro estudo: HGB com as 19 features, sem misturar ablação e busca. Ganho não é garantido; concluir o estudo pode significar conservar a referência. |
-| Contrato de inferência e Docker | Exportação, HTTP/wheel e Docker validados localmente pelo autor; incremento integrado | 67.255 linhas de paridade no exportador. Docker aprovou caso HTTP, rejeição de entrada inválida, reinício, três falhas de carga e proteções. Imagem 166,8 MiB; snapshot 178,5 MiB; p95 4,74 ms sob teste sequencial, sem SLA validado. [Resultado e limites](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09). |
-| Orquestração de processos | Condicional; escolha de ferramenta adiada | Justificar por dependências, recorrência, recuperação e gestão de execução dos processos de dados, avaliação ou treinamento. Prefect permanece uma opção futura; o fluxo isolado de verificação de serving foi retirado. Manter executores e contratos independentes. |
-| Armazenamento de objetos | Planejado; backend a decidir | Separar dados e artefatos do container, preservar manifestos e demonstrar recuperação. Escolher S3 compatível, como RustFS, **ou** armazenamento Azure conforme o cenário; validar acessos e custo. Parquet/DuckDB continuam adequados à etapa local. |
-| Política causal de investigação | Política/limiar integrados pelos PRs #5/#6; avaliação nativa acelerada verificada pelo autor | Limiar 0,8826493808370081 nos 21 dias, 201.155 scores, mesma release de abril, sem alvos atuais na seleção. Até 100 clientes/dia, sem substituição posterior. Configuração identificada: 1.453 alertas; 768 capturas/358 perdas; precisão agregada 52,86%, recall agregado 68,21% e ocupação 96,87%. Latência desde emissão ainda não avaliada. [Resultado e limites](../operations/CAUSAL_REPLAY.md#resultado-do-limiar-informado-pelo-autor--2026-10-13). |
-| Streaming por replay histórico e paridade de features | Replay corretivo executado e verificado pelo autor; paridade técnica aprovada | Eventos separados e checkpoint SQLite independente de orquestrador. 556.824 eventos e 143.945 scores; igualdade exata das 19 features e gate de scores original aprovado. Checkpoint original preservado; nenhum alerta mudou. A janela foi consumida. Transporte, lag/recursos e monitoramento permanecem pendentes. [Procedimento e limites](../operations/CAUSAL_REPLAY.md). |
-| Gestão de features e eventual feature store | Estado causal e paridade demonstrados no replay; serviço de feature store condicional | Compartilhar definição/versionamento das features, manter estado e demonstrar paridade offline/online e disponibilidade no instante da decisão. Adotar um serviço de feature store apenas se resolver compartilhamento, latência ou governança que a solução simples não atender. |
-| Monitoramento e dashboards | Planejado | Prometheus/Grafana para serviço, latência, erros e atraso do processamento; pipeline para qualidade, drift e desempenho quando os rótulos chegarem. Painel de investigação com orçamento, acertos e fraudes perdidas. Demonstrar alertas e recuperação em falhas controladas. |
-| CD e governança de promoção | Planejado | Entregar imagem e modelo identificados, executar smoke tests e gates de dados/modelo/serviço, controlar a promoção e demonstrar rollback. Registry/aliases MLflow entram com o fluxo de release; o gate exploratório atual não autoriza deployment. |
-| CT: treinamento contínuo controlado | Planejado | Definir gatilhos, disponibilidade dos rótulos, orçamento e avaliação temporal do candidato. Orquestrar treinamento, comparação e decisão auditável; manter a referência quando os gates falharem. Drift isolado não basta para promover modelo. |
-| Kubernetes local com kind | Condicional | Adotar quando o serviço e o replay estiverem estáveis e houver cenário de implantação a demonstrar. Comprovar persistência, probes, recuperação e rollback; medir custo de recursos. |
-| Terraform e implantação em cloud | Condicional | Selecionar um ambiente e orçamento, provisionar recursos realmente necessários, conferir recriação e destruição controlada. Evitar manter duas clouds ou duplicar a responsabilidade dos manifests de aplicação. |
-| Novos ensembles e redes neurais | Condicional | Utilizar a interface comum e abrir comparação com hipótese, orçamento e avaliação temporal. HGB já é um ensemble de árvores. A complexidade adicional deve justificar desempenho, latência, memória e manutenção; a entrega de Optuna acima não depende de adotar outra família de modelos. |
+As ordens 1 e 2 formam o incremento atual. Armazenamento de objetos sobe para a
+ordem 3 e antecede CD/CT: não fica escondido atrás de Kubernetes ou de novas
+buscas de hiperparâmetros. Dados/features, CT, orquestração e inferência por eventos
+continuam no plano. O incremento de Prefect de checagem isolada foi retirado;
+um futuro orquestrador depende de uma composição de jobs que o justifique.
 
-## Próxima entrega concreta
+## Incremento atual — monitoramento local
 
-1. Registrar e versionar o resultado de 13/10 no notebook principal, stakeholders,
-   Model Card e evidência auditável. O replay corretivo e sua verificação passaram;
-   o encerramento é técnico e descritivo, sem promoção de produção.
-2. Definir o ensaio de emissão programada antes de executá-lo: relógio de emissão,
-   escala temporal, fila/lag, limites de carga, interrupção/retomada e latência
-   até decisão/commit. Preservar modelo/política; reuso da entrada materializada
-   testa operação, sem criar uma nova avaliação independente de qualidade.
-3. Medir o ensaio e consolidar custos das invocações existentes quando fornecidos.
-   Ritmo 1x, p95 desde emissão ≤ 1 s, backlog, throughput sustentado, CPU/RSS e
-   recuperação cronometrada continuam pendentes; p95 HTTP local não aprova esse alvo.
-4. Implantar observabilidade de serviço, dados e scores e juntar rótulos somente
-   quando amadurecidos. Demonstrar alarmes e resposta a falhas, depois CD/rollback
-   e CT com gates. Orquestrador, feature store, Kubernetes e cloud continuam
-   condicionados à necessidade e ao custo demonstrados.
+[Runbook de observabilidade](../operations/OBSERVABILITY.md) e
+[protocolo](../../references/paced_monitoring_protocol_v1.json) concentram execução,
+identidades, métricas e limites. A fila limitada fica entre produtor programado e
+consumidor durável. O contexto anterior ao início da janela é aquecido sem pacing
+e excluído das latências. Cada retomada tem uma nova âncora; lacunas de tempo
+após commit são explícitas, sem fabricar amostras de latência.
 
-O [protocolo operacional original](../../references/causal_replay_protocol_v1.json)
-permanece imutável, com seu placeholder histórico. O novo
-[protocolo executável acelerado](../../references/native_causal_replay_execution_v1.json)
-vincula o manifesto nativo do limiar, a configuração registrada e a release.
-Ele delimita acesso e avaliação. O resultado da execução e da correção fica no
-[recibo posterior](../../references/evidence/native_numerical_correction_author_validation_2026-10-13.json),
-sem alterar o protocolo original.
-O limiar é 0,8826493808370081; 0,7 continua somente fixture. A política consome
-capacidade na primeira transação elegível e pode perder casos mais fortes que
-chegam depois. Não herda a precisão do top-100 retrospectivo como promessa operacional.
+O exporter lê somente o estado do novo ensaio. Não reabre Silver, não pontua
+novamente e não consulta o oráculo. Qualidade usa dias completos com feedback
+amadurecido; AP é transacional, precisão/recall da fila são por cliente/data.
+Jensen–Shannon dos scores é um sinal descritivo com suporte, sem CT automático.
+A observabilidade de features completas e o monitoramento de recursos do host
+continuam com evidência própria; os custos do replay são coletados por invocação.
 
-O [resultado nativo Docker](../operations/SERVING_CONTRACT.md#resultado-nativo-docker--2026-10-09)
-fecha a verificação operacional local. Ele não substitui a CI final da branch,
-testes de carga, promoção em produção ou evidência de streaming.
+Velocidade > 1 é aceleração. O alvo local de p95 agendado→commit ≤ 1 s só pode
+ser examinado em execução 1x contínua, completa, sem lacunas de tempo e no escopo
+de fila local. Uma janela inteira em ritmo 1x dura semanas: comece pelo ensaio
+acelerado, registre seu custo e planeje um recorte 1x sob protocolo antes de
+alterar a janela. Não tratamos o p95 HTTP sequencial como latência do replay.
 
-O [resultado fornecido](../modeling/EVALUATION_PROTOCOL.md#resultado-da-busca-informado-pelo-autor)
-registra 20 trials, 63 fits, nenhuma falha e `retain_reference`. Não houve confirmação
-de candidato; 02–15/09 foi usada na avaliação da referência. Refatoração estrutural e qualidade dos modelos têm evidências
-separadas; os testes usam dados sintéticos.
+## Objetos S3 e custo inicial
 
-## Próximo ciclo de modelos e operação
+**Decisão: armazenamento S3 compatível local, com RustFS como backend inicial.**
+Não exige conta de nuvem. Prometheus, Grafana OSS e RustFS rodam em perfis locais;
+RustFS é opcional enquanto o fluxo de arquivamento não está implementado.
+[Configuração](../../infra/observability/README.md). Imagens são fixadas por digest,
+credenciais são geradas localmente e as portas publicadas ficam no loopback.
 
-O ciclo inicial produziu uma referência congelada, não um modelo definitivo.
-O [protocolo executável](../../references/hgb_optuna_protocol_v1.json) autoriza desenvolvimento
-em junho–agosto e reserva setembro. A tabela e o procedimento ficam no
-[protocolo de avaliação](../modeling/EVALUATION_PROTOCOL.md#otimização-temporal-do-hgb-com-optuna-v1).
-A Gold desse ciclo tem identidade própria; os artefatos da avaliação inicial
-permanecem preservados.
+A meta de objetos inclui datasets/artefatos imutáveis, releases, manifests,
+relatórios e backups consistentes de estado. SQLite ativo continua em disco
+local: S3 não substitui seu sistema de arquivos, locking ou commit atômico.
+Restaurar e conferir hashes é requisito; apenas iniciar o serviço não fecha o
+marco. Um único disco/nó RustFS não fornece redundância ou proteção contra perda
+da máquina. Outra cópia independente continua necessária para disaster recovery.
 
-**Optuna:** TPE, SQLite local e execução sequencial, com até 20 trials globais,
-60 ajustes de busca e três ajustes de referência: **63 tentativas no total**.
-O primeiro comando mede três ajustes de referência e um trial de três ajustes.
-O custo real orientará os lotes seguintes; não há garantia de duração sem medição.
-Limite de quatro threads; histórico causal e rótulos disponíveis em cada corte.
+Sem despesa de serviço cloud nesta fase; CPU, RAM, disco, energia e manutenção
+da máquina continuam sendo recursos consumidos. Medir tempo/CPU/RSS por
+invocação e volumes em disco, limitar retenção do Prometheus a 48 h/512 MB e
+usar somente os perfis necessários. Não adicionar serviços pagos como requisito.
 
-Os cinco hiperparâmetros variam no espaço fixado antes da busca. AP média dos três
-cortes é o objetivo. Gates práticos exigem ganhos absolutos médios de AP ≥ 0,01 e
-precisão @100 ≥ 0,02, sem perda de AP maior que 0,02 em qualquer corte. São critérios
-de seleção de desenvolvimento, não testes de hipótese. Não há pruning, early stopping,
-remoção de features, expansão do catálogo ou ajuste final nesta autorização.
-O estudo foi concluído no relatório fornecido pelo autor: nenhum trial passou
-o gate e a referência foi conservada. A confirmação permanece fechada.
+## Quando uma feature store vale a pena
 
-**Degradação:** primeiro medir a referência fixa ao longo de períodos posteriores.
-O modelo não perde qualidade apenas por envelhecer; mudanças no processo e nos
-dados podem reduzir sua capacidade de ordenar fraudes. Monitorar prevalência,
-distribuição de features/scores, AP e precisão/recall da fila quando os rótulos
-ficarem disponíveis. Drift é um sinal de investigação, não prova isolada de queda
-nem autorização para promover outro modelo. Comparações estatísticas precisam de
-protocolo próprio e respeito à dependência temporal e por entidade.
+A gestão atual já inclui schema, 19 features causais, versão da regra numérica,
+features offline e estado online com paridade independente. Uma feature store
+pode ajudar quando duas ou mais aplicações/treinos realmente reutilizarem as
+mesmas features e o trabalho de materialização/frescor precisar de gestão comum.
+O spike, por exemplo com Feast local, só começa com esse caso e orçamento claros.
 
-**Streaming:** o marco é processar eventos, produzir features causais e scores,
-receber rótulos posteriores e atualizar métricas. O replay não entrega o rótulo
-junto à transação. A política preparada usa o instante da primeira transação
-elegível; a fila retrospectiva de um dia completo não vira uma decisão instantânea.
-A política preparada usa primeiro cruzamento de limiar, até cem clientes por
-dia e nenhuma substituição posterior. O limiar já foi fixado no desenvolvimento;
-o núcleo durável está integrado e o adaptador restrito foi preparado com fixtures. A
-execução nativa permanece pendente. O pipeline deverá recuperar estado após
-reinício, tratar duplicatas e aplicar uma
-política explícita para eventos atrasados, sem alterar silenciosamente scores já
-emitidos. Comparar com o cálculo offline sob a mesma política de eventos.
+| Pergunta do spike | Evidência exigida |
+| --- | --- |
+| Qual consumidor adicional reutiliza quais features? | Consulta e materialização comparadas com o fluxo atual, sem duplicar lógica |
+| O join histórico respeita o instante de decisão? | Testes de point-in-time e de disponibilidade: feedback conhecido só sete dias depois; um timestamp de ocorrência sozinho não resolve disponibilidade |
+| O online respeita frescor e atraso? | TTL, freshness, política de eventos atrasados, materialização, falha e recuperação explícitos |
+| A semântica fica igual? | As 19 features e os scores mantêm a regra numérica e a paridade; não trocar a definição para acomodar a ferramenta |
+| Qual custo e ganho operacional? | RAM, disco, processos, latência e esforço de manutenção medidos contra o estado SQLite atual |
 
-**CT e promoção:** comparar a referência em serviço com candidatos treinados apenas
-com rótulos disponíveis, nas mesmas janelas de avaliação. Retreinar pode reutilizar
-hiperparâmetros aprovados; não executar uma busca Optuna a cada chegada de dados.
-Promoção exige os gates definidos, identidade de release e possibilidade de rollback.
-Uma camada de orquestração poderá coordenar jobs de treinamento, avaliação e
-agregação quando houver necessidade demonstrada; a ferramenta será escolhida
-nessa etapa. O consumidor de eventos terá seu próprio processo. Não precisamos
-instalar Kubernetes para iniciar essa demonstração.
+Adoção depende do resultado. Não instalar uma feature store apenas para completar
+uma lista de ferramentas. Não confundir bucket de Parquet com feature store online.
 
-Uma demonstração de portfólio deve mostrar o percurso completo: eventos chegando,
-predições identificadas, feedback atrasado, painel de desempenho e recursos,
-falha controlada com recuperação, candidato aceito ou rejeitado e rollback.
-Cenários artificiais de drift ou falha terão identificação própria, separados
-dos dados originais e das conclusões sobre a evolução histórica.
+## Leitura e evidência
 
-## Marco de análise estatística e testes de hipóteses
+- [Stakeholders](STAKEHOLDERS.md), [Model Card](../modeling/MODEL_CARD.md) e [avaliação](../modeling/EVALUATION_PROTOCOL.md).
+- [Replay corrigido](../operations/NUMERICAL_CORRECTIVE_REPLAY.md) e [monitoramento](../operations/OBSERVABILITY.md).
+- [Prometheus: instrumentação e cardinalidade](https://prometheus.io/docs/practices/instrumentation/).
+- [Grafana: provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/).
+- [RustFS: implantação local](https://docs.rustfs.com/en/installation/container).
+- [Feast: point-in-time joins](https://docs.feast.dev/getting-started/concepts/point-in-time-joins).
 
-Optuna seleciona configurações; não fornece confirmação estatística por si só.
-Como nenhum trial passou o gate, o
-[protocolo v1](../modeling/EVALUATION_PROTOCOL.md#protocolo-estatístico-da-referência--v1)
-fixou a avaliação do modelo de abril em 02–15/09. O plano lê somente JSONs; o
-executor autorizado foi executado e verificado pelo autor, consumindo a reserva
-de qualidade dessa janela. O cálculo de referência de fila aleatória
-condiciona nas contagens observadas; seu intervalo descreve essa política, não a
-qualidade futura do modelo.
-
-Uma comparação confirmatória futura exige candidato congelado, avaliação ainda
-não consultada, efeito relevante e método de incerteza justificados para a
-dependência temporal e recorrência de entidades. O protocolo especifica essas
-condições; teste formal e intervalo de generalização continuam pendentes.
-O volume de transações não equivale à informação independente. Resultados de maio
-são históricos; uma queda de AP isolada não identifica a causa da degradação.
-A documentação de avaliação concentra os detalhes, sem um documento por métrica.
-
-O [escopo exploratório da referência](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento)
-foi concluído: diagnóstico de dependência e grade de reamostragem nativa revisados,
-com todas as réplicas definidas. As faixas não estabelecem cobertura de generalização
-ou número de observações independentes. A comparação confirmatória de outro modelo
-permanece condicional a candidato elegível, desenho próprio e janela preservada.
-Exportação e HTTP/wheel da referência foram validados pelo autor. O PR #2 integrou
-a etapa estatística. O autor concluiu a verificação Docker e integrou o
-incremento. O fluxo Prefect de verificação isolada foi retirado; os contratos e o executor local foram conferidos com fixtures. O PR #5 integrou o limiar. O PR #6 integrou o núcleo durável; o adaptador foi preparado com fixtures. O próximo
-marco executa e verifica a reserva sob o protocolo acelerado, após CI, mantendo
-emissão programada e lag como ensaio posterior.
-
-## Sequência operacional e controle de custo
-
-O protocolo estatístico antecede a retomada da infraestrutura e o acesso reservado.
-Serving/empacotamento antecedem a implantação. O replay estabelece estado e
-disponibilidade das features, inicialmente com um executor independente.
-Orquestração e armazenamento compartilhado exigem necessidade demonstrada;
-monitoramento e CD vêm com uma operação
-observável. CT depende de feedback, avaliação e promoção já definidos. kind e
-Terraform entram quando esses contratos estiverem estáveis e seu uso for justificado.
-
-Os 183 dias e 1.754.155 transações permitem exercitar replay, janelas, feedback e
-falhas. Isso não demonstra carga de uma instituição real. Definiremos cenários
-de carga e mediremos latência, memória, throughput e custo no ambiente escolhido.
-Dados de períodos posteriores só entram sob protocolo temporal explícito; não são
-automaticamente novas amostras independentes para confirmar os achados da validação.
-
-Cada entrega deve resolver uma operação ou falha concreta, indicar seu custo e
-produzir evidência suficiente para revisão. Não exigimos ferramenta, documento,
-notebook ou teste novo para toda alteração. Mantemos uma referência principal por
-assunto, preferimos APIs nativas e removemos caminhos de escrita aposentados.
-
-## Evidências e referências
-
-- [Ablações: decisão e resultados registrados em 2026-10-08](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08).
-- [Avaliação final informada pelo autor](../../references/evidence/final_evaluation_execution_2026-10-08.json) e [Model Card](../modeling/MODEL_CARD.md).
-- [Protocolo temporal](../modeling/EVALUATION_PROTOCOL.md): dados, rótulos e métricas.
-- [Stakeholders](STAKEHOLDERS.md): interpretação e utilidade dos resultados.
-- [Google Cloud: MLOps, CI/CD/CT e operação de sistemas de ML](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning).
-- [scikit-learn: HistGradientBoostingClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html).
-- [Handbook: validação temporal e atraso de rótulos](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_5_ModelValidationAndSelection/ValidationStrategies.html).
-- [Optuna: estudo, armazenamento e retomada](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.create_study.html).
-- [Optuna: amostragem e pruning](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/003_efficient_optimization_algorithms.html).
-
-O mural é uma decisão de escopo deste projeto, informado pelas referências.
-Não é uma certificação de maturidade nem uma promessa de eficácia antifraude real.
+As prioridades são decisões deste projeto. Não representam certificação de
+maturidade ou promessa de qualidade futura.

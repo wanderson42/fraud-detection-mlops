@@ -19,6 +19,8 @@ Leia o [README do projeto](../README.md) para começar e a
 | Como separar transação/feedback e retomar o replay causal local? | [Contratos, executor e limites](operations/CAUSAL_REPLAY.md) |
 | Como corrigir e conferir a paridade numérica? | [Correção versionada](operations/NUMERICAL_CORRECTIVE_REPLAY.md) e [resultado nativo](operations/NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13) |
 
+| Como medir replay e abrir os dashboards locais? | [Observabilidade](operations/OBSERVABILITY.md) e [infra local](../infra/observability/README.md) |
+
 Os protocolos executáveis e recibos históricos estão em
 [`references/`](../references/). Os notebooks mantêm narrativa e resultados
 selecionados; o runbook é a referência dos procedimentos reutilizáveis.

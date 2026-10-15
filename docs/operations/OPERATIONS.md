@@ -454,3 +454,13 @@ retomada e limites. O executor mantém estado local e aceita o runtime de servin
 em processo; não introduz orquestrador ou acesso à janela reservada. Antes da
 execução nativa, janela, contexto, release e política de investigação terão
 protocolo próprio.
+
+
+## Replay programado, monitoramento e armazenamento local
+
+O [runbook de observabilidade](OBSERVABILITY.md) concentra demo, novo ensaio nativo,
+retomada e verificação independente. O [roadmap](../project/ROADMAP.md) foi
+reordenado: operação/monitoramento, objetos S3 locais e restore, CD/rollback,
+gestão de features e CT. RustFS tem perfil opcional; a migração de artefatos e
+restauração permanecem um marco próprio. Use somente o diretório novo do ensaio;
+preserve os dois checkpoints nativos anteriores e seus recibos.

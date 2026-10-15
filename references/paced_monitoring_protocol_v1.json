@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "version": "paced_monitoring_v1",
+  "purpose": "local_operational_reuse_not_new_model_confirmation",
+  "decision_implementation": "preserved_exact_binary64_mean_v1_and_DurableTriageReplay",
+  "source": "existing_materialized_events_no_Silver_reopening",
+  "warmup": "source_events_before_scoring_window_unpaced_excluded_from_latency",
+  "pacing": "each_invocation_anchors_first_uncommitted_paced_event_monotonic_clock",
+  "speed": "1_is_source_rate_greater_than_1_is_accelerated_no_1x_claim",
+  "queue": "bounded_in_process_producer_consumer_no_external_broker",
+  "latency": "scheduled_emission_to_atomic_decision_commit_including_backpressure",
+  "histograms": "paced_transactions_only_excluding_context_and_unmeasured_recovery",
+  "recovery": "source_ledger_is_authoritative_missing_timing_is_marked_unmeasured",
+  "quality": "whole_source_day_plus_seven_day_feedback_deadline_and_all_labels_observed_or_verified_full_stream_completion",
+  "score_reference": "verified_development_threshold_scores_no_current_labels",
+  "drift": "rolling_1000_scores_Jensen_Shannon_base_2_descriptive_no_automatic_promotion",
+  "local_lab_target": "p95_scheduled_to_commit_at_most_1_second_only_when_speed_1_and_no_timing_gaps",
+  "native_runtime_measured": false,
+  "production_promotion": false
+}

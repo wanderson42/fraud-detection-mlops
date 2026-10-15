@@ -483,3 +483,12 @@ A execução corretiva e a verificação foram concluídas pelo autor em 13/10.
 O relato concordante consolidou 1.453 alertas, 768 capturas e 358 perdas de
 clientes-dia fraudulentos, com igualdade exata das 19 features e gate de scores
 aprovado. [Evidência e limites](NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13).
+
+
+## Incremento posterior — emissão programada e monitoramento
+
+O adaptador com fila limitada e os dashboards locais estão preparados no
+[runbook de observabilidade](OBSERVABILITY.md). Possuem identidade e saída próprias,
+usam os eventos já materializados e preservam o núcleo/artefatos deste marco.
+A preparação com fixtures não fecha ritmo 1x, transporte externo, SLA ou execução
+nativa do novo adaptador. O [roadmap](../project/ROADMAP.md) mantém esses critérios.
