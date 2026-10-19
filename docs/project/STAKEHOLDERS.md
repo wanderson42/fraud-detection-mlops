@@ -582,3 +582,13 @@ laptop. Implementação e controles offline concluídos; **build/gate Docker e
 execução GitHub Actions pendentes**. O pacote da CI tem retenção de três dias;
 recarga do arquivo em outro engine e promoção de uma release aprovada têm gate
 próprio. [Fluxo e limites](../operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).
+
+### Correção antes do aceite da entrega versionada
+
+O primeiro build nativo terminou, mas o processo sem privilégios não conseguiu
+ler o manifesto da fixture sintética (modo 0600). A entrega não foi qualificada.
+O ajuste se limita à cópia gerada para o job; mantém o usuário sem privilégios,
+a montagem somente leitura e a integridade dos arquivos. Foram acrescentados
+casos de regressão para permissões restritivas e preservação da origem. O gate
+Docker/CI deste novo fluxo continua pendente; não se repete treino histórico.
+[Procedimento](../operations/SERVING_ROLLOUT.md#correção-das-permissões-da-fixture--2026-10-19).

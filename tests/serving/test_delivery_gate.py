@@ -6,8 +6,10 @@ HTTP/model loading; native image/build/network proof is a separate opt-in gate.
 
 from contextlib import contextmanager
 import json
+import os
 from pathlib import Path
 import shutil
+import stat
 import subprocess
 
 import pytest
@@ -324,3 +326,70 @@ def test_build_is_once_with_pinned_bases_and_source_label(tmp_path, monkeypatch,
         lock["build_python"],
         rollout.GATEWAY_IMAGE,
     ]
+
+
+@pytest.mark.parametrize("umask", [0o022, 0o077])
+def test_container_gate_receives_readable_fixture_without_touching_source(
+    controlled_delivery, serving_release, monkeypatch, umask
+):
+    root, _, _, _ = controlled_delivery
+    original, pin = serving_release
+    source_bytes = gate.checks.hashes(original)
+    source_modes = {
+        p.name: stat.S_IMODE(p.stat().st_mode)
+        for p in [original, *(original / n for n in gate.checks.RELEASE_FILES)]
+    }
+    real_assess = gate.checks.assess
+    visited = []
+
+    def prepare(directory):
+        shutil.copytree(original, directory)
+        directory.chmod(0o700)
+        # Reproduce write_json's atomic 0600 JSONs and a restrictive umask.
+        for name in gate.checks.RELEASE_FILES:
+            (directory / name).chmod(0o600)
+        return {"manifest_sha256": pin}
+
+    def assess(image, release, digest, **kwargs):
+        # Model files are read-only bind mounted. UID 10001 needs traversal/read
+        # independent of the host owner's UID, not a same-user access() probe.
+        assert stat.S_IMODE(release.stat().st_mode) == 0o755
+        for name in gate.checks.RELEASE_FILES:
+            path = release / name
+            assert stat.S_IMODE(path.stat().st_mode) == 0o644
+            assert path.stat().st_mode & stat.S_IROTH
+        assert gate.checks.hashes(release) == source_bytes
+        assert stat.S_IMODE(release.parent.stat().st_mode) == 0o700
+        visited.append(release)
+        return real_assess(image, release, digest, **kwargs)
+
+    monkeypatch.setattr("examples.serving_smoke.synthetic_release", prepare)
+    monkeypatch.setattr(gate.checks, "assess", assess)
+    old_umask = os.umask(umask)
+    try:
+        result = gate.qualify(SHA, root=root)
+    finally:
+        os.umask(old_umask)
+    assert result["status"] == "qualified_synthetic" and len(visited) == 1
+    assert gate.checks.hashes(original) == source_bytes
+    assert {
+        p.name: stat.S_IMODE(p.stat().st_mode)
+        for p in [original, *(original / n for n in gate.checks.RELEASE_FILES)]
+    } == source_modes
+
+
+def test_historical_release_is_rejected_before_chmod(serving_release, tmp_path):
+    original, _ = serving_release
+    release = tmp_path / "release"
+    shutil.copytree(original, release)
+    manifest = json.loads((release / "manifest.json").read_text())
+    manifest["evidence_kind"] = "verified_reference"
+    (release / "manifest.json").write_text(json.dumps(manifest))
+    for path in [release, *(release / n for n in gate.checks.RELEASE_FILES)]:
+        path.chmod(0o700 if path.is_dir() else 0o600)
+    before = {p.name: stat.S_IMODE(p.stat().st_mode) for p in [release, *release.iterdir()]}
+    with pytest.raises(gate.checks.CheckFailed, match="Only generated"):
+        gate.prepare_fixture_mount(release, gate.digest(release / "manifest.json"))
+    assert {
+        p.name: stat.S_IMODE(p.stat().st_mode) for p in [release, *release.iterdir()]
+    } == before

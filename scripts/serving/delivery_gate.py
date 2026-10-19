@@ -208,6 +208,21 @@ def inventory(directory):
     return files
 
 
+def prepare_fixture_mount(release, manifest_sha256):
+    """Normalize only the newly generated fixture; never a historical release."""
+    manifest, _, original = checks.read_release(release, manifest_sha256)
+    checks.require(
+        manifest["evidence_kind"] == "synthetic_smoke",
+        "Only generated fixtures may have permissions normalized",
+    )
+    release.chmod(0o755)
+    for name in checks.RELEASE_FILES:
+        (release / name).chmod(0o644)
+    checks.require(
+        checks.hashes(release) == original, "Fixture bytes changed during mount preparation"
+    )
+
+
 def qualify(expected_source_sha, *, root=ROOT):
     source = source_identity(root, expected_source_sha)
     directory = managed_destination(root / "data/serving/deliveries" / uuid4().hex, "serving")
@@ -227,6 +242,8 @@ def qualify(expected_source_sha, *, root=ROOT):
         release = directory / "release"
         prepared = synthetic_release(release)
         pin = prepared["manifest_sha256"]
+        phase = "fixture_mount_permissions"
+        prepare_fixture_mount(release, pin)
         phase = "http_runtime"
         runtime = checks.assess(image["id"], release, pin, requests=10)
         checks.require(

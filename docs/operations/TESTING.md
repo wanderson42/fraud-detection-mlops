@@ -1147,3 +1147,13 @@ HTTP/rollback reais com fixture sintética. A execução CI usa o mesmo controll
 diretamente após a suíte completa. O aceite desse novo gate permanece pendente;
 a prova anterior da referência não é reutilizada como aceite de outra imagem.
 [Procedimento](SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).
+
+### Regressão da permissão de leitura da fixture
+
+A falha nativa do primeiro `serving-delivery` expôs uma pré-condição não coberta
+pelo mock do checker: JSONs atômicos 0600 não são legíveis pelo UID 10001.
+Os novos casos em `test_delivery_gate.py` exigem modos de mount adequados antes
+do checker, sob umask 022/077, bytes preservados e origem sem chmod; um terceiro
+caso rejeita `verified_reference` antes da normalização. O teste nativo continua
+sendo o aceite de acesso real no container, sem relaxar UID, mount ou hashes.
+[Diagnóstico e correção](SERVING_ROLLOUT.md#correção-das-permissões-da-fixture--2026-10-19).

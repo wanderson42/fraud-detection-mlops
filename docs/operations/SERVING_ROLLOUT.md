@@ -209,7 +209,9 @@ A sequência é:
 2. Puxar Python e NGINX pelos digests do lock e construir **uma única imagem**
    Linux/amd64 com o Dockerfile existente, rotulada com o commit. O build usa
    o lock científico; não altera dependências nem o pin histórico de serving.
-3. Gerar uma release com 160 linhas sintéticas e pequeno HGB. Isso inclui fit
+3. Gerar uma release com 160 linhas sintéticas e pequeno HGB. Preparar somente
+   essa fixture para o mount: diretório 0755 e três arquivos 0644, mantendo o
+   diretório privado do job 0700 e os bytes/hashes intactos. Isso inclui fit
    da fixture; não lê ou retreina a referência histórica. A evidência é sempre
    `synthetic_smoke`, sem avaliação nova de fraude.
 4. Aplicar o checker HTTP existente: identidade, score, 422, reinício, proteções
@@ -274,3 +276,26 @@ Nenhum arquivo é enviado ao GitHub pelo aplicador deste pacote; publicar a bran
 é uma ação posterior do autor. Referências: [artifacts de workflow](https://docs.github.com/en/actions/tutorials/store-and-share-data),
 [upload-artifact v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2) e
 [build Docker](https://docs.docker.com/build/building/), consultadas em 2026-10-19.
+
+### Correção das permissões da fixture — 2026-10-19
+
+A primeira execução de `serving-delivery` construiu a imagem e chegou ao gate
+HTTP, mas o container encerrou com código 3: UID 10001 recebeu PermissionError
+ao ler `/model/manifest.json`. O gravador atômico publica os JSONs com modo
+0600; o controller não havia normalizado a fixture para leitura por outro UID.
+A suíte anterior controlava a resposta do checker e não verificava essa
+pré-condição do mount. Não foi uma falha de rede ou falta de memória.
+
+O controller agora valida hashes e `evidence_kind=synthetic_smoke` antes de
+aplicar 0755 ao diretório da fixture recém-criada e 0644 aos três arquivos. Não
+muda o gravador global, UID 10001, mount read-only, modelo histórico ou os bytes
+do manifesto/modelo/controle. O job e os recibos mantêm suas permissões privadas.
+A normalização ocorre antes do primeiro checker HTTP e tem fase própria no
+recibo de falha. A nova execução cria outro job; o diretório da tentativa falha
+é preservado. A correção precisa estar commitada antes do opt-in nativo.
+
+Os testes de regressão partem de diretório 0700 e arquivos 0600, usam umasks
+022 e 077 e exigem leitura/traversal para outro UID antes de chamar o checker.
+Conferem hashes e modos da origem intactos e rejeitam uma release histórica
+antes de chmod. São testes do contrato POSIX/controlador, não uma execução
+Docker; o gate completo permanece pendente após esta correção.
