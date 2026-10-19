@@ -21,6 +21,11 @@
       "tag": "3.14.4-slim",
       "digest": "sha256:2ca02f32b4d9d893863367ce07ec1972819f476dd38d8612f2a9cb6a41cbb727",
       "media_type": "application/vnd.oci.image.index.v1+json"
+    },
+    "amazon/aws-cli": {
+      "tag": "2.31.36",
+      "digest": "sha256:2901b33430341f03e487de5a2309bf4b6aba420c764f562466fd89bd49f50f82",
+      "media_type": "application/vnd.docker.distribution.manifest.list.v2+json"
     }
   }
 }

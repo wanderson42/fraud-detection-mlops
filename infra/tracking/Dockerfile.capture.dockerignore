@@ -1,0 +1,7 @@
+**
+!infra/
+!infra/tracking/
+!infra/tracking/requirements.txt
+!scripts/
+!scripts/tracking/
+!scripts/tracking/capture_worker.py

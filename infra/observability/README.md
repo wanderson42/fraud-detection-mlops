@@ -30,8 +30,13 @@ config` expandido: ele contém os segredos; use `check` (`config --quiet`).
 Para incluir RustFS use `up --storage` e, ao parar, `down --storage`.
 O healthcheck RustFS usa `/health/ready`; serviço pronto não comprova backup.
 
-O perfil RustFS está **preparado, sem fluxo de upload/restore implementado nesta
-entrega**. Um nó/disco local não tem redundância. SQLite ativo permanece em disco
+O perfil RustFS tem um **piloto limitado de upload/restore implementado e
+validado pelo autor para documentos e uma release completa**, com reenvio
+idempotente e restauração em outro diretório. A recarga do modelo restaurado
+passou em pytest/TestClient com erro zero no score histórico. Isso não conclui migração de datasets/bancos. O cliente `storage-client` fica no
+perfil `storage-tools` e só executa via `run --rm --no-deps`; não participa de
+`up --storage`. Para o piloto, iniciar apenas `rustfs`, sem reconstruir/reiniciar
+monitoramento. [Procedimento e limites](../../docs/operations/STORAGE.md#piloto-implementado--execução-gradual). Um nó/disco local não tem redundância. SQLite ativo permanece em disco
 local; futuramente arquive um backup consistente, com manifesto e hashes, e
 prove restauração em outro diretório. Não copie um banco ativo como se fosse
 backup consistente nem trate S3 como seu filesystem transacional.
@@ -51,3 +56,81 @@ promtool test rules infra/observability/alerts.test.yml
 O teste de regras resolve caminhos relativos ao arquivo. Para `promtool check
 config`, use o arquivo dentro do container (paths `/etc/prometheus/...`) ou uma
 cópia temporária com caminhos locais. Não edite a fonte para executar um check.
+
+
+Para a Bronze completa, `storage-transfer` usa o mesmo perfil `storage-tools`,
+com build `Dockerfile.storage`/allowlist específica e lock operacional do SDK.
+Executa uma vez por publicação ou download, mantendo um único cliente S3; não
+participa de `up --storage`. Monta somente `data/storage/`, sem fonte original ou
+pacote científico. O CLI no host confere a restauração com o verificador Bronze
+antes de publicar o destino. O autor aprovou o build e o round-trip no RustFS:
+189 objetos, reenvio sem uploads e 183 partições recuperadas/verificadas;
+[evidência](../../references/evidence/bronze_transfer_author_validation_2026-10-15.json) e [comandos e critérios](../../docs/operations/STORAGE.md#transferência-bronze-um-job-cliente-reutilizado).
+
+
+A Silver reutiliza `storage-transfer`, com perfil de bundle/prefixo próprios e
+verificação de contrato/schema/contagens no host. O autor reconstruiu apenas o
+job e aprovou o round-trip: 188 objetos, reenvio sem uploads e restore com
+183 partições/1.754.155 linhas verificadas, contrato/inventário e auditoria.
+O hash do worker recusa imagem desatualizada; este fechamento documental não
+muda a imagem. [Evidência Silver](../../references/evidence/silver_archive_author_validation_2026-10-15.json) e
+[procedimento](../../docs/operations/STORAGE.md#silver-completa-preparo-e-recuperação-com-contrato).
+
+
+O perfil Gold também reutiliza esse job, em `gold/v1/<bundle_id>/`. O CLI Gold
+no host aplica o verificador existente sobre a cópia com inventário, contratos
+Silver/Gold e protocolo temporal arquivados. O autor reconstruiu `storage-transfer`
+e aprovou publicação/reenvio/restore Gold no RustFS: 49 objetos, zero uploads no
+reenvio e 48 arquivos/42 partições/19 features/402.877 linhas recuperadas.
+SDK/lock/imagens base não mudaram. O fechamento documental não exige rebuild;
+futuras alterações do worker exigem imagem atual para o handshake.
+[Evidência Gold](../../references/evidence/gold_archive_author_validation_2026-10-15.json).
+[Runbook](../../docs/operations/STORAGE.md#gold-v1-completa-arquivo-com-contratos-e-protocolo).
+
+
+O dataset de desenvolvimento reutiliza `storage-transfer` com perfil explícito
+`development-gold/v1/<bundle_id>/`. O CLI do host verifica a cópia com inventário
+e protocolo HGB arquivados. O estudo SQLite/modelos não participa desse perfil.
+O autor reconstruiu o job e aprovou o ciclo nativo: 67 objetos, reenvio sem
+uploads e restore de 66 arquivos/38.202.741 bytes, com 63 partições/19 features/
+603.669 linhas e identidade do manifesto preservada. Estudo não foi lido/incluído.
+Este fechamento não exige rebuild; futuras alterações do worker exigem imagem
+atual para o handshake. SDK/lock/imagens base permanecem iguais.
+[Evidência nativa](../../references/evidence/development_gold_archive_author_validation_2026-10-15.json).
+[Procedimento](../../docs/operations/STORAGE.md#gold-de-desenvolvimento-dataset-e-estudo).
+
+
+O preparo/verificação do estudo HGB é offline no host e foi aprovado pelo autor
+(322 arquivos/233.048.483 bytes, 20 trials/63 tentativas). A transferência usa o
+mesmo `storage-transfer`, agora em `fraud-artifacts/hgb-study/v1/<bundle_id>/`.
+O autor reconstruiu esse job e aprovou o ciclo S3; este fechamento documental
+não exige rebuild. Alterações futuras do worker exigem imagem atual pelo handshake.
+SDK/lock/imagens base e serviços permanentes permanecem iguais. O snapshot
+existente não precisa ser recriado. Container continua montando somente
+`data/storage/`, sem fonte do estudo/credenciais em imagem e sem pacote científico.
+O host exige dataset local verificado e reaplica o verificador do estudo no restore.
+Ciclo nativo aprovado pelo autor em 2026-10-16: 323 objetos, reenvio zero uploads
+e 322 arquivos recuperados/verificados, preservando 20 trials/63 tentativas,
+hash lógico e dataset vinculado. O build não inicia RustFS: `--no-deps` exige
+serviço disponível; conferir `/health/ready` antes de transferir.
+[Evidência nativa](../../references/evidence/hgb_study_transfer_author_validation_2026-10-16.json).
+[Procedimento](../../docs/operations/STORAGE.md#transferência-s3-do-estudo-hgb).
+
+
+## Snapshot MLflow no mesmo job de transferência
+
+O preparo e verify nativos do tracking foram aprovados para os dois stores.
+`storage-transfer` agora aceita o perfil MLflow (1.024 arquivos/256 MiB) no bucket
+fraud-artifacts, prefixo mlflow-tracking/v1/<id>/. Limites dos perfis anteriores
+permanecem iguais. Dockerfile/allowlist incluem quatro módulos stdlib do storage;
+SDK, imagem-base, Compose e credenciais permanecem com os mesmos contratos.
+Reconstruir somente esse job para atualizar seu handshake. O job monta apenas
+data/storage, não o tracking ativo. Publicação/reenvio/restore nativos aprovados para o snapshot;
+recarga MLflow e migração PostgreSQL continuam separadas.
+[Comandos e recuperação isolada](../../docs/operations/MLFLOW.md#transferência-e-recuperação-s3-do-snapshot-mlflow).
+
+
+O autor concluiu o ciclo MLflow: 641 uploads/readbacks, reenvio sem uploads e
+640 arquivos restaurados/verificados, preservando os dois stores. Gate de
+arquivamento S3 desse snapshot fechado. Não houve novo provisionamento, recarga
+operacional MLflow ou migração PostgreSQL. [Resultado nativo](../../docs/operations/MLFLOW.md#ciclo-s3-nativo-do-snapshot-mlflow--2026-10-16).

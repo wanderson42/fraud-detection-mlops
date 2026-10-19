@@ -1,0 +1,118 @@
+name: fraud-tracking-lab
+services:
+  postgres:
+    image: postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
+    environment:
+      POSTGRES_DB: mlflow_lab
+      POSTGRES_USER: tracking_admin
+      POSTGRES_PASSWORD: ${TRACKING_PG_ADMIN_PASSWORD:?Run tracking.local_stack init}
+      TRACKING_PG_PASSWORD: ${TRACKING_PG_PASSWORD:?Run tracking.local_stack init}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-postgres.sh:/docker-entrypoint-initdb.d/10-mlflow.sh:ro
+    read_only: true
+    tmpfs: [/tmp, /var/run/postgresql]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1
+    healthcheck:
+      test: [CMD, pg_isready, -h, 127.0.0.1, -U, mlflow, -d, mlflow_lab]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  mlflow:
+    build:
+      context: ../..
+      dockerfile: infra/tracking/Dockerfile
+    image: fraud-mlflow-tracking:lab-v1
+    environment:
+      MLFLOW_BACKEND_STORE_URI: postgresql+psycopg://mlflow:${TRACKING_PG_PASSWORD:?Run tracking.local_stack init}@postgres:5432/mlflow_lab
+      MLFLOW_S3_ENDPOINT_URL: http://rustfs:9000
+      MLFLOW_BOTO_CLIENT_ADDRESSING_STYLE: path
+      MLFLOW_SERVER_ENABLE_JOB_EXECUTION: "false"
+      MLFLOW_SQL_TRACE_ROLLUPS_ENABLED: "false"
+      MLFLOW_SQLALCHEMYSTORE_POOL_SIZE: "2"
+      MLFLOW_SQLALCHEMYSTORE_MAX_OVERFLOW: "2"
+      AWS_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:?Observability env required}
+      AWS_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:?Observability env required}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+    command: [mlflow, server, --host, 0.0.0.0, --port, "5000", --workers, "1", --serve-artifacts, --artifacts-destination, "s3://fraud-tracking-lab/v1", --allowed-hosts, "127.0.0.1:15001,localhost:15001,mlflow:5000,127.0.0.1:5000"]
+    ports: ["127.0.0.1:15001:5000"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [default, objects]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 1g
+    cpus: 1
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+  storage-check:
+    profiles: [tools]
+    image: fraud-mlflow-tracking:lab-v1
+    environment:
+      AWS_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:?Observability env required}
+      AWS_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:?Observability env required}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+    user: "${LOCAL_UID:?Observability env required}:${LOCAL_GID:?Observability env required}"
+    working_dir: /work
+    entrypoint: [python, -m, scripts.tracking.probe]
+    command: [prepare]
+    volumes:
+      - type: bind
+        source: ../../data/storage/tracking-lab
+        target: /work
+        read_only: true
+        bind:
+          create_host_path: false
+    networks: [objects]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    cpus: 0.5
+  probe:
+    profiles: [tools]
+    image: fraud-mlflow-tracking:lab-v1
+    environment:
+      MLFLOW_HTTP_REQUEST_TIMEOUT: "15"
+      MLFLOW_HTTP_REQUEST_MAX_RETRIES: "1"
+    # This client intentionally receives no S3 or PostgreSQL credentials.
+    user: "${LOCAL_UID:?Observability env required}:${LOCAL_GID:?Observability env required}"
+    working_dir: /work
+    entrypoint: [python, -m, scripts.tracking.probe]
+    volumes:
+      - type: bind
+        source: ../../data/storage/tracking-lab
+        target: /work
+        read_only: true
+        bind:
+          create_host_path: false
+    networks: [objects]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1
+volumes:
+  postgres-data:
+networks:
+  default:
+    internal: true
+  objects:
+    external: true
+    name: fraud-local-observability_default

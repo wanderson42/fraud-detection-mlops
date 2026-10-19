@@ -34,9 +34,11 @@ from fraud_detection_mlops.modeling.experiments.experiment_artifacts import (
     file_records,
 )
 from fraud_detection_mlops.modeling.experiments.experiment_provenance import committed_inputs
+from fraud_detection_mlops.storage.managed_paths import managed_destination
 
 app = typer.Typer(no_args_is_help=True)
 EXPERIMENT = "fraud-temporal-optuna-v1"
+HTTP_EXPERIMENT = "fraud-temporal-optuna-http-v1"
 
 
 class HGBOptimizationError(ValueError):
@@ -79,8 +81,37 @@ def open_hgb_study(directory, seed):
     )
 
 
-def fit_hgb_fold(directory, name, fold, parameters, data_dir, manifest, identity, tracking_root):
+def hgb_tracking_target(tracking_root, http_uri):
+    """Keep the existing local identity; pin an explicit HTTP endpoint and experiment."""
+    if (tracking_root is None) == (http_uri is None):
+        raise HGBOptimizationError("Choose exactly one tracking root or HTTP URI")
+    if http_uri is not None:
+        return {
+            "tracking_uri": tracking.validate_http_uri(http_uri),
+            "tracking_experiment": HTTP_EXPERIMENT,
+        }
+    return {"tracking_root": str(Path(tracking_root).resolve())}
+
+
+def fit_hgb_fold(
+    directory,
+    name,
+    fold,
+    parameters,
+    data_dir,
+    manifest,
+    identity,
+    tracking_root,
+    *,
+    http_uri=None,
+):
     """A completed reference fold is reused; interrupted fits are never silently repeated."""
+    target = hgb_tracking_target(tracking_root, http_uri)
+    if (http_uri is not None or "tracking_root" in identity or "tracking_uri" in identity) and (
+        any(identity.get(k) != v for k, v in target.items())
+        or ("tracking_root" in identity and "tracking_uri" in identity)
+    ):
+        raise HGBOptimizationError("Fit tracking destination differs from study identity")
     destination = directory / "models" / name / fold["id"]
     receipt = destination / "result.json"
     if receipt.exists():
@@ -147,7 +178,8 @@ def fit_hgb_fold(directory, name, fold, parameters, data_dir, manifest, identity
                 "scope": "temporal_development_only",
             },
             root=tracking_root,
-            experiment_name=EXPERIMENT,
+            **({"http_uri": target["tracking_uri"]} if http_uri is not None else {}),
+            experiment_name=target.get("tracking_experiment", EXPERIMENT),
             artifacts=[
                 destination / "metrics.json",
                 destination / "validation_predictions.parquet",
@@ -265,9 +297,12 @@ def optimize_hgb(
     *,
     policy_path=development.DEFAULT_POLICY,
     tracking_root=tracking.DEFAULT_TRACKING,
+    http_uri=None,
     new_trials=1,
 ):
-    data_dir, tracking_root = Path(data_dir), Path(tracking_root)
+    target = hgb_tracking_target(tracking_root, http_uri)
+    data_dir = Path(data_dir)
+    tracking_root = Path(tracking_root) if tracking_root is not None else None
     if type(new_trials) is not int or new_trials < 1:
         raise HGBOptimizationError("Expected a positive maximum of new trials for this invocation")
     policy = development.load_policy(policy_path)
@@ -283,7 +318,7 @@ def optimize_hgb(
         "data_sha256": sha256(data_dir / "manifest.json"),
         "policy_sha256": sha256(policy_path),
         "implementation": provenance["files"],
-        "tracking_root": str(tracking_root.resolve()),
+        **target,
         "optuna": version("optuna"),
         "max_fit_attempts": policy["budget"]["max_fit_attempts"],
     }
@@ -334,6 +369,7 @@ def optimize_hgb(
                         manifest,
                         identity,
                         tracking_root,
+                        **({"http_uri": target["tracking_uri"]} if http_uri is not None else {}),
                     )
                 )
             remaining = min(new_trials, policy["budget"]["max_trials"] - len(study.trials))
@@ -354,6 +390,11 @@ def optimize_hgb(
                                 manifest,
                                 identity,
                                 tracking_root,
+                                **(
+                                    {"http_uri": target["tracking_uri"]}
+                                    if http_uri is not None
+                                    else {}
+                                ),
                             )
                         )
                     trial.set_user_attr("fold_results", results)
@@ -462,11 +503,30 @@ def optimize_hgb_command(
     data_path: Annotated[Path, typer.Argument()],
     new_trials: Annotated[int, typer.Option(min=1, max=20)] = 1,
     policy_path: Annotated[Path, typer.Option()] = development.DEFAULT_POLICY,
+    tracking_root: Annotated[Path | None, typer.Option()] = None,
+    tracking_uri: Annotated[str | None, typer.Option()] = None,
 ):
-    """Default: one trial for cost review; resume under the same global budget."""
+    """One trial by default. HTTP opt-in is for a new study, never a historical cutover."""
+    if tracking_uri is not None and tracking_root is not None:
+        raise typer.BadParameter("Choose --tracking-root or --tracking-uri, not both")
+    try:
+        if tracking_root is not None:
+            tracking_root = managed_destination(tracking_root, "tracking")
+        elif tracking_uri is None:
+            tracking_root = tracking.DEFAULT_TRACKING
+        target = hgb_tracking_target(tracking_root, tracking_uri)
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
     typer.echo(
         json.dumps(
-            optimize_hgb(data_path, policy_path=policy_path, new_trials=new_trials), indent=2
+            optimize_hgb(
+                data_path,
+                policy_path=policy_path,
+                tracking_root=Path(target["tracking_root"]) if "tracking_root" in target else None,
+                **({"http_uri": target["tracking_uri"]} if tracking_uri is not None else {}),
+                new_trials=new_trials,
+            ),
+            indent=2,
         )
     )
 

@@ -1,0 +1,363 @@
+{
+  "provenance": "MLflow 3.17.0 fresh PostgreSQL 17.11 schema before/after pg_dump custom / pg_restore; no application rows",
+  "source": {
+    "columns": [
+      [
+        "spans",
+        "trace_id",
+        "character varying",
+        "varchar",
+        "NO",
+        null,
+        1
+      ],
+      [
+        "spans",
+        "experiment_id",
+        "integer",
+        "int4",
+        "NO",
+        null,
+        2
+      ],
+      [
+        "spans",
+        "span_id",
+        "character varying",
+        "varchar",
+        "NO",
+        null,
+        3
+      ],
+      [
+        "spans",
+        "parent_span_id",
+        "character varying",
+        "varchar",
+        "YES",
+        null,
+        4
+      ],
+      [
+        "spans",
+        "name",
+        "text",
+        "text",
+        "YES",
+        null,
+        5
+      ],
+      [
+        "spans",
+        "type",
+        "character varying",
+        "varchar",
+        "YES",
+        null,
+        6
+      ],
+      [
+        "spans",
+        "status",
+        "character varying",
+        "varchar",
+        "NO",
+        null,
+        7
+      ],
+      [
+        "spans",
+        "start_time_unix_nano",
+        "bigint",
+        "int8",
+        "NO",
+        null,
+        8
+      ],
+      [
+        "spans",
+        "end_time_unix_nano",
+        "bigint",
+        "int8",
+        "YES",
+        null,
+        9
+      ],
+      [
+        "spans",
+        "duration_ns",
+        "bigint",
+        "int8",
+        "YES",
+        null,
+        10
+      ],
+      [
+        "spans",
+        "content",
+        "text",
+        "text",
+        "NO",
+        null,
+        11
+      ],
+      [
+        "spans",
+        "input_cost",
+        "double precision",
+        "float8",
+        "YES",
+        null,
+        13
+      ],
+      [
+        "spans",
+        "output_cost",
+        "double precision",
+        "float8",
+        "YES",
+        null,
+        14
+      ],
+      [
+        "spans",
+        "total_cost",
+        "double precision",
+        "float8",
+        "YES",
+        null,
+        15
+      ],
+      [
+        "spans",
+        "model_name",
+        "character varying",
+        "varchar",
+        "YES",
+        null,
+        16
+      ],
+      [
+        "spans",
+        "model_provider",
+        "character varying",
+        "varchar",
+        "YES",
+        null,
+        17
+      ]
+    ],
+    "constraints": [
+      [
+        "experiments",
+        "experiments_lifecycle_stage",
+        "c",
+        "CHECK (lifecycle_stage::text = ANY (ARRAY['active'::character varying, 'deleted'::character varying]::text[]))"
+      ],
+      [
+        "logged_models",
+        "logged_models_lifecycle_stage_check",
+        "c",
+        "CHECK (lifecycle_stage::text = ANY (ARRAY['active'::character varying, 'deleted'::character varying]::text[]))"
+      ],
+      [
+        "runs",
+        "runs_lifecycle_stage",
+        "c",
+        "CHECK (lifecycle_stage::text = ANY (ARRAY['active'::character varying, 'deleted'::character varying]::text[]))"
+      ],
+      [
+        "runs",
+        "runs_status_check",
+        "c",
+        "CHECK (status::text = ANY (ARRAY['SCHEDULED'::character varying, 'FAILED'::character varying, 'FINISHED'::character varying, 'RUNNING'::character varying, 'KILLED'::character varying]::text[]))"
+      ],
+      [
+        "runs",
+        "source_type",
+        "c",
+        "CHECK (source_type::text = ANY (ARRAY['NOTEBOOK'::character varying, 'JOB'::character varying, 'LOCAL'::character varying, 'UNKNOWN'::character varying, 'PROJECT'::character varying]::text[]))"
+      ]
+    ]
+  },
+  "restored": {
+    "columns": [
+      [
+        "spans",
+        "trace_id",
+        "character varying",
+        "varchar",
+        "NO",
+        null,
+        1
+      ],
+      [
+        "spans",
+        "experiment_id",
+        "integer",
+        "int4",
+        "NO",
+        null,
+        2
+      ],
+      [
+        "spans",
+        "span_id",
+        "character varying",
+        "varchar",
+        "NO",
+        null,
+        3
+      ],
+      [
+        "spans",
+        "parent_span_id",
+        "character varying",
+        "varchar",
+        "YES",
+        null,
+        4
+      ],
+      [
+        "spans",
+        "name",
+        "text",
+        "text",
+        "YES",
+        null,
+        5
+      ],
+      [
+        "spans",
+        "type",
+        "character varying",
+        "varchar",
+        "YES",
+        null,
+        6
+      ],
+      [
+        "spans",
+        "status",
+        "character varying",
+        "varchar",
+        "NO",
+        null,
+        7
+      ],
+      [
+        "spans",
+        "start_time_unix_nano",
+        "bigint",
+        "int8",
+        "NO",
+        null,
+        8
+      ],
+      [
+        "spans",
+        "end_time_unix_nano",
+        "bigint",
+        "int8",
+        "YES",
+        null,
+        9
+      ],
+      [
+        "spans",
+        "duration_ns",
+        "bigint",
+        "int8",
+        "YES",
+        null,
+        10
+      ],
+      [
+        "spans",
+        "content",
+        "text",
+        "text",
+        "NO",
+        null,
+        11
+      ],
+      [
+        "spans",
+        "input_cost",
+        "double precision",
+        "float8",
+        "YES",
+        null,
+        12
+      ],
+      [
+        "spans",
+        "output_cost",
+        "double precision",
+        "float8",
+        "YES",
+        null,
+        13
+      ],
+      [
+        "spans",
+        "total_cost",
+        "double precision",
+        "float8",
+        "YES",
+        null,
+        14
+      ],
+      [
+        "spans",
+        "model_name",
+        "character varying",
+        "varchar",
+        "YES",
+        null,
+        15
+      ],
+      [
+        "spans",
+        "model_provider",
+        "character varying",
+        "varchar",
+        "YES",
+        null,
+        16
+      ]
+    ],
+    "constraints": [
+      [
+        "experiments",
+        "experiments_lifecycle_stage",
+        "c",
+        "CHECK (lifecycle_stage::text = ANY (ARRAY['active'::character varying::text, 'deleted'::character varying::text]))"
+      ],
+      [
+        "logged_models",
+        "logged_models_lifecycle_stage_check",
+        "c",
+        "CHECK (lifecycle_stage::text = ANY (ARRAY['active'::character varying::text, 'deleted'::character varying::text]))"
+      ],
+      [
+        "runs",
+        "runs_lifecycle_stage",
+        "c",
+        "CHECK (lifecycle_stage::text = ANY (ARRAY['active'::character varying::text, 'deleted'::character varying::text]))"
+      ],
+      [
+        "runs",
+        "runs_status_check",
+        "c",
+        "CHECK (status::text = ANY (ARRAY['SCHEDULED'::character varying::text, 'FAILED'::character varying::text, 'FINISHED'::character varying::text, 'RUNNING'::character varying::text, 'KILLED'::character varying::text]))"
+      ],
+      [
+        "runs",
+        "source_type",
+        "c",
+        "CHECK (source_type::text = ANY (ARRAY['NOTEBOOK'::character varying::text, 'JOB'::character varying::text, 'LOCAL'::character varying::text, 'UNKNOWN'::character varying::text, 'PROJECT'::character varying::text]))"
+      ]
+    ]
+  }
+}

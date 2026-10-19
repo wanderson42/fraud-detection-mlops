@@ -14,6 +14,7 @@ from fraud_detection_mlops.modeling.algorithms.model_catalog import MODEL_CATALO
 from fraud_detection_mlops.modeling.contracts.model_interface import build_model, predict_scores
 from fraud_detection_mlops.serving.model_release import SmokeCase, write_release
 from fraud_detection_mlops.serving.request_schema import ScoreRequest
+from fraud_detection_mlops.storage.managed_paths import managed_destination
 
 
 def synthetic_release(output: Path) -> dict:
@@ -62,7 +63,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
-    print(json.dumps(synthetic_release(args.output), indent=2))
+    try:
+        output = managed_destination(args.output, "serving")
+    except ValueError as exc:
+        parser.error(str(exc))
+    print(json.dumps(synthetic_release(output), indent=2))
 
 
 if __name__ == "__main__":

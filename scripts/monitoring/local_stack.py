@@ -6,6 +6,8 @@ from pathlib import Path
 import secrets
 import subprocess
 
+from fraud_detection_mlops.storage.managed_paths import managed_destination
+
 ROOT = Path(__file__).resolve().parents[2]
 INFRA = ROOT / "infra/observability"
 
@@ -58,7 +60,11 @@ def main():
     parser.add_argument("--storage", action="store_true")
     args = parser.parse_args()
     if args.action == "init":
-        result = initialize(args.state)
+        try:
+            state = managed_destination(args.state, "replay")
+        except ValueError as exc:
+            parser.error(str(exc))
+        result = initialize(state)
         print(
             f"Initialized {result['environment_file']}; credentials remain in that ignored file."
         )

@@ -1,0 +1,10 @@
+{
+  "schema": "fraud_rollout_gateway_image_v1",
+  "reviewed_on": "2026-10-19",
+  "gateway": "nginx:1.30.6-alpine@sha256:970364228b1e4f932abc22d321932816782cca8a20b85a77552a7cfe9acfb3b5",
+  "linux_amd64_manifest": "sha256:959ae6b898852db82e5b29b929388e59914f42be0a8f4d44c89a4c1f53b49208",
+  "source": "Docker Hub official library/nginx tag API; index and amd64 manifest retrieved by assistant",
+  "source_url": "https://hub.docker.com/v2/repositories/library/nginx/tags/1.30.6-alpine",
+  "serving_image": "sha256:db2e2ed60c2b3102041d55a93ca5dba0b0d9c5624c14bd7581947c1de0b600ab",
+  "serving_pin_source": "references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json"
+}

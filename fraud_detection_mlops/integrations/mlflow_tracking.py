@@ -3,11 +3,13 @@
 from contextlib import contextmanager
 from importlib.metadata import version
 import json
-from pathlib import Path
+import os
+from pathlib import Path, PurePosixPath
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
 from typing import Annotated
+from urllib.parse import urlparse
 
 import mlflow
 from mlflow import MlflowClient
@@ -52,6 +54,75 @@ def local_tracking(root: Path):
         mlflow.set_tracking_uri(previous)
 
 
+def validate_http_uri(uri: str) -> str:
+    """Explicit server root only; local paths and credentials are not endpoint URIs."""
+    if not isinstance(uri, str) or any(c.isspace() for c in uri):
+        raise TrackingError("Use an explicit http:// or https:// tracking server root")
+    try:
+        parsed = urlparse(uri)
+        valid_port = parsed.port is None or 1 <= parsed.port <= 65535
+    except ValueError as exc:
+        raise TrackingError("Invalid HTTP tracking URI") from exc
+    if (
+        parsed.scheme not in {"http", "https"}
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.path not in {"", "/"}
+        or parsed.params
+        or parsed.query
+        or parsed.fragment
+        or not valid_port
+    ):
+        raise TrackingError(
+            "Use a tracking server root without credentials, path, query or fragment"
+        )
+    return uri.rstrip("/")
+
+
+def require_proxy_artifacts(uri: str):
+    parsed = urlparse(uri)
+    if (
+        parsed.scheme != "mlflow-artifacts"
+        or parsed.netloc
+        or parsed.query
+        or parsed.fragment
+        or not parsed.path.startswith("/")
+        or ".." in PurePosixPath(parsed.path).parts
+        or "%" in parsed.path
+    ):
+        raise TrackingError("HTTP candidates require server-proxied mlflow-artifacts locations")
+
+
+@contextmanager
+def http_tracking(uri: str):
+    """Keep artifact bytes on the tracking proxy and restore settings on failure.
+
+    The fluent MLflow API has process-global state; these contexts are for serial callers.
+    """
+    uri = validate_http_uri(uri)
+    previous = mlflow.get_tracking_uri()
+    settings = {
+        "MLFLOW_HTTP_REQUEST_TIMEOUT": "10",
+        "MLFLOW_HTTP_REQUEST_MAX_RETRIES": "0",
+        # S3 capabilities can otherwise redirect clients to Docker-internal signed URLs.
+        "MLFLOW_ENABLE_PROXY_MULTIPART_DOWNLOAD": "false",
+        "MLFLOW_ENABLE_PROXY_MULTIPART_UPLOAD": "false",
+    }
+    original = {name: os.environ.get(name) for name in settings}
+    try:
+        os.environ.update(settings)
+        mlflow.set_tracking_uri(uri)
+        yield
+    finally:
+        mlflow.set_tracking_uri(previous)
+        for name, value in original.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
+
+
 def download_pipeline(uri: str, destination: Path, *, feature_columns=FEATURE_COLUMNS):
     """Download and review a native sklearn/skops pipeline for prediction or inspection."""
     path = Path(mlflow.artifacts.download_artifacts(artifact_uri=uri, dst_path=str(destination)))
@@ -89,11 +160,16 @@ def log_candidate(
     parameters,
     metrics,
     tags,
-    root,
+    root=None,
+    http_uri=None,
     experiment_name=EXPERIMENT,
     artifacts=(),
 ):
     """One main run per fitted pipeline; a reload failure makes the run FAILED."""
+    if (root is None) == (http_uri is None):
+        raise TrackingError("Choose exactly one local root or HTTP tracking URI")
+    if http_uri is not None:
+        http_uri = validate_http_uri(http_uri)
     if mlflow.active_run() is not None:
         raise TrackingError("Finish the active MLflow run before logging independent candidates")
     source_run_id = tags.get("experiment_run_id") or tags.get("baseline_run_id")
@@ -104,21 +180,30 @@ def log_candidate(
         checked_scores, scores, rtol=1e-12, atol=1e-12
     ):
         raise TrackingError("Recorded scores differ from the contributed model")
-    root.mkdir(parents=True, exist_ok=True)
-    with local_tracking(root):
+    if root is not None:
+        root.mkdir(parents=True, exist_ok=True)
+    context = http_tracking(http_uri) if http_uri is not None else local_tracking(root)
+    with context:
         client = MlflowClient()
         experiment = client.get_experiment_by_name(experiment_name)
-        experiment_id = (
-            experiment.experiment_id
-            if experiment is not None
-            else client.create_experiment(
-                experiment_name, artifact_location=(root / "artifacts").resolve().as_uri()
+        if experiment is None:
+            options = (
+                {}
+                if http_uri is not None
+                else {"artifact_location": (root / "artifacts").resolve().as_uri()}
             )
-        )
+            experiment_id = client.create_experiment(experiment_name, **options)
+            experiment = client.get_experiment(experiment_id)
+        else:
+            experiment_id = experiment.experiment_id
+        if http_uri is not None:
+            require_proxy_artifacts(experiment.artifact_location)
         with mlflow.start_run(
             experiment_id=experiment_id,
             run_name=f"{name}-{source_run_id[:8]}",
         ) as run:
+            if http_uri is not None:
+                require_proxy_artifacts(run.info.artifact_uri)
             mlflow.log_params(parameters)
             mlflow.log_metrics(metrics)
             mlflow.set_tags(
@@ -144,13 +229,32 @@ def log_candidate(
                     for p in ("mlflow", "scikit-learn", "skops", "numpy", "pandas", "scipy")
                 ],
             )
+            model_artifact_uri = None
+            if http_uri is not None:
+                model_artifact_uri = client.get_logged_model(logged.model_id).artifact_location
+                require_proxy_artifacts(model_artifact_uri)
             with TemporaryDirectory(prefix="fraud-mlflow-check-") as temporary:
                 restored = load_tracked_model(
                     logged.model_uri, Path(temporary), feature_columns=list(features.columns)
                 )
-                check_scores(restored.predict(features), scores)
+                probabilities = restored.predict(features)
+                check_scores(probabilities, scores)
             mlflow.set_tag("logged_model_uri", logged.model_uri)
-            return {"run_id": run.info.run_id, "model_uri": logged.model_uri}
+            result = {"run_id": run.info.run_id, "model_uri": logged.model_uri}
+            if http_uri is not None:
+                result.update(
+                    tracking_uri=http_uri,
+                    experiment_id=experiment_id,
+                    run_artifact_uri=run.info.artifact_uri,
+                    model_artifact_uri=model_artifact_uri,
+                    model_reload_validated=True,
+                    max_absolute_score_error=float(
+                        np.max(np.abs(np.asarray(probabilities)[:, 1] - scores))
+                    ),
+                    parity_rtol=1e-12,
+                    parity_atol=1e-12,
+                )
+            return result
 
 
 def verify_model(uri: str, root: Path = DEFAULT_TRACKING) -> dict:

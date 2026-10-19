@@ -57,6 +57,56 @@ services:
     security_opt: [no-new-privileges:true]
     mem_limit: 512m
     cpus: 0.5
+  storage-client:
+    profiles: [storage-tools]
+    image: amazon/aws-cli:2.31.36@sha256:2901b33430341f03e487de5a2309bf4b6aba420c764f562466fd89bd49f50f82
+    user: "${LOCAL_UID:?Run local_stack init}:${LOCAL_GID:?Run local_stack init}"
+    working_dir: /work
+    environment:
+      AWS_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:?Run local_stack init}
+      AWS_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:?Run local_stack init}
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_MAX_ATTEMPTS: "2"
+      AWS_PAGER: ""
+      AWS_CONFIG_FILE: /work/aws-config
+    volumes:
+      - type: bind
+        source: ../../data/storage
+        target: /work
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    cpus: 0.5
+  storage-transfer:
+    profiles: [storage-tools]
+    build:
+      context: ../..
+      dockerfile: infra/observability/Dockerfile.storage
+    image: fraud-bronze-transfer:local-v1
+    user: "${LOCAL_UID:?Run local_stack init}:${LOCAL_GID:?Run local_stack init}"
+    working_dir: /work
+    environment:
+      AWS_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:?Run local_stack init}
+      AWS_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:?Run local_stack init}
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+    volumes:
+      - type: bind
+        source: ../../data/storage
+        target: /work
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1
   rustfs:
     profiles: [storage]
     image: rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c
