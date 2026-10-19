@@ -1,289 +1,320 @@
 # Detecção de fraude: contexto, propósito e decisões do projeto
 
-Atualizado em 2026-10-13. A tese deste projeto é construir um **laboratório
-reproduzível de MLOps para priorização de investigação de fraude**, com histórico
-temporal, feedback atrasado e evidências auditáveis. A contribuição pretendida
-é permitir que outra pessoa reproduza, questione e evolua esse sistema.
+Atualizado em 2026-10-16. Este projeto estuda como usar dados para ajudar uma equipe
+a escolher **quais clientes precisam de investigação**, quando há mais transações
+para analisar do que capacidade para revisar cada caso.
 
-A pergunta que orienta o trabalho é: **com capacidade limitada de investigação,
-quais clientes devemos priorizar usando somente a informação disponível naquele
-momento, e como manter essa decisão confiável quando dados e padrões mudam?**
+Para começar, imagine uma situação fictícia: Ana costuma fazer compras de valores
+parecidos. Em certo dia, surgem várias compras em pouco tempo e uma delas tem um
+valor muito maior que o habitual. Isso pode merecer atenção. Mas Ana também pode
+estar fazendo compras legítimas para uma ocasião especial. O comportamento
+incomum é uma pista; a confirmação depende de informação adicional.
 
-O ponto de partida é fraude em cartões simulada pelo Handbook. A inferência
-por streaming é um objetivo central: pontuar cada transação observada e apoiar
-triagem próxima do tempo real, com estado e feedback atrasado. Avaliação offline,
-pipeline rastreável, serving HTTP/Docker e replay local com fixtures já existem.
-Transporte contínuo, replay nativo, monitoramento e promoção são próximos marcos.
+A pergunta do projeto nasce dessa incerteza: **quais casos investigar primeiro e
+como justificar a escolha com o que sabíamos naquele momento?** Para respondê-la,
+construímos um laboratório com dados simulados de pagamentos por cartão. Os nomes,
+valores e horários dos exemplos desta introdução são apenas ilustrações.
 
 ## Antes dos modelos: cliente, transação e terminal
 
-Uma transação representa um pagamento de determinado valor, realizado por um
-cliente em um terminal, numa data e hora [7]. `CUSTOMER_ID` identifica o cliente;
-`TRANSACTION_ID` identifica cada pagamento. A mesma pessoa pode realizar várias
-transações, legítimas ou fraudulentas. Uma ocorrência de fraude não transforma
-automaticamente todo o seu histórico em fraude: o cliente pode ser a vítima.
+É útil separar três elementos que aparecem juntos em um pagamento:
 
-**Terminal é o ponto de aceitação do pagamento representado nos dados.** Uma
-maquininha de cartão é um exemplo intuitivo. No simulador, `TERMINAL_ID` identifica
-esse ponto associado ao comerciante [7]. A fonte não informa o canal
-de compra, o equipamento físico ou uma relação entre lojas e várias maquininhas.
-Portanto, não deduzimos essas características a partir do ID.
-
-Vários clientes podem usar o mesmo terminal, e um cliente pode usar diferentes
-terminais. Isso permite olhar para dois históricos: o comportamento habitual do
-cliente e o que aconteceu naquele ponto de pagamento. No cenário de terminal
-comprometido do gerador, esse histórico compartilhado pode ajudar a contextualizar
-novas transações. Ele não prova que todo usuário daquele terminal sofreu fraude.
-
-O rótulo `TX_FRAUD` informa se a transação foi marcada como genuína (`0`) ou
-fraudulenta (`1`) pelo simulador [7]. O **score** é a saída do modelo usada para
-ordenar risco; um **alerta** é um caso encaminhado à revisão conforme uma política.
-Score, alerta e fraude confirmada são conceitos diferentes. No nosso ciclo atual,
-o score não foi calibrado como probabilidade, e os alertas agrupam transações por
-cliente/dia. O [dicionário](../data/DATA_DICTIONARY.md) detalha as colunas e features.
-
-## Uma história que antecede os modelos atuais
-
-Esta é uma seleção de marcos publicados, não uma cronologia completa de adoção
-industrial. Regras, autenticação, modelos e investigação coexistem: uma geração
-de métodos não elimina a anterior.
-
-| Marco | O que documenta | Relação com este projeto |
+| Termo | Como entender | Identificador no dataset |
 | --- | --- | --- |
-| 1994 — Ghosh e Reilly [1] | Aplicação de redes neurais à detecção de fraude em cartões | Usar ML nessa área não é novidade; precisamos justificar as decisões operacionais |
-| 2015 — Sculley et al. [2] | Dependências de dados, feedback e manutenção como dívida técnica de sistemas de ML | Contratos e complexidade controlada fazem parte do produto |
-| 2017/2018 — Dal Pozzolo et al. [3] | Modelagem que considera desbalanceamento, atraso de verificação e mudanças temporais | Motivação para disponibilidade de rótulos, avaliação temporal e métricas coerentes |
-| 2017/2018 — Carcillo et al., SCARFF [4] | Streaming de fraude combinando processamento de eventos e aprendizado | Replay precisa testar estado e causalidade; a escolha de ferramentas depende da escala |
-| 2021 — Tax et al. [5] | Contexto organizacional de equipes antifraude no comércio eletrônico | O modelo deve responder a uma rotina de investigação e decisão |
-| 2025 — relatório EBA/ECB [8] | Fraude em pagamentos e adaptação das estratégias dos fraudadores | Um bom resultado histórico exige vigilância e contexto para continuar útil |
+| Cliente | A pessoa representada no histórico de compras; Ana pode aparecer em muitos pagamentos | `CUSTOMER_ID` |
+| Transação | Um pagamento específico, com valor e data/hora próprios | `TRANSACTION_ID` |
+| Terminal | O ponto em que o pagamento é aceito; uma maquininha é um exemplo intuitivo | `TERMINAL_ID` |
 
-As datas duplas indicam divulgação do trabalho em 2017 e publicação em periódico
-em 2018. Não significam que essas técnicas começaram a existir nessa data.
-O SCARFF usa Kafka, Spark e Cassandra; essa referência não estabelece que o nosso
-laboratório precise da mesma infraestrutura.
+Esses campos fazem parte do simulador do Handbook [1]. O identificador de terminal
+não informa, por si só, o equipamento físico, o canal de compra ou quais terminais
+pertencem à mesma loja.
 
-## Por que o problema continua atual
+Se Ana fizer três compras, teremos três transações ligadas ao mesmo cliente.
+Se outra pessoa pagar no mesmo terminal, haverá também um histórico compartilhado
+desse ponto de pagamento. Podemos, assim, olhar tanto para os hábitos de Ana quanto
+para o que vinha acontecendo naquele terminal.
 
-O relatório EBA/ECB publicado em dezembro de 2025 registrou **€4,2 bilhões de fraude
-em pagamentos no Espaço Econômico Europeu em 2024**, frente a €3,5 bilhões em 2023.
-Autenticação forte continuou efetiva contra os ataques para os quais foi concebida,
-mas o relatório destacou a manipulação de pagadores como desafio crescente [8].
-São dados europeus, de diferentes instrumentos de pagamento; não são estatísticas
-do Brasil nem uma estimativa de benefício financeiro deste projeto.
+Também precisamos distinguir a pessoa do evento: uma transação fraudulenta pode
+ter sido feita por alguém usando o cartão de Ana sem autorização. Ana pode ser a
+vítima. Uma fraude não torna automaticamente fraudulentas todas as compras dela.
 
-No Brasil, o guia oficial do Banco Central descreve recuperação de valores no Pix
-com rastreamento de transações subsequentes e bloqueio de recursos suspeitos [9].
-Isso fornece um exemplo atual de fraude tratada como processo com múltiplos atores
-e etapas. Nosso dataset não representa o Pix, sua rede de contas ou seu processo
-de recuperação; servir esse domínio exigiria dados, rótulos e contratos próprios.
+## Como um modelo ajuda a escolher o que investigar
 
-A conexão que fazemos com esses contextos é de engenharia: tempo da decisão,
-tempo da confirmação, investigação, rastreabilidade e adaptação. Não inferimos
-que um modelo treinado nesta simulação seja um detector adequado de golpes atuais.
+Um modelo de aprendizado de máquina procura padrões nos exemplos usados em seu
+treinamento. Ao receber uma nova transação, usa as informações fornecidas para
+produzir uma pontuação de risco, chamada **score**.
 
-## Por que uma classificação correta não resolve todo o problema
+Neste projeto, parte dessas informações descreve a compra atual; outra parte
+resume o histórico. Por exemplo: quantas compras o cliente fez no último dia?
+Qual era seu valor médio? Que histórico de fraude já confirmado estava disponível
+sobre o terminal? Essas informações de entrada são chamadas **features**. O
+[dicionário de dados](../data/DATA_DICTIONARY.md) explica como cada uma é calculada.
 
-Desbalanceamento, mudança temporal e atraso de verificação aparecem juntos na
-literatura de modelagem realista [3]. No nosso desenho, isso significa distinguir
-três relógios: quando a transação ocorre, quando pode ser pontuada e quando seu
-rótulo fica disponível. Uma avaliação pode parecer excelente se antecipar o
-terceiro relógio ao construir o histórico do segundo.
+O score ajuda a ordenar os casos: valores maiores indicam maior risco segundo o
+modelo. Ele não foi calibrado como probabilidade. Portanto, um score de `0,8` não
+permite afirmar que aquela compra tem exatamente 80% de chance de ser fraude.
 
-Também há objetivos diferentes. Ordenar bem transações fraudulentas não garante
-priorizar os clientes de maior perda, reduzir o esforço de investigação ou evitar
-atrito com clientes legítimos. Nosso orçamento fixa posições na fila; não mede
-minutos de revisão. AP avalia ranking; não mede dinheiro recuperado. Score alto
-não é autorização automática para bloquear um pagamento.
+Há três conceitos diferentes nesse processo:
 
-Uma futura política poderia usar custos de revisão e de erro, valores em risco,
-capacidade por turno e ações possíveis. Esses parâmetros teriam de ser definidos
-com quem opera o processo. Aqui, a primeira aproximação é explícita: cem clientes
-por dia e feedback após sete dias. Vamos avaliar essa política antes de ampliar
-o sistema, evitando transformar uma suposição do laboratório em requisito universal.
+| Conceito | Pergunta a que responde | Neste laboratório |
+| --- | --- | --- |
+| Score | Quanto risco o modelo atribuiu ao caso? | Pontuação usada para ordenar e selecionar |
+| Alerta | O caso foi encaminhado para revisão? | Decisão tomada pela regra de triagem, considerando score e capacidade |
+| Rótulo | O que sabemos sobre o resultado da transação? | `TX_FRAUD`: `0` para genuína e `1` para fraudulenta na simulação |
 
-A mudança temporal também exige separar causas: piora de métricas pode refletir
-mudança de prevalência, novos padrões, atraso de rótulos ou defeito no cálculo das
-features. Drift de dados é um alerta para investigar; não é, sozinho, evidência de
-que um novo modelo deve ser treinado ou promovido. Essa distinção orientará CT e
-monitoramento com rótulos atrasados, ainda não implementados.
+Um caso pode receber score alto e depois ser confirmado como legítimo. Outro pode
+receber score baixo e ser uma fraude que o sistema deixou passar. Gerar um alerta
+é uma decisão diante da incerteza; a avaliação posterior mostra onde acertamos e
+onde erramos. Aqui, o resultado vem do simulador, sem investigadores reais.
 
-## Do dado bruto à feature: o que foi preservado e escolhido
+## Qual decisão o laboratório apoia
 
-O [dicionário de dados](../data/DATA_DICTIONARY.md) explica as nove colunas de origem,
-os 19 preditores e os seis metadados Gold, com significado, tipo, fórmula,
-janela temporal e comportamento sem histórico.
+Nossa regra de trabalho permite encaminhar até **100 clientes distintos por dia**.
+Esse limite representa uma equipe com capacidade finita de revisão. É uma hipótese
+do estudo de caso, escolhida para tornar a decisão e sua avaliação concretas.
+Não é uma capacidade medida em uma instituição financeira.
 
-A Bronze preserva os arquivos originais como bytes, sem selecionar colunas;
-a Silver mantém as nove colunas. A Gold define candidatos de modelagem e separa
-alvo/identificadores de suas entradas. `TX_FRAUD_SCENARIO` continua na Silver para
-auditoria, mas fica fora da Gold: ele revela o alvo e não é um sinal preditivo
-admissível. Campos ausentes da fonte, como IP/dispositivo, não foram retirados
-pelo extrator.
+O cliente é a unidade da fila porque pode ter várias transações relacionadas.
+Na política atual, Ana ocupa no máximo uma posição no dia, mesmo que outras compras
+dela também pareçam suspeitas. Em outro dia, ela pode voltar à fila. É isso que
+significa **cliente-dia**: o mesmo cliente em dois dias corresponde a duas
+ocorrências na avaliação.
 
-Houve escolhas prévias de desenho, como janelas de 1/7 dias e representação de
-calendário. Depois, o primeiro catálogo comparou três ablações por retreinamento;
-nenhuma passou o gate definido, e as 19 features foram conservadas. O
-[protocolo de experimentação](../modeling/EXPERIMENT_PROTOCOL.md#resultados-e-decisão--2026-10-08)
-registra hipóteses, orçamento, efeitos observados e limites dessa decisão.
+O sistema deste projeto pontua transações e organiza encaminhamentos. Autorizar
+pagamentos, bloquear cartões, contatar clientes e conduzir investigações exigiria
+outros componentes e regras. Os alertas do laboratório servem para estudar a
+priorização, sem executar essas ações.
 
-Uma transação é nossa unidade de observação; ela não é necessariamente uma réplica
-estatística independente. Clientes repetidos, terminais compartilhados e janelas
-históricas sobrepostas geram dependência. Agregar por cliente/dia atende à política
-de alertas, mas não elimina a repetição da mesma pessoa entre dias. A hipótese
-estatística deverá definir os agrupamentos e blocos temporais relevantes.
+### Selecionar no fim do dia e selecionar enquanto os casos chegam
+
+Considere duas maneiras de distribuir as posições disponíveis:
+
+- **Ranking retrospectivo:** esperamos o dia terminar, guardamos o maior score de
+  cada cliente e selecionamos até 100 clientes com os maiores scores. Podemos usar isso para estudar a
+  qualidade da ordenação com o dia completo.
+- **Fila causal:** decidimos enquanto os eventos chegam. O cliente entra na fila
+  na primeira transação que alcança um **limiar**, isto é, o score mínimo definido
+  para encaminhamento, enquanto houver capacidade. O limiar do projeto foi fixado
+  no desenvolvimento.
+
+Para visualizar a diferença, imagine somente **duas posições** e um limiar de
+**0,6**, escolhidos apenas para este exemplo:
+
+| Chegada | Cliente | Score | Decisão da fila naquele instante |
+| --- | --- | --- | --- |
+| 09h | Ana | 0,65 | Encaminhar; resta uma posição |
+| 10h | Bia | 0,75 | Encaminhar; capacidade esgotada |
+| 11h | Caio | 0,95 | Não encaminhar; as duas posições já foram ocupadas |
+
+Ao fim do dia, o ranking escolheria Caio e Bia. A fila já teria escolhido Ana e Bia;
+ela mantém os encaminhamentos emitidos. Às 09h, não havia como conhecer o caso que
+chegaria às 11h. Por isso, **uma boa ordenação retrospectiva e uma boa decisão ao
+longo do dia são perguntas diferentes**. O projeto avalia as duas, separadamente.
+O [replay causal](../operations/CAUSAL_REPLAY.md) detalha a regra executada e a
+reprodução dos eventos em sua ordem de disponibilidade.
+
+## Por que o momento da informação importa
+
+No laboratório, o resultado de cada transação só pode ser usado pelo pipeline
+**sete dias depois**. Esse retorno posterior é chamado **feedback**. O arquivo
+simulado já contém o rótulo, mas o processamento respeita o instante em que ele
+ficaria disponível segundo nosso protocolo.
+
+Pense em uma compra no dia 1. Nesse dia, podemos pontuá-la com o histórico disponível.
+O rótulo dessa compra só será liberado no dia 8. Se o cálculo das features do dia 1
+usasse essa confirmação, estaria consultando o futuro. Esse erro é chamado
+**vazamento de informação**: ele pode produzir uma avaliação excelente que não
+seria possível repetir durante o uso.
+
+Assim, separamos o momento da compra, o momento da decisão e o momento da
+confirmação. Antes da confirmação, o resultado está pendente. Quando falamos em
+**feedback amadurecido**, queremos dizer que o prazo de disponibilidade já passou
+e os rótulos daquela população podem ser usados para avaliar o sistema. O atraso
+fixo de sete dias é outra hipótese do laboratório, e não uma regra universal.
+
+## Como saber se a priorização foi útil
+
+Acertar a maioria das compras pode ser pouco informativo quando as fraudes são
+raras. Em um exemplo com 1.000 compras, das quais 10 são fraudulentas, classificar
+todas como legítimas daria 99% de acerto e deixaria passar as 10 fraudes.
+Precisamos perguntar também **o que chegou à fila e o que ficou de fora**.
+
+No nível de clientes-dia, duas medidas ajudam a responder:
+
+- **Precisão:** entre os clientes encaminhados, quantos tiveram fraude naquele dia?
+- **Recall, ou cobertura das fraudes:** entre os clientes que tiveram fraude naquele
+  dia, quantos foram encaminhados?
+
+Por exemplo, suponha que uma fila tenha alertado 10 clientes em um dia. Depois de
+chegarem os rótulos, descobrimos que 4 deles tiveram fraude e que houve 5 clientes
+com fraude no total. A precisão seria `4/10 = 40%`; o recall, `4/5 = 80%`. São
+números ilustrativos: a primeira medida descreve a seleção feita; a segunda mostra
+quanto do problema ela alcançou.
+
+Para estudar a ordenação das **transações**, usamos também a **Average Precision
+(AP)**. Ela resume como as fraudes se concentram nas posições de maior score ao
+longo do ranking. AP e as medidas da fila têm unidades e perguntas distintas;
+os resultados reais do projeto aparecem adiante, com seus respectivos protocolos.
+
+Nossa contagem por cliente-dia pode considerar fraude ocorrida depois da transação
+que disparou o alerta. Por isso, capturar um cliente-dia não prova que uma compra
+fraudulenta foi impedida. Também não medimos dinheiro recuperado ou tempo gasto
+na revisão. Esses resultados exigiriam dados sobre ações e consequências que a
+simulação não fornece.
+
+## O que MLOps acrescenta a essa pergunta
+
+Além de obter um score, precisamos conseguir explicar de onde vieram os dados,
+repetir a execução, acompanhar atrasos e erros e recuperar histórico e modelo após
+uma falha. **MLOps** reúne as práticas de engenharia e operação usadas para manter
+esse ciclo de dados, modelos e decisões organizado e verificável.
+
+É essa a finalidade do laboratório: ligar a priorização dos casos à confiança na
+execução. Os dados simulados permitem testar esses procedimentos em condições
+controladas. Sua utilidade como estudo de caso depende de explicitar o que foi
+verificado e quais suposições ainda limitam o resultado.
 
 ## Onde nosso modelo se encaixa
 
-Um **Sistema de Detecção de Fraudes**, ou FDS (*Fraud Detection System*), reúne
-controles e investigação. No desenho esquemático-o Handbook [6], há cinco camadas:
+O Handbook apresenta um Sistema de Detecção de Fraudes (FDS) como combinação de
+controles no terminal, regras de bloqueio, regras de pontuação, modelo orientado
+por dados e investigação com feedback [2]. É uma organização conceitual; a fonte
+não define arquitetura obrigatória ou SLA para este laboratório.
 
-| Camada | Papel | Momento nesse desenho |
-| --- | --- | --- |
-| Terminal | Verificações de segurança, como PIN e situação do cartão | Antes da autorização, em milissegundos |
-| Regras de bloqueio da transação | Recusar pedidos que atendam a condições definidas por especialistas | Antes da autorização, em milissegundos |
-| Regras de pontuação | Atribuir risco por condições conhecidas, incluindo histórico | Após autorização, em tempo quase real |
-| Modelo orientado por dados, ou DDM | Aprender padrões e produzir scores para gerar alertas | Após autorização, em tempo quase real |
-| Investigadores | Revisar casos, confirmar rótulos e devolver feedback | Investigação offline |
-
-São papéis conceituais do Handbook, não uma arquitetura obrigatória ou um SLA universal. A figura abaixo mostra como regras e modelo apoiam a investigação. O referido diagrama ilustra as camadas de controle em um FDS. O foco neste projeto decorre no modelo orientado por dados (DDM), que auxilia os investigadores ao gerar alertas sobre as **transações mais suspeitas**.
-
-![Diagrama de detecção de fraude](https://fraud-detection-handbook.github.io/fraud-detection-handbook/_images/FDS.jpg)
-
-
-
-
-
-
-
-Neste projeto, o HGB ocupa o papel do DDM; Bronze, Silver e Gold organizam os dados que o alimentam.
-
-**Autorizar um pagamento não confirma sua legitimidade.** Nesse desenho, uma
-investigação posterior pode motivar o bloqueio do cartão e evitar novas ocorrências.
-O feedback é o resultado verificado da revisão; uma investigação pode esclarecer
-outras transações do mesmo cartão [6]. No laboratório, simulamos sua disponibilidade
-após sete dias, sem contato real com clientes ou decisões humanas.
-
-Nosso escopo começa na camada de dados/modelo que **ordena risco e apoia a triagem**.
-O pipeline atual não implementa autorização de pagamentos, bloqueio de contas,
-contato com clientes ou gestão de casos. O orçamento de 100 clientes por dia é
-uma hipótese operacional explícita do laboratório, não uma exigência do mercado.
-
-| Pergunta operacional | Decisão já implementada | O que ainda falta demonstrar |
-| --- | --- | --- |
-| O que sabíamos ao pontuar a transação? | Históricos estritamente anteriores, rótulos disponíveis após sete dias e contratos Gold | Paridade entre cálculo offline e estado durante replay |
-| Quais casos cabem na revisão? | Ranking diário de clientes, máximo score e até 100 alertas | Fila online, tempo de investigação e comportamento de uma política de decisão |
-| Como reconhecer um experimento? | Dados fixados, hashes, protocolo, scores e modelos MLflow vinculados | Empacotamento, implantação, rollback e ensaios de falha |
-| Como decidir se um candidato merece avançar? | AP para seleção e diagnóstico diário | Hipóteses prévias, incerteza, custo e quality gates |
-| Como medir uma degradação? | Rótulos e disponibilidade modelados explicitamente | Monitoramento de serviço, dados e desempenho com feedback atrasado |
-
-O ranking diário atual é calculado **offline, com o dia completo**. Sua precisão
-é uma medida de priorização retrospectiva; não prova que uma fila ao vivo teria
-selecionado os mesmos casos antes da liquidação. Features causais são necessárias,
-mas não bastam para validar uma política de decisão em tempo real.
-
-A política operacional executada no replay encaminha o cliente na primeira transação cujo
-score atinja um limiar fixado no desenvolvimento, até cem clientes distintos por
-dia. Não substitui alertas já emitidos; pode esgotar a capacidade antes de casos
-mais fortes chegarem. O limiar foi fixado no desenvolvimento e a integração
-durável foi exercitada no replay corretivo verificado pelo autor.
-[Regras e critérios de avaliação](../operations/CAUSAL_REPLAY.md#política-operacional-de-triagem).
-As capturas dessa regra foram consolidadas separadamente do ranking retrospectivo.
-Latência desde emissão, fila/lag e recuperação cronometrada continuam pendentes. Não estimamos pagamentos bloqueados ou
-perdas financeiras evitadas.
+O **Histogram-based Gradient Boosting (HGB)** ocupa aqui o papel de modelo de
+pontuação. As camadas Bronze, Silver e Gold fornecem dados e contratos; a política
+transforma scores em encaminhamentos. O feedback simulado fecha a avaliação.
+Autorizar uma transação não confirma sua legitimidade, e pontuar risco não resolve
+a investigação. Não há investigadores reais nem um sistema de gestão de casos.
 
 ## O que os dados simulam, e o que deixam de fora
 
-O gerador do Handbook define três mecanismos [7]: valor acima de 220 como sinal
-artificial fácil de reconhecer; terminais temporariamente comprometidos; e aumento
-de valores em parte das transações de clientes comprometidos. O próprio Handbook
-identifica o primeiro como teste de implementação, não cenário realista.
+A origem é uma simulação pública do Handbook, fixada no commit
+`6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a`. Nosso inventário verificou 183 partições,
+1.754.155 transações e 14.681 fraudes. As datas de 2018 organizam o relógio dessa
+simulação; não identificam transações bancárias reais daquele ano.
 
-Esses mecanismos ajudam a interpretar nosso diagnóstico: dependência de valor,
-risco histórico do terminal e desvio do padrão de gastos é compatível com as regras
-do gerador. É uma inferência exploratória sobre esta simulação. Não demonstra
-descoberta de novas estratégias criminosas ou generalização para transações reais.
+O gerador inclui três mecanismos: valor acima de 220 como padrão artificial de
+teste, terminais comprometidos e aumento de valores para clientes comprometidos.
+O próprio Handbook distingue o primeiro de um cenário realista [1]. Esse desenho
+ajuda a interpretar sinais aprendidos, mas limita o que podemos generalizar.
 
-Não temos sinais de dispositivo/IP, canal de compra, autenticação, categoria de
-comerciante, grafo de transferências, contestações reais ou decisões de investigadores.
-O atraso constante de sete dias é uma hipótese, e todos os rótulos acabam disponíveis.
-Em uma operação com revisão seletiva, os rótulos observados poderiam depender dos
-próprios alertas; esse mecanismo de seleção ainda não é simulado aqui.
+A Bronze preserva bytes e proveniência; a Silver mantém as nove colunas de origem.
+A Gold separa alvo/metadados dos 19 preditores. Identificadores brutos e
+`TX_FRAUD_SCENARIO` não são entradas do modelo; o cenário revela informação do alvo.
+Fórmulas e escolhas de janela constam no [contrato Gold](../data/GOLD_CONTRACT.md).
+As ablações não passaram o gate de alteração e os 19 preditores foram mantidos,
+conforme o [protocolo de experimentação](../modeling/EXPERIMENT_PROTOCOL.md).
 
-Datas de 2018 organizam o relógio do simulador. Não significam observações bancárias
-de 2018 nem uma amostra do mercado atual. O valor do laboratório está no controle
-de suposições e na validação de procedimentos reproduzíveis. Eficácia antifraude
-real dependeria de evidências externas, dados autorizados e avaliação operacional.
+Não temos dispositivo/IP, autenticação, canal de compra, contestações reais, grafo
+de transferências ou decisões humanas. No protocolo atual, todos os rótulos acabam
+disponíveis com atraso constante. Na prática, a seleção de casos para investigação
+poderia determinar quais rótulos são observados; esse viés de seleção não é
+simulado. Também não demonstramos resistência a adversários que adaptem seus ataques.
 
-## Evidência que já podemos discutir
+A simulação permite testar causalidade, integridade, repetição e recuperação em
+condições controladas. O desempenho obtido nela não estima eficácia em outra
+instituição, no Pix ou em golpes atuais. Generalização exigiria dados autorizados,
+contratos e avaliação próprios do domínio de destino.
 
-Na validação de 6 a 12 de maio, a baseline real tem AP de 0,623949 para HGB
-(**Histogram-based Gradient Boosting**, boosting de árvores baseado em histogramas) e
-0,435001 para regressão logística. A precisão média nos 100 clientes diários é
-54% e 48%, respectivamente. O [diagnóstico](../modeling/DIAGNOSTICS.md#resultados)
-permite expressar esse resultado como capacidade de triagem:
+## Evidência científica e operacional
 
-| Resultado em sete dias | Regressão logística | HGB |
+Os resultados abaixo têm populações e objetivos distintos. Seus detalhes e
+limites pertencem à [Model Card](../modeling/MODEL_CARD.md) e aos protocolos.
+
+| Evidência do projeto | Resultado observado | Limite de interpretação |
 | --- | --- | --- |
-| Posições de alerta | 700 | 700 |
-| Ocorrências de clientes fraudulentos priorizadas | 336 | 378 |
-| Ocorrências de clientes genuínos priorizadas | 364 | 322 |
-| Ocorrências de clientes fraudulentos fora dos alertas | 175 | 133 |
+| Teste final de maio, referência congelada antes do acesso | AP 0,640703; precisão diária top 100 de 55% | Teste já consumido; não reutilizar para selecionar candidatos |
+| Avaliação de 02–15/09 | AP 0,621312; precisão diária top 100 de 54,93% | Avaliação e reamostragem exploratórias |
+| Fila causal de 16–30/09 | 1.453 alertas; 768 clientes-dia fraudulentos capturados e 358 perdidos; precisão 52,86%, recall 68,21% | Reutilização operacional de janela consumida, sem nova confirmação de qualidade |
+| Replay programado nativo a 8.640× | 556.824 eventos, 143.945 decisões; p95 processamento 0,023705 s e agendamento até commit 379,570 s | Sessões retomadas, relógio acelerado, transporte local sem broker; SLA não validado |
+| Interrupção do exporter | Alerta observado em 56,36 s; recuperação em 12,29 s; estado preservado | Ensaio local inclui comandos e polling; não é garantia de disponibilidade |
 
-São **ocorrências por cliente e dia**, com repetição possível da mesma pessoa em
-dias diferentes. O HGB priorizou 42 ocorrências fraudulentas adicionais ao mesmo
-orçamento. É um ganho observado de seleção na validação simulada; não é estimativa
-de perdas evitadas, prova estatística de superioridade ou resultado de produção.
+No replay acelerado, o p95 de atraso de emissão foi 377,783 s. A diferença entre
+esse atraso e o tempo de processamento mostra por que medir apenas a inferência
+ocultaria o acúmulo na emissão. Os percentis não são somáveis. O ensaio não
+caracteriza operação contínua a 1×, e retomar uma sessão estabelece nova âncora de
+agendamento. Ver [observabilidade](../operations/OBSERVABILITY.md) para o escopo completo.
 
-Diagnóstico e ablações foram concluídos, e a referência foi congelada pelo autor
-antes da avaliação final. O [protocolo de avaliação](../modeling/EVALUATION_PROTOCOL.md#congelamento-antes-da-avaliação-final)
-define as escolhas e os critérios do laboratório. A avaliação final consumiu o
-teste de maio: AP 0,640703 e precisão diária @100 de 55%, com gate de laboratório
-aprovado; a [Model Card](../modeling/MODEL_CARD.md) concentra a interpretação.
-O ciclo Optuna de junho–agosto conservou a referência. A avaliação de 02–15/09,
-o diagnóstico e a reamostragem nativa foram concluídos, com
-[escopo exploratório e limites explícitos](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
-16–30/09 também foi consumido pelo replay corretivo, com paridade aprovada
-e qualidade da fila consolidada no relato do autor. A fila emitiu 1.453 alertas,
-capturou 768 clientes-dia fraudulentos e perdeu 358 (precisão agregada 52,86%;
-recall agregado 68,21%). [Resultado e limites](../operations/NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13). As faixas de reamostragem não demonstram
-cobertura futura ou superioridade confirmatória. A referência foi exportada e
-validada por HTTP no wheel isolado pelo autor. A etapa foi integrada pelo PR #2;
-Docker é a próxima verificação operacional.
+Precisão observada de 52,86% significa cerca de 47,14% dos alertas sem fraude
+na unidade cliente-dia desse ensaio. O custo dessa revisão não foi medido. Comparar
+com o ranking retrospectivo na mesma janela descreve políticas diferentes; não
+constitui experimento aleatorizado nem demonstra superioridade confirmatória.
+Mudanças de prevalência, rótulos atrasados, defeitos de features e mudança do
+comportamento podem afetar métricas de formas diferentes.
 
-## Para que este projeto pode ser útil
+As transações não são observações estatisticamente independentes: clientes e
+terminais reaparecem e suas janelas históricas se sobrepõem. Agregar por cliente-dia
+atende à política da fila, mas não elimina essas dependências. A interpretação
+estatística segue os agrupamentos e limites declarados no protocolo.
 
-Para quem aprende MLOps, o laboratório permite exercitar decisões temporais e
-investigar erros com uma origem conhecida. Para quem avalia um portfólio, oferece
-um sistema que pode ser reproduzido e auditado, com escolhas técnicas justificadas
-pelo problema. Para uma equipe de engenharia, pode servir como referência de
-contratos, testes e experimentação em ambiente controlado, antes de adaptação
-e validação com dados e requisitos próprios.
+## Maturidade atual e por que a infraestrutura existe
 
-Essa utilidade pode ser demonstrada por ensaios: evento duplicado não produz
-dupla pontuação; evento atrasado segue uma política definida; rótulo futuro não
-alimenta uma feature presente; recarga preserva scores; falha de infraestrutura
-não transforma publicação incompleta em sucesso. Parte desses controles existe
-na etapa offline; os ensaios de eventos e operação ainda serão construídos.
+| Necessidade | Já exercitado no ambiente do autor | Critério ainda aberto |
+| --- | --- | --- |
+| Decisão reproduzível | Fonte/contratos fixados, tracking, modelo exportado, paridade e serving HTTP/Docker | Entrega gerenciada e rollback operacional |
+| Estado e falhas | Replay durável, repetição sem novas decisões e retomada após interrupção | Operação contínua e transporte externo, se justificado |
+| Visibilidade | Prometheus/Grafana, métricas de emissão/fila/processamento, qualidade madura e alerta de indisponibilidade | Validar limites de carga e respostas operacionais; ampliar suporte de métricas de features |
+| Persistência recuperável | Publicação, repetição idempotente e restauração verificada no RustFS de Bronze/Silver/Gold/desenvolvimento, estudo HGB e snapshot MLflow; recarga da release restaurada e uso do histórico/modelo pelo SDK MLflow | Adotar destinos nos consumidores, ampliar a cobertura do inventário e provar rollback |
+| Implantação reproduzível | Stack local em Compose com volumes e imagens fixadas | KinD/Helm/PVCs após critérios de persistência e recuperação |
 
-O trabalho terá valor crescente quando ligar **qualidade do ranking, custo da
-decisão e confiabilidade operacional**. Um dashboard deve tornar isso visível;
-uma feature store deve preservar o estado das features; monitoramento deve separar
-falha do serviço, mudança de dados e perda de desempenho. Nenhuma dessas ferramentas
-substitui a definição do processo que pretendemos apoiar.
+O autor validou também o acesso aos dois históricos e a recarga de uma referência
+pelo SDK MLflow: 71 runs, 67 modelos com metadados consultados, 321 registros de histórico de
+métricas e erro de score zero. As localizações foram adaptadas somente em cópia
+descartável; os restores permaneceram preservados. O ensaio usa SQLite local,
+sem servidor HTTP ou migração para PostgreSQL.
+[Evidência](../../references/evidence/mlflow_recovery_author_validation_2026-10-16.json).
+Os [runbooks de armazenamento](../operations/STORAGE.md) e [MLflow](../operations/MLFLOW.md)
+concentram comandos e evidências; arquivamento S3 ainda não é migração do
+armazenamento primário.
 
-## Referências e uso neste projeto
+RustFS atende à experimentação local com a API S3; seus volumes continuam na mesma
+máquina. Isso não fornece uma cópia independente do laptop. PVCs organizam
+persistência no Kubernetes, mas a recuperação de perda do cluster/disco depende de
+outro destino e de restauração testada. O inventário de **toda** a persistência e a
+eliminação de produtores sem destino gerenciado continuam metas abertas.
 
-As fontes fundamentam o contexto; não certificam nossos resultados. Números do
-projeto derivam das evidências locais informadas pelo autor. Texto próprio, sem
-reprodução de figuras ou trechos extensos. Contexto consultado em 2026-10-07;
-definições do simulador e camadas do FDS conferidas em 2026-10-08.
+PostgreSQL tem justificativa como backend do futuro serviço MLflow compartilhado;
+SQLite continua adequado ao replay local e ao estudo Optuna concluído enquanto
+seus requisitos forem atendidos. DuckDB serve à validação/consulta analítica;
+Prometheus guarda séries operacionais; S3 guarda objetos. Trocar todos esses papéis
+por uma única ferramenta não resolve suas necessidades distintas.
 
-1. **Ghosh, S.; Reilly, D. L. (1994).** *Credit card fraud detection with a neural-network.* HICSS. [DOI](https://doi.org/10.1109/HICSS.1994.323314). Marco histórico de uso de redes neurais.
-2. **Sculley, D. et al. (2015).** *Hidden Technical Debt in Machine Learning Systems.* NeurIPS. [Artigo](https://papers.neurips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf). Manutenção e controle de dependências.
-3. **Dal Pozzolo, A. et al. (2018).** *Credit Card Fraud Detection: A Realistic Modeling and a Novel Learning Strategy.* IEEE TNNLS, 29(8), 3784–3797. [DOI](https://doi.org/10.1109/TNNLS.2017.2736643); [manuscrito dos autores](https://dalpozz.github.io/static/pdf/TNNLS_2017.pdf). Avaliação e atraso do feedback.
-4. **Carcillo, F. et al. (2018).** *SCARFF: a Scalable Framework for Streaming Credit Card Fraud Detection with Spark.* Information Fusion, 41, 182–194. [DOI](https://doi.org/10.1016/j.inffus.2017.09.005); [preprint de 2017](https://arxiv.org/abs/1709.08920). Operação sobre streams.
-5. **Tax, N. et al. (2021).** *Machine Learning for Fraud Detection in E-Commerce: A Research Agenda.* MLHat/KDD. [Preprint](https://arxiv.org/abs/2107.01979). Contexto organizacional.
-6. **Fraud Detection Handbook — Machine Learning Group, ULB.** [Sistema de detecção](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_2_Background/FDS.html) e [introdução ao problema](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_2_Background/Introduction.html). Modelo como parte do processo de investigação.
-7. **Fraud Detection Handbook.** [Simulador](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_3_GettingStarted/SimulatedDataset.html). Regras e limites da nossa fonte de dados.
-8. **EBA/ECB (2025).** [Relatório conjunto e comunicado de 15 de dezembro](https://www.ecb.europa.eu/press/pr/date/2025/html/ecb.pr251215~e133d9d683.en.html). Dados de 2022–2024; contexto europeu.
-9. **Banco Central do Brasil.** [Guia do MED](https://www.bcb.gov.br/content/estabilidadefinanceira/pix/Guia_MED.pdf), definição de recuperação de valores. PDF observado: versão 4.3, com referência a atualização 4.4. Usado para contextualizar o processo brasileiro, sem afirmar conformidade do projeto com o Pix.
+Uma feature store será considerada se surgirem consumidores compartilhados,
+necessidade de consulta online com frescor definido ou dificuldade demonstrada de
+preservar paridade. Contratos, causalidade e observação de frescor vêm primeiro.
+Drift de scores é um sinal descritivo para investigação; não comprova degradação e
+não aciona retreino ou promoção automática. O [roadmap](ROADMAP.md) mantém prioridades
+e gates, sem tornar uma lista de ferramentas um objetivo em si.
+
+## Relevância e referências
+
+Fraude em cartões é estudada há décadas: Ghosh e Reilly publicaram uma aplicação de
+redes neurais em 1994 [3]. A escolha de ML precisa justificar o ganho de decisão,
+e sua manutenção importa tanto quanto o algoritmo. O texto sobre dívida técnica
+de Sculley e colegas [4] é uma leitura complementar para essa discussão.
+
+Como contexto externo, o comunicado EBA/ECB de 15/12/2025 registra €4,2 bilhões de
+fraude em pagamentos no Espaço Econômico Europeu em 2024, ante €3,5 bilhões em 2023
+[5]. São diferentes instrumentos e outro mercado. Esses números não fornecem uma
+estimativa de benefício, volume ou cobertura para nosso laboratório.
+
+O diferencial pretendido é permitir que outra pessoa **reproduza uma decisão,
+explique seus limites e recupere o sistema a partir de evidência verificável**.
+O valor de portfólio dependerá dessa demonstração, da clareza do código e da
+justificativa das escolhas. Não há evidência de eficácia antifraude em produção.
+
+Simulador, FDS e comunicado EBA/ECB reconferidos em 2026-10-16; os resultados do
+projeto remetem a evidências locais relatadas pelo autor. Esta revisão não cria nova avaliação nem altera gates
+ou resultados históricos.
+
+1. **Fraud Detection Handbook.** [Simulador](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_3_GettingStarted/SimulatedDataset.html). Definições e mecanismos de geração.
+2. **Fraud Detection Handbook.** [Sistema de detecção de fraude](https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_2_Background/FDS.html). Papéis conceituais dos controles e da investigação.
+3. **Ghosh, S.; Reilly, D. L. (1994).** *Credit card fraud detection with a neural-network.* HICSS. [DOI](https://doi.org/10.1109/HICSS.1994.323314). Referência histórica.
+4. **Sculley, D. et al. (2015).** *Hidden Technical Debt in Machine Learning Systems.* [NeurIPS](https://papers.neurips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems.pdf). Leitura complementar sobre manutenção de sistemas de ML.
+5. **EBA/ECB (2025).** [Comunicado de 15 de dezembro](https://www.ecb.europa.eu/press/pr/date/2025/html/ecb.pr251215~e133d9d683.en.html). Contexto europeu, dados de 2022–2024.
+
+Leituras complementares: [Dal Pozzolo et al., avaliação realista e feedback](https://doi.org/10.1109/TNNLS.2017.2736643),
+[Carcillo et al., SCARFF](https://doi.org/10.1016/j.inffus.2017.09.005) e
+[Tax et al., organização da investigação](https://arxiv.org/abs/2107.01979).
+A arquitetura desses trabalhos não é requisito de infraestrutura para o projeto.
