@@ -1,0 +1,19 @@
+{
+  "schema": "fraud_tracking_consumers_author_validation_v1",
+  "recorded_on": "2026-10-19",
+  "source": "Terminal output pasted by author; native receipt bytes not independently read",
+  "status": "author_reported_success",
+  "tests": "48 passed in 0.54s; py314 tox OK in 3.41s",
+  "receipt": "data/storage/inventory/tracking-consumers-1b0wp9jy.json",
+  "native_summary": {
+    "tracking_review_valid": true,
+    "source_files_scanned": 124,
+    "declared_consumers": 17,
+    "local_migration_blockers": 7,
+    "detected_call_sites": 55,
+    "issues": 0
+  },
+  "postgres_backup_restore_validated": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false
+}

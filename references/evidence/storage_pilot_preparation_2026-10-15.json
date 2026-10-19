@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-15",
+  "scope": "Implementation preparation; generated files and simulated S3 only; no native storage operation executed",
+  "published_runtime_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "input_worktree_tree": "c52df5be08e77b815ba8ec0d33940c40015e9586",
+  "checks": {
+    "full_tox_py314_before_final_inventory_adjustment": {
+      "passed": 668,
+      "skipped": 1,
+      "warnings": 93,
+      "pytest_seconds": 218.25
+    },
+    "final_tox_py314_storage": {
+      "passed": 36,
+      "ruff": "passed",
+      "format": "passed",
+      "poetry_lock": "passed"
+    },
+    "frozen_existing_files_unchanged": 172,
+    "main_notebook_code_cells_preserved": true
+  },
+  "implemented": [
+    "Full data/ metadata inventory without time or file-count ceiling",
+    "Explicit local bundle up to 64 files / 64 MiB",
+    "Conditional S3 PUT; HEAD, GET and SHA-256 verification; listing",
+    "Manifest published last; retry verifies/reuses existing objects",
+    "Restore to a new managed directory after identity, path, size and SHA-256 checks"
+  ],
+  "native_pending": [
+    "RustFS API compatibility and round-trip",
+    "Layer-by-layer migration and model reload",
+    "Consistent replay/tracking database backup",
+    "MLflow PostgreSQL backend and S3 artifact migration preserving runs/URIs",
+    "Physically independent backup"
+  ],
+  "decisions": {
+    "mlflow_backend_destination": "PostgreSQL; current SQLite unchanged pending explicit reconciled migration",
+    "object_store": "local RustFS; no AWS account",
+    "pilot_limit_reason": "A small contract-validation stage, not a hardware limitation",
+    "inventory": "All data/ files; data/storage excluded to avoid recursive self-inventory; Docker volumes outside scope"
+  },
+  "runtime_identity_inputs_modified": false,
+  "docker_executed": false,
+  "native_data_accessed": false,
+  "image_resolution": {
+    "image": "amazon/aws-cli:2.31.36",
+    "digest": "sha256:2901b33430341f03e487de5a2309bf4b6aba420c764f562466fd89bd49f50f82",
+    "registry_manifest_resolved": true,
+    "image_executed": false
+  }
+}

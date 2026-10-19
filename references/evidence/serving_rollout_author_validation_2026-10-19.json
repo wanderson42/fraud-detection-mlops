@@ -1,0 +1,104 @@
+{
+  "schema": "fraud_serving_rollout_author_validation_v1",
+  "date": "2026-10-19",
+  "status": "author_reported_success",
+  "provenance": {
+    "source": "Terminal output pasted by the author in this chat on 2026-10-19; native receipt bytes and Docker engine not independently accessed by the assistant",
+    "normalization": "Only result.report changed from the author checkout absolute path to its repository-relative path; other result fields transcribed",
+    "checks": "Reported controller/checker hashes equal the delivered source; approved release/model/score and image pins reconciled with versioned evidence and lock; full event sequence and success/cleanup flags checked",
+    "whole_checkout_revision_independently_verified": false
+  },
+  "native_tests": {
+    "py314": {
+      "selection": "tests/serving",
+      "passed": 110,
+      "skipped": 2,
+      "pytest_seconds": 4.28,
+      "tox_seconds": 6.94,
+      "ruff_check": "passed",
+      "ruff_format_check": "283 files already formatted",
+      "poetry_lock_check": "passed"
+    },
+    "serving_rollout": {
+      "selection": "tests/serving/live/test_blue_green_rehearsal.py",
+      "passed": 1,
+      "pytest_seconds": 21.42,
+      "tox_seconds": 23.9
+    }
+  },
+  "result": {
+    "schema": "fraud_blue_green_rehearsal_v1",
+    "status": "success",
+    "scope": "isolated_same_weights_release_repackage_NGINX_switch_and_rollback_not_production_CD",
+    "events": [
+      "baseline_routed",
+      "invalid_candidate_rejected_before_start_or_switch",
+      "candidate_direct_gates_passed",
+      "candidate_routed_on_same_url",
+      "candidate_outage_observed",
+      "baseline_restored_on_same_url"
+    ],
+    "refit": false,
+    "production_promotion": false,
+    "model_weights_changed": false,
+    "existing_services_replaced": false,
+    "native_CI_CD_pipeline_validated": false,
+    "zero_downtime_validated": false,
+    "temporary_resources_removed": true,
+    "report": "data/serving/rollouts/b2aaa46392114d0c91a4b6459c858a52/result.json",
+    "controller_code_sha256": "2d06129fa4f9ea666da6b1f27030a71732969ea8c2d65b7836d6a87da6f4f39d",
+    "runtime_checker_code_sha256": "c87f54273c351dc9470d1178b66138e250e4345c9de3e5d92c86f81cb64b2f49",
+    "gateway_requested": "nginx:1.30.6-alpine@sha256:970364228b1e4f932abc22d321932816782cca8a20b85a77552a7cfe9acfb3b5",
+    "images": [
+      {
+        "id": "sha256:db2e2ed60c2b3102041d55a93ca5dba0b0d9c5624c14bd7581947c1de0b600ab",
+        "repo_digests": [
+          "fraud-detection-mlops@sha256:db2e2ed60c2b3102041d55a93ca5dba0b0d9c5624c14bd7581947c1de0b600ab"
+        ]
+      },
+      {
+        "id": "sha256:970364228b1e4f932abc22d321932816782cca8a20b85a77552a7cfe9acfb3b5",
+        "repo_digests": [
+          "nginx@sha256:970364228b1e4f932abc22d321932816782cca8a20b85a77552a7cfe9acfb3b5"
+        ]
+      }
+    ],
+    "baseline_manifest_sha256": "1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263",
+    "candidate_manifest_sha256": "f49137cfe3668e3f182bea3ea1865d4953f494c9e2bf17269dd616578e974b24",
+    "baseline_release_id": "b3deb7e7bb6d4189bc7671453f8643d2",
+    "candidate_release_id": "0c9fcb3db21a4f55ba0d893aaa62c8f7",
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "candidate_score": 0.4178630794049542,
+    "observed_failure_http_status": 502,
+    "rollback_observation_seconds": 3.1003905149991624,
+    "rollback_score": 0.4178630794049542,
+    "release_bytes_unchanged": true,
+    "rollback_verified": true,
+    "gateway_url": "http://127.0.0.1:32768",
+    "gateway_route_scope": "same ephemeral loopback URL during this invocation",
+    "elapsed_seconds": 21.412870410000323
+  },
+  "interpretation": {
+    "closed_gate": "Native same-weights release repackage switch, intentional candidate outage and verified rollback through the same ephemeral NGINX URL",
+    "rollback_seconds_scope": "One local observation of the injected-failure recovery; not an SLA, percentile or general recovery guarantee",
+    "invalid_input_gate": "HTTP 422 is required by the reconciled controller and live test; not a separate numeric field in the printed receipt",
+    "previous_network_failure": "Resolved for this native execution after private backend HTTP probes and gateway entry bridge correction",
+    "native_CI_CD_pipeline_validated": false,
+    "new_model_quality_evaluated": false,
+    "new_image_revision_validated": false,
+    "kind_helm_deployment_validated": false
+  },
+  "decision": {
+    "strategy": "blue_green",
+    "scope": "Chosen direction for portfolio delivery; permanent orchestration and retention policy not implemented by this closure",
+    "rationale": "Explicit candidate gates and observable rollback fit this low-traffic laboratory; a canary would need representative traffic, weighted routing and observation criteria",
+    "planned_capacity": "One active replica; candidate during delivery; previous release kept available for a declared rollback window, then eligible to scale to zero",
+    "rollback_after_scale_to_zero": "Requires starting and checking the previous release again; not an immediate route-only rollback",
+    "next_increment": "Connect pinned image/release identity, candidate gates, explicit promotion and rollback evidence to the versioned delivery workflow"
+  },
+  "assistant_validation": {
+    "runtime_changed": false,
+    "native_commands_reexecuted": false,
+    "original_data_or_receipts_modified": false
+  }
+}

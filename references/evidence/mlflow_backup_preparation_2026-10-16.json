@@ -1,0 +1,110 @@
+{
+  "date": "2026-10-16",
+  "scope": "Offline MLflow tracking snapshot prepare/verify implementation; generated SDK SQLite stores and actual local file verification only; native preparation pending",
+  "input_worktree_tree": "f43e75853a74a46faa7475ef80b081ca704aa32b",
+  "published_runtime_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "profile": {
+    "schema": "fraud_mlflow_tracking_bundle_v1",
+    "snapshot_schema": "fraud_mlflow_tracking_snapshot_v1",
+    "max_files": 1024,
+    "max_bytes": 268435456,
+    "max_manifest_bytes": 262144,
+    "producer_code_sha256": "eb4d97647615efab09572cd8bdc66fec0364890561f85104e1c6f9691c960e21",
+    "transport_implemented": false
+  },
+  "checks": {
+    "tox_py314": {
+      "selection": [
+        "tests/storage/test_archive.py",
+        "tests/storage/test_mlflow_inventory.py",
+        "tests/storage/test_mlflow_backup.py",
+        "tests/storage/test_restored_release.py",
+        "tests/integrations/test_mlflow_tracking.py",
+        "tests/integrations/test_serving_release_export.py"
+      ],
+      "passed": 111,
+      "skipped": 1,
+      "warnings": 27,
+      "pytest_seconds": 66.9,
+      "tox_seconds": 85.33,
+      "ruff": "passed",
+      "format": "235 files already formatted",
+      "poetry_lock": "passed",
+      "new_backup_cases": 37,
+      "skip_scope": "existing opt-in native restored-release check"
+    },
+    "bronze_sdk": {
+      "passed": 5,
+      "pytest_seconds": 0.25,
+      "tox_seconds": 26.33,
+      "scope": "Pinned SDK Stubber tests with confcutdir; new shared parent MLflow fixture does not enter isolated SDK environment"
+    }
+  },
+  "coverage": [
+    "Entire managed tracking tree: normalized MLflow SQLite, all artifacts, ancillary regular files and empty directories; archived inventory and capture receipt",
+    "Operator-declared stopped writers; terminal run/model states, revalidated Default and URI coverage, complete source/reference mutation checks before local publication; no shared MLflow writer lock claimed",
+    "Original DB/WAL read as files into managed disposable copy; Online Backup API runs on copy, normalized DELETE journal and complete logical table equivalence/integrity/FK verification",
+    "All source bytes preserved in tests including original WAL/SHM; source database connections and network forbidden in control test",
+    "Repeat capture reuses content-addressed bundle; invalid existing destination rejected without overwrite; producer fingerprint/Python recorded",
+    "Verification after removing originals and project references in fixtures; original historical URI paths not probed and models not deserialized",
+    "Tracking unit with 515 artifact files passes dedicated 1024-file profile, exceeding old 512-file profiles without splitting",
+    "Missing inputs/quiescence declaration, Default new contents, active runs/pending models, external URI/unmapped artifact metadata/registry versions, extra DB or SQLite header, metadata collisions and insufficient budget rejected",
+    "Changes to artifact/database/file set/project references/Default during capture fail before publication",
+    "Unsafe manifests, symlinks including outer manifest, unexpected files/directories, corruption and semantic DB mismatch after refreshed file hashes rejected"
+  ],
+  "managed_outputs": {
+    "staging": "data/storage/mlflow-backup-* and fraud-mlflow-inventory-*; TemporaryDirectory lifecycle",
+    "prepared_bundle": "data/storage/bundles/<bundle_id>",
+    "receipts": "data/storage/receipts/mlflow-backup-prepare-*.json and mlflow-backup-verify-*.json",
+    "arbitrary_output_cli_option": false,
+    "original_tracking_database_connected": false,
+    "sqlite_api_source": "Disposable file capture; original DB rows untouched",
+    "cleanup_implemented": "Only disposable staging, no original/bundle/receipt deletion"
+  },
+  "changes_to_existing_inventory": "Optional explicit temporary_directory keyword; default CLI/output/semantics retained",
+  "shared_test_fixture": "Generated MLflow schema fixture moved to tests/storage/conftest.py; scientific/data runtime unchanged",
+  "s3_worker_code_sha256_unchanged": "ecc7b7fefbe5f3e3e8c96581988877855433824c7705ddf129fb217aa4f6a7bf",
+  "dependencies_lock_images_compose_changed": false,
+  "scientific_code_contracts_protocols_changed": false,
+  "historical_evidence_modified": false,
+  "native_preparation": "pending author execution",
+  "native_verification": "pending author execution",
+  "native_bundle_id": null,
+  "native_payload_file_count": null,
+  "native_payload_bytes": null,
+  "prior_native_reference": {
+    "runs": 70,
+    "logged_models": 66,
+    "artifact_files": 627,
+    "artifact_bytes": 253128963,
+    "evidence": "references/evidence/mlflow_inventory_author_validation_2026-10-16.json",
+    "note": "Reference counts only; new capture must measure its own bundle, DB and metadata bytes and recheck coverage"
+  },
+  "native_tracking_accessed": false,
+  "s3_accessed": false,
+  "mlflow_server_provisioned": false,
+  "postgresql_provisioned": false,
+  "model_reload_validated": false,
+  "training_performed_by_backup": false,
+  "primary_storage_migrated": false,
+  "global_persistence_scope": {
+    "complete": false,
+    "requirement": "Inventory producers/data/copies/volumes, correct durable output destinations and validate replacement/recovery before deleting legacy paths/scripts",
+    "code_configuration_audit_findings": [
+      "Data inventory excludes data/storage and named volumes",
+      "Config reports/figures paths declared but no active source references to these constants found in audit",
+      "Makefile produces wheel under dist; technical build/tool caches need explicit lifecycle",
+      "Current Compose declares prometheus-data/grafana-data/rustfs-data; volume contents not inspected here",
+      "Installed DuckDB 1.5.6 memory connection settings reported temp_directory=.tmp; spill destinations remain an audit/configuration gate"
+    ],
+    "native_volume_or_global_filesystem_audit_performed": false
+  },
+  "limits": [
+    "Snapshot consistency depends on operator stopping all MLflow writers; checks are observational and are not a shared writer lock or a distributed transaction",
+    "Prepare and verify only; no operational restore command, MLflow model reload/inference, S3 transport, PostgreSQL conversion or cutover",
+    "Only current managed tracking tree and reviewed empty Default coverage; other data/volumes and legacy producer cleanup remain open",
+    "Snapshot bytes can differ from source SQLite; full logical table fingerprints, metadata and artifact file hashes are reconciled",
+    "Receipt/source metadata contains historic local paths and private tracking records; original scientific receipts and URIs preserved, not silently rewritten",
+    "No native payload counts, receipt hashes, timings, model quality or SLA inferred from generated fixture tests"
+  ]
+}

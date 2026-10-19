@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-15",
+  "scope": "Development Gold immutable dataset preparation/recovery with archived inventory/HGB policy and shared S3 worker; generated fixtures/memory S3/SDK Stubber only",
+  "published_runtime_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "input_worktree_tree": "b4bd964c8e2d78af078a7062bf7210a1b6f1cc7d",
+  "tox": {
+    "py314": {
+      "selection": [
+        "tests/storage",
+        "tests/modeling/experiments/test_temporal_development_data.py",
+        "tests/modeling/experiments/test_hgb_optimization.py",
+        "tests/data/datasets/test_gold_dataset.py",
+        "tests/data/datasets/test_silver_dataset.py",
+        "tests/data/ingestion/test_handbook_bronze.py",
+        "tests/serving"
+      ],
+      "passed": 309,
+      "skipped": 2,
+      "warnings": 4,
+      "pytest_seconds": 93.63,
+      "ruff": "passed",
+      "format": "passed",
+      "poetry_lock": "passed"
+    },
+    "bronze-sdk": {
+      "passed": 4,
+      "skipped": 0,
+      "pytest_seconds": 0.16,
+      "scope": "Pinned SDK validated through Stubber; no S3 connection"
+    }
+  },
+  "new_development_cases": 19,
+  "profile": {
+    "schema": "fraud_development_gold_bundle_v1",
+    "max_files": 512,
+    "max_bytes": 268435456,
+    "max_manifest_bytes": 262144,
+    "bucket": "fraud-datasets",
+    "prefix": "development-gold/v1/<bundle_id>/",
+    "references": [
+      "references/handbook_source.json",
+      "references/hgb_optuna_protocol_v1.json"
+    ]
+  },
+  "coverage": [
+    "Existing verify_data reused with explicit archived HGB policy: identity/authorized dates/Arrow schema/feature invariants/size/hash/rows/unique IDs",
+    "Explicit 64-character development run ID and directory/manifest identity agreement",
+    "Manifest bytes and upstream implementation/Silver provenance preserved; no upstream byte revalidation or feature recomputation",
+    "Existing builder used once for 63 real fixture Parquets, 189 rows and 19 features; archive copies have no upstream source",
+    "Study/database/lock/model sentinels must not be opened; dataset profile excludes study and enforces exact allowed paths",
+    "Full restore after removing original dataset, references, study and prepared local bundle",
+    "Semantic schema/date/feature-value/duplicate-ID/row-count/policy errors rejected after physical hashes refreshed",
+    "Missing/corrupt inputs/symlinks/database at invalid path/unknown sibling/source-set mutation rejected",
+    "One reused transport; manifest last/no-upload repeat/partial resume/semantic quarantine/protected final destination",
+    "Previous pilot/Bronze/Silver/Gold schema/manifest encoding and IDs unchanged on generated fixture manifests; prior profile regressions passed"
+  ],
+  "native_inventory_evidence": "references/evidence/development_storage_inventory_author_2026-10-15.json",
+  "native_expected_reference": {
+    "development_run_id": "9f86edf1e8f2408098c5377456e8968e3a7ca5925a20222b8ab8547ef94cbaf9",
+    "verified_partitions": 63,
+    "feature_count": 19,
+    "rows": 603669,
+    "archive_files": 66,
+    "total_objects_including_archive_manifest": 67,
+    "payload_bytes_and_bundle_id": "to be measured during native preparation"
+  },
+  "native_development_preparation": "pending author execution",
+  "native_development_s3_roundtrip": "pending author execution",
+  "study_backup_implemented": false,
+  "study_recovery_validated": false,
+  "native_data_accessed": false,
+  "s3_accessed": false,
+  "docker_executed": false,
+  "scientific_core_dependencies_contracts_protocols_modified": false,
+  "historical_evidence_modified": false,
+  "originals_deleted": false,
+  "primary_storage_migrated": false,
+  "production_promotion": false,
+  "image_rebuild_required_before_next_s3_operation": true,
+  "limits": [
+    "This profile covers the immutable development dataset and its references; no SQLite/model/study snapshot",
+    "Native metadata inventory is not native dataset integrity proof or study backup validation",
+    "No new training, Optuna trials, model execution, confirmation evaluation or MLflow migration",
+    "Native preparation/publication/republication/restore pending; no benchmark/SLA or PVC recovery claim",
+    "Study backup must coordinate SQLite with models/predictions/attempts/reports and pin dataset run/manifest/archive identities"
+  ]
+}

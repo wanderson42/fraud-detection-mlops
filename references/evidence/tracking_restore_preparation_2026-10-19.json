@@ -1,0 +1,59 @@
+{
+  "schema": "fraud_tracking_restore_preparation_v1",
+  "date": "2026-10-19",
+  "status": "assistant_offline_and_real_HTTP_validated_native_restore_pending",
+  "base_delivery_tree": "74a61ac6d74a092c7108fc884e18bf9891238768",
+  "scope": "Isolated PostgreSQL/RustFS restore, full metadata/API history and pinned synthetic model HTTP reload; not primary cutover or historical migration",
+  "justification": "Last native recovery gate of the bounded inventory/recovery stage; reuse accepted capture and existing locked runtime, keep migration/cleanup as separate backlog.",
+  "source_sha256": {
+    "scripts/tracking/restore.py": "602c42bcbe1b5c37d6da99fa9641053f7e5dce69b6293f9bc45dfaaf3060e9e3",
+    "scripts/tracking/restore_worker.py": "3fe022868e6d5bcbefadcea08da31d7308eb6a3ce096398f3e14cf06a37bde95",
+    "infra/tracking/Dockerfile.restore": "484a8bd0ab18e121802cfa473ef30c149ad00bcf63709fe2cb1a4c1f9447905f",
+    "infra/tracking/restore.compose.yaml": "ad877c25ed896923934fe3b41138b596547d4aeace4c4d3786ffbd4a430e00a1",
+    "tests/tracking/test_restore.py": "2bdeaf9b565682125615b2c6aeb0d49a2a3e4dfb7e55df8724dc04533b9a735c",
+    "tests/tracking/capture_sdk/test_restore_worker.py": "fd47f63bde316f93e4f22be206b9d107745df10faea5ce1ea51b6b4f28c2fa80",
+    "tests/tracking/live/test_tracking_restore.py": "2591610ec63ce0146f6735a848c692576e7c6e1b332a8bd7cec0ec1d5824f5e0",
+    "tests/tracking/runtime/test_restore_client.py": "f27e0883e20519215b0d2fe1eb4d9853875400901a8556a5c21a401bb2860b52"
+  },
+  "accepted_capture": {
+    "capture_id": "5a2feb3556834dcfa73d14072bdc5182",
+    "manifest_sha256": "5579aa74e0ebe8de4f51ecd762a43dd0621244a61d2cc95318a6f766c376da8b"
+  },
+  "assistant_validation": {
+    "py314": "130 passed in 1.09s; tox OK in 5.90s; lock/lint/format passed",
+    "tracking_capture_sdk": "30 passed in 1.94s; tox OK in 4.17s",
+    "real_HTTP_client": "5 passed, 6 warnings in 10.35s; pinned runtime, disposable real MLflow HTTP server with local SQLite/file artifact fixtures; not Docker/PostgreSQL/RustFS",
+    "native_docker_postgres_or_rustfs_executed": false,
+    "source_review": {
+      "tracking_review_valid": true,
+      "source_files_scanned": 128,
+      "declared_consumers": 18,
+      "local_migration_blockers": 7,
+      "detected_call_sites": 57,
+      "issues": 0
+    }
+  },
+  "native_next_commands": [
+    "poetry run python -m scripts.tracking.restore build",
+    ".venv/bin/python -m tox -e tracking-restore"
+  ],
+  "model_control": {
+    "model_uri": "models:/m-3914a1ce6ecf46638b8b8c95d87cff6b",
+    "model_sha256": "899c72f388767742e70999e0eb9f2d694c804d315d0ec6e91bb34cd6bc0a3419",
+    "score_source": "20 saved validation predictions from author-accepted model contribution; copied into proof before target creation, not inferred from restored target",
+    "original_model_loaded": false,
+    "refit": false
+  },
+  "isolation": {
+    "project": "fraud-restore-<random12>",
+    "network": "private internal network; no source/external network",
+    "volumes": "new PostgreSQL and RustFS volumes",
+    "client": "proof-only read-only bind, no DB/S3 credentials or snapshot/original mounts",
+    "cleanup": "only temporary project; verify absence of its containers/volumes/network; remove private credentials after successful cleanup",
+    "source_paused": false
+  },
+  "scope_after_native_gate": "Bounded inventory/recovery stage closes; historical consumers/cutover/cleanup stay separate and do not block CD/rollback or feature monitoring",
+  "postgres_backup_restore_validated": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false
+}

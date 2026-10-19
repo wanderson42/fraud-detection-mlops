@@ -1,0 +1,73 @@
+{
+  "schema": "fraud_mlflow_recovery_signature_fix_v1",
+  "date": "2026-10-16",
+  "status": "implemented_fixture_validated_native_retry_pending",
+  "published_base_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "required_delivery_tree": "864cbc9096f156304e9faaff05c2662553d2e245",
+  "author_report": {
+    "initial_tox": {
+      "passed": 14,
+      "warnings": 19,
+      "pytest_seconds": 16.58,
+      "tox_seconds": 21.96
+    },
+    "native_recovery": "failed_before_success_receipt",
+    "error_class": "SCHEMA_ENFORCEMENT_FAILED",
+    "column": "CUSTOMER_TX_COUNT_1D",
+    "observed_dtype": "int64",
+    "required_dtype": "double",
+    "signature": "19 named double inputs, as printed in author traceback",
+    "scope": "Author terminal output only; native model/store/receipts not accessed by assistant."
+  },
+  "cause": "Initial SDK fixture inferred mixed types from typed HTTP smoke; did not exercise historical all-double MLflow input signature.",
+  "fix": "Adapt only integer columns declared double in archived signature, check exact integer representation before predict, preserve source frame, record type adaptations.",
+  "code_sha256": {
+    "scripts/storage/mlflow_recovery_worker.py": "5b0ac055269e3039ed2c8dabd9380421c97434e389b7ff7c4c13f67d4bd82346",
+    "tests/storage/test_mlflow_recovery.py": "65a6d83162e04ed296f888ed6e25e66008644c2d54b60e5cdd5c94d9a37dfafe"
+  },
+  "assistant_validation": {
+    "tox_environment": "py314",
+    "python": "3.14.4",
+    "mlflow": "3.17.0",
+    "passed": 22,
+    "warnings": 21,
+    "pytest_seconds": 41.3,
+    "selection": "tests/storage/test_mlflow_recovery.py",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "poetry_lock_check": "passed",
+    "telemetry_disabled_in_tox_and_worker": true,
+    "coverage": [
+      "Real pyfunc reload for runs:/ and models:/ with mixed and all-double signatures",
+      "Original stores removed; restored archives preserved",
+      "Reject double conversion of 2**53+1 and 2**63-1",
+      "Accept exact values 0, 2**53 and 2**53+2; source int64 frame unchanged",
+      "Reject mismatched signature columns",
+      "Existing hash/parity/history, failure/timeout/cleanup and I/O guard tests retained"
+    ]
+  },
+  "preserved": {
+    "model_and_model_hash": true,
+    "archived_signature": true,
+    "HTTP_and_Gold_contracts": true,
+    "smoke_values_and_expected_score": true,
+    "absolute_score_tolerance": 1e-12,
+    "snapshot_restore_and_source": true,
+    "historical_evidence": true,
+    "scientific_code_and_dependencies": true,
+    "shared_S3_worker_fingerprint": true,
+    "notebook_code_and_outputs": true
+  },
+  "native_retry": {
+    "status": "pending_author_execution",
+    "same_bundle_ids": true,
+    "rebuild_required": false,
+    "new_S3_transfer_required": false,
+    "model_reload_validated": false,
+    "operational_tracking_restore_validated": false
+  },
+  "migration_implemented": false,
+  "refit": false,
+  "production_promotion": false,
+  "project_wide_storage_inventory_complete": false
+}

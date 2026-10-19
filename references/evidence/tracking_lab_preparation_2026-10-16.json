@@ -1,0 +1,65 @@
+{
+  "schema": "fraud_tracking_lab_preparation_v1",
+  "date": "2026-10-16",
+  "status": "implemented_fixture_validated_native_pending",
+  "required_base_tree": "6ccf76743ee78596eb3237b375b0b5eedae42912",
+  "justification": "Exercise a dedicated HTTP tracking service and managed persistence before migrating historical metadata or switching consumers.",
+  "project": "fraud-tracking-lab",
+  "mlflow_version": "3.17.0",
+  "postgres_image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+  "artifact_destination": "s3://fraud-tracking-lab/v1",
+  "client_has_s3_or_postgres_credentials": false,
+  "application_database_role_is_superuser": false,
+  "native_status": "pending_author_execution",
+  "assistant_docker_available": false,
+  "assistant_validation": {
+    "operational_lock_installed_with_hashes": true,
+    "runtime_http_proxy_fixture_passed": 1,
+    "runtime_http_seconds": 17.4,
+    "runtime_scope": "Real HTTP MLflow server with disposable SQLite/file artifacts, process restart and API parity; no PostgreSQL/RustFS/Docker.",
+    "final_py314_tox": {
+      "status": "passed",
+      "passed": 91,
+      "skipped": 2,
+      "warnings": 36,
+      "pytest_seconds": 45.79,
+      "tox_seconds": 58.69,
+      "ruff_check": "passed",
+      "ruff_format_check": "passed",
+      "poetry_lock_check": "passed",
+      "selection": "tests/tracking plus managed paths, persistence inventory, MLflow integration and historical recovery"
+    },
+    "psycopg_binary_and_boto3_import": "passed; psycopg 3.3.6 binary and boto3 1.43.114",
+    "offline_control_cases": 26
+  },
+  "source_sha256": {
+    "scripts/tracking/local_stack.py": "80e1856ebed62fc1f825dac3de0f09bb46c51ef262d52af471083d4393f63d03",
+    "scripts/tracking/probe.py": "c2f25af15f3bc53a65ffbdda42a781f6a440ee1d8eeff24a048f61e80fdeb8ea",
+    "infra/tracking/compose.yaml": "44985d0818b33afea3d176a16e5d25ecec98f5271c4967945511cc1f6cefe78b",
+    "infra/tracking/Dockerfile": "08282b7ad139fdd33d3b8811faf447bfcb9df54607461d65469281cefdeaa2af",
+    "infra/tracking/init-postgres.sh": "2a5d6eb20a9e880ada56fd84df6f5cf455d6703d8034f8edaf107de264b5be2f",
+    "infra/tracking/requirements.in": "8c37f74d9150b30df295f08d8e9c82138a3d0767548e0c4d3050c49b86b06865",
+    "infra/tracking/requirements.txt": "9f09ef2ce4882ad71f8f2043f832a3761e0d2a10b867350f8f9b5fa36727bfa5",
+    "tests/tracking/test_tracking_lab.py": "db52d9ae76acadab8bf46a3511099ac61f01d850ac5e0137d5b5e0658261fdc6",
+    "tests/tracking/runtime/test_http_proxy.py": "946656e1627dc282912db76156ad7e687f90c11b9c0e9ba5e8c127ce463961f5",
+    "tests/tracking/live/test_tracking_rehearsal.py": "84a9448a3f5a572f2c30ce792ca4be74977920fb547355e8564fa6fbd1e0ea2d"
+  },
+  "official_sources": [
+    "https://mlflow.org/docs/latest/self-hosting/architecture/tracking-server/",
+    "https://mlflow.org/docs/latest/self-hosting/architecture/artifact-store/",
+    "https://www.postgresql.org/docs/release/17.11/"
+  ],
+  "limits": [
+    "Does not migrate historical IDs, URIs or files.",
+    "Does not switch training consumers.",
+    "Does not reload a model or make a quality/production claim.",
+    "Recreation proof is pending native execution; RustFS is not restarted.",
+    "PostgreSQL volume and RustFS remain on the same laptop; not an off-host backup proof.",
+    "User authentication and bucket-scoped IAM are not introduced in this local lab."
+  ],
+  "primary_storage_migrated": false,
+  "historical_source_read": false,
+  "refit": false,
+  "model_reload_validated_by_this_step": false,
+  "project_wide_storage_inventory_complete": false
+}

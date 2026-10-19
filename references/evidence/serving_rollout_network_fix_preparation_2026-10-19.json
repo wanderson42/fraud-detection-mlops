@@ -1,0 +1,29 @@
+{
+  "schema": "fraud_serving_rollout_network_fix_preparation_v1",
+  "date": "2026-10-19",
+  "status": "native_gate_pending",
+  "source": "author_pasted_failure_diagnostics_not_independent_receipt_access",
+  "failed_invocation": "9c6e642a1ec74823ac77ecaabdc6287a",
+  "observed": {
+    "events": [],
+    "backend_running": true,
+    "backend_health": "healthy",
+    "temporary_resources_removed": true
+  },
+  "change": "Private HTTP backend gates via docker exec; gateway joins internal backend and normal entry bridges; only gateway publishes loopback",
+  "timeouts_increased": false,
+  "identity_and_score_checks_preserved": true,
+  "images_and_weights_changed": false,
+  "native_docker_reexecuted_by_assistant": false,
+  "production_promotion": false,
+  "assistant_validation": {
+    "python": "3.14.4",
+    "pytest_command": "python -m pytest -q tests/serving tests/storage/test_managed_paths.py tests/storage/test_persistence_inventory.py",
+    "passed": 158,
+    "skipped": 2,
+    "elapsed_seconds": 6.54,
+    "ruff_check": "passed",
+    "ruff_format_check": "283 files already formatted",
+    "docker_available": false
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "fraud_tracking_consumers_review_preparation_v1",
+  "date": "2026-10-17",
+  "status": "assistant_source_review_validated_native_inventory_pending",
+  "base_delivery_tree": "9b1696b103b8890d51d466a133f251430b507d9a",
+  "scope": "Curated source hashes/functions and syntactic tracking call watchpoints; recovery protocol defined, no runtime inventory, source-consumer adaptation, dump or restore job",
+  "justification": "Native producer reload gates are closed, but frozen reference/evaluation/export readers still assume local store identity. Extend the existing persistence inventory rather than add another scanner or prematurely change scientific consumers.",
+  "assistant_validation": {
+    "tox": "48 passed in 0.88s; py314 tox OK in 6.44s; lock, lint and format passed",
+    "scope": [
+      "tests/storage/test_persistence_inventory.py",
+      "tests/storage/test_managed_paths.py"
+    ],
+    "source_inventory": {
+      "tracking_review_valid": true,
+      "source_files_scanned": 124,
+      "declared_consumers": 17,
+      "local_migration_blockers": 7,
+      "detected_call_sites": 55,
+      "issues": 0
+    },
+    "guard_checks": [
+      "Source that raises at module import is parsed without execution",
+      "Runtime data, SQLite, model and env contents forbidden by test read guard",
+      "Changed reviewed source or missing function invalidates review",
+      "New watched-call source requires manual review",
+      "Duplicate entries rejected before report creation",
+      "Symlinked source not read",
+      "Changed review returns nonzero CLI exit while preserving report",
+      "Existing default metadata-only mode preserved"
+    ],
+    "native_docker_or_service_commands_executed": false
+  },
+  "native_next_command": "poetry run python -m scripts.storage.persistence_inventory --tracking-consumers",
+  "native_expected": "tracking_review_valid true and issues zero; status review_required remains intentional, counts may differ with extra source files",
+  "report_directory": "data/storage/inventory/tracking-consumers-*.json",
+  "data_access": {
+    "code_and_catalogue_read": true,
+    "sources_imported": false,
+    "runtime_contents_read": false,
+    "models_or_databases_opened": false,
+    "credentials_read": false,
+    "services_contacted": false
+  },
+  "recovery_protocol": {
+    "document": "docs/operations/TRACKING_RECOVERY.md",
+    "implementation_status": "protocol_only_not_implemented",
+    "source": "dedicated fraud-tracking-lab PostgreSQL and S3 namespace",
+    "capture": "declared quiescence plus bounded database dump and closed object manifest",
+    "target": "separate temporary project, network, PostgreSQL/RustFS volumes and MLflow endpoint",
+    "acceptance": "metadata history, closed object integrity and model bytes/scores pinned before backup; no source fallback",
+    "source_stop_executed_now": false,
+    "backup_restore_executed_now": false
+  },
+  "source_primary_references": [
+    "https://www.postgresql.org/docs/17/app-pgdump.html",
+    "https://www.postgresql.org/docs/17/app-pgrestore.html"
+  ],
+  "limitations": [
+    "Watchpoints do not resolve every alias/dynamic call or external plugin",
+    "Valid source review does not imply HTTP compatibility or complete runtime lineage",
+    "No authorization or inference to delete local stores or rewrite historical freezes",
+    "Cross-store runtime inventory, PostgreSQL restore, cutover and primary migration remain open"
+  ],
+  "scientific_consumers_changed": false,
+  "frozen_storage_sources_changed": false,
+  "service_configs_or_images_changed": false,
+  "postgres_backup_restore_validated": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "reviewed_source_sha256": {
+    "fraud_detection_mlops/modeling/experiments/baseline_experiment.py": "63139e2ffceedf48800057bc50b355638ae434ed2b534ed3c47d999422235d73",
+    "fraud_detection_mlops/modeling/experiments/hgb_optimization.py": "9ffb8cb985de2bea7785be3d26706be5d09c0e49095239625889839f47c1d3d0",
+    "examples/model_contribution.py": "01ecd4937e17ff080a68e48148bceb0be1da7ea96038076716f258dcf25231c4",
+    "fraud_detection_mlops/integrations/mlflow_tracking.py": "641de2903345d3141b0afa8c79e24ba59360572e12247304bb67a409ec35644e",
+    "fraud_detection_mlops/evaluation/validation_diagnostics.py": "36a71bc933d9b530f36065823187b7a0bb0983e98a0fea70fbcb6c22318b217b",
+    "fraud_detection_mlops/modeling/experiments/terminal_feature_ablation.py": "1d999b089fd3234cd7d2cef236cb9474d622c1998094a0645dc94087381f14af",
+    "fraud_detection_mlops/modeling/experiments/candidate_freeze.py": "2914859e6777e1a7a66c543a139c011a406b4ebd5a6b29bd2456583e2e62ef33",
+    "fraud_detection_mlops/modeling/experiments/final_holdout_evaluation.py": "12d977af36e838589b4b6738f1a5e238d58e90728f3f43d7d1a2dca0270fb171",
+    "fraud_detection_mlops/modeling/experiments/reference_assessment_execution.py": "6ce4ec30b242e65ced08a46767b5439b3279985133f9426ed6a316365dc1233a",
+    "fraud_detection_mlops/integrations/serving_release_export.py": "1303df87a8c3fd438fe6182f03c8a64359d8d424c1a4ea8f8a3c90237b080138",
+    "fraud_detection_mlops/serving/model_release.py": "3a64add1eb4cec79293246270821ef1ed4833c61b480ba69f900ba693ab5f5fc",
+    "scripts/storage/mlflow_inventory.py": "ecd407f85bdc9e0b4de3aa81f2bb263de09b276dc62178e2a0b572b9f1d3056b",
+    "scripts/storage/mlflow_backup.py": "c38deb68fe785f89241664d1034c221867ddb0119ce4dede7200432a3df88277",
+    "scripts/storage/mlflow_recovery.py": "fdcbc9c1b74195cd99e286f6c25eb3d2d84ae1931bae28b71a91b71bc6304075",
+    "scripts/storage/mlflow_recovery_worker.py": "5b0ac055269e3039ed2c8dabd9380421c97434e389b7ff7c4c13f67d4bd82346",
+    "scripts/tracking/probe.py": "ea7d9eee09b03a810d57eff7b4f2a01fb77376932c22b14229302290fd8a1dea",
+    "scripts/tracking/local_stack.py": "80e1856ebed62fc1f825dac3de0f09bb46c51ef262d52af471083d4393f63d03"
+  },
+  "source_sha256": {
+    "scripts/storage/persistence_inventory.py": "5b528ca2e139b7940f17eb6268ecf526c0198af00b72e807c6aec9c48041c1e1",
+    "tests/storage/test_persistence_inventory.py": "3711ae31a990de79ffcff7a2a4d5ee46df283e195ba16068ba87029630114218"
+  }
+}

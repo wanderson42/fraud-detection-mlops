@@ -1,0 +1,111 @@
+{
+  "schema": "fraud_tracking_lab_author_validation_v1",
+  "date": "2026-10-17",
+  "timezone": "America/Belem",
+  "status": "author_validated_isolated_lab",
+  "evidence_source": "Author-pasted command output and receipt JSON; native receipt bytes, database and bucket not independently accessed by assistant",
+  "commands_reported": [
+    "poetry run python -m scripts.tracking.local_stack up",
+    "poetry run python -m scripts.tracking.local_stack status",
+    ".venv/bin/python -m tox -e tracking-lab"
+  ],
+  "native_results": {
+    "build_seconds": 1.5,
+    "dependency_install_layer_cached": true,
+    "bucket_created": false,
+    "services_healthy_before_rehearsal": true,
+    "pytest": "1 passed in 21.56s",
+    "tox": "tracking-lab OK in 23.79s",
+    "poetry_lock_check": "All set!",
+    "dependency_sync": "No dependencies to install or update"
+  },
+  "author_report": {
+    "controller_sha256": "80e1856ebed62fc1f825dac3de0f09bb46c51ef262d52af471083d4393f63d03",
+    "schema": "fraud_tracking_rehearsal_v1",
+    "scope": "isolated_tracking_metadata_and_json_artifact_not_model_reload_or_migration",
+    "status": "success",
+    "historical_stores_mounted": false,
+    "migration_implemented": false,
+    "primary_storage_migrated": false,
+    "production_promotion": false,
+    "rustfs_restarted": false,
+    "probe": {
+      "worker_code_sha256": "ea7d9eee09b03a810d57eff7b4f2a01fb77376932c22b14229302290fd8a1dea",
+      "mlflow_version": "3.17.0",
+      "schema": "fraud_tracking_probe_v1",
+      "scope": "isolated_tracking_metadata_and_json_artifact_not_model_reload_or_migration",
+      "probe_id": "0239bb68c5e04af186f1c7f84a494eb2",
+      "run_id": "87ac0b4a310f4ab8952a366932c0d12a",
+      "experiment_id": "2",
+      "artifact_uri": "mlflow-artifacts:/2/87ac0b4a310f4ab8952a366932c0d12a/artifacts",
+      "artifact_sha256": "95daeeb0dc84c7a54fc8e91b4e1cd38b8666431f98fef91c9693613cd6c54272",
+      "metadata_verified": true,
+      "metric_history_rows": 2,
+      "artifact_verified": true
+    },
+    "containers_before": {
+      "postgres": {
+        "container_id": "25012c2b566655e65d59e45d0fd12e8198b8ab5d712c5f8836b249340f3f4783",
+        "image_id": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+        "postgres_volume": "fraud-tracking-lab_postgres-data"
+      },
+      "mlflow": {
+        "container_id": "d9ffce2d1c1a65e86b4c1e3df8109927500a36b12bb4e0d90dc3f0979419b8eb",
+        "image_id": "sha256:202668054efd81ad9b09ca760d3b97abe3e8cc5539ca3a042597c9572ea96a08",
+        "postgres_volume": null
+      }
+    },
+    "containers_after": {
+      "postgres": {
+        "container_id": "66d96724f17b15795a56de382dcd2ad38fb37ebe82851ab8d129dd905dd5ed4e",
+        "image_id": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+        "postgres_volume": "fraud-tracking-lab_postgres-data"
+      },
+      "mlflow": {
+        "container_id": "929e6bb1ba33fab2c1199b0cd3fbd015c25dd26df21cbdb4de1bd5228bb4bead",
+        "image_id": "sha256:202668054efd81ad9b09ca760d3b97abe3e8cc5539ca3a042597c9572ea96a08",
+        "postgres_volume": null
+      }
+    },
+    "postgres_verified": true,
+    "s3_verified": true,
+    "proxy_verified": true,
+    "object": {
+      "bucket": "fraud-tracking-lab",
+      "object_key": "v1/2/87ac0b4a310f4ab8952a366932c0d12a/artifacts/probe.json",
+      "artifact_sha256": "95daeeb0dc84c7a54fc8e91b4e1cd38b8666431f98fef91c9693613cd6c54272",
+      "s3_object_verified": true
+    },
+    "container_recreation_validated": true,
+    "elapsed_seconds": 21.556609937004396,
+    "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/tracking-lab/receipts/rehearsal-71acfcf3daca43348a02baa1d3cd27af.json"
+  },
+  "assistant_consistency_checks": {
+    "controller_hash_matches_delivered_source": true,
+    "worker_hash_matches_delivered_source": true,
+    "artifact_hash_matches_deterministic_probe_payload": true,
+    "container_ids_changed": true,
+    "image_ids_preserved": true,
+    "postgres_volume_preserved": true,
+    "proxy_and_s3_artifact_hashes_equal": true
+  },
+  "gate_closed": "Isolated PostgreSQL metadata and RustFS JSON artifact survive recreation of dedicated PostgreSQL and MLflow containers; SQL/S3/HTTP readback approved",
+  "prior_failure_preserved": {
+    "receipt": "data/storage/tracking-lab/receipts/rehearsal-09cab6fa651146ec9988875dbdd72965.json",
+    "run_id": "1b9495ddd4864e54ba94cd36aeaf004e",
+    "removal_requested": false
+  },
+  "limits": {
+    "native_commands_reexecuted_by_assistant": false,
+    "model_reload_from_new_server_validated": false,
+    "historical_runs_migrated": false,
+    "postgres_backup_restore_validated": false,
+    "host_or_volume_loss_recovery_validated": false,
+    "project_wide_storage_inventory_complete": false,
+    "primary_storage_migrated": false,
+    "production_promotion": false,
+    "sla_validated": false
+  },
+  "next_scoped_step": "Adopt one producer of new runs through explicit HTTP tracking URI; verify model artifact reload and rollback before expanding consumers",
+  "delivery_scope": "Documentation, appended notebook narrative and author evidence only; runtime/dependencies/prior evidence unchanged"
+}

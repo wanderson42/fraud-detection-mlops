@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-15",
+  "scope": "Complete Bronze archive preparation and offline verification; generated opaque bytes only",
+  "published_runtime_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "input_worktree_tree": "bc9227aec62592f7808aed560413041150471c79",
+  "tox_environment": "py314",
+  "pytest_selection": [
+    "tests/storage",
+    "tests/data/ingestion/test_handbook_bronze.py",
+    "tests/serving"
+  ],
+  "passed": 177,
+  "skipped": 1,
+  "pytest_seconds": 8.71,
+  "ruff": "passed",
+  "format": "passed",
+  "poetry_lock": "passed",
+  "pilot_v1_schema_and_identity_compatibility": "passed on generated prior-layout bundle",
+  "profile": {
+    "schema": "fraud_bronze_bundle_v1",
+    "max_files": 512,
+    "max_bytes": 268435456,
+    "max_manifest_bytes": 262144
+  },
+  "coverage": [
+    "70 opaque non-pickle partitions exceed pilot file count",
+    "Original bytes, manifest and audit preservation; idempotent complete staging",
+    "Archived source inventory permits verification without original dataset or inventory",
+    "Corruption, incomplete snapshot, extraction lock and database rejected",
+    "Concurrent audit set change and extra files detected",
+    "Native Bronze verifier reused; no alternate provenance algorithm"
+  ],
+  "native_preparation": "pending author execution",
+  "native_data_accessed": false,
+  "s3_accessed": false,
+  "dataset_transfer_implemented": false,
+  "scientific_core_dependencies_protocols_modified": false,
+  "next_step": "Verify native local Bronze preparation; then implement reusable S3 transfer client for fraud-datasets before moving the dataset."
+}

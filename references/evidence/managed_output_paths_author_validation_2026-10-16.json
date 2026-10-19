@@ -1,0 +1,22 @@
+{
+  "schema": "fraud_managed_output_paths_author_validation_v1",
+  "date": "2026-10-16",
+  "provenance": "Author-pasted apply/tox stdout; assistant did not inspect the native checkout or recompute its file hashes.",
+  "status": "native_focused_validation_passed",
+  "patch": "fraud-managed-output-paths.zip",
+  "apply": "applied_and_hashes_verified_by_guarded_applier",
+  "git_add_commit_push_performed": false,
+  "tests": {
+    "passed": 82,
+    "warnings": 4,
+    "pytest_seconds": 3.41,
+    "tox_environment": "py314",
+    "tox_reported_seconds": 6.74,
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "poetry_lock_check": "passed"
+  },
+  "scope": "Selected CLI output boundaries; not whole-project destination confinement or storage migration",
+  "project_wide_storage_inventory_complete": false,
+  "primary_storage_migrated": false
+}

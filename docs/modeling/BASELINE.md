@@ -20,8 +20,7 @@ sem alterar janelas, população ou features. Treino: 1 a 28 de abril de 2018;
 validação: 6 a 12 de maio. O teste de 20 a 26 de maio ficou reservado durante
 esta etapa; foi consumido depois pela avaliação final, registrada na
 [Model Card](MODEL_CARD.md). A referência também foi avaliada em 02–15/09,
-com diagnóstico e reamostragem exploratória concluídos; 16–30/09 permanece
-reservado para replay. [Resultado e limites](EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
+com diagnóstico e reamostragem exploratória concluídos; 16–30/09 teve o replay corretivo executado e verificado posteriormente. [Resultado e limites](EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
 
 | Referência | Implementação | Propósito |
 | --- | --- | --- |
@@ -206,3 +205,108 @@ O [diagnóstico da validação](DIAGNOSTICS.md) inspeciona o HGB já publicado n
 conferindo scores antes da permutação e do SHAP. Naquela etapa, o modelo ficou fixo
 e o teste final não foi consultado. É análise exploratória para orientar ablações
 e hipóteses estatísticas; o acesso posterior ao teste tem recibo próprio.
+
+## Tracking HTTP do trio de baselines
+
+O runner `baseline_experiment.py` treina `dummy_prior`, `logistic_regression` e
+`hist_gradient_boosting`. Ele é distinto de `hgb_optimization.py`, que conduz o
+estudo Optuna do HGB. A aprovação nativa de um fold desse estudo não alterou o
+tracking do trio inicial nem migrou runs históricas.
+
+Agora `run_baseline(..., tracking_root=None, http_uri="http://...")` registra
+os três modelos no serviço escolhido. O experimento HTTP padrão é
+`fraud-temporal-baseline-http-v1`. Há uma run principal por modelo, vinculada
+pelo `baseline_run_id`, com parâmetros, métricas, assinatura e pipeline skops.
+A recarga de cada modelo precisa preservar os scores antes de publicar o
+experimento local como concluído. O transporte usa o proxy MLflow já validado.
+
+| Modo da CLI `run` | Tracking | Saída do experimento |
+| --- | --- | --- |
+| Sem opções de tracking | Store local anterior, `data/tracking` | `data/processed/handbook` por padrão |
+| `--no-track` | Sem registro MLflow | Destino local anterior |
+| `--tracking-root data/tracking/<store>` | Store local explícito | Destino local anterior |
+| `--tracking-uri http://...` | Serviço HTTP explícito | `data/storage/tracking-lab/baselines` por padrão |
+
+`--tracking-uri` é exclusivo com `--tracking-root` e `--no-track`. A saída HTTP
+explícita deve estar sob `data/storage/<diretório>`; a raiz local explícita de
+tracking deve estar sob `data/tracking/<store>`. A validação rejeita links
+simbólicos e caminhos externos antes do treino. As APIs internas mantêm seus
+caminhos explícitos, e a saída local antiga não ganha uma restrição nova.
+
+A URI e o experimento são registrados em `tracking_target` no audit e no manifest
+HTTP. As entradas `tracking` conservam as identidades retornadas pelo serviço.
+Os manifests locais mantêm o formato anterior. As saídas HTTP usam a área
+inventariada de storage, excluída do inventário MLflow histórico local, para não
+interpretar IDs remotos como referências faltantes daquele store.
+
+### Aceite nativo: três modelos com dados sintéticos
+
+Com o laboratório existente saudável:
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/modeling/experiments/test_baseline_tracking_destination.py \
+  tests/modeling/experiments/test_baseline_experiment.py \
+  tests/integrations/test_mlflow_tracking.py \
+  tests/storage/test_managed_paths.py
+
+.venv/bin/python -m tox -e tracking-baseline
+```
+
+O segundo comando usa uma Gold sintética de pytest: 160 linhas de treino e 160
+de validação, sem ler o Handbook ou refazer a comparação científica anterior.
+Executa o CLI do runner, alterando apenas o nome do experimento no processo de
+teste para **`fraud-baseline-smoke-http-v1`**. Verifica as três runs, métricas,
+identidades, recarga independente com todos os modelos locais indisponíveis,
+erro até `1e-12` e containers intactos. O cliente é iniciado sem variáveis AWS.
+O autor aprovou o gate nativo deste trio em 2026-10-17; resultado abaixo.
+
+Fixture e resultados ficam em `data/storage/tracking-lab/baseline-<id>/`;
+o recibo fica em `data/storage/tracking-lab/receipts/baseline-<id>.json`, inclusive
+se falhar. Não é criado tracking SQLite nesse ensaio. O teste não reinicia
+serviços, apaga runs anteriores, promove modelos ou executa Optuna.
+
+Opcional: `tox -e baseline-http` repete sucesso do trio, falha na segunda recarga,
+servidor indisponível e retorno local explícito com servidor HTTP/SQLite/arquivos
+descartáveis. O harness nativo também é exercitado nesse fixture, substituindo
+apenas a inspeção Docker; isso não constitui prova PostgreSQL/RustFS.
+
+### Falhas e limites
+
+Se o segundo registro falhar, o audit fica `failed` e conserva o ID do primeiro
+registro concluído. O baseline local não é publicado, e o staging temporário é
+removido. Uma falha de paridade marca a respectiva run remota `FAILED`. Não há
+fallback, retry do experimento ou exclusão automática das runs parciais.
+Repetir `run` cria outra identidade e treina novamente; isso exige uma decisão
+explícita, não é retomada idempotente. O retorno local escolhe outro destino
+para execuções futuras e não desfaz registros remotos.
+
+A política, modelos, hiperparâmetros, features, splits, seleção e avaliação
+científica permanecem os mesmos. Não repita a janela Handbook para validar
+infraestrutura. Consumidores de referência/avaliação que assumem store local,
+backups PostgreSQL, migração histórica e recuperação dos novos experimentos HTTP
+continuam com gates próprios. O ensaio não aprova uso em produção ou qualidade nova.
+
+### Resultado nativo do trio — 2026-10-17
+
+O autor executou o ensaio sintético com sucesso. Baseline
+`f9a233e83e694c6c8bdddbd0722c7b38`, experimento 5 (`fraud-baseline-smoke-http-v1`):
+
+| Modelo | Run MLflow | Erro máximo na recarga |
+| --- | --- | ---: |
+| Dummy | `0db858f490cc402bb162949799ae2d98` | 0 |
+| Regressão logística | `9847535a035443488e7e3da9ac5b8bfc` | 0 |
+| HGB | `0348792c80e0461d8e81b087b65906e7` | 0 |
+
+As três recargas independentes ocorreram com os modelos locais indisponíveis,
+sem variáveis AWS no produtor ou tracking SQLite novo. Containers, imagens e
+volume permaneceram iguais. Resultado: 1 teste aprovado, 3 avisos de dependência,
+6,55 s; tox OK em 19,96 s. O teste registra as métricas sintéticas para verificar
+transporte/identidade, sem substituir os resultados científicos Handbook.
+[Evidência e hashes](../../references/evidence/baseline_tracking_author_validation_2026-10-17.json).
+
+O recibo foi preservado em
+`data/storage/tracking-lab/receipts/baseline-fbd2e831ce164039bea6f049778b535f.json`.
+Os comandos acima permanecem como regressão explícita, não como tarefa ainda
+necessária para concluir este aceite. Histórico, seleção e produção não mudaram.
+Recuperação dos novos destinos e consumidores históricos continuam separados.

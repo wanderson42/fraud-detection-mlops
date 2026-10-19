@@ -1,0 +1,97 @@
+{
+  "schema": "fraud_restore_schema_fix_v1",
+  "date": "2026-10-19",
+  "status": "reproduced_and_fixed_locally_native_full_restore_pending",
+  "scope": "Semantic comparison of live column order and five exact reviewed PG17 check cast pairs; immutable archived metadata",
+  "native_incident": {
+    "receipt": "data/storage/tracking-lab/receipts/restore-0eee11656eac44deba0e519bc40dca4f.json",
+    "provenance": "Author-pasted structured failure, native receipt not independently read",
+    "stage": "postgres_comparison",
+    "columns": 493,
+    "constraints": 134,
+    "failed_test": "1 failed in 7.43s; tox failed in 9.89s",
+    "descriptor_hashes": {
+      "columns": {
+        "source": "b95cff9666a0012fdb81d697dc849c29e6880a5f28cbdb59beef6c87dd804b1a",
+        "restored": "c3b713acc28fb52876bdc9a7cd9901af1240657bddeb1f1527fefe44a1602f61"
+      },
+      "constraints": {
+        "source": "b2eade35f595f136cea02903045bed36e8d1d720348564d2527e224b4890a562",
+        "restored": "4a252e84784e32be3c48ba8c481a53e7f885f3c5586a6cb3da5ab90130ffa122"
+      }
+    }
+  },
+  "local_postgres_reproduction": {
+    "postgres_version": "17.11",
+    "mlflow_version": "3.17.0",
+    "columns": 493,
+    "constraints": 134,
+    "descriptor_hashes": {
+      "columns": {
+        "source": "b95cff9666a0012fdb81d697dc849c29e6880a5f28cbdb59beef6c87dd804b1a",
+        "restored": "c3b713acc28fb52876bdc9a7cd9901af1240657bddeb1f1527fefe44a1602f61"
+      },
+      "constraints": {
+        "source": "b2eade35f595f136cea02903045bed36e8d1d720348564d2527e224b4890a562",
+        "restored": "4a252e84784e32be3c48ba8c481a53e7f885f3c5586a6cb3da5ab90130ffa122"
+      }
+    },
+    "canonical_full_inventory_equal": true,
+    "actual_sql_mutations": {
+      "type": "rejected",
+      "default": "rejected",
+      "nullability": "rejected",
+      "constraint": "rejected"
+    },
+    "after_undo_full_inventory_equal": true,
+    "scope": "disposable_compiled_PostgreSQL_fixture_no_Docker_no_native_user_capture",
+    "all_four_descriptor_hashes_match_native_output": true,
+    "application_rows": "Fresh empty MLflow schema, not author run history",
+    "source": "PostgreSQL 17.11 official release tarball compiled locally",
+    "source_tar_sha256": "dd27f2b3c59e73ed14aa3324901242bf69a032a6347805f274e6260322d42979",
+    "test_namespace_adaptation": "Only root refusal guards in initdb/main/pg_ctl disabled in disposable compiled test binaries because this environment maps only UID 0; no database/catalog/dump code changed; no project runtime image modified",
+    "locale": "en_US.utf8 for matching native hashes; C.UTF8/UTF8 fixture also compared",
+    "docker_executed": false,
+    "native_capture_read": false
+  },
+  "cause": {
+    "columns": "Five live columns after a removed spans slot retain ordinal numbers 13..17 in source, become 12..16 in logical restore; live relative order unchanged",
+    "constraints": "Five MLflow enum CHECK definitions distribute varchar[] -> text[] casts onto the literal elements after logical restore",
+    "columns_changed": [
+      "spans.input_cost",
+      "spans.output_cost",
+      "spans.total_cost",
+      "spans.model_name",
+      "spans.model_provider"
+    ],
+    "checks": [
+      "experiments.experiments_lifecycle_stage",
+      "logged_models.logged_models_lifecycle_stage_check",
+      "runs.runs_lifecycle_stage",
+      "runs.runs_status_check",
+      "runs.source_type"
+    ]
+  },
+  "comparison_policy": {
+    "columns": "Rank positive unique ordinals within each table; preserve order and all other captured fields",
+    "constraints": "Only five exact source/restored definition pairs, bound to table/name/type; all others literal; unique identities required",
+    "other_fields": "Exact, including table row hashes, sequences, indexes, locations, ownership and Alembic",
+    "captured_schema_limits": "Only the attributes present in capture v1 are covered; no claim of exhaustive PG catalog audit"
+  },
+  "source_sha256": {
+    "scripts/tracking/restore_worker.py": "10e981cd729f9a29a5253432011bcb2b2aa2a910176ee1d2014a37c07dce81db",
+    "tests/tracking/capture_sdk/test_schema_representation.py": "bbf772a70d7eb909d92252b5bf5f546d92e7fe238b7bcdfeaf83bdf7213ca8ce",
+    "tests/tracking/capture_sdk/test_schema_postgres.py": "d7dae222608c0cc421ed45b6b3fca0c5709644b3526cd18250ba4e7e40c02a66",
+    "tests/tracking/capture_sdk/fixtures/pg17_schema_representations.json": "4256c220d4b064cb958cea1c51cf9c0a14d930e91c6ccb123c7f1fb3a1a2cfa8"
+  },
+  "assistant_validation": {
+    "py314": "131 passed; Ruff check and format passed",
+    "sdk": "56 passed, optional PG fixture skipped without binaries",
+    "real_postgres_pytest": "Fresh clusters, pg_dump/pg_restore, all inventory fields, four SQL mutations; see package validation summary",
+    "native_full_restore": "pending author execution"
+  },
+  "captured_inputs_modified": false,
+  "postgres_backup_restore_validated": false,
+  "primary_storage_migrated": false,
+  "production_promotion": false
+}

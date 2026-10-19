@@ -1,0 +1,194 @@
+{
+  "schema": "fraud_tracking_restore_author_validation_v1",
+  "date": "2026-10-19",
+  "status": "author_reported_success",
+  "provenance": {
+    "source": "Author-uploaded terminal output Texto colado(6).txt, read by assistant; native receipt/capture bytes not independently read",
+    "source_text_sha256": "e1a83f003d55a71a96b30cd43a8b361e538b1af4f0f2b3929aabac0f811ae0bb",
+    "checks": "Reported controller/worker SHA-256 equal prepared source; approved capture/model pins and before/after source identities reconciled"
+  },
+  "native_tests": {
+    "tracking_capture_sdk": "56 passed, 1 skipped in 1.18s; tox OK in 2.19s",
+    "tracking_restore": "1 passed in 20.89s; tox OK in 23.30s"
+  },
+  "result": {
+    "schema": "fraud_tracking_restore_v1",
+    "status": "success",
+    "project": "fraud-restore-d7097b34092a",
+    "capture_id": "5a2feb3556834dcfa73d14072bdc5182",
+    "manifest_sha256": "5579aa74e0ebe8de4f51ecd762a43dd0621244a61d2cc95318a6f766c376da8b",
+    "report": "data/storage/tracking-lab/receipts/restore-d7097b34092a4929ae460a411cf30843.json",
+    "phase": "verified",
+    "source_services_modified": false,
+    "refit": false,
+    "primary_storage_migrated": false,
+    "historical_sqlite_migrated": false,
+    "project_wide_storage_inventory_complete": false,
+    "temporary_resources_removed": true,
+    "postgres_backup_restore_validated": true,
+    "controller_code_sha256": "d6f8df61338772011d7342640142ce2d56661c36ee0fd742bcc2e29dfc0e9763",
+    "source_before": {
+      "postgres": {
+        "container_id": "66d96724f17b15795a56de382dcd2ad38fb37ebe82851ab8d129dd905dd5ed4e",
+        "image_id": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+        "postgres_volume": "fraud-tracking-lab_postgres-data"
+      },
+      "mlflow": {
+        "container_id": "929e6bb1ba33fab2c1199b0cd3fbd015c25dd26df21cbdb4de1bd5228bb4bead",
+        "image_id": "sha256:202668054efd81ad9b09ca760d3b97abe3e8cc5539ca3a042597c9572ea96a08",
+        "postgres_volume": null
+      }
+    },
+    "control_sha256": "5dc24e678a01efc2b239485ee98b57065a2995e1bf2713c68821f52866da44f9",
+    "target_resources": {
+      "postgres": {
+        "container_id": "544941f6885363e2c8669029341cd35525f9b67ea9e99d064b36d63098a8df52",
+        "image_id": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+        "project": "fraud-restore-d7097b34092a",
+        "networks": [
+          "fraud-restore-d7097b34092a_default"
+        ],
+        "volume": "fraud-restore-d7097b34092a_postgres-data"
+      },
+      "rustfs": {
+        "container_id": "627cf1195b903e0270a1cbf4dce848a4c5047b0fd405d4b317bc5c29b81e7833",
+        "image_id": "sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+        "project": "fraud-restore-d7097b34092a",
+        "networks": [
+          "fraud-restore-d7097b34092a_default"
+        ],
+        "volume": "fraud-restore-d7097b34092a_rustfs-data"
+      },
+      "mlflow": {
+        "container_id": "efee1b51ee734fcaa56fccb530d279a330d255aa25370bf6496f904d67bb9e73",
+        "image_id": "sha256:63311a30e3410cd2949af8eaab46f986163eacb67c86f4161a75a603a859e2e0",
+        "project": "fraud-restore-d7097b34092a",
+        "networks": [
+          "fraud-restore-d7097b34092a_default"
+        ],
+        "volume": null
+      }
+    },
+    "restore": {
+      "status": "restored_verified",
+      "objects": 38,
+      "metadata_rows": {
+        "alembic_version": 1,
+        "assessments": 0,
+        "budget_policies": 0,
+        "datasets": 0,
+        "endpoint_bindings": 0,
+        "endpoint_model_mappings": 0,
+        "endpoint_tags": 0,
+        "endpoints": 0,
+        "entity_associations": 0,
+        "evaluation_dataset_records": 0,
+        "evaluation_dataset_tags": 0,
+        "evaluation_datasets": 0,
+        "experiment_tags": 0,
+        "experiments": 6,
+        "guardrail_configs": 0,
+        "guardrails": 0,
+        "input_tags": 0,
+        "inputs": 6,
+        "issues": 0,
+        "job_locks": 0,
+        "jobs": 0,
+        "label_schemas": 0,
+        "latest_metrics": 42,
+        "logged_model_metrics": 40,
+        "logged_model_params": 42,
+        "logged_model_tags": 24,
+        "logged_models": 6,
+        "mcp_access_endpoints": 0,
+        "mcp_server_aliases": 0,
+        "mcp_server_tags": 0,
+        "mcp_server_version_tags": 0,
+        "mcp_server_versions": 0,
+        "mcp_servers": 0,
+        "metrics": 44,
+        "model_definitions": 0,
+        "model_version_tags": 0,
+        "model_versions": 0,
+        "online_scoring_configs": 0,
+        "params": 44,
+        "registered_model_aliases": 0,
+        "registered_model_tags": 0,
+        "registered_models": 0,
+        "review_queue_items": 0,
+        "review_queue_label_schemas": 0,
+        "review_queue_users": 0,
+        "review_queues": 0,
+        "runs": 8,
+        "scheduler_leases": 0,
+        "scorer_versions": 0,
+        "scorers": 0,
+        "secrets": 0,
+        "span_metrics": 0,
+        "spans": 0,
+        "sql_assessment_daily_rollups": 0,
+        "sql_span_cost_daily_rollups": 0,
+        "sql_trace_metric_daily_rollups": 0,
+        "sql_trace_rollup_rebuild_queue": 0,
+        "tags": 102,
+        "trace_info": 0,
+        "trace_metrics": 0,
+        "trace_request_metadata": 0,
+        "trace_tags": 0,
+        "webhook_events": 0,
+        "webhooks": 0,
+        "workspaces": 1
+      },
+      "logical_metadata_schema_and_sequences_verified": true,
+      "s3_full_readback_verified": true,
+      "worker_code_sha256": "10e981cd729f9a29a5253432011bcb2b2aa2a910176ee1d2014a37c07dce81db"
+    },
+    "client": {
+      "status": "client_verified",
+      "runs": 8,
+      "logged_models": 6,
+      "metric_history_rows": 44,
+      "model_reload_validated": true,
+      "model_sha256": "899c72f388767742e70999e0eb9f2d694c804d315d0ec6e91bb34cd6bc0a3419",
+      "model_uri": "models:/m-3914a1ce6ecf46638b8b8c95d87cff6b",
+      "scored_rows": 20,
+      "max_absolute_score_error": 0.0,
+      "direct_s3_or_pg_credentials": false,
+      "worker_code_sha256": "10e981cd729f9a29a5253432011bcb2b2aa2a910176ee1d2014a37c07dce81db"
+    },
+    "after_api_readback": {
+      "status": "target_unchanged",
+      "objects": 38,
+      "database_unchanged": true,
+      "schema_comparison": "live_column_order_and_five_exact_pg17_check_cast_pairs_v1",
+      "raw_descriptor_fields_differing": [
+        "columns",
+        "constraints"
+      ],
+      "worker_code_sha256": "10e981cd729f9a29a5253432011bcb2b2aa2a910176ee1d2014a37c07dce81db"
+    },
+    "source_after": {
+      "postgres": {
+        "container_id": "66d96724f17b15795a56de382dcd2ad38fb37ebe82851ab8d129dd905dd5ed4e",
+        "image_id": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+        "postgres_volume": "fraud-tracking-lab_postgres-data"
+      },
+      "mlflow": {
+        "container_id": "929e6bb1ba33fab2c1199b0cd3fbd015c25dd26df21cbdb4de1bd5228bb4bead",
+        "image_id": "sha256:202668054efd81ad9b09ca760d3b97abe3e8cc5539ca3a042597c9572ea96a08",
+        "postgres_volume": null
+      }
+    },
+    "capture_unchanged": true,
+    "temporary_credentials_removed": true,
+    "elapsed_seconds": 20.868667001000176
+  },
+  "milestone": {
+    "bounded_inventory_and_tracking_recovery": "closed",
+    "project_wide_storage_inventory_complete": false,
+    "primary_storage_migrated": false,
+    "historical_sqlite_migrated": false,
+    "cross_host_disaster_recovery_validated": false,
+    "next_priority": "Serving release CD and rollback; then data/feature monitoring; seven historical consumer boundaries remain separate backlog"
+  }
+}

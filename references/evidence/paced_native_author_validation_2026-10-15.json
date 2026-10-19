@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "author_reported_local_operational_validation",
+  "reported_on": "2026-10-15",
+  "report_timezone": "America/Belem",
+  "published_implementation_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "execution_checkout_revision_independently_verified": false,
+  "source": {
+    "quality_attachment": "Texto colado(4).txt",
+    "quality_attachment_sha256": "8cce7e89c00fda78272e24ee4db513b61da151837391c30f8b9329254154bb64",
+    "other_inputs": "Author-provided terminal outputs in this conversation: stack, smoke, recovery, three invocation costs and final native assessment.",
+    "native_checkpoint_bytes_inspected_by_assistant": false,
+    "native_telemetry_bytes_inspected_by_assistant": false,
+    "operational_receipt_sha256_recomputed_by_assistant": false
+  },
+  "commands": {
+    "native": "poetry run python -m scripts.replay.paced_triage_replay native --output \"$PWD/data/replay/paced-native-v1\" --speed 8640 --capacity 128 --max-paced-events <batch_size>",
+    "assessment": "poetry run python -m scripts.replay.assess_paced_replay --state \"$PWD/data/replay/paced-native-v1\""
+  },
+  "state_directory": "data/replay/paced-native-v1",
+  "assessment_result": "data/replay/paced-native-v1/assessment/result.json",
+  "assessment_receipt_sha256_reported": "c1192d5481f890f9bf878e8f8aa730011007f13c9f576cf0d5a84161b4e129d1",
+  "automatic_reports_directory": "data/replay/measurements/paced-native-v1/automatic-8IGm4r",
+  "runtime": {
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "environment": "Author Ubuntu workstation; Docker Compose observability; replay via Poetry on host.",
+    "speed": 8640.0,
+    "capacity": 128,
+    "sessions": 14,
+    "warmup_events": 201667,
+    "paced_events": 355157,
+    "latency_scope": "paced_transactions_only_context_and_unmeasured_recovery_excluded",
+    "measurement_scope": "local_scheduled_emission_to_decision_commit_no_external_broker"
+  },
+  "assessment": {
+    "status": "success",
+    "feature_parity_exact": true,
+    "score_and_causal_decision_parity": true,
+    "score_parity_atol": 1e-12,
+    "score_parity_rtol": 0.0,
+    "unmeasured_committed_events": 0,
+    "new_independent_quality_confirmation": false
+  },
+  "complete": true,
+  "counts": {
+    "events": 556824,
+    "transactions": 278412,
+    "feedback": 278412,
+    "decisions": 143945,
+    "alerts": 1453
+  },
+  "timing": {
+    "scheduled_to_commit": {
+      "count": 143945,
+      "p50_seconds": 186.4495108127594,
+      "p95_seconds": 379.5700510025024,
+      "max_seconds": 423.9924557209015
+    },
+    "emission_lateness": {
+      "count": 143945,
+      "p50_seconds": 184.69817686080933,
+      "p95_seconds": 377.78344302177425,
+      "max_seconds": 422.7395679950714
+    },
+    "queue_wait": {
+      "count": 143945,
+      "p50_seconds": 1.61037015914917,
+      "p95_seconds": 3.1834935188293447,
+      "max_seconds": 4.902304172515869
+    },
+    "processing": {
+      "count": 143945,
+      "p50_seconds": 0.010023597000326845,
+      "p95_seconds": 0.02370506860024761,
+      "max_seconds": 2.438960595001845
+    }
+  },
+  "quality": {
+    "alert_minus_first_fraud_minutes": {
+      "count": 768,
+      "p50": 0.0,
+      "p95": 0.0,
+      "scope": "captured_fraudulent_customer_days_only_signed_difference_not_prevention"
+    },
+    "captured_customer_days": 768,
+    "comparison_interpretation": "different_delivery_time_and_policy_descriptive_only",
+    "formal_superiority_claim": false,
+    "generalization_confidence_interval": null,
+    "missed_customer_days": 358,
+    "money_saved": null,
+    "nonfraudulent_alert_customer_days": 685,
+    "production_promotion": false,
+    "ranking": {
+      "average_precision": 0.5787830296305961,
+      "daily_customer_precision_at_100": 0.5333333333333333,
+      "fraud_count": 1256,
+      "fraud_rate": 0.008725554899440758,
+      "roc_auc": 0.876322168054858,
+      "rows": 143945
+    },
+    "alerts": 1453,
+    "fraudulent_customer_days": 1126,
+    "precision": 0.52856159669649,
+    "recall": 0.6820603907637656,
+    "observed_scoring_dates": 15
+  },
+  "partial_invocation_costs": [
+    {
+      "new_paced_events": 1000,
+      "new_warmup_events": 201667,
+      "wall_seconds": 429.26,
+      "user_cpu_seconds": 135.77,
+      "system_cpu_seconds": 91.96,
+      "max_rss_kib": 348844,
+      "exit_code": 0
+    },
+    {
+      "new_paced_events": 10000,
+      "new_warmup_events": 0,
+      "wall_seconds": 133.78,
+      "user_cpu_seconds": 354.65,
+      "system_cpu_seconds": 17.67,
+      "max_rss_kib": 347404,
+      "exit_code": 0
+    },
+    {
+      "new_paced_events": 30000,
+      "new_warmup_events": 0,
+      "wall_seconds": 411.27,
+      "user_cpu_seconds": 1096.34,
+      "system_cpu_seconds": 55.84,
+      "max_rss_kib": 344724,
+      "exit_code": 0
+    }
+  ],
+  "all_invocation_costs_consolidated": false,
+  "docker_stack_resource_cost_measured": false,
+  "generated_smoke": {
+    "events": 20,
+    "decisions": 10,
+    "alerts": 1,
+    "idempotent_reuse_reported": true,
+    "checkpoint_sha256_before_and_after_reuse": "0f193d6d5d5fd7e6711937b28492a26011ee0b12bd2c1c9437c763297acfbf23",
+    "prometheus_events_total_reported": 20,
+    "two_dashboard_values_confirmed_by_author": true,
+    "abrupt_stop_and_resume_reported": true,
+    "recovery_sessions": [
+      "interrupted",
+      "complete"
+    ],
+    "continuous_and_recovered_features_scores_triage_equal": true,
+    "decisions_compared": 10,
+    "timeout_implementation_reported": "uutils coreutils 0.10.0",
+    "timeout_exit_code_reported": 124
+  },
+  "continuous_1x_lab_target_evaluable": false,
+  "continuous_1x_p95_at_most_one_second": null,
+  "sla_validated": false,
+  "production_promotion": false,
+  "formal_superiority_claim": false,
+  "remaining_validation": [
+    "Collector, summary and dashboard values at final native volume.",
+    "Timed exporter outage, alert detection and recovery.",
+    "Consolidated invocation and stack costs.",
+    "Protocol and budget before a representative continuous 1x excerpt.",
+    "RustFS archive and restore; controlled release rollback; final KinD and Helm deployment."
+  ],
+  "decision": "Native accelerated functional validation complete. Preserve checkpoint, telemetry, assessment and receipt; do not rerun the consumed window for new quality confirmation."
+}

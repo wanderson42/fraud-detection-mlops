@@ -1,0 +1,89 @@
+{
+  "schema": "fraud_persistence_inventory_author_validation_v1",
+  "date": "2026-10-16",
+  "status": "checkout_scan_and_reported_mount_metadata_reviewed",
+  "provenance": "Author-pasted command output. Assistant did not read the native JSON, inspect the laptop or independently recompute file hashes. Grafana bind output was truncated.",
+  "report": "data/storage/inventory/persistence-tnty0h6m.json",
+  "checkout": {
+    "scan_complete": true,
+    "files": 4990,
+    "logical_bytes": 4541511714,
+    "database_candidates": 20,
+    "files_requiring_review": 1,
+    "issues": 0,
+    "excluded_tooling_trees": 53,
+    "external_boundaries_not_inspected": 4
+  },
+  "native_tests": {
+    "passed": 14,
+    "pytest_seconds": 0.12,
+    "tox_seconds": 2.96,
+    "tox_environment": "py314"
+  },
+  "reviewed_item": {
+    "path": "data/external/.gitkeep",
+    "bytes": 0,
+    "interpretation": "Empty directory marker, no dataset or database. Preserve; collector still marks the external-input family for review."
+  },
+  "database_classification": {
+    "original_tracking_stores": 2,
+    "original_finished_hgb_study": 1,
+    "replay_event_and_telemetry_databases": 11,
+    "archive_and_restored_database_copies": 6,
+    "same_size_proves_redundancy": false,
+    "database_contents_opened_by_inventory": false
+  },
+  "reported_mounts": [
+    {
+      "service": "rustfs",
+      "type": "volume",
+      "name": "fraud-local-observability_rustfs-data",
+      "destination": "/data",
+      "rw": true
+    },
+    {
+      "service": "prometheus",
+      "type": "volume",
+      "name": "fraud-local-observability_prometheus-data",
+      "destination": "/prometheus",
+      "rw": true
+    },
+    {
+      "service": "grafana",
+      "type": "volume",
+      "name": "fraud-local-observability_grafana-data",
+      "destination": "/var/lib/grafana",
+      "rw": true
+    },
+    {
+      "service": "exporter",
+      "type": "bind",
+      "source_relative_to_checkout": "data/replay/paced-native-v1",
+      "destination": "/state",
+      "rw": false
+    },
+    {
+      "service": "prometheus",
+      "type": "bind",
+      "source_relative_to_checkout": "infra/observability/alerts.yml",
+      "destination": "/etc/prometheus/alerts.yml",
+      "rw": false
+    },
+    {
+      "service": "prometheus",
+      "type": "bind",
+      "source_relative_to_checkout": "infra/observability/prometheus.yml",
+      "destination": "/etc/prometheus/prometheus.yml",
+      "rw": false
+    }
+  ],
+  "limits": [
+    "Named-volume contents and service recovery were not inspected by the mount query.",
+    "Grafana configuration binds were truncated in the pasted output.",
+    "Caller overrides and external dependency caches remain outside global inventory coverage.",
+    "Logical bytes include originals, bundles and restores; not unique physical storage."
+  ],
+  "project_wide_storage_inventory_complete": false,
+  "primary_storage_migrated": false,
+  "files_deleted_or_moved": false
+}

@@ -1,0 +1,63 @@
+{
+  "schema": "fraud_tracking_capture_preparation_v1",
+  "date": "2026-10-19",
+  "status": "assistant_offline_validated_native_capture_pending",
+  "base_delivery_tree": "327d159fe331d862e89ec5f7499dffab19a47056",
+  "scope": "Dedicated lab coordinated PostgreSQL custom dump and full S3 capture with source MLflow recovery attempt; not restore, migration, cutover or model validation",
+  "justification": "Producer HTTP integration and native consumer review are closed. Prove recoverable capture before an isolated PostgreSQL/S3 restore; keep historical stores and consumers untouched.",
+  "source_sha256": {
+    "scripts/tracking/capture.py": "7a73d5475b34b368eae9d5623eb7cfc82e638f7625edb9d0380b4771a392d0dd",
+    "scripts/tracking/capture_worker.py": "6c56668a5955aa70d10686ef485e1dcda3d38b0cba511dcd94e791899f7c47cf",
+    "infra/tracking/Dockerfile.capture": "76d61eee99648c3c717bb9f8528dd546aa274a83fd054fca82a45d663aecff8e",
+    "infra/tracking/capture.compose.yaml": "36f3ee11dcfe1dc11a962d5a01992015d7afd0352a56d8149e8e966ad1d2e98f",
+    "tests/tracking/test_capture.py": "3d2977cc38562b043da847ec974adc90a32006ce26bc34f879dfec7c7eb09e5d",
+    "tests/tracking/capture_sdk/test_capture_worker.py": "609037c5bae702e3fa4134193aa5ceb2b71eb9ac4d699cbc7c5ae4b47027a3d2",
+    "tests/tracking/live/test_tracking_capture.py": "84eb1b5ec4535d7714340161184b1c87097699d2f1f784ef99e6fa1a6c7706a4"
+  },
+  "assistant_validation": {
+    "py314": "108 passed in 1.08s; tox OK in 6.52s; lock/lint/format passed",
+    "tracking_capture_sdk": "25 passed in 0.28s; tox OK in 1.44s; existing hashed runtime requirements installed",
+    "native_docker_executed": false,
+    "native_postgres_executed": false,
+    "s3_services_contacted": false,
+    "process_transport": "Actual Python binary stdout/stdin, timeouts and output caps",
+    "s3_transport": "Pinned botocore Stubber and StreamingBody; no service",
+    "sql_transport": "Real psycopg SQL composition with fake result transport; no database",
+    "source_review": {
+      "tracking_review_valid": true,
+      "source_files_scanned": 126,
+      "declared_consumers": 17,
+      "local_migration_blockers": 7,
+      "detected_call_sites": 55,
+      "issues": 0
+    }
+  },
+  "native_next_commands": [
+    "poetry run python -m scripts.tracking.capture build",
+    ".venv/bin/python -m tox -e tracking-capture"
+  ],
+  "expected": "captured_verified, source_recovered true, unchanged source container IDs/images/volume, closed manifest hash; backup_restore remains false",
+  "outputs": [
+    "data/storage/tracking-lab/captures/<id>",
+    "data/storage/tracking-lab/receipts/capture-<id>.json"
+  ],
+  "budgets": {
+    "dump_bytes": 67108864,
+    "logical_metadata_bytes_read": 67108864,
+    "objects": 1024,
+    "artifact_bytes": 268435456,
+    "capture_seconds": 300,
+    "source_health_seconds": 90
+  },
+  "limitations": [
+    "No guarantee across SIGKILL, host loss or daemon unavailability; finally attempts source restart and unhealthy source prevents success",
+    "Absent other writers is operator-declared, supplemented by PostgreSQL connection and source mutation checks",
+    "Dump TOC and checksums are not a PostgreSQL restore or a model reload",
+    "Same-host capture is not an off-host disaster backup",
+    "Default local consumers, freezes, ledgers, references and historical backups remain unchanged"
+  ],
+  "postgres_backup_restore_validated": false,
+  "restore_implemented": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false
+}

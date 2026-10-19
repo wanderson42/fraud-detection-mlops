@@ -1,0 +1,134 @@
+{
+  "schema": "fraud_mlflow_transfer_author_validation_v1",
+  "date": "2026-10-16",
+  "status": "author_reported_s3_publication_idempotent_republication_and_isolated_snapshot_recovery_verified",
+  "scope": "S3 snapshot roundtrip with independent store SQLite metadata and artifact integrity verification; not operational MLflow restore, model reload or migration",
+  "provenance": "Terminal outputs supplied by author; assistant did not access native bucket, DBs, files or complete receipt JSONs",
+  "bundle_id": "c9c4e6e0f684ba21484e7491c026a24a76002570c251c97c98b244f043a4d924",
+  "bucket": "fraud-artifacts",
+  "prefix": "mlflow-tracking/v1/c9c4e6e0f684ba21484e7491c026a24a76002570c251c97c98b244f043a4d924/",
+  "worker_code_sha256": "643d414b1c68c6f3044662a35ba39a45d1330a1c275bd9f29aa481c7973e811d",
+  "producer_code_sha256": "7bdd8d00c50184aa72c92ef837f7decec20e69bdfc21ef25edc74dce69f32539",
+  "boto3_version": "1.43.114",
+  "botocore_version": "1.43.114",
+  "native_tests": {
+    "environment": "tox py314",
+    "passed": 16,
+    "warnings": 1,
+    "pytest_seconds": 12.34,
+    "tox_seconds": 18.79,
+    "status": "OK",
+    "warning": "MLflow/SQLAlchemy noload deprecation"
+  },
+  "build": {
+    "status": "author_reported_success",
+    "image": "fraud-bronze-transfer:local-v1",
+    "reported_manifest_list_sha256": "40e6a477b61d5892365f4facc486babdf86af8750b078e4c2c9699ddcd89f6da",
+    "assistant_image_inspected": false,
+    "RustFS_readiness_HTTP_status": 200
+  },
+  "operations": {
+    "publish": {
+      "status": "success",
+      "uploaded_objects": 641,
+      "reused_objects": 0,
+      "verified_objects": 641,
+      "bytes": 256354588,
+      "worker_elapsed_seconds": 8.880585154998698,
+      "report": "data/storage/receipts/mlflow-publish-dt8j82lc.json"
+    },
+    "republish": {
+      "status": "success",
+      "uploaded_objects": 0,
+      "reused_objects": 641,
+      "verified_objects": 641,
+      "bytes": 256354588,
+      "worker_elapsed_seconds": 2.7671736889969907,
+      "report": "data/storage/receipts/mlflow-publish-1_46ucd7.json"
+    },
+    "restore": {
+      "status": "restored_verified",
+      "files": 640,
+      "verified_objects": 641,
+      "bytes": 256354588,
+      "worker_elapsed_seconds": 2.2234535809984664,
+      "restored_directory": "data/storage/restored/c9c4e6e0f684ba21484e7491c026a24a76002570c251c97c98b244f043a4d924",
+      "report": "data/storage/receipts/mlflow-restore-tncsnmve.json"
+    }
+  },
+  "elapsed_seconds_scope": "worker only; excludes host snapshot verification and is not end-to-end recovery time",
+  "stores": [
+    {
+      "tracking_root": "data/tracking",
+      "experiments": 5,
+      "runs": 70,
+      "logged_models": 66,
+      "metadata_rows": {
+        "latest_metrics": 315,
+        "metrics": 315,
+        "params": 632,
+        "tags": 1321
+      },
+      "database_table_fingerprint_sha256": "cf91cc2d76469a9f664bec91d94d2ad16ab4618dd878873448fcc1b1ef604cb7",
+      "database_bytes": 1810432,
+      "sqlite_snapshot_sha256": "400349bd9e1c57d68e949d18627236507062a1e88b4c5e5985b38117f9e443b8",
+      "artifact_files": 627,
+      "artifact_bytes": 253128963,
+      "default_reviews": 1
+    },
+    {
+      "tracking_root": "data/tracking/interface-smoke",
+      "experiments": 2,
+      "runs": 1,
+      "logged_models": 1,
+      "metadata_rows": {
+        "latest_metrics": 6,
+        "metrics": 6,
+        "params": 5,
+        "tags": 16
+      },
+      "database_table_fingerprint_sha256": "f2d8b69bcae0d194d980c16ac1f9086fdee0acd0a37f652ddc1b6cd21221fb43",
+      "database_bytes": 954368,
+      "sqlite_snapshot_sha256": "040ff024719ae08793e03ff48cb61bef2597ea04d7da599c18b8bef4cc7004d6",
+      "artifact_files": 6,
+      "artifact_bytes": 32088,
+      "default_reviews": 1
+    }
+  ],
+  "store_count": 2,
+  "total_runs": 71,
+  "total_logged_models": 67,
+  "artifact_files": 633,
+  "artifact_bytes": 253161051,
+  "ancillary_files": 2,
+  "archive_files": 640,
+  "bytes": 256354588,
+  "default_reviews": 2,
+  "reconciliation": {
+    "same_bundle_code_fingerprints_counts_hashes_and_bytes_across_prepare_verify_publish_republish_restore_printed_outputs": true,
+    "sqlite_integrity_verified": true,
+    "sqlite_foreign_keys_verified": true,
+    "logical_table_contents_verified": true,
+    "historical_uris_preserved": true,
+    "restore_original_source_read": false,
+    "models_loaded": false,
+    "mlflow_initialized": false,
+    "refit": false,
+    "s3_accessed": true,
+    "transfer_implemented": true
+  },
+  "gate_closed": "archival_S3_roundtrip_for_this_prepared_snapshot",
+  "operational_tracking_restore_validated": false,
+  "model_reload_validated": false,
+  "migration_implemented": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "production_promotion": false,
+  "limitations": [
+    "Only printed receipts were reconciled; assistant did not independently rehash native data or receipt files",
+    "Native originals were not moved or removed; the restore verifier reports no original reads",
+    "MLflow server/client URI resolution and inference from restored artifacts were not exercised",
+    "No PostgreSQL conversion, active reader cutover, rollback rehearsal, Helm/PVC recovery or off-machine backup was performed"
+  ],
+  "next_gate": "Operational recovery rehearsal on a disposable managed copy of the restored snapshot: identify the reference run/model, preserve the validated archive, explicitly map historical artifact locations only in the rehearsal copy, and prove history/model access without original paths before PostgreSQL cutover."
+}

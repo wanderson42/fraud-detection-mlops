@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-16",
+  "scope": "MLflow inventory local UUID classification fix and selected regression; initial native inventory reported by author, corrected native execution pending",
+  "input_worktree_tree": "af2e7acb18b9ebe7b11b1b1c7c3eb207a3fec16c",
+  "author_reported_initial_inventory": {
+    "report": "data/storage/inventory/mlflow-h1r78wa0.json",
+    "status": "review_required",
+    "complete": true,
+    "artifact_files_count": 627,
+    "artifact_bytes": 253128963,
+    "reference_json_files": 285,
+    "experiments": 5,
+    "runs": 70,
+    "run_statuses": {
+      "FINISHED": 70
+    },
+    "logged_models": 66,
+    "registered_models": 0,
+    "model_versions": 0,
+    "unresolved_references": 2,
+    "missing_local_artifact_locations": 0,
+    "uri_kinds": {
+      "local_outside_artifacts_not_read": 1,
+      "local_artifacts": 140
+    },
+    "alembic_revisions": [
+      "dc11669786a5"
+    ],
+    "metadata_rows": {
+      "params": 632,
+      "metrics": 315,
+      "latest_metrics": 315,
+      "tags": 1321,
+      "logged_models": 66
+    },
+    "source_database_opened": false,
+    "mlflow_initialized": false,
+    "models_loaded": false,
+    "network_accessed": false,
+    "backup_validated": false,
+    "migration_implemented": false,
+    "native_inventory_pytest": {
+      "passed": 19,
+      "warnings": 1,
+      "seconds": 6.78
+    }
+  },
+  "initial_findings": {
+    "local_diagnostics_id": "961bb0c32fb84433af922908ea58e76b",
+    "file_suffixes": [
+      "diagnostics_v1/961bb0c32fb84433af922908ea58e76b/report.json",
+      "runs/diagnostics_961bb0c32fb84433af922908ea58e76b.json"
+    ],
+    "pointer": "/run_id",
+    "classification_bug": "A sibling model_uri was incorrectly treated as sufficient MLflow context for a local run_id. validation_diagnostics generates a local uuid4 hex independently of tracking; final report uses mlflow_run_id separately.",
+    "outside_location": {
+      "table": "experiments",
+      "experiment_id": 0,
+      "name": "Default",
+      "path": "/home/wanderson/Documentos/fraud-detection-mlops/mlruns/0",
+      "associated_run_model_counts_confirmed": false,
+      "filesystem_contents_confirmed": false
+    }
+  },
+  "fix": "Remove sibling model_uri/logged_model_uri inference; keep known IDs, explicit mlflow_run_id, nested tracking/mlflow contexts and dedicated mlflow.json receipt. Unknown local UUIDs remain visible as unclassified_run_id with resolved=null.",
+  "checks": {
+    "tox_py314": {
+      "passed": 30,
+      "warnings": 27,
+      "pytest_seconds": 30.22,
+      "tox_seconds": 39.4,
+      "inventory_cases": 21,
+      "selection": [
+        "tests/storage/test_mlflow_inventory.py",
+        "tests/integrations/test_mlflow_tracking.py",
+        "tests/integrations/test_serving_release_export.py"
+      ],
+      "ruff": "passed",
+      "format": "passed",
+      "poetry_lock": "passed"
+    }
+  },
+  "corrected_native_inventory": "pending author execution",
+  "native_report_bytes_inspected": false,
+  "native_source_accessed": false,
+  "scientific_reports_or_audits_modified": false,
+  "historical_evidence_modified": false,
+  "default_location_auto_ignored": false,
+  "files_deleted": false,
+  "dependencies_infrastructure_or_scientific_core_changed": false,
+  "backup_implemented": false,
+  "migration_implemented": false,
+  "next": "Repeat corrected inventory and inspect Default ownership from inventory plus local directory metadata without moving/deleting files; decide backup coverage after review.",
+  "evidence_basis": "Native counts and finding excerpts transcribed from printed JSON supplied by author. Source semantics verified in delivered validation_diagnostics.py. No access to native database, filesystem or report bytes; no receipt hashes invented."
+}

@@ -1,0 +1,106 @@
+{
+  "schema": "fraud_mlflow_recovery_preparation_v1",
+  "date": "2026-10-16",
+  "status": "implemented_and_fixture_validated_native_execution_pending",
+  "published_base_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "required_previous_delivery_tree": "a9857314bbc47a0b0b6d78cd0535809056643dc6",
+  "code_sha256": {
+    "scripts/storage/mlflow_recovery.py": "fdcbc9c1b74195cd99e286f6c25eb3d2d84ae1931bae28b71a91b71bc6304075",
+    "scripts/storage/mlflow_recovery_worker.py": "344d6872f4613842547822a4f4bd6b8b87c8d2d46c94bf56788d98634043fdf9",
+    "tests/storage/test_mlflow_recovery.py": "ac755939de2ed4e8138fffabee9933274e7df7cdfd4118bc6d82341301f4e818",
+    "tox.toml": "4d2b867b228ccc346e64113a266fbbdc3697e8a9b44b538dc4f4b76a86379012"
+  },
+  "provenance": "Assistant execution on generated local SDK stores and synthetic control model; no access to author native restores, receipts, databases, S3 service or model bytes.",
+  "scope": "Disposable local SQLite MLflow SDK history and externally pinned skops model reload; no HTTP service, PostgreSQL migration or cutover.",
+  "assistant_validation": {
+    "targeted_recovery_pytest": {
+      "passed": 14,
+      "warnings": 19,
+      "seconds": 58.79
+    },
+    "joint_tox": {
+      "environment": "py314",
+      "python": "3.14.4",
+      "mlflow": "3.17.0",
+      "passed": 105,
+      "warnings": 34,
+      "pytest_seconds": 272.84,
+      "ruff_check": "passed",
+      "ruff_format_check": "passed",
+      "poetry_lock_check": "passed",
+      "selection": [
+        "tests/storage/test_mlflow_inventory.py",
+        "tests/storage/test_mlflow_backup.py",
+        "tests/storage/test_mlflow_transfer.py",
+        "tests/storage/test_mlflow_recovery.py",
+        "tests/integrations/test_mlflow_tracking.py"
+      ]
+    },
+    "controls": [
+      "Full metric history and runs/experiments/params/tags/logged model links checked via SDK",
+      "Both runs:/ and models:/ model URI paths exercised",
+      "Original tracking, serving source and local bundles removed before positive rehearsal",
+      "External release/model hash and score checked; original restores reverified",
+      "Unexpected URI update side effects detected across every table/cell",
+      "Worker error, timeout and wrong model hash leave no success receipt or disposable copy",
+      "Python audit guards tested in subprocess for original data reads, unreviewed SQLite, unmanaged writes, sockets and child processes",
+      "Notebook code cells, outputs and existing IDs preserved"
+    ],
+    "native_data_used": false,
+    "network_required": false,
+    "MLflow_telemetry_disabled": true,
+    "guard_limit": "Python audit hooks are not an OS sandbox; optional library network/process probes may be blocked and caught; attempts are counted."
+  },
+  "expected_native_inputs": {
+    "snapshot_bundle_id": "c9c4e6e0f684ba21484e7491c026a24a76002570c251c97c98b244f043a4d924",
+    "release_bundle_id": "a33bb2fbb3e9503b4bb96c92dd6950677127b77fbf5bedb4322007587176b154",
+    "external_reference": "references/evidence/laboratory_serving_native_validation_2026-10-09.json",
+    "model_uri_source": "Externally pinned restored release manifest source.model_uri; not guessed from inventory order",
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "score": 0.4178630794049542,
+    "absolute_tolerance": 1e-12,
+    "total_runs": 71,
+    "total_logged_models": 67,
+    "metric_history_rows": 321
+  },
+  "native_validation": {
+    "status": "pending_author_execution",
+    "model_reload_validated": false,
+    "operational_tracking_restore_validated": false
+  },
+  "context_review": {
+    "file": "docs/project/PROBLEM_CONTEXT.md",
+    "findings_addressed": [
+      "Replaced obsolete claims that native replay, Docker and monitoring were future work",
+      "Distinguished retrospective top-100 ranking from causal threshold/customer-day policy",
+      "Specified transaction versus customer-day units, dependent observations, label maturity and no economic benefit estimate",
+      "Replaced real baseline wording with explicit synthetic-source evidence and bounded generalization",
+      "Reconciled archive/roundtrip success with primary-storage adoption and whole-project inventory still pending",
+      "Explained separate roles for object storage, PostgreSQL, justified SQLite, DuckDB and Prometheus; feature store remains conditional",
+      "Removed peripheral Pix operational/legal discussion and redundant external figure; preserved three incoming heading anchors",
+      "Linked current results to owning protocols/runbooks; scientific gates and historic evidence untouched"
+    ],
+    "primary_sources_rechecked": [
+      "https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_3_GettingStarted/SimulatedDataset.html",
+      "https://fraud-detection-handbook.github.io/fraud-detection-handbook/Chapter_2_Background/FDS.html",
+      "https://www.ecb.europa.eu/press/pr/date/2025/html/ecb.pr251215~e133d9d683.en.html"
+    ]
+  },
+  "preserved": {
+    "producer_code_sha256": "7bdd8d00c50184aa72c92ef837f7decec20e69bdfc21ef25edc74dce69f32539",
+    "S3_worker_code_sha256": "643d414b1c68c6f3044662a35ba39a45d1330a1c275bd9f29aa481c7973e811d",
+    "scientific_dependencies_and_lock": true,
+    "existing_backup_inventory_transport_code": true,
+    "historical_evidence_and_protocols": true
+  },
+  "migration_implemented": false,
+  "primary_storage_migrated": false,
+  "new_services": false,
+  "new_dependencies": false,
+  "refit": false,
+  "new_quality_confirmation": false,
+  "production_promotion": false,
+  "project_wide_storage_inventory_complete": false,
+  "cleanup_implemented": false,
+  "next_gate": "Author executes recovery CLI against already validated restores and supplies console summary; then reconcile the native outcome before planning PostgreSQL + S3 service/cutover."
+}

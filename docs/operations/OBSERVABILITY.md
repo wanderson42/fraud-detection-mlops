@@ -1,6 +1,6 @@
 # Replay programado e observabilidade local
 
-Preparação de **2026-10-15**. [Roadmap](../project/ROADMAP.md),
+Atualizado em **2026-10-15**, com execução nativa concluída pelo autor. [Roadmap](../project/ROADMAP.md),
 [protocolo](../../references/paced_monitoring_protocol_v1.json) e
 [configuração](../../infra/observability/README.md). Esta etapa acrescenta fila
 local limitada, journal de tempos, exporter agregado, Prometheus e Grafana.
@@ -74,18 +74,46 @@ o procedimento da [correção](NUMERICAL_CORRECTIVE_REPLAY.md).
 Use o novo diretório, sem sobrepor entradas ou os dois jobs nativos anteriores:
 
 ```bash
-mkdir -p data/replay/paced-native-v1
-/usr/bin/time -v -o data/replay/paced-native-v1/time-invocation-01.txt   poetry run python -m scripts.replay.paced_triage_replay native   --output "$PWD/data/replay/paced-native-v1" --speed 86400 --capacity 128   --max-paced-events 10000
+mkdir -p data/replay/measurements/paced-native-v1
+paced_cost_report="$(mktemp "$PWD/data/replay/measurements/paced-native-v1/invocation-XXXXXX")"
+/usr/bin/time -v -o "$paced_cost_report" \
+  timeout --signal=INT --kill-after=30s 10m \
+  poetry run python -m scripts.replay.paced_triage_replay native \
+  --output "$PWD/data/replay/paced-native-v1" --speed 8640 --capacity 128 \
+  --max-paced-events 1000
+paced_exit_code=$?
+printf 'Código: %s\nRelatório: %s\n' "$paced_exit_code" "$paced_cost_report"
+cat "$paced_cost_report"
 ```
+
+O diretório do ensaio deve estar ausente ou vazio na primeira criação (exceto o
+lock da execução); não crie o relatório de custo dentro dele antes da inicialização.
+Os relatórios ficam no diretório irmão `measurements/`. A velocidade de 8.640×
+corresponde à execução relatada abaixo; não troque a velocidade de um estado
+já existente. `--max-paced-events` limita novos eventos de fonte por invocação,
+incluindo transações e feedback, não somente decisões.
 
 Esse primeiro lote exercita pausa/retomada e registra custo. O contexto anterior
 a 16/09 é reconstruído a partir dos eventos materializados, sem pacing nem
 latência. Ele pode dominar o tempo total. Antes de concluir, confira as saídas e
 recursos. Retome com a mesma velocidade, capacidade, release, protocolo e diretório;
-use outro nome para cada arquivo de `/usr/bin/time`. Para completar, omita o limite:
+use outro nome para cada arquivo de `/usr/bin/time`. No ensaio do autor, os lotes
+seguintes foram de 10 mil, 30 mil e depois até 30 mil eventos cada, com teto de
+10 minutos por invocação. Saída diferente de zero interrompe a sequência; não
+faça retries automáticos de falhas. Para retomar mantendo o teto:
 
 ```bash
-/usr/bin/time -v -o data/replay/paced-native-v1/time-invocation-02.txt   poetry run python -m scripts.replay.paced_triage_replay native   --output "$PWD/data/replay/paced-native-v1" --speed 86400 --capacity 128
+paced_cost_report="$(mktemp "$PWD/data/replay/measurements/paced-native-v1/invocation-XXXXXX")"
+/usr/bin/time -v -o "$paced_cost_report" \
+  timeout --signal=INT --kill-after=30s 10m \
+  poetry run python -m scripts.replay.paced_triage_replay native \
+  --output "$PWD/data/replay/paced-native-v1" --speed 8640 --capacity 128 \
+  --max-paced-events 30000
+```
+
+Somente após `complete: true`, com o escritor parado:
+
+```bash
 poetry run python -m scripts.replay.assess_paced_replay --state "$PWD/data/replay/paced-native-v1"
 ```
 
@@ -100,6 +128,127 @@ leva semanas. Não mude a velocidade de um ensaio existente nem encurte o protoc
 para conseguir um resultado. O lote acelerado é o passo inicial viável. Um recorte
 1x mais curto depende de protocolo próprio antes da execução. Mesmo um alvo local
 aprovado não representa SLA de transporte distribuído ou produção.
+
+## Resultado nativo informado pelo autor — 2026-10-15
+
+[Evidência documental](../../references/evidence/paced_native_author_validation_2026-10-15.json).
+O autor concluiu o ensaio a **8.640×**, capacidade 128, em **14 sessões**. Foram
+556.824 eventos: 278.412 transações e 278.412 feedbacks. O contexto inicial teve
+201.667 eventos sem pacing. A janela pontuada produziu 143.945 decisões e 1.453
+alertas. A avaliação final retornou `success`, paridade exata das 19 features,
+paridade de scores/decisões com `atol=1e-12`, `rtol=0` e **zero commits sem medição**.
+
+| Tempo das 143.945 transações medidas | p50 (s) | p95 (s) | Máximo (s) |
+| --- | ---: | ---: | ---: |
+| Agendado→commit | 186,449511 | 379,570051 | 423,992456 |
+| Atraso de emissão | 184,698177 | 377,783443 | 422,739568 |
+| Espera na fila | 1,610370 | 3,183494 | 4,902304 |
+| Processamento do núcleo | 0,010024 | 0,023705 | 2,438961 |
+
+Quantis agregados de sessões com âncoras próprias, não de operação contínua.
+O processamento inclui features, scoring e commit da decisão, não apenas a
+inferência do modelo. Não somar p95s nem atribuir contribuição percentual a uma
+etapa dividindo seus quantis. O atraso crescente é compatível com oferta
+acelerada superior à vazão disponível; não identifica sozinho gargalo de I/O,
+modelo ou journal. O máximo de processamento de 2,44 s também fica registrado.
+`continuous_1x_lab_target_evaluable=false`, resultado do alvo 1x `null` e
+`sla_validated=false` são esperados neste desenho.
+
+A qualidade reproduziu o replay corretivo da mesma janela: 768 capturas, 358
+perdas e 685 alertas sem fraude por cliente/data; precisão agregada 52,86%, recall
+68,21%, AP transacional 0,578783 e ROC AUC 0,876322. Rótulos estão completos;
+isso não cria confirmação independente, superioridade ou fraude financeira evitada.
+O top-100 retrospectivo dispõe do dia completo e permanece comparação descritiva.
+
+| Invocação inicial informada | Eventos novos | Warmup novo | Parede | CPU usuário + sistema (s) | RSS máximo (KiB) |
+| --- | ---: | ---: | --- | ---: | ---: |
+| Piloto | 1.000 | 201.667 | 7min09,26s | 227,73 | 348.844 |
+| Retomada | 10.000 | 0 | 2min13,78s | 372,32 | 347.404 |
+| Lote maior | 30.000 | 0 | 6min51,27s | 1.152,18 | 344.724 |
+
+No piloto, o warmup levou 408,725 s; não compare o tempo inteiro desse processo
+com o trecho programado das retomadas. Estes são três relatórios parciais, não
+o custo consolidado das 14 sessões. RSS e CPU não incluem uma medição de toda a
+stack Docker; percentuais de CPU acima de 100% representam múltiplos núcleos.
+Os onze lotes automáticos seguintes concluíram os 314.157 eventos restantes;
+o último teve 14.157 eventos e somente feedbacks.
+
+Antes do nativo, o autor demonstrou no smoke gerado: 20 eventos/10 decisões,
+repetição sem mudar o hash do checkpoint, scrape Prometheus com total 20 e
+valores esperados dos dois dashboards. Um processo encerrado abruptamente foi
+retomado para as mesmas features, scores e triagem do smoke contínuo, sem lacunas;
+sessões `interrupted` e `complete`. O código 124 do `timeout` usado nesse teste
+foi observado com uutils coreutils 0.10.0; não inferir códigos de outra implementação.
+Essa recuperação não substitui evidência de falhas nativas ou distribuídas.
+
+O recibo operacional foi informado como
+`c1192d5481f890f9bf878e8f8aa730011007f13c9f576cf0d5a84161b4e129d1`.
+O assistente reconciliou as saídas fornecidas, incluindo o relatório de qualidade
+anexado, mas não recalculou esse hash nem inspecionou os bancos nativos. A revisão
+publicada de referência é `939cf34`; isso não comprova o SHA integral do checkout
+durante a execução. `data/replay/paced-native-v1/assessment/result.json` e seu
+recibo continuam sendo os artefatos operacionais locais a preservar.
+
+O autor posteriormente confirmou `/summary` com 15 dias maduros e zero pendências,
+scrape/coletor em 1 e total 556.824 no Prometheus. O teste de indisponibilidade
+também passou, conforme a seção seguinte. A conferência visual dos painéis com
+os valores nativos finais ainda não foi informada; não confundir API com renderização.
+
+## Falha do exporter e recuperação informadas pelo autor — 2026-10-15
+
+[Evidência](../../references/evidence/exporter_recovery_author_validation_2026-10-15.json).
+O utilitário distribuído antes de sua incorporação ao repositório verificou o
+baseline nativo, parou somente o exporter, observou `FraudExporterUnavailable`
+em `firing`, reiniciou o serviço e confirmou coleta/resolução do alerta.
+
+| Medida observada | Tempo |
+| --- | ---: |
+| Solicitação de parada até observar `firing` | 56,36 s |
+| Solicitação de início até observar recuperação completa | 12,29 s |
+
+A parada inclui o comando Compose e sua espera; a recuperação inclui início,
+coleta, scrape e resolução. O polling foi a cada dois segundos. São tempos
+observados no laboratório, não latências exatas de transição nem SLA de produção.
+O resultado reportou `state_files_unchanged=true` para metadados, checkpoint,
+telemetria e os dois arquivos da avaliação. O autor enviou o resumo de terminal;
+os valores individuais dos hashes e o relatório completo permanecem locais.
+
+A rotina agora está versionada em `scripts/validation/exporter_recovery.py`,
+com pytest de controle no tox padrão e teste real em ambiente dedicado.
+Para uma futura validação explícita da stack existente:
+
+```bash
+poetry run tox -e exporter-recovery
+```
+
+Alternativa pela CLI, sem executar pytest:
+
+```bash
+poetry run python -m scripts.validation.exporter_recovery
+```
+
+Ambas provocam indisponibilidade temporária do exporter; não são comandos para
+executar automaticamente a cada validação de código. Geram relatório novo em
+`data/replay/measurements/paced-native-v1/exporter-recovery-*/result.json`.
+O runner registra o hash do seu código, verifica o baseline, tenta restaurar o
+exporter em `finally` e confere o retorno e os hashes; erros conservam relatório.
+Não executa replay, não remove volumes e não altera o núcleo identificado.
+O sucesso real relatado acima pertence ao utilitário anterior, não ao wrapper
+novo ainda não exercitado contra Docker pelo autor.
+
+Para conferir as três séries de saúde/progresso sem que `or` una labels iguais:
+
+```bash
+curl -fsSG http://127.0.0.1:19090/api/v1/query \
+  --data-urlencode 'query={__name__=~"up|fraud_monitor_collector_up|fraud_replay_events_total",job="fraud-replay"}' | \
+  poetry run python -m json.tool
+```
+
+O estado final informado foi coletor=1, up=1 e eventos=556.824; qualidade madura
+preservada. O alerta é avaliado no Prometheus; entrega de notificação externa não
+foi testada/configurada. [Testes e isolamento](TESTING.md#indisponibilidade-e-recuperação-do-exporter).
+O próximo incremento trata do [armazenamento e restauração](STORAGE.md), incluindo
+o inventário de todas as camadas de dados.
 
 ## Contrato de métricas
 
@@ -158,9 +307,15 @@ Promtool verifica métricas/config/regras; Compose pode validar sem daemon.
 Nesta preparação, o Grafana nativo registrou os dois dashboards e o datasource;
 as 27 consultas foram aceitas pelo Prometheus. O sandbox impediu os sockets Unix
 dos plugins backend do Grafana, portanto a consulta ponta a ponta via datasource
-Grafana e a renderização no navegador não foram validadas. Essa verificação fica
-para a stack Docker no host do autor.
+Grafana e a renderização no navegador não foram validadas nessa preparação.
+A verificação ficou para a stack Docker no host do autor, que posteriormente
+confirmou os valores esperados dos painéis no smoke gerado.
 
-Docker/RustFS no computador do autor, custo/latência da entrada nativa, restauração
-S3, monitoramento de features completas, transporte externo, CD/rollback e CT
-continuam abertos. Conclusão da preparação não equivale a esses resultados.
+Após essa preparação, o autor subiu a stack Docker, confirmou o smoke nos painéis
+e concluiu o replay programado nativo descrito acima. Depois validou coleta nativa
+e falha/alarme/retorno do exporter. Continuam abertos: conferência visual dos
+painéis no volume nativo final, custos
+consolidados de todas as sessões/stack, recorte 1x sob protocolo, RustFS com
+restauração S3, features completas, transporte externo, CD/rollback e CT.
+KinD + Helm é o destino final escolhido, com implantação posterior aos critérios
+de persistência/restauração e rollback. A preparação não equivale a esses resultados.

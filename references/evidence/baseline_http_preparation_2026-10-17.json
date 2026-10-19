@@ -1,0 +1,84 @@
+{
+  "schema": "fraud_baseline_http_preparation_v1",
+  "date": "2026-10-17",
+  "status": "assistant_validated_native_trio_pending",
+  "base_delivery_tree": "1bba110d9c90d1ad36aaea787a6883871cc59085",
+  "scope": "Explicit HTTP tracking for the initial dummy/logistic/HGB baseline runner; bounded synthetic native CLI test prepared, not historical migration or new model comparison evidence",
+  "justification": "The HGB Optuna fold and contribution producer passed native HTTP reload. The author requested coverage of the two other models trained in the separate initial baseline runner. All three now have a shared explicit service route.",
+  "previous_gate": "hgb_fold_tracking_author_validation_2026-10-17.json",
+  "models": [
+    "dummy_prior",
+    "logistic_regression",
+    "hist_gradient_boosting"
+  ],
+  "implementation": {
+    "one_main_run_per_model": true,
+    "http_experiment": "fraud-temporal-baseline-http-v1",
+    "native_synthetic_experiment": "fraud-baseline-smoke-http-v1",
+    "tracking_target_in_http_manifest_and_audit": true,
+    "local_manifest_and_default_behavior_retained": true,
+    "http_cli_default_output": "data/storage/tracking-lab/baselines",
+    "http_explicit_output_area": "data/storage/<directory>",
+    "managed_path_extension": "Add storage to existing allowed areas, retaining checks; no new path abstraction",
+    "api_paths_remain_explicit": "Internal run_baseline may use caller-supplied paths, as existing APIs do",
+    "mutually_exclusive_cli_options": [
+      "--tracking-uri with --tracking-root",
+      "--tracking-uri with --no-track"
+    ],
+    "http_stdout": "success JSON; training/SDK messages redirected to stderr",
+    "failed_second_reload": "First completed run ID retained in failed audit; second remote run FAILED; third not logged; no completed local baseline or staging",
+    "automatic_fallback_retry_or_remote_cleanup_added": false,
+    "protocol_parameters_features_selection_windows_changed": false,
+    "hgb_optuna_source_changed": false,
+    "shared_tracking_proxy_source_changed": false,
+    "server_images_compose_or_locks_changed": false,
+    "frozen_storage_sources_changed": false
+  },
+  "assistant_validation": {
+    "regression_tox": "134 passed, 15 skipped, 27 warnings in 15.24s; py314 tox OK in 23.01s; lock, lint and format passed",
+    "regression_scope": [
+      "tests/modeling/experiments/test_baseline_tracking_destination.py",
+      "tests/modeling/experiments/test_baseline_experiment.py",
+      "tests/modeling/experiments/test_baseline_history.py",
+      "tests/integrations",
+      "tests/storage/test_managed_paths.py",
+      "tests/storage/test_persistence_inventory.py",
+      "tests/tracking"
+    ],
+    "final_entrypoints_tox": "80 passed, 17 skipped in 0.60s; py314 tox OK in 5.98s with final native/runtime harness collection",
+    "http_tox": "4 passed, 17 warnings in 23.82s; baseline-http tox OK in 29.60s",
+    "http_checks": [
+      "Actual CLI creates all three models and scoped target in manifest/audit",
+      "Reload all three with local model directories unavailable, metrics/IDs linked and parity <=1e-12",
+      "Second parity failure retains first ID, marks second remote FAILED, and publishes no local baseline",
+      "Unavailable HTTP creates no local tracking DB; explicit local run still logs three models using old record/manifest format",
+      "Native harness exercised through same real HTTP fixture with only Docker inspection replaced"
+    ],
+    "http_scope": "Real SDK/server with disposable SQLite/file backend, not native PostgreSQL/RustFS proof",
+    "native_docker_commands_executed_by_assistant": false
+  },
+  "native_next_command": ".venv/bin/python -m tox -e tracking-baseline",
+  "native_scope": "Three synthetic pipelines (160 train/160 validation rows); public CLI with experiment constant scoped inside test child process, independent model reload, linked main runs, no client AWS variables or local tracking database; containers unchanged",
+  "native_output": "data/storage/tracking-lab/baseline-<id>",
+  "native_receipt": "data/storage/tracking-lab/receipts/baseline-<id>.json",
+  "open_boundaries": [
+    "Native trio approval pending",
+    "Reference/evaluation consumers still assume historical local tracking",
+    "No historical migration or remote-run rollback/deletion",
+    "Cross-store reference inventory and PostgreSQL backup/restore not implemented",
+    "Recovery of new HTTP baseline outputs and full storage cutover not validated"
+  ],
+  "historical_runs_migrated": false,
+  "production_promotion": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "source_sha256": {
+    "fraud_detection_mlops/modeling/experiments/baseline_experiment.py": "63139e2ffceedf48800057bc50b355638ae434ed2b534ed3c47d999422235d73",
+    "fraud_detection_mlops/storage/managed_paths.py": "818cb971359c8fe36481268f3e0fa2fd63315f5cbd6a503e036c418813609332",
+    "fraud_detection_mlops/integrations/mlflow_tracking.py": "641de2903345d3141b0afa8c79e24ba59360572e12247304bb67a409ec35644e",
+    "tests/modeling/experiments/test_baseline_tracking_destination.py": "b9df7cc3a798169db63d88fa641880a97332fd685d1b7b42f8c0cd7249544de8",
+    "tests/tracking/runtime/test_baseline_http.py": "ae49df8d570500de6afaf26307a26df5b6b631e59e2d6b4e45d68313e8c5201e",
+    "tests/tracking/live/test_baseline_http.py": "38ede36a26b41d3f11bbb1ecdaf955643f655aa42ad9c83d8648c7ea65267629",
+    "tox.toml": "f6ca6dfd9ef870b6fba02cb01118dddafc5e6f7ba7b4428c5d9da44845730b34"
+  }
+}

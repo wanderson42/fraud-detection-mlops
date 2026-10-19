@@ -1,0 +1,43 @@
+{
+  "schema": "fraud_persistence_inventory_preparation_v1",
+  "date": "2026-10-16",
+  "status": "implemented_fixture_validated_native_inventory_pending",
+  "required_closure_tree": "b8bc8e9a919b6f6a6748388eb976b7d28085d08a",
+  "problem": "Initial archive inventory excludes data/storage and files outside data; primary consumers still local and arbitrary output overrides remain possible.",
+  "scope": "Checkout metadata, Git indexed paths and versioned manual catalogue of known producers; no runtime contents/service inspection.",
+  "assistant_validation": {
+    "tox": "py314 OK",
+    "passed": 14,
+    "pytest_seconds": 0.16,
+    "tox_seconds": 5.63,
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "poetry_lock_check": "passed",
+    "native_data_or_services_used": false,
+    "git_worktree_metadata_pointer_case": "passed"
+  },
+  "source_sha256": {
+    "scripts/storage/persistence_inventory.py": "b7e2b97627b688dbc2d93c57fe24f2ee4e50263fda5762b2da5b8cffe4df9ef0",
+    "tests/storage/test_persistence_inventory.py": "a1863a1fe2715cf7b044b2dc1e6854a34a43aa2a2267be744bf74990e31121ed",
+    "references/persistence_catalogue_v1.json": "2382dc7cedaf4d8cf216e474418a6cfce994d7a0d9831cca4326e9fdb483d427"
+  },
+  "source_review_findings": [
+    "System-wide inventory has not been completed",
+    "Archive workspace omitted by prior inventory",
+    "Known standard data destinations under data, legacy reports/models paths need review if populated",
+    "Path overrides are not centrally constrained",
+    "System temporaries used in older verification/export helpers are distinguished from durable outputs",
+    "Three Docker volumes and optional external state bind declared but not inspected"
+  ],
+  "native_validation": "pending_author_execution",
+  "project_wide_storage_inventory_complete": false,
+  "destination_policy_enforced": false,
+  "recoverability_validated_by_this_step": false,
+  "primary_storage_migrated": false,
+  "writers_modified": false,
+  "scientific_code_or_contracts_changed": false,
+  "original_files_deleted_or_moved": false,
+  "new_services": false,
+  "new_dependencies": false,
+  "next_gate": "Run metadata inventory natively, reconcile unclassified/legacy files and external boundaries, then choose the bounded producer/destination changes before PostgreSQL/S3 consumer adoption."
+}

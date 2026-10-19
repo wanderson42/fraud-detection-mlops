@@ -1,0 +1,133 @@
+{
+  "date": "2026-10-15",
+  "status": "author_reported_inventory_complete",
+  "scope": "filesystem_metadata_only",
+  "inventory_complete": true,
+  "inventory_issues": 0,
+  "files": 506,
+  "bytes": 326821198,
+  "groups": [
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/baseline_v1",
+      "files": 11,
+      "bytes": 5262099,
+      "metadata_files": 5,
+      "dataset_or_result_manifests": [
+        "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/baseline_v1/f6d7aca720f74316b4183f97b6d866ab/manifest.json"
+      ],
+      "gold_audits": []
+    },
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/development_gold_v2",
+      "files": 383,
+      "bytes": 271102856,
+      "metadata_files": 192,
+      "dataset_or_result_manifests": [
+        "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/development_gold_v2/9f86edf1e8f2408098c5377456e8968e3a7ca5925a20222b8ab8547ef94cbaf9/manifest.json"
+      ],
+      "gold_audits": []
+    },
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/diagnostics_v1",
+      "files": 8,
+      "bytes": 618051,
+      "metadata_files": 2,
+      "dataset_or_result_manifests": [
+        "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/diagnostics_v1/961bb0c32fb84433af922908ea58e76b/manifest.json"
+      ],
+      "gold_audits": []
+    },
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/experiment_v1",
+      "files": 20,
+      "bytes": 10385129,
+      "metadata_files": 10,
+      "dataset_or_result_manifests": [
+        "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/experiment_v1/21ccedf10d944092ba874153c1d21257/manifest.json"
+      ],
+      "gold_audits": []
+    },
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/final_evaluation_v1",
+      "files": 9,
+      "bytes": 1917497,
+      "metadata_files": 5,
+      "dataset_or_result_manifests": [
+        "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/final_evaluation_v1/6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120/manifest.json"
+      ],
+      "gold_audits": []
+    },
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/gold_v1",
+      "files": 43,
+      "bytes": 25151651,
+      "metadata_files": 1,
+      "dataset_or_result_manifests": [
+        "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/gold_v1/manifest.json"
+      ],
+      "gold_audits": []
+    },
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1",
+      "files": 24,
+      "bytes": 12337597,
+      "metadata_files": 8,
+      "dataset_or_result_manifests": [
+        "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_assessment_execution_v1/results/manifest.json"
+      ],
+      "gold_audits": []
+    },
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_dependence_diagnostics_v1",
+      "files": 1,
+      "bytes": 25359,
+      "metadata_files": 1,
+      "dataset_or_result_manifests": [],
+      "gold_audits": []
+    },
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/reference_uncertainty_analysis_v1",
+      "files": 1,
+      "bytes": 10288,
+      "metadata_files": 1,
+      "dataset_or_result_manifests": [],
+      "gold_audits": []
+    },
+    {
+      "path": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/runs",
+      "files": 5,
+      "bytes": 10671,
+      "metadata_files": 4,
+      "dataset_or_result_manifests": [],
+      "gold_audits": [
+        "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/runs/gold_8b1564df49fc497080963986b05aa007.json"
+      ]
+    },
+    {
+      "path": "other_review_required",
+      "files": 1,
+      "bytes": 0,
+      "metadata_files": 0,
+      "dataset_or_result_manifests": [],
+      "gold_audits": []
+    }
+  ],
+  "inventory_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/inventory/inventory-v_burvrn.json",
+  "uploaded_output_sha256": "c47f6d2d57f00f0131337a874b1f0615cd7c02701bccd5f551133a2a4eaa643c",
+  "native_files_or_metadata_contents_inspected": false,
+  "assistant_interpretation": {
+    "first_selected_dataset": "gold_v1",
+    "reason": "Delimited original dataset with own audit and an existing verifier for schema/features/dates/IDs/split counts",
+    "development_group_contains_dataset_and_study_outputs": true,
+    "optimization_code_uses_sqlite": true,
+    "native_study_database_presence_confirmed": false,
+    "development_bytes_above_current_256_mib_budget": 2667400,
+    "other_review_required_zero_byte_file_identified": false,
+    "gold_s3_archived": false
+  },
+  "limits": [
+    "Filesystem metadata only; paths/counts do not prove content integrity or full recovery",
+    "First archive scope is gold_v1 plus own audits/references; development/studies/models/evaluations remain in the storage plan",
+    "SQLite snapshot and study recovery require a separate consistent-backup contract; no limit expansion or automatic data deletion"
+  ]
+}

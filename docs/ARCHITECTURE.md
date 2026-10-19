@@ -4,6 +4,89 @@ A estrutura acompanha responsabilidades existentes. O pacote permanece na raiz
 do checkout. O serving tem runtime e recursos operacionais explícitos;
 infraestrutura entra por capacidade implementada.
 
+## Persistência e armazenamento
+
+O [plano de armazenamento](operations/STORAGE.md) define responsabilidades e
+estado de implementação. Bronze/Silver/Gold e artefatos publicados terão cópias
+versionadas em RustFS via S3, com manifestos/checksums e restauração demonstrada.
+DuckDB permanece motor analítico sobre Parquet. SQLite continua no estado ativo
+do replay; MLflow ainda usa SQLite, com **PostgreSQL escolhido como destino**
+do novo servidor e migração própria antes da troca. Prometheus usa
+TSDB em volume próprio; Grafana usa provisioning versionado e volume para estado.
+Uma feature store eventual reutiliza o offline e escolhe online conforme o spike.
+
+O inventário e piloto S3 limitado estão em `scripts/storage/archive.py`, fora dos
+scripts identificados do replay. O cliente AWS CLI usa perfil Compose próprio;
+a suíte padrão usa S3 simulado. O autor validou upload/reenvio/restauração real
+de documentos e release no RustFS. O modelo restaurado foi recarregado com
+identidade preservada e erro zero no score histórico, via TestClient em processo.
+A migração ampla ainda não foi verificada. `scripts/storage/bronze_archive.py`
+prepara um snapshot Bronze completo com inventário arquivado e validação offline
+antes de publicar localmente; o autor aprovou 183 partições e 188 arquivos.
+O perfil próprio preserva o piloto. `scripts/storage/bronze_transfer.py` delega
+cada transferência a um job `storage-transfer` com cliente boto3 reutilizado,
+dependências operacionais fixadas por hashes e acesso apenas a `data/storage/`.
+A restauração passa pelo verificador Bronze no host antes de receber seu caminho
+final. O autor validou o build e o round-trip nativo: 189 objetos, reenvio sem
+uploads e 183 partições recuperadas/verificadas com o inventário baixado.
+Os consumidores continuam lendo a materialização local. O novo
+`scripts/storage/silver_archive.py` prepara Silver com inventário, contrato e
+suas auditorias em `runs/`; usa o mesmo worker S3 com perfil explícito Silver.
+No restore, aplica `verify_silver` existente sobre a cópia: integridade, schema
+Arrow, cobertura e contagens SQL. O autor aprovou preparo e round-trip Silver:
+188 objetos, reenvio sem uploads e 183 partições/1.754.155 linhas recuperadas
+com contrato/inventário baixados. [Evidência Silver](../references/evidence/silver_archive_author_validation_2026-10-15.json).
+Gold de desenvolvimento/estudos e tracking seguem em etapas próprias. [Evidência](../references/evidence/bronze_transfer_author_validation_2026-10-15.json).
+Arquivos locais, volumes e cópias S3
+precisam de inventário e recuperação, e um único laptop não fornece independência
+física das cópias. KinD + Helm é o destino final escolhido, após restauração e
+rollback; metas condicionais como broker/feature store não bloqueiam essa implantação.
+
+`scripts/storage/gold_archive.py` trata somente `gold_v1` e suas auditorias,
+incluindo inventário, contratos Silver/Gold e protocolo temporal. Reutiliza o
+staging e worker S3 (perfil Gold/prefixo próprio); o host aplica `verify_gold`
+congelado na cópia com essas referências. Schema, invariantes das features,
+datas, IDs e split counts são conferidos sem recomputar features ou acessar
+Silver/Bronze/modelos. O autor aprovou o ciclo nativo: 48 arquivos/25.196.448 bytes,
+49 objetos, reenvio sem uploads e restore verificado com 42 partições, 19 features
+e 402.877 linhas, usando referências baixadas. Consumidores ainda leem paths locais.
+[Evidência Gold](../references/evidence/gold_archive_author_validation_2026-10-15.json).
+Estudos Optuna, modelos e avaliações têm cobertura e verificação próprias.
+[Detalhes](operations/STORAGE.md#gold-v1-completa-arquivo-com-contratos-e-protocolo).
+
+`scripts/storage/development_gold_archive.py` seleciona um run explícito de
+`development_gold_v2`: manifesto e `transactions/`, inventário e protocolo HGB.
+O perfil tem prefixo `development-gold/v1/<bundle_id>/`, usa o mesmo worker e
+`verify_data` congelado com a política arquivada. Preserva run ID, manifesto e
+proveniência de implementação/Silver sem reescrever caminhos históricos; não
+consulta estudo/SQLite/modelos ou dados upstream. O autor aprovou preparo e
+round-trip: 66 arquivos/38.202.741 bytes, 67 objetos, reenvio sem uploads e restore
+com 63 partições/19 features/603.669 linhas. Política/inventário vieram da cópia
+baixada; identidade do manifesto foi preservada. Leitores continuam locais.
+[Evidência nativa](../references/evidence/development_gold_archive_author_validation_2026-10-15.json).
+Estudo e dataset são unidades de recuperação distintas, ligadas pelo
+run ID e hash do manifesto. O preparo offline do backup do estudo está em
+`scripts/storage/hgb_study_backup.py`: reutiliza o lock real do escritor, abre a
+fonte SQLite em modo somente leitura e usa Online Backup API; confere integridade,
+foreign keys e digest do dump lógico. Modelos, predições, tentativas e relatórios
+acompanham o snapshot; WAL/SHM/journal/lock não são copiados como payload.
+`verify_hgb_optimization` existente reconcilia trials e métricas em uma cópia
+descartável com dataset arquivado. Somente `study_path` do relatório dessa cópia
+é adaptado; banco/relatório arquivados e referências de tracking permanecem intactos.
+O autor aprovou o preparo nativo: 322 arquivos/233.048.483 bytes, 20 trials/63 fits,
+sem refit ou alteração de tracking. `scripts/storage/hgb_study_transfer.py`
+reutiliza o worker em `fraud-artifacts/hgb-study/v1/<bundle_id>/`; datasets mantêm
+bucket/prefixos/identidades. Restore exige ID explícito de dataset local verificado
+antes do download e reaplica a verificação do estudo antes do destino final.
+Ciclo S3 aprovado pelo autor em 2026-10-16: 323 objetos, reenvio sem uploads e
+322 arquivos restaurados/verificados, 20 trials/63 tentativas e mesmo hash lógico.
+O restore não leu a fonte original. Recuperação do estudo concluído demonstrada;
+retomada de treinamento e migração de tracking mantêm critérios próprios.
+[Evidência S3](../references/evidence/hgb_study_transfer_author_validation_2026-10-16.json).
+[Evidência nativa do preparo](../references/evidence/hgb_study_backup_author_validation_2026-10-15.json).
+[Contrato](operations/STORAGE.md#backup-consistente-do-estudo-hgb-preparo-offline).
+[Contrato e limites](operations/STORAGE.md#gold-de-desenvolvimento-dataset-e-estudo).
+
 ## Modelagem
 
 | Local | Responsabilidade e fronteira |
@@ -197,3 +280,192 @@ Prometheus conserva séries locais por 48 h/512 MB; Grafana provisiona operaçã
 qualidade madura/scores. RustFS não é backend do SQLite ativo: seu próximo marco
 é arquivamento de artefatos e backups consistentes com restauração verificada.
 [Contrato de métricas e execução](operations/OBSERVABILITY.md).
+
+
+## Inventário do tracking antes da migração
+
+`scripts/storage/mlflow_inventory.py` é um CLI operacional stdlib: lê banco/WAL
+como arquivos, consulta uma cópia temporária sem inicializar MLflow, inventaria
+artefatos e referências JSON e grava relatório novo em data/storage/inventory.
+Não modifica a integração científica atual. A configuração atual força SQLite
+e alguns consumidores exigem mlflow.db; a futura integração HTTP deve cobrir
+essas fronteiras. O autor aprovou a coleta corrigida: 70 runs/66 logged models,
+627 arquivos/253.128.963 bytes, zero referências não resolvidas ou localizações
+gerenciadas ausentes. O Default tem zero runs/modelos e diretório ausente;
+preservar sua linha/URI. Inventário revisado; backup e migração ainda não implementados.
+[Evidência nativa](../references/evidence/mlflow_inventory_author_validation_2026-10-16.json).
+[Cobertura e critérios de migração](operations/MLFLOW.md#inventário-antes-da-migração-postgresql--s3).
+
+
+## Snapshot offline do tracking MLflow
+
+`scripts/storage/mlflow_backup.py` reutiliza o inventário e helpers stdlib de
+arquivo/path/hash, com perfil local próprio de 1.024 arquivos/256 MiB.
+O transporte S3 compartilhado agora aceita esse perfil, sem ampliar os anteriores. Banco/WAL são copiados com fonte quiescente para
+staging gerenciado e normalizados via Online Backup API na cópia. Todos os
+artefatos/auxiliares regulares e diretórios do tracking têm manifesto e verificação;
+colisão, banco fora dos stores principal/interface, mudança da fonte ou cobertura URI incompleta impedem
+publicação. Inventário pode receber diretório temporário explícito para esse uso;
+a CLI anterior mantém comportamento. Código científico permanece preservado.
+Preparo/verify e ciclo S3 nativos aprovados para o snapshot dos dois stores;
+recarga operacional/migração ainda abertas. [Contrato](operations/MLFLOW.md#backup-offline-do-tracking-preparo-e-verificação).
+
+
+O preparo nativo detectou o segundo store documentado em
+`data/tracking/interface-smoke`: 1 run concluída, 1 logged model, 6 arquivos/32.088
+bytes, sem localizações gerenciadas ausentes. A correção inclui os dois stores
+com bancos/WAL e artefatos conferidos independentemente e limites agregados,
+preservando a separação do smoke sintético. Bancos desconhecidos continuam
+bloqueados. Retentativa de preparo e verificação nativos aprovadas para os dois stores;
+publicação, reenvio idempotente e recuperação S3 aprovados pelo autor. Migração,
+recarga operacional e limpeza permanecem abertas. [Cobertura e comando](operations/MLFLOW.md#cobertura-dos-dois-stores-mlflow--correção-de-2026-10-16).
+[Registro do diagnóstico e preparação](../references/evidence/mlflow_backup_multistore_preparation_2026-10-16.json).
+
+
+O backup MLflow teve **preparo e verificação locais aprovados pelo autor**:
+dois stores, 71 runs, 67 logged models, 633 artefatos; pacote de 640 arquivos e
+256.354.588 bytes. O verificador conferiu os dois bancos e artefatos sem ler
+originais. Tox nativo: 70 testes aprovados, um aviso, Ruff/formatação/lockfile
+aprovados. [Registro nativo](../references/evidence/mlflow_backup_author_validation_2026-10-16.json). A transferência S3 agora está
+implementada/testada com o job existente, incluindo restauração em diretório
+separado e nova verificação por store; publicação/reenvio/restore nativos aprovados.
+A recuperação sobre cópia descartável foi validada pelo autor em 2026-10-16; o resultado local via SDK está no runbook MLflow.
+[Procedimento](operations/MLFLOW.md#transferência-e-recuperação-s3-do-snapshot-mlflow).
+O acesso local ao histórico e à referência pelo SDK foi validado depois desse
+preparo. Migração PostgreSQL, adoção pelos consumidores e inventário/limpeza
+globais mantêm critérios próprios. Código científico, contratos,
+evidências e URIs históricas permanecem preservados.
+
+
+**Ciclo S3 do snapshot MLflow aprovado pelo autor em 2026-10-16:** publicação com
+641 objetos enviados/verificados, reenvio com zero uploads/641 objetos reutilizados
+e restore em diretório separado com 640 arquivos/256.354.588 bytes. Os dois stores
+mantiveram 71 runs, 67 logged models, 633 artefatos e os hashes SQLite/lógicos;
+integridade/FKs/tabelas/URIs conferidas, sem leitura dos originais pelo verificador.
+16 testes nativos passaram no tox. [Evidência nativa](../references/evidence/mlflow_transfer_author_validation_2026-10-16.json).
+Gate de acesso ao histórico e recarga do modelo concluído em cópia descartável,
+com paths históricos mapeados somente nessa cópia e sem depender dos originais.
+O autor validou esse uso local pelo SDK em 2026-10-16.
+O snapshot conferido permanece preservado; PostgreSQL, adoção pelos leitores,
+rollback, inventário global e limpeza continuam abertos.
+[Resultado e próximo critério](operations/MLFLOW.md#ciclo-s3-nativo-do-snapshot-mlflow--2026-10-16).
+
+### Recuperação do tracking antes da conversão do backend
+
+A prova de uso acrescenta um processo local, sem novo serviço ou dependência.
+`mlflow_recovery` coordena verificação/cópia/mapeamento/limpeza; o worker usa o SDK
+e a revisão skops existente. Apenas a cópia descartável recebe URIs adaptadas.
+Testado com fixtures e validado pelo autor em cópia descartável. [Fronteiras e procedimento](operations/MLFLOW.md#ensaio-descartável-de-recuperação-mlflow).
+
+**Recuperação local MLflow aprovada pelo autor em 2026-10-16:** os dois stores
+forneceram 71 runs, 67 logged models e 321 registros de histórico. A referência
+recarregada reproduziu o score com erro zero; restores e tabelas foram preservados
+e a cópia descartável removida. O gate fecha acesso local pelo SDK e um smoke de
+inferência; serviço HTTP/PostgreSQL, migração primária e inventário global mantêm
+critérios próprios. [Resultado e evidência](operations/MLFLOW.md#recuperação-mlflow-validada-pelo-autor--2026-10-16).
+
+### Inventário sem alterar os produtores congelados
+
+`persistence_inventory` lê catálogo/Git e metadados do checkout, incluindo o workspace
+de archives/restores antes omitido. O módulo stdlib separado preserva os fingerprints
+atuais de backup/transporte e não acrescenta serviço ou dependência. O catálogo é
+uma revisão manual de produtores conhecidos, não um analisador de código ou política
+de escrita imposta. [Fronteiras e critérios](operations/STORAGE.md#inventário-do-checkout-e-catálogo-de-produtores).
+
+
+O inventário do checkout foi executado pelo autor: 4.990 arquivos, sem falhas de
+coleta; o marcador vazio de `data/external/` foi revisado e os mounts principais
+identificados. A primeira contenção exige áreas de `data/` em quatro CLIs de
+exemplos, recibo Docker e inicialização de observabilidade. Não cobre todas as
+APIs/CLIs nem migra consumidores. [Destinos, comandos e limites](operations/STORAGE.md#destinos-de-escrita--primeira-cobertura-operacional).
+
+
+### Serviço MLflow PostgreSQL/S3 — ensaio isolado validado
+
+**Gate nativo aprovado pelo autor em 2026-10-17:** uma run operacional foi
+conferida por SQL, e seu artefato JSON por proxy HTTP e leitura S3 independente.
+Após recriar PostgreSQL e MLflow, os registros e bytes permaneceram disponíveis.
+Os IDs dos containers mudaram; imagens e volume PostgreSQL foram preservados.
+O RustFS permaneceu em execução. Pytest: **1 aprovado em 21,56 s**; tox: **OK**.
+
+A UI em `http://127.0.0.1:15001` mostra o experimento 2, run
+`87ac0b4a310f4ab8952a366932c0d12a`. O ensaio cobre uma run com dois pontos de
+histórico e um JSON pequeno. Adoção pelos produtores, recarga de modelo pelo novo
+serviço, histórico e backup PostgreSQL seguem com critérios próprios.
+
+[Operação e próximos critérios](../infra/tracking/README.md).
+[Evidência relatada e limites](../references/evidence/tracking_lab_author_validation_2026-10-17.json).
+
+### Roteamento explícito de um produtor de modelos
+
+A integração `integrations/mlflow_tracking.py` mantém o backend local anterior e
+acrescenta contexto HTTP serial com restauração da URI e dos limites de requisição.
+Somente o exemplo de contribuição expõe a opção HTTP nesta entrega. Experimentos
+HTTP herdam a localização de artefatos do servidor; destinos locais/S3 diretos são
+recusados nesse modo. A recarga usa o verificador skops e a assinatura existentes.
+Não há fallback automático, adapter de storage novo ou alteração dos outros runners.
+[Contrato do produtor](modeling/CONTRIBUTING_MODELS.md#primeiro-produtor-http-no-laboratório).
+
+### Tracking HGB: estado de busca e registro de modelos
+
+A contribuição HTTP teve recarga/paridade e retorno local aprovados pelo autor.
+O próximo incremento é o HGB: metadados MLflow pelo serviço PostgreSQL e modelos
+pelo proxy para RustFS, com endpoint/experimento vinculados à identidade de novos
+estudos. `study.db` continua sendo o estado local Optuna com escritor único.
+O aceite nativo proposto é de um fold sintético, sem reabrir o estudo encerrado.
+[Contrato operacional e fronteiras](operations/HGB_TRACKING.md).
+
+### Trio de baselines no serviço de tracking
+
+O runner da comparação inicial de dummy/regressão/HGB passa a aceitar HTTP
+explicitamente. Ele é separado do runner Optuna, cujo fold nativo foi aprovado.
+O serviço concentra metadados PostgreSQL e artefatos RustFS via proxy; manifests
+e audits dos novos experimentos HTTP ficam em `data/storage/tracking-lab`.
+Os destinos e formatos locais antigos continuam disponíveis. Não há migração de
+runs ou alteração dos consumidores históricos nesta etapa.
+[Contrato e teste do trio](modeling/BASELINE.md#tracking-http-do-trio-de-baselines).
+
+### Aceite dos três produtores de baseline
+
+O trio dummy/regressão/HGB foi aprovado no serviço nativo com recarga independente
+sem arquivos locais, erro zero e containers preservados. Contribuição e fold do
+runner Optuna têm seus aceites separados. As rotas HTTP são opt-in; consumidores
+históricos e padrão local permanecem. A arquitetura não foi alterada por este
+fechamento. [Evidência](../references/evidence/baseline_tracking_author_validation_2026-10-17.json).
+
+### Consumo local e recuperação como fronteiras separadas
+
+A revisão de fontes identificou sete fronteiras de consumo local ainda ligadas
+à identidade da referência congelada. O novo inventário fonte/catálogo é
+explicitamente estático; não muda transporte, dados ou execução científica.
+Serving já lê releases independentes do tracking e deve manter essa propriedade.
+O restore usa alvo PostgreSQL/RustFS/MLflow temporário separado da fonte.
+A implementação e o aceite nativo estão concluídos no recorte da bancada.
+[Mapa e critérios](operations/TRACKING_RECOVERY.md).
+
+**Recuperação da bancada aprovada pelo autor (2026-10-19):** PostgreSQL e 38
+objetos S3 restaurados em volumes/rede próprios; 8 runs, 6 modelos e 44 pontos
+históricos conferidos pela API. O modelo fixado recarregou pelo proxy e reproduziu
+20 scores com erro máximo zero. Fonte/captura preservadas, alvo e credenciais
+temporários removidos; pytest live passou em 20,89 s. **Recorte de inventário e
+recuperação encerrado.** Próxima prioridade: CD/rollback do serving, seguido de
+monitoramento de dados/features. Migração dos sete consumidores históricos,
+cutover, limpeza e inventário global seguem em backlog próprio.
+[Comandos, escopo e limites](operations/TRACKING_RECOVERY.md).
+
+### Primeiro ensaio de CD/rollback do serving
+
+**Ensaio blue-green aprovado pelo autor em 2026-10-19:** troca A → B → A pela
+mesma URL NGINX, pacote inválido bloqueado e falha de B observada como HTTP 502.
+O retorno a A foi verificado em **3,10 s**, com score idêntico e entradas intactas;
+os recursos temporários foram removidos. B usa os mesmos pesos e imagem de A.
+O gate Docker está concluído neste recorte; o fluxo versionado de entrega é o
+próximo incremento. Não há aprovação de novo modelo, CD de produção ou zero downtime.
+[Procedimento e limites](operations/SERVING_ROLLOUT.md).
+
+A bancada usa backends privados sem portas publicadas e NGINX conectado à rede
+interna e à bridge de entrada com porta loopback. A decisão para o portfolio é
+manter blue-green: uma réplica ativa, candidata temporária e retenção anterior
+por uma janela de rollback a definir. Essa política é planejada; o ensaio atual
+remove A, B e gateway ao terminar. O provisionamento Helm e o fluxo permanente
+ainda serão implementados. [Decisão](operations/SERVING_ROLLOUT.md#estratégia-escolhida-para-o-portfolio).
