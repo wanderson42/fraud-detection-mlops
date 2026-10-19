@@ -469,3 +469,13 @@ manter blue-green: uma réplica ativa, candidata temporária e retenção anteri
 por uma janela de rollback a definir. Essa política é planejada; o ensaio atual
 remove A, B e gateway ao terminar. O provisionamento Helm e o fluxo permanente
 ainda serão implementados. [Decisão](operations/SERVING_ROLLOUT.md#estratégia-escolhida-para-o-portfolio).
+
+### Imagem de serving vinculada ao commit
+
+A CI ganhou um job após `quality` que constrói a imagem uma vez, qualifica HTTP e
+rollback com release **sintética** e exporta essa mesma imagem com hashes e recibos
+vinculados ao commit. Sem dados históricos, publicação em registry ou deploy no
+laptop. Implementação e controles offline concluídos; **build/gate Docker e
+execução GitHub Actions pendentes**. O pacote da CI tem retenção de três dias;
+recarga do arquivo em outro engine e promoção de uma release aprovada têm gate
+próprio. [Fluxo e limites](operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).

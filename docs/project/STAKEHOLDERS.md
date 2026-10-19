@@ -572,3 +572,13 @@ evidência ao fluxo versionado de entrega, antes de levar o provisionamento a He
 
 [Evidência](../../references/evidence/serving_rollout_author_validation_2026-10-19.json) e
 [procedimento e limites](../operations/SERVING_ROLLOUT.md#aceite-nativo--2026-10-19).
+
+### Entrega versionada: implementação e gate pendente
+
+A CI ganhou um job após `quality` que constrói a imagem uma vez, qualifica HTTP e
+rollback com release **sintética** e exporta essa mesma imagem com hashes e recibos
+vinculados ao commit. Sem dados históricos, publicação em registry ou deploy no
+laptop. Implementação e controles offline concluídos; **build/gate Docker e
+execução GitHub Actions pendentes**. O pacote da CI tem retenção de três dias;
+recarga do arquivo em outro engine e promoção de uma release aprovada têm gate
+próprio. [Fluxo e limites](../operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).

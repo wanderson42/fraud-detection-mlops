@@ -1,0 +1,52 @@
+{
+  "schema": "fraud_serving_delivery_preparation_v1",
+  "date": "2026-10-19",
+  "status": "implemented_native_and_actions_gates_pending",
+  "scope": "one_committed_runtime_build_synthetic_HTTP_rollback_and_image_export_not_historical_reference_promotion",
+  "baseline_user_commits": {
+    "problem_context": "5ba6b89",
+    "implementation": "39757af",
+    "documentation": "12043e4",
+    "provenance": "Author-reported commit IDs; content baseline is the previously delivered closure tree, not an independently fetched native branch"
+  },
+  "controller_sha256": "801b37b5a8f43c28c4aeac1d419624926f05ffb54906e67cb4e6b183c895e23f",
+  "workflow_sha256": "d05a24ddfd2bbb3611c35aba5dc05bcaa18b3d5ff89a719ded23872b45bb0920",
+  "upstream_pins": {
+    "build_python": "python:3.14.4-slim-trixie@sha256:2ca02f32b4d9d893863367ce07ec1972819f476dd38d8612f2a9cb6a41cbb727",
+    "python_amd64_manifest": "sha256:2409290aa375de35f6492db84c700067d5c4c2aacfaf770c155d7528fb68bcf1",
+    "python_source": "https://hub.docker.com/v2/repositories/library/python/tags/3.14.4-slim-trixie",
+    "python_pin_verification": "Docker Hub tag API read by assistant on 2026-10-19; tag digest and Linux/amd64 manifest reconciled",
+    "upload_artifact_commit": "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+    "upload_artifact_version": "v7.0.2",
+    "upload_artifact_source": "https://github.com/actions/upload-artifact/releases/tag/v7.0.2"
+  },
+  "acceptance": {
+    "native_docker_run": false,
+    "github_actions_run": false,
+    "image_archive_reload": false,
+    "production_CD": false,
+    "historical_reference_changed": false,
+    "source_code_committed_by_assistant": false
+  },
+  "verification_limits": {
+    "offline_checks": "Expected descriptor hash and source SHA from selected trusted CI run; payload bytes and cross-record consistency only",
+    "image_load": false,
+    "signature_verification": false,
+    "durable_backup": false,
+    "bit_reproducible_rebuild_claimed": false,
+    "artifact_retention_days": 3
+  },
+  "next_gate": "Commit reviewed delivery inputs, then run opt-in serving-delivery locally or run the existing CI on the branch; do not repeat historical training/replay/restore",
+  "assistant_validation": {
+    "python": "3.14.4",
+    "selection": "tests/serving tests/storage/test_managed_paths.py tests/storage/test_persistence_inventory.py",
+    "passed": 181,
+    "skipped": 3,
+    "seconds": 7.7,
+    "ruff_check": "passed",
+    "ruff_format_check": "286 files already formatted",
+    "new_controlled_delivery_tests": 23,
+    "docker_available": false,
+    "workflow_static_lint": "actionlint v1.7.12 passed; optional external shellcheck/pyflakes disabled; inline Python and shell syntax validated separately"
+  }
+}

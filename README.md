@@ -400,3 +400,13 @@ os recursos temporários foram removidos. B usa os mesmos pesos e imagem de A.
 O gate Docker está concluído neste recorte; o fluxo versionado de entrega é o
 próximo incremento. Não há aprovação de novo modelo, CD de produção ou zero downtime.
 [Procedimento e limites](docs/operations/SERVING_ROLLOUT.md).
+
+### Primeiro incremento da entrega versionada
+
+A CI ganhou um job após `quality` que constrói a imagem uma vez, qualifica HTTP e
+rollback com release **sintética** e exporta essa mesma imagem com hashes e recibos
+vinculados ao commit. Sem dados históricos, publicação em registry ou deploy no
+laptop. Implementação e controles offline concluídos; **build/gate Docker e
+execução GitHub Actions pendentes**. O pacote da CI tem retenção de três dias;
+recarga do arquivo em outro engine e promoção de uma release aprovada têm gate
+próprio. [Fluxo e limites](docs/operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).

@@ -16,6 +16,7 @@ Leia o [README do projeto](../README.md) para começar e a
 | Como executar, recuperar e migrar? | [Operações](operations/OPERATIONS.md), [ablações](operations/EXPERIMENT_EXECUTION.md), [MLflow](operations/MLFLOW.md) |
 | Como verificar uma mudança? | [Testing](operations/TESTING.md) |
 | Como exportar, iniciar e conferir HTTP/wheel/Docker? | [Serving](operations/SERVING_CONTRACT.md) |
+| Como a CI constrói e qualifica a imagem vinculada ao commit? | [Entrega versionada e artifact](operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19) |
 | A troca blue-green e o rollback já foram aprovados? | [Aceite nativo, estratégia e próximo incremento](operations/SERVING_ROLLOUT.md#aceite-nativo--2026-10-19) |
 | Como separar transação/feedback e retomar o replay causal local? | [Contratos, executor e limites](operations/CAUSAL_REPLAY.md) |
 | Como corrigir e conferir a paridade numérica? | [Correção versionada](operations/NUMERICAL_CORRECTIVE_REPLAY.md) e [resultado nativo](operations/NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13) |
@@ -154,3 +155,13 @@ os recursos temporários foram removidos. B usa os mesmos pesos e imagem de A.
 O gate Docker está concluído neste recorte; o fluxo versionado de entrega é o
 próximo incremento. Não há aprovação de novo modelo, CD de produção ou zero downtime.
 [Procedimento e limites](operations/SERVING_ROLLOUT.md).
+
+### Qualificação da imagem na CI
+
+A CI ganhou um job após `quality` que constrói a imagem uma vez, qualifica HTTP e
+rollback com release **sintética** e exporta essa mesma imagem com hashes e recibos
+vinculados ao commit. Sem dados históricos, publicação em registry ou deploy no
+laptop. Implementação e controles offline concluídos; **build/gate Docker e
+execução GitHub Actions pendentes**. O pacote da CI tem retenção de três dias;
+recarga do arquivo em outro engine e promoção de uma release aprovada têm gate
+próprio. [Fluxo e limites](operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).

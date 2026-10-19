@@ -6,5 +6,9 @@
   "source": "Docker Hub official library/nginx tag API; index and amd64 manifest retrieved by assistant",
   "source_url": "https://hub.docker.com/v2/repositories/library/nginx/tags/1.30.6-alpine",
   "serving_image": "sha256:db2e2ed60c2b3102041d55a93ca5dba0b0d9c5624c14bd7581947c1de0b600ab",
-  "serving_pin_source": "references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json"
+  "serving_pin_source": "references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json",
+  "build_python": "python:3.14.4-slim-trixie@sha256:2ca02f32b4d9d893863367ce07ec1972819f476dd38d8612f2a9cb6a41cbb727",
+  "build_python_linux_amd64_manifest": "sha256:2409290aa375de35f6492db84c700067d5c4c2aacfaf770c155d7528fb68bcf1",
+  "build_python_source": "https://hub.docker.com/v2/repositories/library/python/tags/3.14.4-slim-trixie",
+  "build_python_reviewed_on": "2026-10-19"
 }

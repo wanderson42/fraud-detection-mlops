@@ -182,9 +182,95 @@ conceituais; não implicam adoção de Argo Rollouts neste projeto.
 
 ## Próximo incremento
 
-Conectar os gates ao fluxo versionado de entrega: vincular imagem por digest e
-manifesto de release, executar validações da candidata, registrar promoção
-explícita e preservar o recibo de troca/rollback. Depois, levar o provisionamento
-a KinD + Helm com os mesmos controles de identidade e persistência.
-Este fechamento altera documentação e evidência; não implementa novo workflow,
-política permanente de retenção ou recursos Kubernetes.
+O primeiro incremento de entrega versionada está implementado na CI: build,
+qualificação sintética e exportação da imagem exata, conforme a seção abaixo.
+A execução nativa/CI deste novo gate está pendente. Depois da aprovação, o próximo
+recorte é consumir o artefato exportado em um alvo separado e definir a promoção
+explícita de uma release aprovada. KinD + Helm permanece o destino de
+provisionamento, com os mesmos controles de identidade e persistência. A política
+permanente de retenção e os recursos Kubernetes ainda não estão implementados.
+
+## Entrega versionada na CI — implementação de 2026-10-19
+
+**Estado: implementada e testada com controles offline; build/gate Docker e
+execução no GitHub Actions pendentes.** O aceite nativo anterior continua válido
+para a imagem e referência fixadas nele; não aprova automaticamente uma imagem
+construída de outro commit.
+
+O novo job `serving-delivery` do workflow existente depende de `quality`. Usa
+runner GitHub hospedado, sem conexão com o laptop, MLflow, RustFS ou datasets.
+As permissões continuam `contents: read`; não há push de imagem, deploy remoto,
+segredos de infraestrutura ou novo controlador de rollout.
+
+A sequência é:
+
+1. Exigir o SHA completo esperado igual ao HEAD e entradas de build/controle
+   commitadas; guardar seus hashes. `.vscode/settings.json` fica fora desse recorte.
+2. Puxar Python e NGINX pelos digests do lock e construir **uma única imagem**
+   Linux/amd64 com o Dockerfile existente, rotulada com o commit. O build usa
+   o lock científico; não altera dependências nem o pin histórico de serving.
+3. Gerar uma release com 160 linhas sintéticas e pequeno HGB. Isso inclui fit
+   da fixture; não lê ou retreina a referência histórica. A evidência é sempre
+   `synthetic_smoke`, sem avaliação nova de fraude.
+4. Aplicar o checker HTTP existente: identidade, score, 422, reinício, proteções
+   do container e falhas de integridade. Reutilizar o controller blue-green
+   aprovado para A → B → A com essa mesma imagem/release sintética.
+5. Conferir novamente o ID antes de exportar `image.tar`, sem rebuild. O limite
+   do arquivo é 1 GiB; o ID local não é apresentado como digest de registry.
+6. Revalidar as entradas de origem, remover a tag exclusiva criada pelo job e
+   publicar `delivery.json` somente após gates e cleanup. Em falha, guardar
+   `failure.json` com a fase; nenhum descritor qualificado permanece.
+7. Preservar a imagem exportada, release sintética, manifesto de origem, logs e
+   recibos no artifact da execução. O nome inclui commit/run/tentativa e a
+   retenção é **3 dias**, para inspeção deste laboratório; não é backup durável.
+
+Os resultados ficam em `data/serving/deliveries/<uuid>/`. A CI também grava
+`data/serving/delivery-summary.json` e apresenta o commit, ID local da imagem e
+SHA-256 de `delivery.json` no resumo da execução. Imagens base e cache de build
+podem permanecer no daemon; não há limpeza global do Docker. Se o cleanup dos
+containers/redes falhar, o staging permanece no diretório do job para diagnóstico.
+Em timeout abrupto do runner/daemon não há garantia de execução do cleanup.
+
+### Verificação do pacote exportado
+
+O comando `verify` compara hashes, presença dos arquivos, origem declarada e
+coerência entre os recibos de HTTP/rollback. Não carrega `image.tar`, não
+desserializa o modelo, não chama Docker e não verifica assinatura. O SHA esperado
+do descritor deve vir do resumo da **execução escolhida no GitHub**, junto com o
+commit completo; ler esse valor somente do próprio pacote não confirma origem.
+
+Após baixar e extrair o artifact em um diretório novo dentro de
+`data/serving/deliveries/`, usar os valores reais daquela execução:
+
+```bash
+poetry run python -m scripts.serving.delivery_gate verify \
+  --directory "$PWD/data/serving/deliveries/from-actions-RUN_ID" \
+  --expected-source-sha COMMIT_COMPLETO_DO_RESUMO \
+  --expected-descriptor-sha256 SHA256_DO_DESCRITOR_NO_RESUMO
+```
+
+Não há `docker load` ou troca da referência neste incremento. Exportar a imagem
+não comprova sua recarga em outro engine: `archive_reload_validated=false`. O
+próximo gate de consumo deve carregar o arquivo verificado em alvo separado e
+repetir identidade/HTTP antes de qualquer promoção explícita. Uma assinatura ou
+attestation verificável também não é alegada por este descritor.
+
+### Gate local opt-in
+
+A suíte padrão testa falhas e protocolo sem daemon. Para executar o mesmo build
+e gate no host, primeiro revisar e commitar as entradas da entrega; depois:
+
+```bash
+.venv/bin/python -m tox -e serving-delivery
+```
+
+Esse opt-in constrói uma imagem, baixa bases fixadas e exporta um arquivo que
+pode ter centenas de MiB. Não depende dos serviços de tracking e não substitui
+o ensaio histórico da referência. Escolher uma primeira execução nativa **ou**
+CI, sem necessidade de repetir ambos para cada alteração documental.
+
+A CI roda nos eventos já existentes (push/PR/manual), após a suíte completa.
+Nenhum arquivo é enviado ao GitHub pelo aplicador deste pacote; publicar a branch
+é uma ação posterior do autor. Referências: [artifacts de workflow](https://docs.github.com/en/actions/tutorials/store-and-share-data),
+[upload-artifact v7.0.2](https://github.com/actions/upload-artifact/releases/tag/v7.0.2) e
+[build Docker](https://docs.docker.com/build/building/), consultadas em 2026-10-19.

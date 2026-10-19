@@ -18,3 +18,9 @@ A bancada é descartável: remove todos os seus recursos. Uma réplica ativa,
 candidata temporária e janela de retenção anterior são a direção escolhida para
 a entrega futura; o fluxo versionado e o provisionamento Helm ainda não foram
 implementados. [Aceite e decisão](../../docs/operations/SERVING_ROLLOUT.md#aceite-nativo--2026-10-19).
+
+A CI agora tem um job de qualificação e exportação da imagem construída do commit.
+`images.lock.json` acrescenta a base Python por digest; os pins da referência e do
+gateway não mudam. O build novo usa o Dockerfile existente e release sintética;
+a execução Docker/CI ainda aguarda aceite. Não publica no registry nem altera
+serviço permanente. [Entrega versionada](../../docs/operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).

@@ -86,7 +86,8 @@
         "fraud_detection_mlops/integrations/serving_release_export.py",
         "scripts/serving/check_docker_runtime.py",
         "examples/serving_smoke.py",
-        "scripts/serving/blue_green_rehearsal.py"
+        "scripts/serving/blue_green_rehearsal.py",
+        "scripts/serving/delivery_gate.py"
       ],
       "review_required": false
     },
@@ -303,6 +304,10 @@
       "scripts.serving.blue_green_rehearsal": [
         "data/serving/rollouts/<uuid>/result.json and candidate-manifest.json",
         "Temporary staging below the same managed job directory; removed after owned-resource cleanup; retained there on cleanup failure"
+      ],
+      "scripts.serving.delivery_gate": [
+        "data/serving/deliveries/<uuid>/: image.tar, synthetic release, source, runtime/rollout receipts, logs and delivery.json or failure.json",
+        "data/serving/delivery-summary.json: CI summary; no registry publication or permanent deployment"
       ]
     },
     "no_directories_created_by_check": true,

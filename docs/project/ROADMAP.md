@@ -44,7 +44,7 @@ um commit ainda não publicado.
 | 1 | Replay programado: fechamento e desempenho representativo | Ensaio nativo acelerado concluído; idempotência e crash/retomada demonstrados no smoke gerado; custos parciais registrados | Preservar o ensaio aprovado; definir protocolo e orçamento de recorte 1x antes de executar. O ensaio completo acelerado não aprova SLA nem recuperação de todo tipo de falha nativa |
 | 2 | Monitoramento e dashboards locais | Coleta nativa e falha/alarme/retorno do exporter validados pelo autor; rotina versionada com controle pytest aprovado e teste real tox explícito; painéis confirmados no smoke | Manter o teste real explícito e concluir conferência visual dos valores nativos finais; a camada de dados/features e o ensaio 1x têm critérios próprios |
 | 3 | Armazenamento, recuperação e destinos dos produtores | Archives de datasets/estudo/tracking e recarga da referência aprovados pelo autor; inventário do checkout aprovado no recorte local; contenção inicial de quatro CLIs aprovada pelo autor; ensaio isolado MLflow/PostgreSQL/S3 aprovado após recriação de containers | Contribuição HTTP, fold HGB e trio inicial aprovados pelo autor. Revisão nativa aprovada: 17 registros/sete fronteiras locais, 48 testes. Captura nativa aprovada (38 objetos, 8 runs, 6 modelos, 44 pontos de métricas). Restore isolado aprovado pelo autor em 2026-10-19: história API conciliada, modelo recarregado com erro zero, fonte preservada e cleanup concluído. Recorte de inventário/recuperação encerrado; avançar para CD/rollback e monitoramento. Cutover, consumidores históricos e limpeza ficam no backlog próprio. Classificação não comprova recuperação; sem remoção de originais |
-| 4 | CD e rollback de release | Primeiro gate blue-green nativo aprovado em 2026-10-19: A → B → A, rejeição de pacote inválido, falha 502 e rollback verificado em 3,10 s; pesos e imagem preservados | Ensaio de troca/retorno concluído. Próximo incremento: fluxo versionado de entrega com imagem/release fixadas, gates, promoção explícita e rollback documentado; depois provisionamento via Helm. Não reabrir o gate aprovado como pendência |
+| 4 | CD e rollback de release | Primeiro gate blue-green nativo aprovado em 2026-10-19: A → B → A, rejeição de pacote inválido, falha 502 e rollback verificado em 3,10 s; pesos e imagem preservados | Ensaio de troca/retorno concluído. Job de build único/qualificação sintética/export implementado; build Docker e CI pendentes. Depois validar consumo do arquivo em alvo separado e promoção explícita; provisionamento via Helm mantém critério próprio. Não reabrir o ensaio histórico aprovado como pendência |
 | 5 | Monitoramento de dados/features e gestão de features | Contratos e paridade existentes; próxima extensão após métricas operacionais | Medir schema, ausência, frescor/atraso e distribuições de features com suporte; baseline temporal versionado e testes de resposta. Não confundir score drift com feature drift |
 | 6 | CT controlado | Backlog, depende de 2–5 | Gatilho explícito, labels disponíveis, orçamento, treino e avaliação temporal comparável; candidato rejeitado ou promovido com gates e rollback. Drift sozinho não promove |
 | 7 | Orquestração de jobs | Condicional à composição real de jobs | Coordenar treino/avaliação/publicação, retries e estados; escolher ferramenta pelo problema demonstrado. O consumidor de eventos continua processo próprio |
@@ -481,3 +481,18 @@ rollback a definir; depois poderá ser reduzida a zero. Essa política e o fluxo
 versionado ainda não estão implementados. Canary fica condicionado a tráfego
 representativo, roteamento ponderado e critérios de observação; não é requisito
 para encerrar este marco. [Decisão e próximos gates](../operations/SERVING_ROLLOUT.md#estratégia-escolhida-para-o-portfolio).
+
+### Gate atual da entrega versionada
+
+O workflow existente encadeia `quality` → `serving-delivery`. O novo job constrói
+uma imagem do commit, verifica HTTP/rollback com release sintética e preserva
+o arquivo exato com descritor/hashes no artifact (três dias). A implementação e
+a regressão offline foram concluídas; o **primeiro aceite Docker/CI está pendente**.
+Não requer nova confirmação estatística, acesso à referência ou migração.
+
+Depois do aceite: consumo do arquivo verificado em um alvo separado, comprovação
+de identidade/HTTP e promoção explícita de release aprovada. O ensaio anterior
+com os mesmos pesos continua fechado. A política de retenção anterior e o
+provisionamento KinD + Helm permanecem planejados; publicar uma imagem no
+registry ou adicionar um controlador não é parte deste incremento.
+[Gate e limites](../operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).

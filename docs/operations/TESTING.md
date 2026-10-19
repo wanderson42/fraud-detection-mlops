@@ -1130,3 +1130,20 @@ Os gates exigem identidade, score e HTTP 422; a sequência inclui bloqueio do
 pacote inválido, troca, falha 502 e retorno pela mesma URL. O valor de 3,10 s é
 uma observação local, não um SLA. Não é necessário repetir o teste para aplicar
 este fechamento documental. [Evidência](../../references/evidence/serving_rollout_author_validation_2026-10-19.json).
+
+### Imagem e pacote de entrega vinculados ao commit
+
+`tests/serving/test_delivery_gate.py` cobre origem divergente, alterações de
+entradas commitadas e preservação do índice pessoal, build único com bases
+fixadas, rótulo/plataforma incorretos, falha HTTP/rollout/export/cleanup, mudança
+da origem ou imagem antes da exportação, ausência de descritor de sucesso e
+verificação offline contra adulteração de arquivos/descritor. O contrato do
+workflow exige dependência de quality, hash esperado, artifact após os gates e
+permissões somente de leitura. Não há Docker no teste unitário.
+
+`tests/serving/live/test_delivery_gate.py` e tox `serving-delivery` são opt-in:
+exigem entradas commitadas e Docker Linux 28+, constroem uma imagem e executam
+HTTP/rollback reais com fixture sintética. A execução CI usa o mesmo controller
+diretamente após a suíte completa. O aceite desse novo gate permanece pendente;
+a prova anterior da referência não é reutilizada como aceite de outra imagem.
+[Procedimento](SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).
