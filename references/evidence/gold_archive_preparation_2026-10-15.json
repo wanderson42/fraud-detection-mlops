@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-15",
+  "scope": "Original Gold archive preparation and recovery with archived references and reused dataset transport; generated fixtures/memory S3/actual SDK Stubber only",
+  "published_runtime_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "input_worktree_tree": "4858a798ad3821b53ae9622a300ba969135408d3",
+  "tox": {
+    "py314": {
+      "selection": [
+        "tests/storage",
+        "tests/data/datasets/test_gold_dataset.py",
+        "tests/data/datasets/test_silver_dataset.py",
+        "tests/data/ingestion/test_handbook_bronze.py",
+        "tests/serving"
+      ],
+      "passed": 267,
+      "skipped": 2,
+      "pytest_seconds": 82.1,
+      "ruff": "passed",
+      "format": "passed",
+      "poetry_lock": "passed"
+    },
+    "bronze-sdk": {
+      "passed": 4,
+      "skipped": 0,
+      "pytest_seconds": 1.37,
+      "scope": "Pinned SDK validated through Stubber; no S3 connection"
+    }
+  },
+  "new_gold_cases": 20,
+  "profile": {
+    "schema": "fraud_gold_bundle_v1",
+    "max_files": 512,
+    "max_bytes": 268435456,
+    "max_manifest_bytes": 262144,
+    "bucket": "fraud-datasets",
+    "prefix": "gold/v1/<bundle_id>/"
+  },
+  "coverage": [
+    "Frozen verify_gold reused for size/hash, Arrow schema, feature allowlist/invariants, dates, ID uniqueness and split counts",
+    "Four archived references: inventory, Silver/Gold contracts, temporal protocol; own external Gold audits and creator audit required",
+    "Original bytes and bundle identity preserved across repeated preparation; development/studies and baseline audits excluded",
+    "Four real generated Gold partitions over three temporal splits and 19 features; fixture built once by existing builder",
+    "Archive operations have no Bronze/Silver source present; network/pickle/features recomputation blocked after setup",
+    "Full restore after removing Gold original, references and prepared local bundle",
+    "Schema/date/feature-value/duplicate-ID/split-count/protocol inconsistencies rejected after archive and Parquet hashes refreshed",
+    "Locks, missing/corrupt files/audit, unsupported contract, symlinks, database and audit-set mutation rejected",
+    "Shared transport routes Gold explicitly; manifest last, no-upload repeat, partial resume and semantic quarantine",
+    "Pilot/Bronze/Silver valid canonical manifests retain byte encoding and identity on generated fixtures; regressions passed"
+  ],
+  "native_inventory_evidence": "references/evidence/gold_storage_inventory_author_2026-10-15.json",
+  "native_expected_reference": {
+    "evidence": "references/evidence/gold_build_2026-10-07.json",
+    "verified_partitions": 42,
+    "feature_count": 19,
+    "rows": 402877,
+    "split_rows": {
+      "train": 268668,
+      "validation": 67255,
+      "test": 66954
+    }
+  },
+  "native_gold_preparation": "pending author execution",
+  "native_gold_s3_roundtrip": "pending author execution",
+  "native_data_accessed": false,
+  "s3_accessed": false,
+  "docker_executed": false,
+  "scientific_core_dependencies_contracts_protocols_modified": false,
+  "historical_evidence_modified": false,
+  "originals_deleted": false,
+  "primary_storage_migrated": false,
+  "production_promotion": false,
+  "image_rebuild_required_before_next_s3_operation": true,
+  "limits": [
+    "No feature recomputation from Silver or model/holdout reevaluation; preserve historical input provenance and audit bytes",
+    "Inventory mapping is filesystem metadata, not native Gold integrity proof",
+    "No coverage of development/Optuna/study SQLite/models/evaluations in this profile",
+    "No native preparation/transfer success, benchmark/SLA, MLflow migration or PVC recovery claim"
+  ]
+}

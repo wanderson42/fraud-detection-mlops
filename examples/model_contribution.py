@@ -1,10 +1,13 @@
 """Synthetic integration smoke check; this model is not an approved candidate."""
 
 import argparse
+from contextlib import redirect_stdout
 import json
 from pathlib import Path
+import sys
 from uuid import uuid4
 
+from mlflow.exceptions import MlflowException
 import numpy as np
 import pandas as pd
 from sklearn.naive_bayes import GaussianNB
@@ -19,12 +22,15 @@ from fraud_detection_mlops.modeling.contracts.model_interface import VERSION, Mo
 from fraud_detection_mlops.modeling.experiments import (
     candidate_training,
 )
+from fraud_detection_mlops.storage.managed_paths import managed_destination
 
 
 def gaussian_nb() -> Pipeline:
     """A contributor writes only a complete, unfitted estimator factory."""
     return Pipeline([("scale", StandardScaler()), ("classifier", GaussianNB(var_smoothing=1e-9))])
 
+
+HTTP_EXPERIMENT = "fraud-model-interface-smoke-http-v1"
 
 MODEL = ModelSpec("gaussian_nb_example", gaussian_nb)
 
@@ -53,8 +59,12 @@ def synthetic_batches():
     return batches
 
 
-def run(output: Path, tracking_root: Path | None = None) -> dict:
+def run(output: Path, tracking_root: Path | None = None, *, http_uri: str | None = None) -> dict:
     """Use the existing fit, artifact and optional native tracking integration."""
+    if tracking_root is not None and http_uri is not None:
+        raise tracking.TrackingError("Choose --tracking-root or --tracking-uri, not both")
+    if http_uri is not None:
+        http_uri = tracking.validate_http_uri(http_uri)
     if output.exists():
         raise FileExistsError("Choose a new output directory for this smoke check")
     run_id = uuid4().hex
@@ -87,7 +97,7 @@ def run(output: Path, tracking_root: Path | None = None) -> dict:
         }
         candidate_training.save_candidate(output, model, X_val, scores, metadata, measurement)
         recorded = None
-        if tracking_root is not None:
+        if tracking_root is not None or http_uri is not None:
             recorded = tracking.log_candidate(
                 model,
                 X_val,
@@ -102,7 +112,10 @@ def run(output: Path, tracking_root: Path | None = None) -> dict:
                     "promotion_status": "not_promoted",
                 },
                 root=tracking_root,
-                experiment_name="fraud-model-interface-smoke",
+                **({"http_uri": http_uri} if http_uri is not None else {}),
+                experiment_name=HTTP_EXPERIMENT
+                if http_uri is not None
+                else "fraud-model-interface-smoke",
                 artifacts=(output / "metrics.json",),
             )
     return {
@@ -119,9 +132,32 @@ def run(output: Path, tracking_root: Path | None = None) -> dict:
     }
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--tracking-root", type=Path)
+    destinations = parser.add_mutually_exclusive_group()
+    destinations.add_argument("--tracking-root", type=Path)
+    destinations.add_argument("--tracking-uri", dest="http_uri")
     args = parser.parse_args()
-    print(json.dumps(run(args.output, args.tracking_root), indent=2))
+    try:
+        output = managed_destination(args.output, "examples")
+        tracking_root = (
+            managed_destination(args.tracking_root, "tracking")
+            if args.tracking_root is not None
+            else None
+        )
+        http_uri = tracking.validate_http_uri(args.http_uri) if args.http_uri is not None else None
+    except ValueError as exc:
+        parser.error(str(exc))
+    try:
+        with redirect_stdout(sys.stderr):
+            result = run(
+                output, tracking_root, **({"http_uri": http_uri} if http_uri is not None else {})
+            )
+    except (ValueError, OSError, MlflowException) as exc:
+        parser.exit(1, f"Contribution failed: {exc}\n")
+    print(json.dumps(result, indent=2, allow_nan=False))
+
+
+if __name__ == "__main__":
+    main()

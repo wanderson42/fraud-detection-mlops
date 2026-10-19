@@ -1,0 +1,91 @@
+{
+  "schema": "fraud_model_contribution_proxy_fix_v1",
+  "date": "2026-10-17",
+  "status": "fixture_validated_native_retry_pending",
+  "base_delivery_tree": "77415e42d274497ac8d607d4ea90fdb935824dd2",
+  "scope": "Scoped explicit tracking-server artifact transport; no server/network/timeout/training changes",
+  "author_report": {
+    "source": "Pasted terminal output only; native receipt bytes and signed URLs not accessed",
+    "offline_regression": "79 passed, 19 warnings in 4.27s; py314 tox OK in 8.03s",
+    "services": "MLflow and PostgreSQL healthy before native test",
+    "native_result": "1 failed in 67.30s; tracking-contribution failed in 80.41s",
+    "receipt": "data/storage/tracking-lab/receipts/contribution-30de2840b5824d039bf642699582dc13.json",
+    "run_id": "5d865db80aa64100be02179d0158e761",
+    "experiment_id": "3",
+    "model_id": "m-ba7a41359c2242c58eec7a080528445f",
+    "failed_stage": "CLI internal model reload, before independent reload and local routing rollback",
+    "file_failures": [
+      "python_env.yaml",
+      "conda.yaml",
+      "requirements.txt",
+      "model.skops",
+      "MLmodel"
+    ],
+    "message": "Failed to download 1 chunk(s) for each file after all retries exhausted",
+    "removed_paths_scope": "Partial local /tmp/fraud-mlflow-check-* download files; not an observed S3 delete operation"
+  },
+  "source_diagnosis": {
+    "mlflow_version": "3.17.0",
+    "primary_installed_sources": [
+      "mlflow/store/artifact/mlflow_artifacts_repo.py::_is_multipart_download_enabled and _download_file",
+      "mlflow/server/handlers.py server-info multipart capability advertisement",
+      "mlflow/store/artifact/s3_artifact_repo.py::get_download_presigned_url"
+    ],
+    "observed_sdk_behavior": "When proxy multipart flag is unset, infer support from server-info; request presigned URLs if supported. This code path uses chunks even for these small files.",
+    "native_network_inference": "S3 endpoint configured as http://rustfs:9000 on Docker network; direct signed URL reachability from host is suspect. Native signed URL hostname and low-level per-chunk exception not collected.",
+    "root_contract_gap": "HTTP context did not explicitly prevent SDK selecting direct object transport. File-backed fixture did not advertise S3 capabilities."
+  },
+  "fix": {
+    "http_context_settings": {
+      "MLFLOW_ENABLE_PROXY_MULTIPART_DOWNLOAD": "false",
+      "MLFLOW_ENABLE_PROXY_MULTIPART_UPLOAD": "false"
+    },
+    "all_prior_values_restored": true,
+    "request_timeout_seconds_unchanged": 10,
+    "http_request_retries_unchanged": 0,
+    "model_review_signature_parity_unchanged": true,
+    "server_rebuild_required": false,
+    "endpoint_credentials_or_network_changes": false,
+    "sdk_monkeypatch_in_production": false
+  },
+  "assistant_validation": {
+    "before_fix": "Real MLflow server and SDK behind local gateway advertising multipart with direct object endpoint returning HTTP 403: 1 failed, 3 deselected in 10.06s; same five per-file chunk failures",
+    "gateway_limits": "Disposable SQLite and local files; protocol/capability simulation, not RustFS/S3 service proof",
+    "final_http_tox": "4 passed, 6 warnings in 22.60s; contribution-http tox OK in 28.02s",
+    "http_assertions": [
+      "CLI success JSON and model score parity",
+      "GET model.skops observed on tracking artifact proxy",
+      "No requests for signed URLs or direct object endpoint",
+      "Existing unavailable-server, local rollback and FAILED-run parity regression retained"
+    ],
+    "regression_tox": "130 passed, 7 skipped, 30 warnings in 14.06s; py314 tox OK in 22.52s; lock, lint and format passed",
+    "regression_scope": [
+      "tests/integrations",
+      "tests/modeling/contracts",
+      "tests/storage/test_managed_paths.py",
+      "tests/storage/test_persistence_inventory.py",
+      "tests/tracking"
+    ],
+    "native_docker_commands_executed_by_assistant": false
+  },
+  "preservation": {
+    "old_author_evidence_unchanged": true,
+    "original_failed_run_model_and_receipt_not_removed": true,
+    "example_training_source_unchanged": true,
+    "native_validation_harness_unchanged": true,
+    "server_compose_images_and_dependency_locks_unchanged": true,
+    "storage_frozen_source_and_tracking_probe_controller_unchanged": true,
+    "previous_notebook_cells_and_outputs_preserved": true
+  },
+  "prior_gate_interpretation": "Earlier in-Docker probe validates persistence and MLflow artifact URI access; proxy_verified did not discriminate server streaming from presigned object delegation. Prior persistence gate remains valid within observed scope.",
+  "next_native_action": ".venv/bin/python -m tox -e tracking-contribution after guarded patch and regression; creates a new small synthetic contribution, preserving failed attempt",
+  "native_model_producer_gate": "pending retry success",
+  "primary_storage_migrated": false,
+  "historical_runs_migrated": false,
+  "production_promotion": false,
+  "source_sha256": {
+    "fraud_detection_mlops/integrations/mlflow_tracking.py": "641de2903345d3141b0afa8c79e24ba59360572e12247304bb67a409ec35644e",
+    "tests/integrations/test_mlflow_http_tracking.py": "4edde2579a48433d7c5f62802cb3df705a871dc8117ed75dafb42a10c0f81728",
+    "tests/tracking/runtime/test_model_contribution_http.py": "041507c3ed6d59146b9bbd8b807e6f3ad56849eba34fbbe32b5fc9e61ede2a92"
+  }
+}

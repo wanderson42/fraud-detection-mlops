@@ -1,9 +1,9 @@
 # Model Card — referência temporal de detecção de fraude
 
-Atualizada em 2026-10-09. Estado: **avaliação final executada e verificada pelo autor;
-gate de laboratório aprovado; avaliação de 02–15/09 e reamostragem exploratória
-revisadas; referência exportada e HTTP/wheel isolado validados pelo autor**.
-Docker está preparado para construção e medição no host, ainda pendentes. O
+Atualizada em 2026-10-15. Estado: **avaliação final e escopo exploratório
+concluídos; referência exportada e HTTP/wheel/Docker validados pelo autor;
+replay corretivo de 16–30/09 executado e verificado, com paridade e qualidade
+da fila consolidadas no relato de 13/10**. Pacing e SLA permanecem pendentes. O
 [contrato de serving](../operations/SERVING_CONTRACT.md) define esses checks.
 Esta síntese curada usa as saídas de terminal, o CSV diário de maio e os relatórios
 de setembro fornecidos pelo autor. A revisão direta dos bytes da Model Card gerada permanece
@@ -36,7 +36,7 @@ de bloqueio de cartões ou estimativa de retorno financeiro.
 | Validação | 06–12/05/2018; 67.255 transações |
 | Teste final | 20–26/05/2018; 66.954 transações e 597 fraudes |
 | Avaliação posterior da referência fixa | 02–15/09/2018; 134.467 transações e 1.200 fraudes; janela consumida |
-| Reserva de replay operacional | 16–30/09/2018; execução ainda pendente |
+| Reserva de replay operacional | 16–30/09/2018; consumida no replay corretivo verificado pelo autor |
 | Ajuste final | Modelo original; sem refit, calibração ou ajuste no teste |
 | Ambiente do modelo | scikit-learn 1.9.1, MLflow 3.17.0, skops 0.16.0, numpy 2.5.3 e pandas 3.0.6 |
 
@@ -133,6 +133,33 @@ O [resultado completo e fechamento](EVALUATION_PROTOCOL.md#resultado-nativo-da-r
 mantém método, grade e limites. O escopo exploratório foi concluído; confirmação
 de outro modelo exige candidato elegível, desenho próprio e janela preservada.
 
+## Replay causal de 16–30/09 — resultado informado em 2026-10-13
+
+A referência congelada foi usada sem refit, com limiar 0,8826493808370081 e até
+100 clientes/dia. A correção numérica versionada passou a verificação independente:
+19 features exatas e scores com `atol=1e-12`, `rtol=0`, preservando o estado original.
+
+| Indicador | Resultado na janela de replay |
+| --- | ---: |
+| Transações pontuadas / fraudulentas | 143.945 / 1.256 |
+| AP transacional / ROC AUC | 0,578783 / 0,876322 |
+| Precisão diária @100 retrospectiva | 53,33% |
+| Alertas causais / capturas / perdas de clientes-dia fraudulentos | 1.453 / 768 / 358 |
+| Precisão / recall agregados da fila causal | 52,86% / 68,21% |
+| Ocupação do orçamento | 96,87% |
+
+A AP usa transações; a fila usa cliente-dia. As taxas agregadas da fila dividem
+768 por 1.453 alertas e por 1.126 clientes-dia fraudulentos. Não são a precisão
+@100 nem a média diária. O retrospectivo capturou 800 clientes-dia fraudulentos
+em 1.500 alertas (recall agregado 71,05%); dispunha do dia completo. A comparação
+é descritiva e não altera os gates históricos de maio. Diferenças entre APs de
+janelas distintas, sem análise específica, não comprovam degradação.
+
+[Evidência e limites de inspeção](../../references/evidence/native_numerical_correction_author_validation_2026-10-13.json):
+saídas `run`/`verify` compartilhadas e reconciliadas, sem inspeção independente dos
+bytes do checkpoint, scores ou arquivos de custos. Não houve calibração,
+publicação externa, estimativa de economia financeira ou promoção em produção.
+
 ## Limitações que afetam o uso
 
 - A simulação contém regras de fraude conhecidas, inclusive um limiar artificial
@@ -141,12 +168,15 @@ de outro modelo exige candidato elegível, desenho próprio e janela preservada.
   dependência; linhas não formam observações independentes para inferência estatística.
 - Os scores são valores de ranking sem calibração demonstrada. AP não é o recall
   no orçamento de alertas e ROC AUC não é a precisão da investigação.
-- A fila usa o dia completo retrospectivamente. Não foi demonstrada uma política
-  de alertas online, bloqueio de clientes comprometidos ou paridade de features online.
+- A avaliação offline usa o dia completo retrospectivamente. Separadamente, o
+  replay causal acelerado demonstrou primeiro cruzamento de limiar, orçamento e
+  paridade exata de features neste ensaio. Bloqueio de clientes, transporte
+  distribuído e latência desde emissão não foram demonstrados.
 - Todos os rótulos chegam após sete dias no cenário assumido. Investigação seletiva,
   atrasos variáveis e qualidade de feedback real ainda não foram modelados.
-- Ainda não há evidência de latência, disponibilidade, custo por requisição,
-  recuperação do serviço, perdas financeiras ou impacto sobre clientes.
+- Existem medições locais de serving e testes de reinício Docker. Latência
+  ponta a ponta do fluxo de eventos, disponibilidade contínua, custo operacional
+  consolidado, perdas financeiras e impacto sobre clientes não foram demonstrados.
 
 ## Fronteira da inferência e próximos marcos
 
@@ -154,9 +184,10 @@ O serviço implementado recebe as 19 features já calculadas e devolve um score 
 identificação do modelo. O [contrato de serving](../operations/SERVING_CONTRACT.md)
 separa pontuação, cálculo de históricos e política de investigação.
 O autor exportou a referência com 67.255 linhas de paridade e validou o score
-HTTP fora do checkout, mantendo a identidade congelada. Docker ainda exige
-construção e medições no host; este incremento usa a base integrada pelo PR #2. Prometheus/Grafana e
-replay entram com o funcionamento observável, conforme o [mural](../project/ROADMAP.md).
+HTTP fora do checkout, mantendo a identidade congelada. O autor validou Docker
+com paridade, reinício e proteções; as medições sequenciais locais não validam SLA.
+O replay corretivo passou a paridade e consolidou qualidade no relato de 13/10.
+Prometheus/Grafana, emissão programada e fila/lag seguem no [mural](../project/ROADMAP.md).
 
 O teste final foi consumido. Melhorias futuras exigem outra janela de avaliação
 e um protocolo definido previamente. O recibo congelado conserva

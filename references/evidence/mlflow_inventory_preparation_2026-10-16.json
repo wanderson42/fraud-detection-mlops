@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-16",
+  "scope": "Offline MLflow tracking inventory preparation, generated SQLite stores using the locked SDK only; no native tracking, database migration or S3 access",
+  "input_worktree_tree": "124dc16fc844b9a0a53a748eee76e07f7f95621e",
+  "published_runtime_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "runtime": {
+    "python": "3.14.4",
+    "mlflow": "3.17.0",
+    "new_dependencies": false
+  },
+  "tox_py314": {
+    "selection": [
+      "tests/storage/test_mlflow_inventory.py",
+      "tests/integrations/test_mlflow_tracking.py",
+      "tests/integrations/test_serving_release_export.py"
+    ],
+    "passed": 28,
+    "skipped": 0,
+    "warnings": 27,
+    "pytest_seconds": 27.58,
+    "tox_seconds": 34.74,
+    "new_inventory_cases": 19,
+    "ruff": "passed",
+    "format": "232 files already formatted",
+    "poetry_lock": "passed"
+  },
+  "validation_environment_note": "Initial tox environment had a truncated/non-executable Ruff installation; binary re-extracted from cached wheel whose SHA256 matches poetry.lock (f33f43a864a8483eebd160e713336c8bab02c934feaff0a33cf5ccb41546d09a). Final tox run passed without changing dependency versions, project lock or tooling configuration.",
+  "inventory": {
+    "module": "scripts.storage.mlflow_inventory",
+    "schema": "fraud_mlflow_inventory_v1",
+    "report_directory": "data/storage/inventory",
+    "source": "data/tracking/mlflow.db and data/tracking/artifacts",
+    "original_database_connection_opened": false,
+    "mlflow_initialized_by_inventory": false,
+    "source_database_files_copied_to_disposable_directory": true,
+    "wal_included_when_present": true,
+    "original_shm_not_opened_by_sqlite": true,
+    "source_mutation_detection": true,
+    "model_deserialization": false,
+    "network_access": false,
+    "report_mode": "0600",
+    "no_implicit_store_initialization": true,
+    "param_and_tag_values_emitted": false
+  },
+  "coverage": [
+    "Real pinned SDK SQLite schema, experiments/runs including deleted lifecycle, full metrics history via table fingerprints, logged models and registry counts",
+    "All local managed artifact bytes SHA256, no model load; all table row fingerprints and schema columns; quick_check and foreign key check on copy",
+    "Committed WAL sentinel included while original db/wal/shm bytes remain unchanged",
+    "Source SQLite connection forbidden and network calls trapped in control test",
+    "Changes to database, sidecar set, artifact content/set and JSON references reject collection",
+    "Symlinked database/artifact/reference/output paths rejected; no source initialization if absent; hot journal, invalid SQLite/schema/JSON rejected",
+    "Project JSON references resolved for known MLflow ID/URI contexts; generic local execution UUIDs kept unclassified rather than declared missing MLflow runs",
+    "Sensitive/remote URI redaction, missing-ID review findings, repeat fingerprints and separate private CLI report"
+  ],
+  "native_inventory": "pending author execution",
+  "native_tracking_accessed": false,
+  "backup_implemented_or_validated": false,
+  "postgresql_provisioned": false,
+  "mlflow_server_provisioned": false,
+  "s3_artifacts_migrated": false,
+  "migration_implemented": false,
+  "primary_storage_migrated": false,
+  "historical_runs_models_retrained": false,
+  "source_scientific_code_changed": false,
+  "dependencies_or_lock_modified": false,
+  "compose_images_or_s3_worker_modified": false,
+  "limits": [
+    "Observational source mutation checks are not a writer lock or coordinated consistent backup; pause UI and writers",
+    "External artifact locations not accessed; no claim that artifact recovery covers them",
+    "References cover selected JSON keys under data outside tracking/storage; opaque tags and MLmodel YAML/code/notebook references not exhaustively linked",
+    "Table hashes are SQLite snapshot fingerprints, not cross-dialect PostgreSQL parity proof",
+    "No source store or receipts from author were accessed; no invented native counts or SLA"
+  ],
+  "acceptance_gates": [
+    "Native inventory and review of coverage",
+    "Coordinated backup and isolated restoration of current tracking",
+    "Pinned PostgreSQL/MLflow/S3 transfer rehearsal preserving IDs and complete metadata relations/history",
+    "Explicit artifact URI mapping and successful models:/runs:/ resolution",
+    "Model/score parity and existing consumers through HTTP without local SQLite requirement",
+    "Cutover, PostgreSQL backup restoration and rollback with treatment of new writes declared"
+  ],
+  "sources": [
+    {
+      "url": "https://mlflow.org/docs/latest/self-hosting/architecture/backend-store/",
+      "consulted": "2026-10-16",
+      "usage": "Separation of metadata backend, tracking URI configuration and schema-upgrade meaning"
+    },
+    {
+      "url": "https://mlflow.org/docs/latest/self-hosting/architecture/artifact-store/",
+      "consulted": "2026-10-16",
+      "usage": "Persisted experiment/run artifact locations and S3-compatible stores"
+    },
+    {
+      "local": "Installed mlflow 3.17.0 tracking dbmodels and logged_model_status from locked package",
+      "usage": "Actual columns and numeric logged-model statuses validated by generated-store tests"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+name: fraud-local-observability
+services:
+  exporter:
+    build:
+      context: ../..
+      dockerfile: infra/observability/Dockerfile
+    image: fraud-monitoring-exporter:local-v1
+    user: "${LOCAL_UID:?Run local_stack init}:${LOCAL_GID:?Run local_stack init}"
+    ports: ["127.0.0.1:19100:19100"]
+    volumes:
+      - type: bind
+        source: ${STATE_DIRECTORY:?Run local_stack init}
+        target: /state
+        read_only: true
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 0.5
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:19100/healthz', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+  prometheus:
+    image: prom/prometheus:v3.15.0@sha256:efd719c99d83b060d9daefdcf00360461adf279f45ef5391f8d111892118753e
+    command: [--config.file=/etc/prometheus/prometheus.yml, --storage.tsdb.path=/prometheus, --storage.tsdb.retention.time=48h, --storage.tsdb.retention.size=512MB]
+    ports: ["127.0.0.1:19090:9090"]
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus-data:/prometheus
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 0.5
+  grafana:
+    image: grafana/grafana:13.2.4@sha256:dbbc38ea21103cefb50396340cd88afec779c7e070b0a7bf5a75b4ce46651d3f
+    ports: ["127.0.0.1:13000:3000"]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Run local_stack init}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
+      GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: "false"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/fraud-dashboards:ro
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 0.5
+  storage-client:
+    profiles: [storage-tools]
+    image: amazon/aws-cli:2.31.36@sha256:2901b33430341f03e487de5a2309bf4b6aba420c764f562466fd89bd49f50f82
+    user: "${LOCAL_UID:?Run local_stack init}:${LOCAL_GID:?Run local_stack init}"
+    working_dir: /work
+    environment:
+      AWS_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:?Run local_stack init}
+      AWS_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:?Run local_stack init}
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_MAX_ATTEMPTS: "2"
+      AWS_PAGER: ""
+      AWS_CONFIG_FILE: /work/aws-config
+    volumes:
+      - type: bind
+        source: ../../data/storage
+        target: /work
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    cpus: 0.5
+  storage-transfer:
+    profiles: [storage-tools]
+    build:
+      context: ../..
+      dockerfile: infra/observability/Dockerfile.storage
+    image: fraud-bronze-transfer:local-v1
+    user: "${LOCAL_UID:?Run local_stack init}:${LOCAL_GID:?Run local_stack init}"
+    working_dir: /work
+    environment:
+      AWS_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:?Run local_stack init}
+      AWS_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:?Run local_stack init}
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+    volumes:
+      - type: bind
+        source: ../../data/storage
+        target: /work
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1
+  rustfs:
+    profiles: [storage]
+    image: rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c
+    ports: ["127.0.0.1:19000:9000", "127.0.0.1:19001:9001"]
+    environment:
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:?Run local_stack init}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:?Run local_stack init}
+      RUSTFS_CONSOLE_ENABLE: "true"
+    volumes: [rustfs-data:/data]
+    command: [/data]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 1g
+    cpus: 1
+    healthcheck:
+      test: [CMD, curl, -fsS, http://127.0.0.1:9000/health/ready]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+volumes:
+  prometheus-data:
+  grafana-data:
+  rustfs-data:

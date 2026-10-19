@@ -40,3 +40,152 @@ jobs:
 
       - name: Run isolated quality checks with tox
         run: poetry run tox -e py314
+
+  serving-delivery:
+    name: Build and qualify synthetic serving delivery
+    needs: quality
+    outputs:
+      descriptor_sha256: ${{ steps.delivery.outputs.descriptor_sha256 }}
+      artifact_id: ${{ steps.package.outputs.artifact-id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    env:
+      POETRY_VIRTUALENVS_IN_PROJECT: "true"
+      POETRY_NO_INTERACTION: "true"
+      MLFLOW_DISABLE_TELEMETRY: "true"
+      OMP_NUM_THREADS: "4"
+      OPENBLAS_NUM_THREADS: "4"
+      MKL_NUM_THREADS: "4"
+
+    steps:
+      - name: Checkout the tested commit
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14.4"
+
+      - name: Install locked tooling
+        run: |
+          python -m pip install "poetry==2.4.3"
+          poetry check --lock
+          poetry sync --only main,pipeline,dev
+
+      - name: Build once, verify HTTP and rehearse rollback
+        id: delivery
+        run: |
+          mkdir -p data/serving
+          poetry run python -m scripts.serving.delivery_gate run \
+            --expected-source-sha "$GITHUB_SHA" > data/serving/delivery-summary.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          result = json.loads(Path("data/serving/delivery-summary.json").read_text())
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              print("directory=" + result["directory"], file=output)
+              print("descriptor_sha256=" + result["descriptor_sha256"], file=output)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              print("Synthetic serving delivery qualified", file=summary)
+              print("", file=summary)
+              print("Commit: `" + result["source_commit"] + "`", file=summary)
+              print("Descriptor SHA-256: `" + result["descriptor_sha256"] + "`", file=summary)
+              print("Local image ID (not registry digest): `" + result["image_id"] + "`", file=summary)
+              print("No historical reference promotion or permanent deployment.", file=summary)
+          PY
+
+      - name: Preserve the exact image and qualification records
+        id: package
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: serving-delivery-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.delivery.outputs.directory }}/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 3
+
+      - name: Preserve failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: serving-delivery-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            data/serving/deliveries/*/failure.json
+            data/serving/deliveries/*/rollout.json
+            data/serving/deliveries/*/*.log
+          if-no-files-found: ignore
+          retention-days: 3
+
+
+  serving-consumer:
+    name: Consume the qualified image in a separate runner
+    needs: serving-delivery
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      POETRY_VIRTUALENVS_IN_PROJECT: "true"
+      POETRY_NO_INTERACTION: "true"
+      MLFLOW_DISABLE_TELEMETRY: "true"
+      OMP_NUM_THREADS: "4"
+      OPENBLAS_NUM_THREADS: "4"
+      MKL_NUM_THREADS: "4"
+      EXPECTED_DESCRIPTOR_SHA256: ${{ needs.serving-delivery.outputs.descriptor_sha256 }}
+    steps:
+      - name: Checkout consumer code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14.4"
+
+      - name: Install locked tooling
+        run: |
+          python -m pip install "poetry==2.4.3"
+          poetry check --lock
+          poetry sync --only main,pipeline,dev
+
+      - name: Download only this producer artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          artifact-ids: ${{ needs.serving-delivery.outputs.artifact_id }}
+          path: data/serving/deliveries/from-actions
+          merge-multiple: true
+
+      - name: Verify bytes, load exact image and check a new HTTP target
+        run: |
+          poetry run python -m scripts.serving.delivery_consumer \
+            --directory "$PWD/data/serving/deliveries/from-actions" \
+            --expected-source-sha "$GITHUB_SHA" \
+            --expected-descriptor-sha256 "$EXPECTED_DESCRIPTOR_SHA256" \
+            > data/serving/consumption-summary.json
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          result = json.loads(Path("data/serving/consumption-summary.json").read_text())
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              print("Qualified archive consumed in a separate runner", file=summary)
+              print("Commit: `" + result["source_commit"] + "`", file=summary)
+              print("Image: `" + result["image_id"] + "`", file=summary)
+              print("Archive reload, HTTP identity and owned-resource cleanup verified.", file=summary)
+              print("No rebuild, fit, historical reference promotion or permanent deployment.", file=summary)
+          PY
+
+      - name: Preserve consumption results and diagnostics
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: serving-consumption-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            data/serving/consumptions/*/result.json
+            data/serving/consumptions/*/runtime.json
+            data/serving/consumptions/*/load.log
+          if-no-files-found: ignore
+          retention-days: 3

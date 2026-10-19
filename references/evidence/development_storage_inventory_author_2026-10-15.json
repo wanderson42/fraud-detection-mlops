@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-15",
+  "status": "author_reported_metadata_inventory",
+  "scope": "filesystem_metadata_only_no_database_or_model_load",
+  "directory": "data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/development_gold_v2/9f86edf1e8f2408098c5377456e8968e3a7ca5925a20222b8ab8547ef94cbaf9",
+  "groups": {
+    "dataset_metadata": {
+      "files": 1,
+      "bytes": 60777
+    },
+    "study": {
+      "files": 4,
+      "bytes": 572772
+    },
+    "study/attempts": {
+      "files": 63,
+      "bytes": 285660
+    },
+    "study/models": {
+      "files": 252,
+      "bytes": 232085090
+    },
+    "transactions": {
+      "files": 63,
+      "bytes": 38098557
+    }
+  },
+  "database_files": [
+    {
+      "path": "study/study.db",
+      "bytes": 540672
+    }
+  ],
+  "lock_files": [
+    "study/.writer.lock"
+  ],
+  "derived_totals": {
+    "dataset_files": 64,
+    "dataset_bytes": 38159334,
+    "study_files_including_lock": 319,
+    "study_bytes": 232943522,
+    "total_files": 383,
+    "total_bytes": 271102856
+  },
+  "database_contents_inspected": false,
+  "writer_active_confirmed": false,
+  "native_integrity_or_recovery_verified_by_this_inventory": false,
+  "assistant_accessed_native_files": false,
+  "evidence_basis": "Author supplied printed metadata JSON; assistant did not access native files or SQLite contents. Totals are derived from reported groups.",
+  "decision": {
+    "dataset_first": "Immutable manifest/transactions, archived inventory and HGB policy, existing verify_data, explicit run ID",
+    "study_next": "Consistent SQLite snapshot coordinated with model, prediction, attempt and report artifacts; link to dataset run ID and manifest/archive hashes",
+    "increase_budget": false,
+    "delete_originals": false,
+    "study_recovery_implemented_here": false
+  },
+  "limits": [
+    "Lock file existence is not proof of an active writer",
+    "Study byte count includes database and artifacts; no logical or physical backup has been performed",
+    "Separate recovery units follow data/state responsibilities; their references must be preserved"
+  ]
+}

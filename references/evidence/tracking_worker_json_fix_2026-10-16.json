@@ -1,0 +1,68 @@
+{
+  "schema": "fraud_tracking_worker_json_fix_v1",
+  "date": "2026-10-16",
+  "status": "prepared_native_retry_pending",
+  "scope": "worker_stdout_protocol_fix_not_native_persistence_gate_approval",
+  "native_author_report": {
+    "evidence_source": "pasted terminal output, not independent access to native receipts or services",
+    "initialization": "PostgreSQL and MLflow healthy; dedicated bucket created",
+    "failed_test": "tests/tracking/live/test_tracking_rehearsal.py::test_native_postgres_s3_and_proxy_persist_across_container_recreation",
+    "result": "1 failed in 2.64s; tracking-lab failed in 14.49s",
+    "receipt": "data/storage/tracking-lab/receipts/rehearsal-09cab6fa651146ec9988875dbdd72965.json",
+    "run_id": "1b9495ddd4864e54ba94cd36aeaf004e",
+    "experiment_id": "1",
+    "last_completed_controller_stage": "lab_baseline_verified",
+    "failure": "MLflow SDK URL notices preceding JSON on stdout; JSONDecodeError wrapped as ValueError",
+    "http_write_read_indicated_by_worker_output": true,
+    "independent_sql_s3_verified": false,
+    "container_recreation_validated": false
+  },
+  "diagnosis": {
+    "pinned_mlflow_version": "3.17.0",
+    "installed_source": "mlflow/tracking/_tracking_service/client.py::_log_url",
+    "trigger": "set_terminated emits run and experiment URLs through sys.stdout.write",
+    "change": "redirect Python SDK stdout to stderr in probe.main; print final JSON only after the context exits",
+    "controller_parser_changed": false,
+    "exception_emits_success_result": false
+  },
+  "assistant_validation": {
+    "before_fix": "Real HTTP server and worker subprocess: 1 failed in 16.93s with JSONDecodeError and URL-prefixed stdout",
+    "after_fix": "Same real HTTP subprocess test: 1 passed in 36.30s, including server restart and record parity",
+    "runtime_dependencies": "installed from infra/tracking/requirements.txt with --require-hashes; MLflow 3.17.0, psycopg 3.3.6, boto3 1.43.114 checked by test",
+    "py314": "69 passed, 2 skipped in 0.83s; tox OK in 22.36s; Ruff check and format passed",
+    "py314_scope": [
+      "tests/tracking",
+      "tests/storage/test_managed_paths.py",
+      "tests/storage/test_persistence_inventory.py"
+    ],
+    "offline_tracking_cases": 31,
+    "real_http_fixture_backend": "disposable SQLite and file artifacts; not native PostgreSQL/S3",
+    "native_docker_executed": false
+  },
+  "preservation": {
+    "old_run_and_failed_receipt_preserved": true,
+    "env_regeneration_required": false,
+    "volume_or_bucket_deletion_required": false,
+    "new_dependencies": false,
+    "historical_tracking_migration": false,
+    "model_refit": false,
+    "shared_storage_fingerprints_changed": false
+  },
+  "next_native_action": [
+    "apply guarded patch",
+    "tox py314 -- tests/tracking",
+    "local_stack up to rebuild and update the running service",
+    "local_stack status",
+    "tox tracking-lab; preserve and share new receipt"
+  ],
+  "native_retry_status": "pending",
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "production_promotion": false,
+  "source_sha256": {
+    "scripts/tracking/probe.py": "ea7d9eee09b03a810d57eff7b4f2a01fb77376932c22b14229302290fd8a1dea",
+    "scripts/tracking/local_stack.py": "80e1856ebed62fc1f825dac3de0f09bb46c51ef262d52af471083d4393f63d03",
+    "tests/tracking/test_tracking_lab.py": "95cea3e71c8bb2289c593bff027913c003b95c0fb5ef200d825d4e1260e0f5b1",
+    "tests/tracking/runtime/test_http_proxy.py": "f4fa039896afaf8b7d9cf2e1f772fe960ba72741fd9226ab1f28d8440c25fb99"
+  }
+}

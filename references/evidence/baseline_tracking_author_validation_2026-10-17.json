@@ -1,0 +1,79 @@
+{
+  "schema": "fraud_baseline_tracking_author_validation_v1",
+  "date": "2026-10-17",
+  "status": "author_reported_success",
+  "source": "Terminal output pasted by author; native receipt bytes were not independently read by assistant",
+  "scope": "three_synthetic_baseline_models_HTTP_proxy_reload_not_historical_rerun_or_migration",
+  "native_result": "1 passed, 3 warnings in 6.55s; tracking-baseline tox OK in 19.96s",
+  "preceding_regression": "Numeric py314 summary not included in this author excerpt; no native regression count inferred",
+  "receipt": "data/storage/tracking-lab/receipts/baseline-fbd2e831ce164039bea6f049778b535f.json",
+  "tracking_uri": "http://127.0.0.1:15001",
+  "experiment": "fraud-baseline-smoke-http-v1",
+  "experiment_id": "5",
+  "baseline_run_id": "f9a233e83e694c6c8bdddbd0722c7b38",
+  "training_rows": 160,
+  "validation_rows": 160,
+  "models": {
+    "dummy_prior": {
+      "run_id": "0db858f490cc402bb162949799ae2d98",
+      "model_uri": "models:/m-6dc8f928a48d4d33986142e04f6dfedf",
+      "model_sha256": "f5a49575d8bdd00e603c9aed56525a7159ed349c5632653c0d5a284781959287",
+      "model_reload_validated": true,
+      "independent_http_reload_validated": true,
+      "max_absolute_score_error": 0.0,
+      "parity_rtol": 1e-12,
+      "parity_atol": 1e-12
+    },
+    "logistic_regression": {
+      "run_id": "9847535a035443488e7e3da9ac5b8bfc",
+      "model_uri": "models:/m-bdd3652b235d465692c0c4262005a889",
+      "model_sha256": "f34f9dad1d58dfad7e2b1425e3cf469b0d29dc268ff81bf2faf5f5d785bdb3d6",
+      "model_reload_validated": true,
+      "independent_http_reload_validated": true,
+      "max_absolute_score_error": 0.0,
+      "parity_rtol": 1e-12,
+      "parity_atol": 1e-12
+    },
+    "hist_gradient_boosting": {
+      "run_id": "0348792c80e0461d8e81b087b65906e7",
+      "model_uri": "models:/m-d35e26149bdb4564ba8000b7b2834d63",
+      "model_sha256": "26e2139266b533db788b5cea6f7cce944714d3c03ee0715dd88dbf32945c886c",
+      "model_reload_validated": true,
+      "independent_http_reload_validated": true,
+      "max_absolute_score_error": 0.0,
+      "parity_rtol": 1e-12,
+      "parity_atol": 1e-12
+    }
+  },
+  "independent_main_runs": 3,
+  "independent_http_reload_validated": true,
+  "local_models_unavailable_during_reload": true,
+  "producer_aws_environment_removed": true,
+  "local_tracking_database_created": false,
+  "containers_unchanged": true,
+  "containers_preserved": {
+    "postgres": {
+      "container_id": "66d96724f17b15795a56de382dcd2ad38fb37ebe82851ab8d129dd905dd5ed4e",
+      "image_id": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+      "postgres_volume": "fraud-tracking-lab_postgres-data"
+    },
+    "mlflow": {
+      "container_id": "929e6bb1ba33fab2c1199b0cd3fbd015c25dd26df21cbdb4de1bd5228bb4bead",
+      "image_id": "sha256:202668054efd81ad9b09ca760d3b97abe3e8cc5539ca3a042597c9572ea96a08"
+    }
+  },
+  "source_sha256": {
+    "fraud_detection_mlops/modeling/experiments/baseline_experiment.py": "63139e2ffceedf48800057bc50b355638ae434ed2b534ed3c47d999422235d73",
+    "tests/tracking/live/test_baseline_http.py": "38ede36a26b41d3f11bbb1ecdaf955643f655aa42ad9c83d8648c7ea65267629",
+    "fraud_detection_mlops/integrations/mlflow_tracking.py": "641de2903345d3141b0afa8c79e24ba59360572e12247304bb67a409ec35644e"
+  },
+  "historical_baseline_read": false,
+  "historical_runs_migrated": false,
+  "production_promotion": false,
+  "direct_s3_model_readback_validated": false,
+  "postgres_backup_restore_validated": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "interpretation": "All three initial baseline model producers passed native HTTP model reload with linked main runs and zero score error. The contribution producer and HGB Optuna-fold gates had separate native acceptance. Defaults and historical stores remain local; no full scientific rerun or historical cutover occurred.",
+  "next_boundary": "Review remaining local consumers and plan isolated PostgreSQL plus S3 recovery before primary cutover or cleanup. No next infrastructure implementation is included in this closure."
+}

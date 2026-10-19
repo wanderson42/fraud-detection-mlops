@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-15",
+  "status": "author_reported_success",
+  "assistant_inspected_native_files": false,
+  "schema": "fraud_bronze_bundle_v1",
+  "bundle_id": "bca0bdcbd60853db575dcdd5af986fd7608057c69fb368fd5fa0007aa62bc4c0",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "source_files": 187,
+  "archive_files": 188,
+  "bytes": 107309243,
+  "verified_source_partitions": 183,
+  "complete": true,
+  "inventory_included": true,
+  "source_manifest_bytes_preserved": true,
+  "budget": {
+    "max_files": 512,
+    "max_bytes": 268435456
+  },
+  "scope": "offline_bronze_archive_preparation_not_s3_transfer",
+  "pickle_deserialized": false,
+  "s3_accessed": false,
+  "author_report": "data/storage/receipts/bronze-prepare-c9ryx1ii.json",
+  "native_s3_roundtrip": "pending",
+  "originals_deleted": false,
+  "production_promotion": false
+}

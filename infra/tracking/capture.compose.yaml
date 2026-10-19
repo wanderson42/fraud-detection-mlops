@@ -1,0 +1,30 @@
+# Overlay for the explicit capture job only. The running server image is unchanged.
+services:
+  capture:
+    profiles: [capture]
+    build:
+      context: ../..
+      dockerfile: infra/tracking/Dockerfile.capture
+    image: fraud-tracking-capture:lab-v1
+    environment:
+      TRACKING_PG_PASSWORD: ${TRACKING_PG_PASSWORD:?Tracking environment required}
+      AWS_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:?Observability environment required}
+      AWS_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:?Observability environment required}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+    user: "${LOCAL_UID:?Observability environment required}:${LOCAL_GID:?Observability environment required}"
+    volumes:
+      - type: bind
+        source: ${TRACKING_CAPTURE_DIRECTORY:-../../data/storage/tracking-lab}
+        target: /capture
+        bind:
+          create_host_path: false
+    networks: [default, objects]
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1

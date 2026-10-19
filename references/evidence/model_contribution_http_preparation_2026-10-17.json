@@ -1,0 +1,92 @@
+{
+  "schema": "fraud_model_contribution_http_preparation_v1",
+  "date": "2026-10-17",
+  "status": "implemented_http_fixture_validated_native_producer_pending",
+  "scope": "one_existing_synthetic_model_producer_explicit_http_proxy_and_local_routing_rollback",
+  "base_delivery_tree": "22f8755f9330f7d9bc0abb0a80ee8e92fa8e50ee",
+  "decision": {
+    "producer": "examples/model_contribution.py",
+    "reason": "Existing common training, skops review and parity contract; 80 training and 20 evaluation rows in memory; no Handbook or historical study changes",
+    "http_experiment": "fraud-model-interface-smoke-http-v1",
+    "local_experiment_unchanged": "fraud-model-interface-smoke",
+    "other_runners_http_enabled": false
+  },
+  "behavior": {
+    "explicit_mutually_exclusive_destinations": [
+      "--tracking-root",
+      "--tracking-uri"
+    ],
+    "no_tracking_when_neither_given": true,
+    "http_experiment_artifact_location": "Inherited from server and required to use mlflow-artifacts:/",
+    "serialization": "skops, reviewed types and signature, native pyfunc predict_proba",
+    "parity_rtol": 1e-12,
+    "parity_atol": 1e-12,
+    "cli_stdout": "One success JSON; SDK notices on stderr; nonzero exit on errors",
+    "automatic_local_fallback": false,
+    "context_restores_prior_tracking_uri_and_request_environment": true,
+    "http_request_timeout_seconds": 10,
+    "http_max_retries": 0,
+    "process_concurrency": "Serial callers only; MLflow fluent state and request limits are process-global",
+    "local_routing_rollback": "Explicit subsequent local invocation; no undo/delete of remote runs"
+  },
+  "destinations": {
+    "managed_inspection_files": "data/examples/<invocation>/{model.skops,validation_predictions.parquet,metrics.json}",
+    "native_validation_receipts": "data/storage/tracking-lab/receipts/contribution-*.json",
+    "native_lab_backend": "PostgreSQL mlflow_lab and RustFS fraud-tracking-lab/v1 through HTTP server",
+    "local_rollback_test_store": "New TemporaryDirectory under data/tracking, removed after check; no historical store opened",
+    "local_inventory_boundary": "Full remote IDs stay in stdout/live receipt under data/storage, excluded from historical local SQLite reference resolution; filesystem metadata catalogue still covers all declared paths"
+  },
+  "assistant_validation": {
+    "final_boundary_tests": "29 passed in 1.09s",
+    "http_fixture_tox": "contribution-http OK; 3 passed, 6 warnings in 31.95s; tox 50.38s",
+    "http_fixture_backend": "Real HTTP server with disposable SQLite and file artifacts; no RustFS or PostgreSQL proof",
+    "http_contracts_verified": [
+      "CLI stdout protocol, one finished model run, server-inherited proxy artifacts, review/reload and score parity without local output",
+      "Unavailable endpoint raises; no automatic local DB; explicit local invocation succeeds",
+      "Reload/parity mismatch produces remote FAILED run and restores process URI",
+      "HTTP receipt boundary preserves historical local reference resolver"
+    ],
+    "full_py314": "1001 passed, 9 skipped, 113 warnings in 532.84s; py314 tox OK in 600.45s; lock, Ruff and format checks passed",
+    "docker_native_producer_executed_by_assistant": false,
+    "default_suite_service_tests": "Live service and HTTP fixture tests skipped by opt-in; no default live calls"
+  },
+  "native_acceptance": {
+    "command": ".venv/bin/python -m tox -e tracking-contribution",
+    "status": "pending author execution",
+    "creates": "One HTTP model contribution and one disposable local integration fit; generated 80/20 rows only",
+    "checks": [
+      "Existing service health/configuration",
+      "Parameters/metrics readback",
+      "Model reload while this invocation local output is temporarily renamed then restored",
+      "Score parity",
+      "Explicit local routing with disposable store",
+      "Container IDs/images/volume unchanged"
+    ],
+    "container_recreation": false,
+    "direct_s3_model_readback_validated": false,
+    "postgres_backup_restore_validated": false
+  },
+  "preserved": {
+    "historical_data_and_receipts": true,
+    "model_catalog_and_model_interface_version": true,
+    "shared_storage_snapshot_and_transport_code_hashes": true,
+    "tracking_lab_controller_and_probe_hashes": true,
+    "poetry_and_operational_dependency_locks": true,
+    "docker_compose_and_images": true,
+    "prior_notebook_cells_and_outputs": true
+  },
+  "primary_storage_migrated": false,
+  "historical_runs_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "fraud_model_quality_confirmed": false,
+  "production_promotion": false,
+  "source_sha256": {
+    "examples/model_contribution.py": "01ecd4937e17ff080a68e48148bceb0be1da7ea96038076716f258dcf25231c4",
+    "fraud_detection_mlops/integrations/mlflow_tracking.py": "c164d0df80c987d202acfa0eeafc2ba8cd7a387ae18c8af848f23b2882d05ef4",
+    "tests/integrations/test_mlflow_http_tracking.py": "4825fd63b466aede9a9d620af79859deaeaf67d2f17c3804b39dd6b5b6f0666a",
+    "tests/tracking/runtime/test_model_contribution_http.py": "bb47030a0e7bd4f1401c21d7ea7182566e376e50a2344fc5d4cf71fa8fd9f79c",
+    "tests/tracking/live/test_model_contribution_http.py": "e5c894d02a420d37392aa0985123a433bb93f9eb02ebf2451ee078a0b879c976",
+    "references/persistence_catalogue_v1.json": "3c2db8b807518719d7a34631e24bbb77b4b6936a24ae5815c6891c9d297bd9a1",
+    "tox.toml": "c0d050762e4c1f8d43b9eac87cc60d50ae862cd278b1bb320ea3d76fe29cdc7e"
+  }
+}

@@ -1,5 +1,6 @@
 """Train fixed candidates, save skops pipelines, and log native MLflow models."""
 
+from contextlib import nullcontext, redirect_stdout
 from datetime import UTC, datetime
 from importlib.metadata import version
 import json
@@ -41,9 +42,12 @@ from fraud_detection_mlops.modeling.experiments.baseline_policy import (
 )
 from fraud_detection_mlops.modeling.experiments.candidate_training import load_split
 from fraud_detection_mlops.modeling.experiments.experiment_provenance import implementation_files
+from fraud_detection_mlops.storage.managed_paths import managed_destination
 
 DEFAULT_BASELINE = PROJECT_ROOT / "data/processed/handbook"
 BASELINE_VERSION = "baseline_v2"
+HTTP_EXPERIMENT = "fraud-temporal-baseline-http-v1"
+DEFAULT_HTTP_BASELINE = PROJECT_ROOT / "data/storage/tracking-lab/baselines"
 app = typer.Typer(no_args_is_help=True)
 
 
@@ -97,7 +101,19 @@ def run_baseline(
     gold_contract: Path = DEFAULT_GOLD_CONTRACT,
     config_path: Path = DEFAULT_CONFIG,
     tracking_root: Path | None = tracking.DEFAULT_TRACKING,
+    http_uri: str | None = None,
 ) -> dict:
+    if http_uri is not None:
+        if tracking_root is not None:
+            raise BaselineError("Choose a tracking root or HTTP URI, not both")
+        http_uri = tracking.validate_http_uri(http_uri)
+    if tracking_root is not None:
+        tracking_root = Path(tracking_root)
+    target = (
+        {"tracking_target": {"mode": "http", "uri": http_uri, "experiment": HTTP_EXPERIMENT}}
+        if http_uri is not None
+        else {}
+    )
     config, inventory, protocol, identities = baseline.load_inputs(
         inventory_path, silver_contract, protocol_path, gold_contract, config_path
     )
@@ -114,6 +130,7 @@ def run_baseline(
         **identities,
         "test_evaluated": False,
         "tracking": {},
+        **target,
         "model_interface_version": MODEL_INTERFACE_VERSION,
         "implementation_sha256": {
             str(p.relative_to(PROJECT_ROOT)): sha256(p) for p in implementation_files(PROJECT_ROOT)
@@ -191,7 +208,7 @@ def run_baseline(
             report = selection_report(run_id, results, config)
             write_json(staging / "report.json", report)
             check_inputs(source_dir, source_manifest, identities, paths, audit)
-            if tracking_root is not None:
+            if tracking_root is not None or http_uri is not None:
                 for name, (model, scores, timings) in fitted.items():
                     audit["tracking"][name] = tracking.log_candidate(
                         model,
@@ -199,6 +216,11 @@ def run_baseline(
                         scores,
                         name=name,
                         root=tracking_root,
+                        **(
+                            {"http_uri": http_uri, "experiment_name": HTTP_EXPERIMENT}
+                            if http_uri is not None
+                            else {}
+                        ),
                         parameters={
                             **config["models"][name]["parameters"],
                             "fit_rows": len(y_train),
@@ -257,6 +279,7 @@ def run_baseline(
                     "poetry_lock_sha256": audit["poetry_lock_sha256"],
                     "created_at_utc": datetime.now(UTC).isoformat(),
                     "tracking": audit["tracking"],
+                    **target,
                     "model_format": "skops",
                     "model_interface_version": MODEL_INTERFACE_VERSION,
                 },
@@ -288,27 +311,46 @@ def run_baseline(
 @app.command()
 def run(
     gold_root: Annotated[Path, typer.Option()] = DEFAULT_GOLD,
-    output_root: Annotated[Path, typer.Option()] = DEFAULT_BASELINE,
+    output_root: Annotated[Path | None, typer.Option()] = None,
     inventory: Annotated[Path, typer.Option()] = DEFAULT_INVENTORY,
     silver_contract: Annotated[Path, typer.Option()] = DEFAULT_CONTRACT,
     protocol: Annotated[Path, typer.Option()] = DEFAULT_PROTOCOL,
     gold_contract: Annotated[Path, typer.Option()] = DEFAULT_GOLD_CONTRACT,
     config: Annotated[Path, typer.Option()] = DEFAULT_CONFIG,
-    tracking_root: Annotated[Path, typer.Option()] = tracking.DEFAULT_TRACKING,
+    tracking_root: Annotated[Path | None, typer.Option()] = None,
+    tracking_uri: Annotated[str | None, typer.Option()] = None,
     track: Annotated[bool, typer.Option("--track/--no-track")] = True,
 ):
     """Fit train, score validation and log three independent pipelines; no test scoring."""
+    if tracking_uri is not None and (tracking_root is not None or not track):
+        raise typer.BadParameter("--tracking-uri is exclusive with --tracking-root and --no-track")
     try:
-        result = run_baseline(
-            gold_root,
-            output_root,
-            inventory_path=inventory,
-            silver_contract=silver_contract,
-            protocol_path=protocol,
-            gold_contract=gold_contract,
-            config_path=config,
-            tracking_root=tracking_root if track else None,
-        )
+        if tracking_uri is not None:
+            tracking_uri = tracking.validate_http_uri(tracking_uri)
+            output_root = managed_destination(
+                output_root if output_root is not None else DEFAULT_HTTP_BASELINE, "storage"
+            )
+        else:
+            output_root = output_root if output_root is not None else DEFAULT_BASELINE
+            if tracking_root is not None:
+                tracking_root = managed_destination(tracking_root, "tracking")
+            elif track:
+                tracking_root = tracking.DEFAULT_TRACKING
+    except ValueError as exc:
+        raise typer.BadParameter(str(exc)) from exc
+    try:
+        with redirect_stdout(sys.stderr) if tracking_uri is not None else nullcontext():
+            result = run_baseline(
+                gold_root,
+                output_root,
+                inventory_path=inventory,
+                silver_contract=silver_contract,
+                protocol_path=protocol,
+                gold_contract=gold_contract,
+                config_path=config,
+                tracking_root=tracking_root if track else None,
+                **({"http_uri": tracking_uri} if tracking_uri is not None else {}),
+            )
     except Exception as exc:
         typer.echo(f"Baseline failed: {exc}", err=True)
         raise typer.Exit(1) from exc

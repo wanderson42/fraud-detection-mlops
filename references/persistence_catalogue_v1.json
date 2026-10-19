@@ -1,0 +1,608 @@
+{
+  "schema": "fraud_persistence_catalogue_v1",
+  "reviewed_on": "2026-10-19",
+  "reviewed_delivery_tree": "74a61ac6d74a092c7108fc884e18bf9891238768",
+  "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
+  "locations": [
+    {
+      "prefix": "data/raw",
+      "family": "bronze",
+      "owner": "ingestion",
+      "producers": [
+        "fraud_detection_mlops/data/ingestion/handbook_bronze.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/interim",
+      "family": "silver_and_analysis",
+      "owner": "data_pipeline",
+      "producers": [
+        "fraud_detection_mlops/data/datasets/silver_dataset.py",
+        "fraud_detection_mlops/data/quality/training_eda.py",
+        "fraud_detection_mlops/data/quality/transaction_profile.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/processed",
+      "family": "datasets_models_and_evaluations",
+      "owner": "modeling",
+      "producers": [
+        "fraud_detection_mlops/data/datasets/gold_dataset.py",
+        "fraud_detection_mlops/modeling/experiments/baseline_experiment.py",
+        "fraud_detection_mlops/modeling/experiments/temporal_development_data.py",
+        "fraud_detection_mlops/modeling/experiments/hgb_optimization.py",
+        "fraud_detection_mlops/modeling/experiments/terminal_feature_ablation.py",
+        "fraud_detection_mlops/modeling/experiments/final_holdout_evaluation.py",
+        "fraud_detection_mlops/modeling/experiments/reference_assessment_execution.py",
+        "fraud_detection_mlops/evaluation/validation_diagnostics.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/tracking",
+      "family": "mlflow_metadata_and_artifacts",
+      "owner": "tracking",
+      "producers": [
+        "fraud_detection_mlops/integrations/mlflow_tracking.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/replay",
+      "family": "event_state_and_measurements",
+      "owner": "replay",
+      "producers": [
+        "fraud_detection_mlops/streaming/replay/native_causal_replay.py",
+        "fraud_detection_mlops/streaming/replay/numerical_corrective_replay.py",
+        "fraud_detection_mlops/streaming/replay/durable_triage_replay.py",
+        "scripts/replay/paced_triage_replay.py",
+        "scripts/monitoring/telemetry.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage",
+      "family": "archive_workspace_and_receipts",
+      "owner": "storage",
+      "producers": [
+        "scripts/storage/archive.py",
+        "scripts/storage/mlflow_backup.py",
+        "scripts/storage/mlflow_recovery.py",
+        "scripts/storage/persistence_inventory.py",
+        "scripts/tracking/capture.py",
+        "scripts/tracking/capture_worker.py",
+        "scripts/tracking/restore.py",
+        "scripts/tracking/restore_worker.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/serving",
+      "family": "serving_releases_and_checks",
+      "owner": "serving",
+      "producers": [
+        "fraud_detection_mlops/integrations/serving_release_export.py",
+        "scripts/serving/check_docker_runtime.py",
+        "examples/serving_smoke.py",
+        "scripts/serving/blue_green_rehearsal.py",
+        "scripts/serving/delivery_gate.py",
+        "scripts/serving/delivery_consumer.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/serving-export.json",
+      "family": "serving_export_receipt",
+      "owner": "serving",
+      "producers": [
+        "fraud_detection_mlops/integrations/serving_release_export.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/examples",
+      "family": "generated_examples",
+      "owner": "model_interface",
+      "producers": [
+        "examples/model_contribution.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/external",
+      "family": "external_inputs_review",
+      "owner": "data_pipeline",
+      "producers": [],
+      "review_required": true
+    },
+    {
+      "prefix": "reports",
+      "family": "legacy_report_destination_review",
+      "owner": "scaffold",
+      "producers": [],
+      "review_required": true
+    },
+    {
+      "prefix": "models",
+      "family": "legacy_model_destination_review",
+      "owner": "scaffold",
+      "producers": [],
+      "review_required": true
+    },
+    {
+      "prefix": "data/reports",
+      "family": "managed_reports",
+      "owner": "reporting",
+      "producers": [
+        "fraud_detection_mlops/config.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/tracking-lab",
+      "family": "tracking_lab_workspace_and_receipts",
+      "owner": "tracking_lab",
+      "producers": [
+        "scripts/tracking/local_stack.py",
+        "tests/tracking/live/test_model_contribution_http.py",
+        "tests/tracking/live/test_hgb_fold_http.py",
+        "fraud_detection_mlops/modeling/experiments/baseline_experiment.py",
+        "tests/tracking/live/test_baseline_http.py"
+      ],
+      "review_required": false
+    }
+  ],
+  "source_prefixes": [
+    "fraud_detection_mlops",
+    "scripts",
+    "examples",
+    "tests",
+    "docs",
+    "notebooks",
+    "references",
+    "infra",
+    ".github",
+    ".vscode"
+  ],
+  "tooling_roots": [
+    ".git",
+    ".venv",
+    ".tox",
+    ".nox",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".mypy_cache",
+    "build",
+    "dist"
+  ],
+  "tooling_directory_names": [
+    "__pycache__",
+    ".ipynb_checkpoints"
+  ],
+  "external_boundaries": [
+    {
+      "id": "docker_named_volumes",
+      "source": "infra/observability/compose.yaml",
+      "locations": [
+        "prometheus-data:/prometheus",
+        "grafana-data:/var/lib/grafana",
+        "rustfs-data:/data"
+      ],
+      "inspection": "declared_only_not_contacted",
+      "reason": "Docker volume contents and S3 objects need their own service-level inventory and recovery criteria."
+    },
+    {
+      "id": "configurable_state_bind",
+      "source": "scripts/monitoring/local_stack.py",
+      "locations": [
+        "STATE_DIRECTORY"
+      ],
+      "inspection": "configuration_not_read",
+      "reason": "Default is data/replay; an operator may configure an external directory. The ignored env file is not read."
+    },
+    {
+      "id": "caller_supplied_destinations",
+      "source": "examples/model_contribution.py",
+      "locations": [
+        "output",
+        "tracking_root",
+        "CLI output/state arguments"
+      ],
+      "inspection": "source_review_only",
+      "reason": "Existing functions allow path overrides; destinations are not centrally enforced yet. Outside-checkout paths cannot be inferred from a local metadata scan."
+    },
+    {
+      "id": "system_temporaries_and_dependency_caches",
+      "source": "fraud_detection_mlops/integrations/mlflow_tracking.py",
+      "locations": [
+        "TemporaryDirectory",
+        "MLflow/skops and other dependency defaults"
+      ],
+      "inspection": "source_review_only",
+      "reason": "Scoped system temporaries are distinct from durable outputs. Home/system caches and files outside the checkout are not scanned."
+    },
+    {
+      "id": "isolated_tracking_lab",
+      "source": "infra/tracking/compose.yaml",
+      "locations": [
+        "fraud-tracking-lab_postgres-data:/var/lib/postgresql/data",
+        "rustfs:fraud-tracking-lab/v1",
+        "infra/tracking/.env"
+      ],
+      "inspection": "author_reported_native_persistence_validated",
+      "reason": "Dedicated volume and S3 namespace survived native PostgreSQL/MLflow container recreation; see tracking_lab_author_validation_2026-10-17.json. Does not cover host/volume loss, model producer validation or global Docker contents."
+    },
+    {
+      "id": "model_contribution_http",
+      "source": "examples/model_contribution.py",
+      "locations": [
+        "--tracking-uri http(s) server root (explicit opt-in)",
+        "experiment fraud-model-interface-smoke-http-v1",
+        "model artifacts via mlflow-artifacts proxy; native lab destination fraud-tracking-lab/v1"
+      ],
+      "inspection": "author_reported_native_model_reload_and_explicit_local_rollback_validated",
+      "reason": "Author approved HTTP reload without local output, zero score error and explicit disposable local rollback; containers unchanged. See model_contribution_http_author_validation_2026-10-17.json. Historical runs are not migrated."
+    },
+    {
+      "id": "hgb_http_tracking",
+      "source": "fraud_detection_mlops/modeling/experiments/hgb_optimization.py",
+      "locations": [
+        "explicit --tracking-uri; experiment fraud-temporal-optuna-http-v1 for new studies",
+        "synthetic native fold experiment fraud-hgb-fold-smoke-http-v1",
+        "data/storage/tracking-lab/hgb-fold-<id>/dataset and receipts/hgb-fold-<id>.json"
+      ],
+      "inspection": "author_reported_native_fold_reload_and_receipt_reuse_validated",
+      "reason": "Author approved one synthetic HGB fold, 84/21 rows, zero error, receipt reuse and unchanged containers. See hgb_fold_tracking_author_validation_2026-10-17.json. Full search and historical migration are not validated."
+    },
+    {
+      "id": "baseline_http_tracking",
+      "source": "fraud_detection_mlops/modeling/experiments/baseline_experiment.py",
+      "locations": [
+        "explicit --tracking-uri; experiment fraud-temporal-baseline-http-v1",
+        "synthetic native experiment fraud-baseline-smoke-http-v1",
+        "HTTP default data/storage/tracking-lab/baselines; native receipts under data/storage/tracking-lab/receipts"
+      ],
+      "inspection": "author_reported_native_three_models_reload_validated",
+      "reason": "Author approved three linked main runs, independent reload with local models unavailable, zero error, no local tracking DB and unchanged containers; see baseline_tracking_author_validation_2026-10-17.json. This is not primary cutover, cross-store inventory, PostgreSQL restore or historical migration."
+    }
+  ],
+  "decisions": {
+    "delete_or_move_files": false,
+    "primary_storage_migration": false,
+    "destination_policy_enforced": false,
+    "recoverability_inferred_from_classification": false,
+    "tooling_exclusions_have_unknown_recursive_size": true
+  },
+  "partial_destination_policy": {
+    "implementation": "fraud_detection_mlops/storage/managed_paths.py",
+    "scope": "Explicit CLI destinations only; internal APIs and other entry points remain unrestricted by this helper. No environment override or new storage abstraction.",
+    "entry_points": {
+      "examples.model_contribution": [
+        "data/examples/<run>",
+        "data/tracking/<store> (optional)",
+        "--tracking-uri <http(s) root> (exclusive with --tracking-root)"
+      ],
+      "examples.serving_smoke": [
+        "data/serving/<release>"
+      ],
+      "scripts.serving.check_docker_runtime": [
+        "data/serving/<receipt>"
+      ],
+      "scripts.monitoring.local_stack init": [
+        "data/replay/<state>"
+      ],
+      "hgb_optimization optimize": [
+        "--tracking-root data/tracking/<store> (optional, exclusive with --tracking-uri)",
+        "--tracking-uri <http(s) root> for a new study; data_path behavior unchanged"
+      ],
+      "baseline_experiment run": [
+        "--tracking-uri <http(s) root>, exclusive with --tracking-root/--no-track",
+        "HTTP output root child of data/storage; default data/storage/tracking-lab/baselines",
+        "explicit --tracking-root child of data/tracking; default/local output behavior otherwise unchanged"
+      ],
+      "scripts.serving.blue_green_rehearsal": [
+        "data/serving/rollouts/<uuid>/result.json and candidate-manifest.json",
+        "Temporary staging below the same managed job directory; removed after owned-resource cleanup; retained there on cleanup failure"
+      ],
+      "scripts.serving.delivery_gate": [
+        "data/serving/deliveries/<uuid>/: image.tar, synthetic release, source, runtime/rollout receipts, logs and delivery.json or failure.json",
+        "data/serving/delivery-summary.json: CI summary; no registry publication or permanent deployment"
+      ],
+      "scripts.serving.delivery_consumer": [
+        "Read a pinned qualified delivery under data/serving/deliveries; no build or fit",
+        "data/serving/consumptions/<uuid>/: result.json, runtime.json, load.log and private fixture copy; fixture removed after completed target cleanup",
+        "data/serving/consumption-summary.json: CI summary; only owned imported tag and HTTP containers removed"
+      ]
+    },
+    "no_directories_created_by_check": true,
+    "symlinks_and_parent_traversal_rejected": true,
+    "os_sandbox": false,
+    "concurrent_symlink_replacement_protection": false,
+    "future_pvc": "Mount the managed directory at the same in-container path; runtime-root configuration remains a separate deployment decision."
+  },
+  "tracking_consumers_review": {
+    "schema": "fraud_tracking_consumers_review_v1",
+    "reviewed_on": "2026-10-17",
+    "scope": "Curated review of local/HTTP model access, indirect frozen-reference consumers, historical maintenance and independent serving runtime; source hashes checked without importing modules.",
+    "consumers": [
+      {
+        "id": "baseline_trio",
+        "source": "fraud_detection_mlops/modeling/experiments/baseline_experiment.py",
+        "source_sha256": "63139e2ffceedf48800057bc50b355638ae434ed2b534ed3c47d999422235d73",
+        "functions": [
+          "run_baseline"
+        ],
+        "kind": "producer_http_opt_in",
+        "local_migration_blocker": false,
+        "current_behavior": "Treina e publica três modelos; local por padrão e HTTP explícito.",
+        "migration_gate": "Rota HTTP aprovada no smoke; recuperar novos metadados/artefatos antes de cutover."
+      },
+      {
+        "id": "hgb_optuna",
+        "source": "fraud_detection_mlops/modeling/experiments/hgb_optimization.py",
+        "source_sha256": "9ffb8cb985de2bea7785be3d26706be5d09c0e49095239625889839f47c1d3d0",
+        "functions": [
+          "fit_hgb_fold",
+          "optimize_hgb"
+        ],
+        "kind": "producer_http_opt_in",
+        "local_migration_blocker": false,
+        "current_behavior": "Publica modelos por fold e fixa destino na identidade Optuna.",
+        "migration_gate": "Fold HTTP aprovado; preservar estado/identidade do estudo concluído, sem repetir busca."
+      },
+      {
+        "id": "contribution",
+        "source": "examples/model_contribution.py",
+        "source_sha256": "01ecd4937e17ff080a68e48148bceb0be1da7ea96038076716f258dcf25231c4",
+        "functions": [
+          "run"
+        ],
+        "kind": "producer_http_opt_in",
+        "local_migration_blocker": false,
+        "current_behavior": "Modelo sintético com destino local ou HTTP explícito.",
+        "migration_gate": "Rota e retorno local aprovados; não é referência científica."
+      },
+      {
+        "id": "tracking_provider_and_tools",
+        "source": "fraud_detection_mlops/integrations/mlflow_tracking.py",
+        "source_sha256": "641de2903345d3141b0afa8c79e24ba59360572e12247304bb67a409ec35644e",
+        "functions": [
+          "local_tracking",
+          "http_tracking",
+          "download_pipeline",
+          "log_candidate",
+          "verify_model",
+          "ui"
+        ],
+        "kind": "shared_provider_and_local_tools",
+        "local_migration_blocker": true,
+        "current_behavior": "Provider misto; verify_model/ui ainda exigem mlflow.db local.",
+        "migration_gate": "Separar futuros destinos explícitos dos comandos de histórico; preservar loader/tipos/assinatura e restauração de contexto."
+      },
+      {
+        "id": "validation_diagnostics",
+        "source": "fraud_detection_mlops/evaluation/validation_diagnostics.py",
+        "source_sha256": "36a71bc933d9b530f36065823187b7a0bb0983e98a0fea70fbcb6c22318b217b",
+        "functions": [
+          "run_diagnostics"
+        ],
+        "kind": "local_consumer",
+        "local_migration_blocker": true,
+        "current_behavior": "Lê modelo e ownership local para diagnósticos da validação.",
+        "migration_gate": "Não apenas trocar URI: reconciliar owner, tags, baseline/Gold e hashes antes de aceitar outro store."
+      },
+      {
+        "id": "terminal_ablation",
+        "source": "fraud_detection_mlops/modeling/experiments/terminal_feature_ablation.py",
+        "source_sha256": "1d999b089fd3234cd7d2cef236cb9474d622c1998094a0645dc94087381f14af",
+        "functions": [
+          "reference_model",
+          "check_tracked_checkpoint",
+          "recover_finished_run",
+          "run_experiments"
+        ],
+        "kind": "local_consumer_and_producer",
+        "local_migration_blocker": true,
+        "current_behavior": "Lê referência/checkpoints e procura/publica candidatos no store local.",
+        "migration_gate": "Preservar identidade, retomada e anti-duplicação; não reexecutar ablação encerrada."
+      },
+      {
+        "id": "candidate_freeze",
+        "source": "fraud_detection_mlops/modeling/experiments/candidate_freeze.py",
+        "source_sha256": "2914859e6777e1a7a66c543a139c011a406b4ebd5a6b29bd2456583e2e62ef33",
+        "functions": [
+          "reference_identity",
+          "freeze_reference",
+          "verify_freeze"
+        ],
+        "kind": "local_consumer",
+        "local_migration_blocker": true,
+        "current_behavior": "Delegação à referência local; freeze persiste tracking_root relativo e bound_files.",
+        "migration_gate": "Não reescrever freeze histórico. Futuro contrato deve vincular identidade/artefatos do novo store sem consumir teste."
+      },
+      {
+        "id": "final_evaluation",
+        "source": "fraud_detection_mlops/modeling/experiments/final_holdout_evaluation.py",
+        "source_sha256": "12d977af36e838589b4b6738f1a5e238d58e90728f3f43d7d1a2dca0270fb171",
+        "functions": [
+          "load_frozen_model",
+          "publish_evaluation",
+          "run_evaluation"
+        ],
+        "kind": "local_consumer",
+        "local_migration_blocker": true,
+        "current_behavior": "Lê modelo congelado local e publica avaliação no mesmo store histórico.",
+        "migration_gate": "Preservar freeze, MLmodel/model SHA e ownership; ensaiar transporte sem reabrir janela consumida."
+      },
+      {
+        "id": "reference_assessment",
+        "source": "fraud_detection_mlops/modeling/experiments/reference_assessment_execution.py",
+        "source_sha256": "6ce4ec30b242e65ced08a46767b5439b3279985133f9426ed6a316365dc1233a",
+        "functions": [
+          "execution_context",
+          "execute_assessment"
+        ],
+        "kind": "local_consumer",
+        "local_migration_blocker": true,
+        "current_behavior": "Usa tracking_root congelado e load_frozen_model; ledger controla acesso à janela.",
+        "migration_gate": "Qualquer futuro destino deve respeitar identidade e ledger. Não executar avaliação novamente como teste de infra."
+      },
+      {
+        "id": "serving_export",
+        "source": "fraud_detection_mlops/integrations/serving_release_export.py",
+        "source_sha256": "1303df87a8c3fd438fe6182f03c8a64359d8d424c1a4ea8f8a3c90237b080138",
+        "functions": [
+          "export_reference"
+        ],
+        "kind": "local_consumer",
+        "local_migration_blocker": true,
+        "current_behavior": "Exporta modelo congelado a partir de mlflow.db e receipt tracking_root.",
+        "migration_gate": "Preservar hashes, ambiente, assinatura e paridade de validação; pode testar cópia isolada, sem mudar release atual."
+      },
+      {
+        "id": "serving_runtime",
+        "source": "fraud_detection_mlops/serving/model_release.py",
+        "source_sha256": "3a64add1eb4cec79293246270821ef1ed4833c61b480ba69f900ba693ab5f5fc",
+        "functions": [
+          "load_release",
+          "write_release"
+        ],
+        "kind": "release_only_runtime",
+        "local_migration_blocker": false,
+        "current_behavior": "Inferência lê release skops/manifest/smoke; não consulta MLflow.",
+        "migration_gate": "Manter serving independente do backend de tracking; não adicionar consulta remota no caminho de inferência."
+      },
+      {
+        "id": "historical_inventory",
+        "source": "scripts/storage/mlflow_inventory.py",
+        "source_sha256": "ecd407f85bdc9e0b4de3aa81f2bb263de09b276dc62178e2a0b572b9f1d3056b",
+        "functions": [
+          "inventory",
+          "inspect_database"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Inventaria snapshots locais e referências; não resolve IDs dos novos stores HTTP.",
+        "migration_gate": "Conservar fluxo histórico; inventário entre stores precisa de escopo próprio, sem marcar IDs remotos como corrupção."
+      },
+      {
+        "id": "historical_backup",
+        "source": "scripts/storage/mlflow_backup.py",
+        "source_sha256": "c38deb68fe785f89241664d1034c221867ddb0119ce4dede7200432a3df88277",
+        "functions": [
+          "prepare",
+          "verify_snapshot"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Snapshot consistente dos dois stores históricos SQLite e artefatos.",
+        "migration_gate": "Preservar código produtor/fingerprint e bundles; não adaptar esse contrato para PostgreSQL."
+      },
+      {
+        "id": "historical_recovery_controller",
+        "source": "scripts/storage/mlflow_recovery.py",
+        "source_sha256": "fdcbc9c1b74195cd99e286f6c25eb3d2d84ae1931bae28b71a91b71bc6304075",
+        "functions": [
+          "rehearse",
+          "map_locations"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Cria cópia descartável de restores e remapeia URIs revisadas.",
+        "migration_gate": "Manter ensaio histórico e seus pins; não reutilizar como prova de restauração PostgreSQL."
+      },
+      {
+        "id": "historical_recovery_worker",
+        "source": "scripts/storage/mlflow_recovery_worker.py",
+        "source_sha256": "5b0ac055269e3039ed2c8dabd9380421c97434e389b7ff7c4c13f67d4bd82346",
+        "functions": [
+          "execute",
+          "inspect_api"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Cliente API local sobre cópias SQLite; confere histórico e modelo fixado.",
+        "migration_gate": "Preservar guard/recibos e escopo offline; novo serviço recuperado precisa de verificação própria."
+      },
+      {
+        "id": "tracking_probe",
+        "source": "scripts/tracking/probe.py",
+        "source_sha256": "ea7d9eee09b03a810d57eff7b4f2a01fb77376932c22b14229302290fd8a1dea",
+        "functions": [
+          "main"
+        ],
+        "kind": "service_operations",
+        "local_migration_blocker": false,
+        "current_behavior": "Probe HTTP e S3 no laboratório isolado.",
+        "migration_gate": "Usar só como evidência operacional; o probe JSON não substitui reload dos modelos."
+      },
+      {
+        "id": "tracking_lab_controller",
+        "source": "scripts/tracking/local_stack.py",
+        "source_sha256": "80e1856ebed62fc1f825dac3de0f09bb46c51ef262d52af471083d4393f63d03",
+        "functions": [
+          "inspect_service",
+          "sql_readback",
+          "exclusive"
+        ],
+        "kind": "service_operations",
+        "local_migration_blocker": false,
+        "current_behavior": "Controla bancada dedicada e confere SQL/mounts/imagens.",
+        "migration_gate": "Recuperação futura deve usar outro projeto/volume/namespace; não restaurar no Postgres original."
+      },
+      {
+        "id": "isolated_restore_client",
+        "source": "scripts/tracking/restore_worker.py",
+        "source_sha256": "10e981cd729f9a29a5253432011bcb2b2aa2a910176ee1d2014a37c07dce81db",
+        "functions": [
+          "seed",
+          "verify_data",
+          "inspect_api",
+          "reload_model",
+          "client_check"
+        ],
+        "kind": "isolated_recovery_operations",
+        "local_migration_blocker": false,
+        "current_behavior": "Restores only a fresh private target, verifies complete API history and reloads the pinned synthetic model; no source network or historical stores.",
+        "migration_gate": "Native restore acceptance; preserve scientific consumers and default routing."
+      }
+    ],
+    "decisions": {
+      "modify_scientific_consumers": false,
+      "rewrite_historical_freezes": false,
+      "change_default_tracking": false,
+      "runtime_or_database_inventory_complete": false,
+      "postgres_restore_validated": false
+    },
+    "recovery_sequence": [
+      "Approve source review before changing consumers",
+      "Prepare a bounded PostgreSQL dump and closed S3 object manifest under declared writer quiescence",
+      "Restore metadata and archived objects to a separate database/volume/bucket and serve on a separate loopback port",
+      "Verify metadata history, identities and pinned model bytes/scores using only restored targets",
+      "Only then review primary cutover, rollback and cleanup"
+    ]
+  },
+  "tracking_capture": {
+    "schema": "fraud_tracking_capture_v1",
+    "workspace": "data/storage/tracking-lab/captures",
+    "receipts": "data/storage/tracking-lab/receipts",
+    "implementation": "scripts/tracking/capture.py",
+    "worker": "scripts/tracking/capture_worker.py",
+    "source": "dedicated mlflow_lab database and fraud-tracking-lab/v1/ only",
+    "native_capture_validated": true,
+    "restore_implemented": true,
+    "cutover_implemented": false
+  },
+  "tracking_restore": {
+    "workspace": "data/storage/tracking-lab/restores",
+    "implementation": "scripts/tracking/restore.py",
+    "worker": "scripts/tracking/restore_worker.py",
+    "native_restore_validated": true,
+    "source_services_paused": false,
+    "target_resources": "temporary project/network/PostgreSQL and RustFS volumes; removed after the rehearsal",
+    "primary_cutover": "deferred independently of this recovery gate",
+    "validation_evidence": "references/evidence/tracking_restore_author_validation_2026-10-19.json"
+  }
+}

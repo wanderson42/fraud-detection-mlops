@@ -1,0 +1,29 @@
+{
+  "checkpoint_sha256": "908dd5a063c4d8d1ebd708c7c7da76ca5e19c1858f15298807d9a235b18a00cd",
+  "corrective_native_execution_completed": false,
+  "counts": {
+    "alert_decisions": 143945,
+    "alerts": 1453,
+    "decisions": 143945,
+    "events": 556824,
+    "feedback": 278412,
+    "transactions": 278412
+  },
+  "evidence_kind": "author_uploaded_technical_diagnostic",
+  "failed_parity_accepted": false,
+  "input_manifest_sha256": "20c916866dbd8bc285038f5c34840f198ed1e65c3fd87dbe33a77cbc9c1bfb6f",
+  "max_absolute_score_difference": 0.02664462601589221,
+  "mismatch_transaction_ids": [
+    1629454,
+    1704119
+  ],
+  "production_promotion": false,
+  "same_offline_features_rescore_mismatches": 0,
+  "same_request_features_rescore_mismatches": 0,
+  "score_mismatches": 2,
+  "score_parity_atol": 1e-12,
+  "score_parity_rtol": 0.0,
+  "source_filename": "report(4).json",
+  "threshold_eligibility_disagreements": 0,
+  "version": "native_score_parity_failure_author_v1"
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "fraud_serving_consumer_preparation_v1",
+  "date": "2026-10-19",
+  "status": "implemented_native_and_actions_acceptance_pending",
+  "scope": "pinned_archive_load_and_new_synthetic_HTTP_target_then_CI_artifact_handoff_not_permanent_deployment",
+  "controller_sha256": "c7f273b6735bafe6aad38089ff33e98a2794f8d168d956b96fbc3f233fc158c8",
+  "workflow_sha256": "8c5fb790a40760f6514affc4ef2e7680d39e24b37cda22832cf0c1c89f43e49e",
+  "native_input_evidence": "references/evidence/serving_delivery_author_validation_2026-10-19.json",
+  "approved_input": {
+    "source_commit": "0b95136a462583441044d50de0884a558777b260",
+    "descriptor_sha256": "aa0e79886800765c516d3ed776295dc46d657a7ea50eb7c88900241d8c0ff0d7",
+    "image_id": "sha256:bc2ba70a90de114613bd8679e79ccfbb7a17de048f72f16323ca26713e1dae8d",
+    "directory": "data/serving/deliveries/1b85bede4ac24fc781491ef24eea0209"
+  },
+  "assistant_validation": {
+    "passed": 198,
+    "skipped": 4,
+    "seconds": 8.42,
+    "command": "python -m pytest -q tests/serving tests/storage/test_managed_paths.py tests/storage/test_persistence_inventory.py",
+    "ruff_check_passed": true,
+    "ruff_format_files": 289,
+    "actionlint": "1.7.12; passed; optional shellcheck/pyflakes integrations disabled; scripts separately syntax checked",
+    "docker_available": false
+  },
+  "upstream_pins": {
+    "download_artifact_commit": "37930b1c2abaa49bbe596cd826c3c89aef350131",
+    "download_artifact_version": "v7.0.0",
+    "source": "https://github.com/actions/download-artifact/commit/37930b1c2abaa49bbe596cd826c3c89aef350131",
+    "action_inputs_verified": "Official action.yml at pinned commit: artifact-ids and merge-multiple; same-workflow download"
+  },
+  "acceptance": {
+    "native_archive_load": false,
+    "github_actions_producer_artifact_consumer": false,
+    "production_promotion": false,
+    "permanent_deployment": false
+  },
+  "limits": {
+    "native_engine": "Same engine allowed; new target container; image cache presence recorded; no cold-cache proof",
+    "CI_engine": "Separate hosted runner job; remote execution pending",
+    "trust": "Expected descriptor hash and full source SHA from selected controlled producer, not derived solely from downloaded bytes; no signature claim",
+    "cleanup": "Only owned HTTP containers and imported tag; no force/delete by image ID; cancelled processes may skip cleanup",
+    "source_archive_modified": false,
+    "reference_or_historical_data_read": false,
+    "rebuild_or_fit_in_consumer": false
+  }
+}

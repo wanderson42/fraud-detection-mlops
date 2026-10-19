@@ -1,0 +1,165 @@
+{
+  "date": "2026-10-15",
+  "status": "author_reported_success",
+  "scope": "native_gold_prepare_publish_republish_restore_with_archived_references_schema_features_temporal_splits_and_ids",
+  "schema": "fraud_gold_bundle_v1",
+  "bundle_id": "af32af6befe8ad2dba7f36965011ead09d9cdf7c0ac9be81bffcdea92e2e45aa",
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "contract_version": "gold_v1",
+  "bucket": "fraud-datasets",
+  "prefix": "gold/v1/af32af6befe8ad2dba7f36965011ead09d9cdf7c0ac9be81bffcdea92e2e45aa/",
+  "payload_files": 48,
+  "payload_bytes": 25196448,
+  "total_objects_including_archive_manifest": 49,
+  "payload_composition": {
+    "parquet_partitions": 42,
+    "gold_manifest": 1,
+    "gold_audits": 1,
+    "inventory": 1,
+    "silver_contract": 1,
+    "gold_contract": 1,
+    "temporal_protocol": 1
+  },
+  "verified_counts": {
+    "verified_partitions": 42,
+    "feature_count": 19,
+    "split_rows": {
+      "train": 268668,
+      "validation": 67255,
+      "test": 66954
+    },
+    "rows": 402877
+  },
+  "worker_code_sha256": "d1531495855f538812b383966374fdab8401357d13bbaba5945cd1a21363552c",
+  "sdk": {
+    "boto3": "1.43.114",
+    "botocore": "1.43.114"
+  },
+  "prepare": {
+    "status": "prepared_verified_locally",
+    "archive_files": 48,
+    "bytes": 25196448,
+    "included_audits": 1,
+    "verified_partitions": 42,
+    "feature_count": 19,
+    "split_rows": {
+      "train": 268668,
+      "validation": 67255,
+      "test": 66954
+    },
+    "rows": 402877,
+    "complete": true,
+    "inventory_included": true,
+    "contract_included": true,
+    "silver_contract_included": true,
+    "temporal_protocol_included": true,
+    "source_manifest_bytes_preserved": true,
+    "pickle_deserialized": false,
+    "bronze_read": false,
+    "silver_read": false,
+    "features_recomputed": false,
+    "s3_accessed": false,
+    "budget": {
+      "max_files": 512,
+      "max_bytes": 268435456
+    },
+    "report": "data/storage/receipts/gold-prepare-6r5krrua.json"
+  },
+  "docker_build": {
+    "status": "author_reported_success",
+    "reported_seconds": 1.7,
+    "cache_used": true,
+    "reported_context_bytes": 38760,
+    "image": "fraud-bronze-transfer:local-v1",
+    "reported_local_manifest_list_digest": "sha256:985040e83ed03424d7cf8a989ebd95da04177e4da786e2431a5820fd5fdf7caa",
+    "assistant_executed": false
+  },
+  "publish": {
+    "status": "success",
+    "uploaded_objects": 49,
+    "reused_objects": 0,
+    "verified_objects": 49,
+    "bytes": 25196448,
+    "worker_elapsed_seconds": 0.9033300490045804,
+    "verified_partitions": 42,
+    "feature_count": 19,
+    "split_rows": {
+      "train": 268668,
+      "validation": 67255,
+      "test": 66954
+    },
+    "rows": 402877,
+    "complete": true,
+    "primary_storage_migrated": false,
+    "report": "data/storage/receipts/gold-publish-cm0bl7pk.json"
+  },
+  "republish": {
+    "status": "success",
+    "uploaded_objects": 0,
+    "reused_objects": 49,
+    "verified_objects": 49,
+    "bytes": 25196448,
+    "worker_elapsed_seconds": 0.5403490359967691,
+    "verified_partitions": 42,
+    "feature_count": 19,
+    "split_rows": {
+      "train": 268668,
+      "validation": 67255,
+      "test": 66954
+    },
+    "rows": 402877,
+    "complete": true,
+    "primary_storage_migrated": false,
+    "report": "data/storage/receipts/gold-publish-ul3sv3wv.json"
+  },
+  "restore": {
+    "status": "restored_verified",
+    "files": 48,
+    "bytes": 25196448,
+    "verified_objects": 49,
+    "worker_elapsed_seconds": 0.4173745840016636,
+    "verified_partitions": 42,
+    "feature_count": 19,
+    "split_rows": {
+      "train": 268668,
+      "validation": 67255,
+      "test": 66954
+    },
+    "rows": 402877,
+    "complete": true,
+    "inventory_included": true,
+    "contract_included": true,
+    "silver_contract_included": true,
+    "temporal_protocol_included": true,
+    "original_source_read": false,
+    "bronze_read": false,
+    "silver_read": false,
+    "features_recomputed": false,
+    "pickle_deserialized": false,
+    "primary_storage_migrated": false,
+    "restored_directory": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/restored/af32af6befe8ad2dba7f36965011ead09d9cdf7c0ac9be81bffcdea92e2e45aa",
+    "report": "data/storage/receipts/gold-restore-s3yo571_.json"
+  },
+  "evidence_basis": "Author supplied commands, build output and printed JSONs; assistant did not inspect native bucket, receipts or file bytes. Reported worker hash matches delivered scripts. Receipt paths are references; receipt bytes and hashes were not reconstructed.",
+  "timing_scope": "Worker durations exclude complete Poetry/Compose command, container startup and subsequent host Gold verification. Build timing is separate, cached and not a benchmark.",
+  "native_full_command_timing_measured": false,
+  "resources_measured": false,
+  "native_failure_injection_performed": false,
+  "scientific_core_dependencies_contracts_protocols_modified": false,
+  "historical_evidence_modified": false,
+  "primary_storage_migrated": false,
+  "development_gold_studies_models_evaluations_archived_by_this_profile": false,
+  "mlflow_migrated": false,
+  "pvc_recovery_tested": false,
+  "independent_off_laptop_copy_verified": false,
+  "sla_validated": false,
+  "production_promotion": false,
+  "closure": "Original gold_v1 and own metadata archive/recovery gate closed. Wider storage migration remains open.",
+  "limits": [
+    "No feature recomputation from Silver, new causal parity, model execution or holdout reevaluation",
+    "Historical input provenance and audit bytes preserved; upstream Silver hashes not newly confirmed against Silver",
+    "Native originals were not deleted; restore reports no reads of original source or upstream layers",
+    "Gold development, Optuna study/SQLite, models and evaluations require their own coverage and recovery gates"
+  ],
+  "next_proposed_increment": "Define coverage, links and consistent SQLite backup/recovery for development Gold and Optuna study before implementation; no automatic data deletion or budget increase."
+}

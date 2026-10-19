@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-15",
+  "scope": "Complete Bronze S3 transport and host verification; generated opaque fixtures and actual SDK Stubber, no native S3/Docker",
+  "published_runtime_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "input_worktree_tree": "894dcd6cb96f747173214895e86e5c89dddcf5a1",
+  "tox": {
+    "py314": {
+      "selection": [
+        "tests/storage",
+        "tests/data/ingestion/test_handbook_bronze.py",
+        "tests/serving"
+      ],
+      "passed": 196,
+      "skipped": 2,
+      "pytest_seconds": 10.36,
+      "ruff": "passed",
+      "format": "passed",
+      "poetry_lock": "passed"
+    },
+    "bronze-sdk": {
+      "passed": 4,
+      "skipped": 0,
+      "pytest_seconds": 0.2,
+      "boto3": "1.43.114",
+      "botocore": "1.43.114",
+      "dependencies": "infra/observability/storage-requirements.txt",
+      "scope": "botocore Stubber validates real modeled requests; no S3 connection"
+    }
+  },
+  "native_local_bronze_preparation": "author reported success; separate author-validation evidence",
+  "coverage": [
+    "Single Compose job and reusable S3 client per command; no permanent service",
+    "Conditional SHA-256 PUT; every object read back; exact paginated listing; manifest last",
+    "No-upload repeat; partial publication resumed; conflict/403/transport failure rejection",
+    "Bounded manifest and download; truncated, oversized, missing, same-size corruption rejected",
+    "Complete restore verified by frozen Bronze verifier with archived inventory after originals and local prepared bundle deleted",
+    "Quarantine retained on semantic failure; no final destination before verification",
+    "Stale worker code rejected before SDK creation",
+    "SDK dependency and base image pinning; scientific environment unchanged"
+  ],
+  "native_docker_build": "pending",
+  "native_s3_publication_republication_restore": "pending",
+  "native_data_accessed": false,
+  "s3_accessed": false,
+  "scientific_core_dependencies_protocols_modified": false,
+  "originals_deleted": false,
+  "primary_storage_migrated": false,
+  "production_promotion": false
+}

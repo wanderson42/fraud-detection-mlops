@@ -1,0 +1,48 @@
+rule_files: [alerts.yml]
+evaluation_interval: 10s
+tests:
+  - name: collector failure and timing gaps are visible
+    interval: 10s
+    input_series:
+      - series: 'up{job="fraud-replay"}'
+        values: '1+0x12'
+      - series: 'fraud_monitor_collector_up'
+        values: '0+0x12'
+      - series: 'fraud_replay_unmeasured_committed_events'
+        values: '1+0x12'
+    alert_rule_test:
+      - eval_time: 40s
+        alertname: FraudCollectorInvalid
+        exp_alerts:
+          - exp_labels: {severity: warning}
+            exp_annotations:
+              summary: Snapshot ausente ou inválido
+              action: Conferir diretório, identidade e permissões; preservar os bancos.
+      - eval_time: 40s
+        alertname: FraudTimingGap
+        exp_alerts:
+          - exp_labels: {severity: warning}
+            exp_annotations:
+              summary: Commit recuperado sem medição de latência
+              action: Preservar evidência; não usar o ensaio para aprovar latência contínua.
+      - eval_time: 40s
+        alertname: FraudExporterUnavailable
+        exp_alerts: []
+  - name: stopped replay is not a stall and insufficient drift support is not an alarm
+    interval: 10s
+    input_series:
+      - series: fraud_replay_session_running
+        values: '0+0x24'
+      - series: fraud_replay_heartbeat_timestamp_seconds
+        values: '0+0x24'
+      - series: fraud_replay_score_jensen_shannon
+        values: '0.8+0x24'
+      - series: fraud_replay_score_window_observations
+        values: '100+0x24'
+    alert_rule_test:
+      - eval_time: 240s
+        alertname: FraudReplayStalled
+        exp_alerts: []
+      - eval_time: 240s
+        alertname: FraudScoreDistributionChanged
+        exp_alerts: []

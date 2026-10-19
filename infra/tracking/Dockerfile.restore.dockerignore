@@ -1,0 +1,11 @@
+**
+!infra/
+!infra/tracking/
+!infra/tracking/requirements.txt
+!scripts/
+!scripts/tracking/
+!scripts/tracking/*.py
+!fraud_detection_mlops/
+!fraud_detection_mlops/**
+**/__pycache__/
+**/*.pyc

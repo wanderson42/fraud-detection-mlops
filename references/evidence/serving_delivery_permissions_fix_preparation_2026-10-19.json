@@ -1,0 +1,41 @@
+{
+  "schema": "fraud_serving_delivery_permissions_fix_preparation_v1",
+  "date": "2026-10-19",
+  "status": "implemented_native_retest_pending",
+  "provenance": "Author-pasted failure trace; native receipt bytes and Docker engine not independently accessed",
+  "failed_report": "data/serving/deliveries/59a4e5fd668540a0a578b525440191ef/failure.json",
+  "observed": {
+    "phase_from_trace": "http_runtime",
+    "container_exit_code": 3,
+    "oom_killed": false,
+    "failure": "PermissionError: /model/manifest.json",
+    "container_uid": 10001
+  },
+  "cause": "write_json atomically creates JSON files as 0600; qualify passed the new synthetic release to the non-root runtime without preparing mount permissions",
+  "change": {
+    "scope": "Newly generated synthetic fixture only, after verifying manifest/model/smoke hashes and evidence kind",
+    "directory_mode": "0755",
+    "file_modes": "0644",
+    "job_directory_mode_unchanged": "0700",
+    "global_writer_changed": false,
+    "container_uid_changed": false,
+    "readonly_mount_changed": false,
+    "bytes_or_historical_reference_changed": false
+  },
+  "controller_sha256": "63932d800c7be06683023d9d0ecf1ff561f1934516757d374d456a4fa8c892d9",
+  "previous_delivery_tree": "2fd71325005220df8ef4c0b113a4b7bdeaf93bd4",
+  "native_retest": false,
+  "github_actions_run": false,
+  "production_promotion": false,
+  "assistant_validation": {
+    "selection": "tests/serving tests/storage/test_managed_paths.py tests/storage/test_persistence_inventory.py",
+    "passed": 184,
+    "skipped": 3,
+    "seconds": 7.11,
+    "focused_delivery_tests_passed": 26,
+    "ruff_check": "passed",
+    "ruff_format_check": "286 files already formatted",
+    "native_uid_access_retested": false,
+    "limit": "Mode and sequencing regression only; Docker unavailable in assistant environment"
+  }
+}

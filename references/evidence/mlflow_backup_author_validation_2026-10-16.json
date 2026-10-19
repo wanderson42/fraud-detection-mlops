@@ -1,0 +1,103 @@
+{
+  "schema": "fraud_mlflow_backup_author_validation_v1",
+  "date": "2026-10-16",
+  "status": "author_reported_prepared_and_verified_locally",
+  "scope": "offline_coordinated_tracking_snapshot_preparation_and_bundle_only_verification_not_operational_mlflow_restore_or_migration",
+  "provenance": "terminal_outputs_supplied_by_author; assistant did not access native DBs/artifacts/full receipts",
+  "bundle_id": "c9c4e6e0f684ba21484e7491c026a24a76002570c251c97c98b244f043a4d924",
+  "producer_code_sha256": "7bdd8d00c50184aa72c92ef837f7decec20e69bdfc21ef25edc74dce69f32539",
+  "stores": [
+    {
+      "tracking_root": "data/tracking",
+      "experiments": 5,
+      "runs": 70,
+      "logged_models": 66,
+      "metadata_rows": {
+        "latest_metrics": 315,
+        "metrics": 315,
+        "params": 632,
+        "tags": 1321
+      },
+      "database_table_fingerprint_sha256": "cf91cc2d76469a9f664bec91d94d2ad16ab4618dd878873448fcc1b1ef604cb7",
+      "database_bytes": 1810432,
+      "sqlite_snapshot_sha256": "400349bd9e1c57d68e949d18627236507062a1e88b4c5e5985b38117f9e443b8",
+      "artifact_files": 627,
+      "artifact_bytes": 253128963,
+      "default_reviews": 1
+    },
+    {
+      "tracking_root": "data/tracking/interface-smoke",
+      "experiments": 2,
+      "runs": 1,
+      "logged_models": 1,
+      "metadata_rows": {
+        "latest_metrics": 6,
+        "metrics": 6,
+        "params": 5,
+        "tags": 16
+      },
+      "database_table_fingerprint_sha256": "f2d8b69bcae0d194d980c16ac1f9086fdee0acd0a37f652ddc1b6cd21221fb43",
+      "database_bytes": 954368,
+      "sqlite_snapshot_sha256": "040ff024719ae08793e03ff48cb61bef2597ea04d7da599c18b8bef4cc7004d6",
+      "artifact_files": 6,
+      "artifact_bytes": 32088,
+      "default_reviews": 1
+    }
+  ],
+  "store_count": 2,
+  "total_runs": 71,
+  "total_logged_models": 67,
+  "artifact_files": 633,
+  "artifact_bytes": 253161051,
+  "ancillary_files": 2,
+  "archive_files": 640,
+  "bytes": 256354588,
+  "default_reviews": 2,
+  "reports": {
+    "prepare": "data/storage/receipts/mlflow-backup-prepare-_ye8hj1j.json",
+    "verify": "data/storage/receipts/mlflow-backup-verify-9vlxghxs.json"
+  },
+  "native_tests": {
+    "environment": "tox py314 via .venv/bin/python -m tox",
+    "passed": 70,
+    "warnings": 1,
+    "pytest_seconds": 29.1,
+    "tox_seconds": 42.2,
+    "ruff": "passed",
+    "format": "235 files already formatted",
+    "poetry_lock": "passed",
+    "warning": "MLflow/SQLAlchemy noload deprecation"
+  },
+  "reconciliation": {
+    "prepare_status": "prepared_verified_locally",
+    "verify_status": "verified_locally",
+    "counts_hashes_stores_and_bytes_equal_in_printed_outputs": true,
+    "producer_fingerprint_matches_applied_preparation": true,
+    "sqlite_integrity_verified": true,
+    "sqlite_foreign_keys_verified": true,
+    "logical_table_contents_verified": true,
+    "historical_uris_preserved": true,
+    "prepare_original_source_read": true,
+    "verify_original_source_read": false,
+    "source_database_connection_opened_during_prepare": false,
+    "original_database_rows_modified": false,
+    "shared_writer_lock_acquired": false,
+    "writer_quiescence": "operator_declared_and_source_mutation_checks"
+  },
+  "native_s3_transfer_validated": false,
+  "operational_tracking_restore_validated": false,
+  "model_reload_validated": false,
+  "migration_implemented": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "models_loaded": false,
+  "refit": false,
+  "production_promotion": false,
+  "limitations": [
+    "Printed outputs reconciled; no independent assistant rehash of native receipts or objects",
+    "verify reads the bundle only; native originals were not moved/removed",
+    "Fixture removal of originals does not imply a native recovery drill",
+    "Exact cause of Poetry argument error not established; direct .venv Python command succeeded",
+    "No cloud/off-laptop copy, PostgreSQL conversion, consumer cutover or rollback was performed"
+  ]
+}

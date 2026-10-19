@@ -14,13 +14,18 @@ concentram esse procedimento; `run` abre a janela fixada e `verify` confere resu
 O autor já executou e verificou 02–15/09; diagnóstico e reamostragem também foram
 revisados. Consulte o [fechamento](../modeling/EVALUATION_PROTOCOL.md#resultado-nativo-da-reamostragem-e-fechamento).
 A janela foi consumida e não exige nova pontuação para atualizar documentação.
-16–30/09 segue reservado para replay. O autor validou a exportação e HTTP/wheel;
+16–30/09 foi consumido pelo replay causal e sua correção, ambos preservados.
+O autor forneceu `run` e `verify` corretivos concordantes: paridade aprovada,
+1.453 alertas e 768 capturas/358 perdas de clientes-dia fraudulentos.
+[Resultado e limites](NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13).
+Atualizações documentais não exigem novo preparo, replay ou acesso a Silver.
+O autor validou a exportação e HTTP/wheel;
 O PR #2 integrou a etapa estatística. O autor concluiu a validação Docker com
 paridade, recuperação e três falhas de carga aprovadas. Preserve o recibo
 `data/serving/docker-check.json` e a release; sua atualização documental não
 exige reexportação ou nova inferência. O [procedimento de serving](SERVING_CONTRACT.md)
-concentra permissões, medições e limites. A validação final e a CI do PR Docker
-antecedem a branch de orquestração.
+concentra permissões, medições e limites. Ritmo 1x, emissão programada, fila/lag, monitoramento e recuperação cronometrada
+ainda exigem ensaio próprio; a adoção de orquestrador depende de necessidade demonstrada.
 
 ```bash
 poetry install
@@ -449,3 +454,13 @@ retomada e limites. O executor mantém estado local e aceita o runtime de servin
 em processo; não introduz orquestrador ou acesso à janela reservada. Antes da
 execução nativa, janela, contexto, release e política de investigação terão
 protocolo próprio.
+
+
+## Replay programado, monitoramento e armazenamento local
+
+O [runbook de observabilidade](OBSERVABILITY.md) concentra demo, novo ensaio nativo,
+retomada e verificação independente. O [roadmap](../project/ROADMAP.md) foi
+reordenado: operação/monitoramento, objetos S3 locais e restore, CD/rollback,
+gestão de features e CT. RustFS tem perfil opcional; a migração de artefatos e
+restauração permanecem um marco próprio. Use somente o diretório novo do ensaio;
+preserve os dois checkpoints nativos anteriores e seus recibos.

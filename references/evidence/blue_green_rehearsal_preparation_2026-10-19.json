@@ -1,0 +1,49 @@
+{
+  "schema": "fraud_blue_green_rehearsal_preparation_v1",
+  "date": "2026-10-19",
+  "status": "prepared_and_tested_native_Docker_gate_pending",
+  "scope": "First serving CD increment: isolated NGINX routing and rollback with an operational same-weight repackage; no permanent deployment or CI publication",
+  "prior_recovery_gate": "references/evidence/tracking_restore_author_validation_2026-10-19.json",
+  "native_inputs": {
+    "source_evidence": "references/evidence/storage_release_reload_author_validation_2026-10-15.json",
+    "serving_image_evidence": "references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json",
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "manifest_sha256": "1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263",
+    "image_id": "sha256:db2e2ed60c2b3102041d55a93ca5dba0b0d9c5624c14bd7581947c1de0b600ab",
+    "gateway_lock": "infra/serving/images.lock.json"
+  },
+  "required_sequence": [
+    "baseline_routed",
+    "invalid_candidate_rejected_before_start_or_switch",
+    "candidate_direct_gates_passed",
+    "candidate_routed_on_same_url",
+    "candidate_outage_observed",
+    "baseline_restored_on_same_url"
+  ],
+  "assistant_validation": {
+    "py314": "153 passed, 2 skipped in 5.54s; Ruff check and format passed; tox OK in 11.48s",
+    "real_NGINX_HTTP": "NGINX 1.30.6 compiled from official source, real loopback HTTP serving of generated fixtures; 1 passed in 4.10s",
+    "NGINX_source_tar_sha256": "3cf46f5ed7504d460125866b7bea99fb357f31d887e2e63b35503310e9b8b6c8",
+    "NGINX_fixture_limits": "Local glibc binary compiled without gzip; root-only fixture uses an explicit user root directive because only UID 0 is mapped in the assistant namespace. This directive is absent from Docker configuration; gateway container explicitly uses UID 101. Does not prove native image/network/mount behavior.",
+    "generated_fixture_training_only": true,
+    "native_Docker_executed": false,
+    "native_author_data_or_model_read": false
+  },
+  "source_sha256": {
+    "scripts/serving/blue_green_rehearsal.py": "dc42b970c768d01c84e120254a8d79f8ada5cba2a756fd54a8082ff9b6b6f6d5",
+    "scripts/serving/check_docker_runtime.py": "0a047739dcd063cf6504be436d7e0692d1048d0506f728fb5338d8cd81bea0d3",
+    "tests/serving/test_blue_green_rehearsal.py": "7116087d5621849aa65aa8f930bc5f7668d97273160fdc4fa94c28ed44a130f1",
+    "tests/serving/test_blue_green_nginx_runtime.py": "00ca7cce63a54c0205a9a3e276be7c407986e25a1a89884dc865c99429b06406",
+    "tests/serving/live/test_blue_green_rehearsal.py": "b51acacf678d50961281efe0a9507a827b09c2973b75e6b7187f614ad12390e9"
+  },
+  "native_gate": ".venv/bin/python -m tox -e serving-rollout",
+  "production_promotion": false,
+  "historical_retraining_required": false,
+  "zero_downtime_validated": false,
+  "native_rollout_validated": false,
+  "remaining": [
+    "Author Docker gate for image identities, private DNS/network, read-only mounts and complete cleanup",
+    "Later versioned deployment/publication and distinct-image/model upgrade gates",
+    "Future KinD/Helm provisioning after the rollout contract is accepted"
+  ]
+}

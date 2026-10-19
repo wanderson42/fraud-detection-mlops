@@ -1,0 +1,90 @@
+{
+  "schema": "fraud_mlflow_backup_multistore_preparation_v1",
+  "date": "2026-10-16",
+  "status": "implemented_tested_native_retry_pending",
+  "scope": "offline_coordinated_tracking_capture_for_primary_and_documented_interface_smoke_store_not_migration",
+  "author_observations": {
+    "source": "terminal_outputs_supplied_by_author_not_raw_databases_or_full_reports",
+    "previous_native_tests": {
+      "passed": 58,
+      "warnings": 1,
+      "seconds": 20.17
+    },
+    "native_prepare": {
+      "status": "blocked_before_snapshot_publication",
+      "message": "Other databases/sidecars need explicit snapshot coverage"
+    },
+    "additional_database": {
+      "path": "data/tracking/interface-smoke/mlflow.db",
+      "bytes": 954368
+    },
+    "auxiliary_inventory": {
+      "report": "data/storage/inventory/mlflow-interface-smoke-4ph8q2z3.json",
+      "experiments": 2,
+      "runs": 1,
+      "logged_models": 1,
+      "run_statuses": {
+        "FINISHED": 1
+      },
+      "artifact_files_count": 6,
+      "artifact_bytes": 32088,
+      "missing_local_artifact_locations": 0,
+      "outside_artifact_location": "/home/wanderson/Documentos/fraud-detection-mlops/mlruns/0",
+      "default_associations_and_path_absence": "revalidated_by_prepare_not_assumed_from_summary"
+    }
+  },
+  "producer_code_sha256": "7bdd8d00c50184aa72c92ef837f7decec20e69bdfc21ef25edc74dce69f32539",
+  "supported_store_roots": [
+    "data/tracking",
+    "data/tracking/interface-smoke"
+  ],
+  "contract": {
+    "auxiliary_optional_if_no_database": true,
+    "unknown_database_rejected": true,
+    "source_sqlite_connections": false,
+    "sqlite_online_backup_from_disposable_copies": true,
+    "per_store_logical_and_artifact_verification": true,
+    "aggregate_limits": {
+      "files": 1024,
+      "bytes": 268435456
+    },
+    "shared_writer_lock_acquired": false,
+    "writers_stopped_required_for_both": true,
+    "simultaneous_cross_database_transaction": false,
+    "historical_uris_preserved": true,
+    "project_references_resolved_against_both_stores": true,
+    "duplicate_ids_rejected": true
+  },
+  "validation": {
+    "environment": "Python 3.14.4; tox py314; locked dependencies",
+    "selected_regression": {
+      "passed": 123,
+      "skipped": 1,
+      "warnings": 27,
+      "pytest_seconds": 99.05,
+      "tox_seconds": 122.97
+    },
+    "backup_cases": 49,
+    "new_multistore_cases": 12,
+    "inventory_cases": 21,
+    "ruff": "passed",
+    "format": "235 files already formatted",
+    "poetry_lock": "passed",
+    "full_project_suite_run": false,
+    "live_services_accessed": false,
+    "fixtures": "real SDK-created stores and opaque artifact payloads; no model deserialization"
+  },
+  "native_backup_prepared": false,
+  "native_backup_verified": false,
+  "s3_transfer_implemented": false,
+  "operational_restore_implemented": false,
+  "model_reload_validated": false,
+  "migration_implemented": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "models_loaded": false,
+  "refit": false,
+  "production_promotion": false,
+  "next_gate": "retry prepare --writers-stopped, inspect per-store and aggregate results before any transfer",
+  "prior_evidence_rewritten": false
+}

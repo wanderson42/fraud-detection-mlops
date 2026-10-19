@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "author_reported_native_release_s3_byte_roundtrip",
+  "reported_on": "2026-10-15",
+  "report_timezone": "America/Belem",
+  "source": "Author-provided terminal outputs after storage-order-fix; native report/object bytes not received.",
+  "published_base_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "execution_checkout_revision_independently_verified": false,
+  "author_storage_tests": {
+    "passed": 38,
+    "seconds": 0.24
+  },
+  "bundle_id_reported": "a33bb2fbb3e9503b4bb96c92dd6950677127b77fbf5bedb4322007587176b154",
+  "bucket": "fraud-artifacts",
+  "selected_files": [
+    "data/serving-export.json",
+    "data/serving/reference-v1/manifest.json",
+    "data/serving/reference-v1/pipeline.skops",
+    "data/serving/reference-v1/smoke.json"
+  ],
+  "first_publish": {
+    "status": "success",
+    "uploaded_objects": 5,
+    "reused_objects": 0,
+    "verified_objects": 5,
+    "report_path": "data/storage/receipts/publish-bpsg86h0.json"
+  },
+  "repeat_publish": {
+    "status": "success",
+    "uploaded_objects": 0,
+    "reused_objects": 5,
+    "verified_objects": 5,
+    "report_path": "data/storage/receipts/publish-oxrruw44.json"
+  },
+  "restore": {
+    "status": "success",
+    "files": 4,
+    "bytes": 735485,
+    "directory_relative_to_repo": "data/storage/restored/a33bb2fbb3e9503b4bb96c92dd6950677127b77fbf5bedb4322007587176b154",
+    "report_path": "data/storage/receipts/restore-9xwrne0o.json",
+    "scope": "byte_integrity_only_not_model_reload_or_historical_path_migration"
+  },
+  "historical_release_pin_source": "references/evidence/laboratory_serving_native_validation_2026-10-09.json",
+  "historical_manifest_sha256": "1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263",
+  "historical_release_id": "b3deb7e7bb6d4189bc7671453f8643d2",
+  "historical_control_score": 0.4178630794049542,
+  "historical_fields_are_targets_not_new_observations": true,
+  "reload_validated": false,
+  "native_reports_full_bytes_received": false,
+  "native_hashes_independently_recomputed_by_assistant": false,
+  "datasets_migrated": false,
+  "mlflow_backend_migrated": false,
+  "production_promotion": false,
+  "previously_unclassified_files_interpreted": {
+    "serving_release_and_export": 4,
+    "docker_validation_reports": 2,
+    "model_interface_example_files": 3,
+    "empty_directory_marker": 1
+  },
+  "inventory_classifier_code_updated": false,
+  "next_step": "Explicit native pytest loads restored release using historical external manifest pin, checks readiness, identities, control score and invalid input response."
+}

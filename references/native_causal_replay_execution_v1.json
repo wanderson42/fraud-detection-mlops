@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "version": "native_causal_replay_execution_v1",
+  "scope": "restricted_accelerated_laboratory_replay",
+  "bindings": {
+    "causal_protocol_sha256": "a932d674509444665cbafb093225c6255ce6f0b0ef109cc6a3b2dcac3af43cc3",
+    "configuration_sha256": "7c3e710a510509fe919c875dd5472c18905dd76fab41a6ded861f20a7c066c05",
+    "policy_sha256": "e9872e37ea944eb6e3322867a6c311e270e8d93bb829baaa18182da281eef578",
+    "threshold_manifest_sha256": "6fc96c1550c0c7840701215541d168928bac660d34c8fa2d06c655d95d0a1afa"
+  },
+  "source_commit": "6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+  "reference": {
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "serving_release_id": "b3deb7e7bb6d4189bc7671453f8643d2",
+    "manifest_sha256": "1dd762f7e25fde17ea83a00df5ab489e6885b85f0acd10a1a47da8804bed3263",
+    "feature_contract_version": "gold_v1",
+    "refit": false,
+    "calibration": false
+  },
+  "windows": {
+    "context": {
+      "start": "2018-09-02",
+      "end_exclusive": "2018-09-16"
+    },
+    "scored_replay": {
+      "start": "2018-09-16",
+      "end_exclusive": "2018-10-01"
+    },
+    "feedback_drain_end_exclusive": "2018-10-08T00:00:00",
+    "context_usage": "features_only_no_alerts_no_new_fit_no_quality_metrics",
+    "feedback_drain_usage": "mature_labels_of_previously_observed_transactions_only_no_october_transactions"
+  },
+  "access": {
+    "physical_partitions": "2018-09-02_to_2018-09-30_only",
+    "before_partition_bytes": "verify_release_threshold_receipt_and_committed_code_protocol",
+    "context": "features_only_no_scores_no_alerts_no_quality",
+    "feedback": "observed_transactions_plus_exactly_seven_days_no_october_transactions",
+    "native_commands": "after_final_commit_and_successful_CI"
+  },
+  "ordering": [
+    "event_clock_ns",
+    "feedback_before_transaction",
+    "transaction_id_ascending"
+  ],
+  "parity": {
+    "features": "independent_DuckDB_Gold_v1",
+    "integer_features": "exact",
+    "float_features_rtol": 1e-12,
+    "float_features_atol": 1e-09,
+    "scores_atol": 1e-12,
+    "scores_rtol": 0.0,
+    "decisions": "independent_first_crossing_budget_simulation_same_scores"
+  },
+  "evaluation": {
+    "labels": "all_scored_transactions_mature_before_2018-10-08",
+    "customer_day_label": "any_fraudulent_transaction_in_source_day",
+    "precision_denominator": "actual_emitted_customer_alerts_null_when_zero",
+    "recall_denominator": "fraudulent_customer_days_null_when_zero",
+    "retrospective_comparison": "same_scores_customer_day_maximum_top_100_descriptive_only",
+    "all_replay_days_required": 15
+  },
+  "measurement": {
+    "mode": "accelerated_no_pacing_no_speed_factor_imposed",
+    "elapsed": "monotonic_wall_clock_processing_invocation_only",
+    "latency": "local_handle_duration_including_SQLite_commit_not_scheduled_emission",
+    "resources": "invocation_CPU_peak_RSS_checkpoint_bytes",
+    "paced_1x_evaluated": false,
+    "end_to_end_latency_evaluated": false,
+    "sla_validated": false,
+    "recovery": "resume_committed_prefix_without_rescoring"
+  },
+  "refit": false,
+  "formal_superiority_claim": false,
+  "generalization_confidence_interval": null,
+  "production_promotion": false
+}

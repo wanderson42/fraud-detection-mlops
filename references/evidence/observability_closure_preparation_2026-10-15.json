@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "assistant_prepared_generated_control_tests_and_documentation",
+  "prepared_on": "2026-10-15",
+  "published_base_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "base_documentation": "fraud-paced-native-docs previously applied by author; local patch baseline includes those bytes.",
+  "python": "3.14.4",
+  "poetry": "2.4.3",
+  "test_tool_versions": {
+    "pytest": "9.1.1",
+    "tox": "4.32.0",
+    "ruff": "0.16.10"
+  },
+  "command": "poetry run tox -e py314",
+  "tox_py314": "passed",
+  "pytest": {
+    "passed": 633,
+    "skipped": 1,
+    "warnings": 93,
+    "seconds": 213.59
+  },
+  "tox_total_seconds": 224.17,
+  "new_control_test_cases": 17,
+  "live_test_skip_reason": "Disabled without the explicit live environment flag.",
+  "tox_log_sha256": "23c742d2682d8c27f413135ec31e58f5a90ad74e18f0d9cf0b297b153bd6ec09",
+  "lint": "passed",
+  "format": "passed",
+  "poetry_lock_check": "passed",
+  "live_tox_configuration_verified": true,
+  "live_tox_executed_against_author_docker": false,
+  "original_author_outage_test": "references/evidence/exporter_recovery_author_validation_2026-10-15.json",
+  "versioned_files_sha256": {
+    "scripts/validation/exporter_recovery.py": "0908be61d956da1a5339f3c7814de4ad096704663bc1bc58cf722235601c7d1f",
+    "tests/monitoring/test_exporter_recovery.py": "9da357434c5155c74deb3a44ad907d0b9797627b44c9f9e327e27e47aefb881a",
+    "tests/monitoring/live/test_exporter_recovery.py": "dc9e7a3875e14e0a0f425723d7acd9ca1fb0d5fc38df9cdf014a3793c43c9bee",
+    "tox.toml": "bac2681ff8b97f1254a01f89addd5d51f9d51cd944011556f2abe4d8487ff6c2"
+  },
+  "preservation": {
+    "frozen_package_dependencies_protocols_operational_scripts_and_prior_evidence_unchanged": true,
+    "protected_files_checked": 170,
+    "new_native_replay_performed": false,
+    "new_quality_confirmation": false,
+    "production_promotion": false
+  },
+  "storage_plan": "docs/operations/STORAGE.md",
+  "storage_migration_implemented": false,
+  "storage_scope": [
+    "Bronze",
+    "Silver",
+    "Gold and development versions",
+    "MLflow metadata and artifacts",
+    "releases and assessments",
+    "replay state and telemetry",
+    "Prometheus and Grafana volumes",
+    "conditional offline/online feature store"
+  ],
+  "native_final_dashboard_visual_confirmation_received": false,
+  "remote_ci_for_this_delivery_checked": false
+}

@@ -1,0 +1,171 @@
+{
+  "schema": "fraud_mlflow_recovery_author_validation_v1",
+  "date": "2026-10-16",
+  "status": "author_reported_native_success",
+  "provenance": {
+    "mode": "User-supplied terminal output; documentary summary, not raw operational receipt",
+    "delivered_correction_tree": "915d234af74ecb90c5b865e8453726c85afac4ea",
+    "native_checkout_tree_independently_verified": false,
+    "raw_receipt_received": false,
+    "native_database_or_model_received": false,
+    "uri_map_received": false,
+    "reported_hashes_recomputed_by_assistant": false
+  },
+  "reported_tests": {
+    "environment": "tox py314",
+    "passed": 22,
+    "warnings": 21,
+    "pytest_seconds": 23.72,
+    "tox_seconds": 29.18,
+    "tox_status": "OK"
+  },
+  "reported_result": {
+    "absolute_score_error": 0.0,
+    "additional_processes_allowed": 0,
+    "blocked_network_operations": 1,
+    "blocked_process_operations": 3,
+    "data_access_violations": 0,
+    "database_rows_unchanged_after_MLflow_reads": true,
+    "expected_score": 0.4178630794049542,
+    "full_API_history_verified": true,
+    "guard": "Python audit hooks; not an OS sandbox",
+    "metric_history_rows": 321,
+    "model_reload_validated": true,
+    "model_sha256": "9728f8dddc4daa9e5478db1a8a173adecb71e41c5992965c117d2b46a27625d9",
+    "model_uri": "runs:/d3be86000fd24dc8a053dbcab778d4b6/model",
+    "network_connections_allowed": 0,
+    "operational_tracking_restore_validated": true,
+    "parity_tolerance": 1e-12,
+    "score": 0.4178630794049542,
+    "serving_release_id": "b3deb7e7bb6d4189bc7671453f8643d2",
+    "signature_input_adaptations": [
+      {
+        "column": "TX_HOUR",
+        "from": "int8",
+        "to": "float64"
+      },
+      {
+        "column": "TX_WEEKDAY",
+        "from": "int8",
+        "to": "float64"
+      },
+      {
+        "column": "CUSTOMER_TX_COUNT_1D",
+        "from": "int64",
+        "to": "float64"
+      },
+      {
+        "column": "CUSTOMER_AMOUNT_RATIO_VALID_1D",
+        "from": "int8",
+        "to": "float64"
+      },
+      {
+        "column": "CUSTOMER_TX_COUNT_7D",
+        "from": "int64",
+        "to": "float64"
+      },
+      {
+        "column": "CUSTOMER_AMOUNT_RATIO_VALID_7D",
+        "from": "int8",
+        "to": "float64"
+      },
+      {
+        "column": "TERMINAL_TX_COUNT_1D",
+        "from": "int64",
+        "to": "float64"
+      },
+      {
+        "column": "TERMINAL_KNOWN_LABEL_COUNT_1D",
+        "from": "int64",
+        "to": "float64"
+      },
+      {
+        "column": "TERMINAL_KNOWN_FRAUD_COUNT_1D",
+        "from": "int64",
+        "to": "float64"
+      },
+      {
+        "column": "TERMINAL_TX_COUNT_7D",
+        "from": "int64",
+        "to": "float64"
+      },
+      {
+        "column": "TERMINAL_KNOWN_LABEL_COUNT_7D",
+        "from": "int64",
+        "to": "float64"
+      },
+      {
+        "column": "TERMINAL_KNOWN_FRAUD_COUNT_7D",
+        "from": "int64",
+        "to": "float64"
+      }
+    ],
+    "status": "success",
+    "stores": [
+      {
+        "logged_models": 66,
+        "metric_history_rows": 315,
+        "runs": 70,
+        "tracking_root": "data/tracking"
+      },
+      {
+        "logged_models": 1,
+        "metric_history_rows": 6,
+        "runs": 1,
+        "tracking_root": "data/tracking/interface-smoke"
+      }
+    ],
+    "total_logged_models": 67,
+    "total_runs": 71,
+    "snapshot_bundle_id": "c9c4e6e0f684ba21484e7491c026a24a76002570c251c97c98b244f043a4d924",
+    "release_bundle_id": "a33bb2fbb3e9503b4bb96c92dd6950677127b77fbf5bedb4322007587176b154",
+    "uri_cells_remapped_in_disposable_copy": 145,
+    "uri_map_sha256": "e228ff6eb48e15890660d885ecae5467010e4d02816565b8202f4072b557d4cc",
+    "restored_snapshot_unchanged": true,
+    "restored_release_unchanged": true,
+    "disposable_copy_removed": true,
+    "original_source_read": false,
+    "s3_accessed": false,
+    "refit": false,
+    "production_promotion": false,
+    "migration_implemented": false,
+    "primary_storage_migrated": false,
+    "project_wide_storage_inventory_complete": false,
+    "scope": "local_disposable_sqlite_MLflow_API_history_and_pinned_model_reload_not_HTTP_server_PostgreSQL_or_cutover"
+  },
+  "reported_receipt_relative_path": "data/storage/receipts/mlflow-recovery-icz1xazs.json",
+  "interpretation": {
+    "gate_closed": "Local SDK history queries on both restored SQLite stores and pinned single-model reload in disposable copy",
+    "models_reloaded_for_control": 1,
+    "logged_model_metadata_entries_queried": 67,
+    "blocked_operations_are_denied_attempts_not_successful_connections_or_processes": true,
+    "guard_is_OS_sandbox": false,
+    "all_models_reloaded": false,
+    "HTTP_server_or_PostgreSQL_validated": false,
+    "new_quality_confirmation": false,
+    "primary_storage_migrated": false,
+    "global_inventory_complete": false
+  },
+  "context_editorial_revision": {
+    "file": "docs/project/PROBLEM_CONTEXT.md",
+    "requested_range": "All text before Onde nosso modelo se encaixa",
+    "approach": [
+      "Fictitious payment example before vocabulary",
+      "Define customer, transaction, terminal, feature, score, alert and label",
+      "Explain daily distinct-customer budget and customer-day unit",
+      "Illustrative two-slot queue versus end-of-day ranking; actual project budget unchanged",
+      "Explain seven-day feedback with day-1/day-8 example and information leakage",
+      "Illustrative accuracy/precision/recall examples clearly separated from native results",
+      "Explain purpose of MLOps after problem and decision",
+      "Retain incoming anchors, move statistical dependence caveat into evidence discussion"
+    ],
+    "example_data_is_project_evidence": false,
+    "scientific_policies_metrics_or_runtime_changed": false
+  },
+  "next_gates": [
+    "Whole-project persistence/producer/dependency inventory and managed destinations",
+    "Bounded PostgreSQL + S3 service/cutover and rollback rehearsal",
+    "Consumer adoption and off-machine recovery copy",
+    "Kind/Helm/PVC and cleanup when preceding gates justify them"
+  ]
+}

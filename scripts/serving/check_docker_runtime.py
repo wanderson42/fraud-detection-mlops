@@ -18,8 +18,10 @@ import sys
 import tempfile
 import time
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.request import ProxyHandler, Request, build_opener
 import uuid
+
+from fraud_detection_mlops.storage.managed_paths import managed_destination
 
 RELEASE_FILES = ("manifest.json", "pipeline.skops", "smoke.json")
 PARITY_TOLERANCE = 1e-12
@@ -71,15 +73,15 @@ def request_json(base_url, route, payload=None):
     data = None if payload is None else json.dumps(payload, allow_nan=False).encode()
     request = Request(base_url + route, data=data, headers={"Content-Type": "application/json"})
     try:
-        with urlopen(request, timeout=5) as response:
+        with build_opener(ProxyHandler({})).open(request, timeout=5) as response:
             return response.status, json.load(response)
     except HTTPError as error:
         with error:
             return error.code, json.load(error)
 
 
-def check_score(base_url, smoke, manifest):
-    status, score = request_json(base_url, "/score", smoke["request"])
+def check_score(base_url, smoke, manifest, *, requester=None):
+    status, score = (requester or request_json)(base_url, "/score", smoke["request"])
     require(status == 200, f"/score retornou HTTP {status}.")
     expected = {
         "schema_version": 1,
@@ -139,7 +141,7 @@ class Docker:
     def inspect(self, container):
         return json.loads(self.run("inspect", container))[0]
 
-    def start(self, image_id, release, manifest_sha256, scenario):
+    def start(self, image_id, release, manifest_sha256, scenario, *, network=None, publish=True):
         name = f"fraud-serving-check-{uuid.uuid4().hex}-{scenario}"
         # Track the unique name before create so a client timeout still permits cleanup.
         self.containers.append(name)
@@ -148,6 +150,7 @@ class Docker:
             "create",
             "--name",
             name,
+            *(["--network", network] if network is not None else []),
             "--pull",
             "never",
             "--read-only",
@@ -167,8 +170,7 @@ class Docker:
             "no",
             "--tmpfs",
             "/tmp:rw,noexec,nosuid,size=67108864",
-            "--publish",
-            "127.0.0.1::8000",
+            *(["--publish", "127.0.0.1::8000"] if publish else []),
             "--mount",
             f"type=bind,source={release},target=/model,readonly",
             "--env",
@@ -445,7 +447,7 @@ def main():
     args = parser.parse_args()
     try:
         require(10 <= args.requests <= 1000, "Use entre 10 e 1000 requisições sequenciais.")
-        output = args.output.resolve()
+        output = managed_destination(args.output, "serving")
         release = args.release.resolve(strict=True)
         require(not output.exists(), "Recibo já existe; escolha outro DOCKER_REPORT.")
         require(not output.is_relative_to(release), "Grave o recibo fora da release imutável.")

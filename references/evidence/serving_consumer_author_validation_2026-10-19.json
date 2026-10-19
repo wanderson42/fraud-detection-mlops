@@ -1,0 +1,62 @@
+{
+  "schema": "fraud_serving_consumer_author_validation_v1",
+  "date": "2026-10-19",
+  "status": "author_reported_native_success",
+  "provenance": "Native test/tox output and result JSON pasted by project author; source receipt, Docker daemon and archive were not independently accessed by assistant",
+  "test": {
+    "environment": "serving-consumer",
+    "passed": 1,
+    "pytest_seconds": 32.41,
+    "tox_seconds": 44.93
+  },
+  "consumption": {
+    "schema": "fraud_serving_consumption_v1",
+    "status": "success",
+    "scope": "qualified_archive_load_and_separate_synthetic_HTTP_target_not_permanent_deployment",
+    "source_delivery_directory": "/home/wanderson/Documentos/fraud-detection-mlops/data/serving/deliveries/1b85bede4ac24fc781491ef24eea0209",
+    "source_commit": "0b95136a462583441044d50de0884a558777b260",
+    "descriptor_sha256": "aa0e79886800765c516d3ed776295dc46d657a7ea50eb7c88900241d8c0ff0d7",
+    "image_id": "sha256:bc2ba70a90de114613bd8679e79ccfbb7a17de048f72f16323ca26713e1dae8d",
+    "import_tag": "fraud-serving-delivery:d69705d9a8bf42a69f485d0660f80edf",
+    "controller_sha256": "c7f273b6735bafe6aad38089ff33e98a2794f8d168d956b96fbc3f233fc158c8",
+    "archive_reload_validated": true,
+    "isolated_target_container": true,
+    "separate_engine_required": false,
+    "cold_cache_validated": false,
+    "build_executed": false,
+    "fit_executed": false,
+    "historical_reference_accessed": false,
+    "production_promotion": false,
+    "permanent_deployment_created": false,
+    "original_delivery_bytes_unchanged": true,
+    "owned_import_tag_removed": true,
+    "http_target_completed_and_removed": true,
+    "image_present_before_load": false,
+    "manifest_sha256": "589fa17eb6bc469e39e2e7b6107ba60c0f02f5cbd232d051b973b1227ef5a4c1",
+    "serving_release_id": "c298299b7d3540d3968b5e715937b923",
+    "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+    "http_score": {
+      "schema_version": 1,
+      "transaction_id": 0,
+      "score": 0.03463335444035967,
+      "score_semantics": "uncalibrated_ranking",
+      "model_id": "hist_gradient_boosting",
+      "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+      "feature_contract_version": "gold_v1",
+      "serving_release_id": "c298299b7d3540d3968b5e715937b923"
+    },
+    "invalid_input_http_status": 422,
+    "elapsed_seconds": 32.31140529299955,
+    "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/serving/consumptions/2e889985000047029e9dbabd8a477087/result.json"
+  },
+  "acceptance": {
+    "native_image_archive_load_and_HTTP": true,
+    "source_delivery_preserved": true,
+    "owned_resources_removed": true,
+    "github_actions_run": false,
+    "separate_engine_or_cold_cache_proof": false,
+    "production_CD": false
+  },
+  "limits": "Image ID absent before load does not prove absence of cached layers; this native target used the local engine. Full runtime receipt and load log not supplied independently. No remote Actions/artifact handoff acceptance inferred.",
+  "next_gate": "Commit reviewed implementation/documentation excluding personal VS Code settings, push branch and inspect quality, serving-delivery and serving-consumer in the same Actions run."
+}

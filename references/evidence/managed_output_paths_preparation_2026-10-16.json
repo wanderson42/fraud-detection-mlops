@@ -1,0 +1,71 @@
+{
+  "schema": "fraud_managed_output_paths_preparation_v1",
+  "date": "2026-10-16",
+  "status": "implemented_fixture_validated_native_pending",
+  "required_base_tree": "09be422e273be516f4949b82c568ee2a55c503f6",
+  "justification": "Native metadata inventory identified managed defaults but free caller-supplied output destinations. Validate selected operational entry points before training, Docker or state/credential creation without rewriting scientific/internal APIs.",
+  "covered_entry_points": [
+    "examples.model_contribution main",
+    "examples.serving_smoke main",
+    "scripts.serving.check_docker_runtime main",
+    "scripts.monitoring.local_stack init"
+  ],
+  "behavior": [
+    "Outputs must be children of the designated checkout data area.",
+    "Reject parent traversal, sibling areas, symlink ancestors/leaves including dangling links, and non-directory ancestors.",
+    "Validation creates no directories; performed before expensive work.",
+    "No runtime-root environment override was introduced.",
+    "Internal APIs keep explicit caller paths for fixtures and controlled integrations.",
+    "REPORTS_DIR and FIGURES_DIR now default to data/reports; no existing outputs moved."
+  ],
+  "assistant_validation": {
+    "new_tests_passed": 24,
+    "initial_new_tests_seconds": 0.63,
+    "full_suite_before_test_correction": {
+      "passed": 941,
+      "failed": 1,
+      "skipped": 3,
+      "warnings": 113,
+      "pytest_seconds": 499.25,
+      "failure": "Old catalogue test asserted exactly 12 destinations; data/reports adds the 13th.",
+      "resolution": "Replaced fixed count with required destination coverage, configured reports coverage, and legacy-root review checks. Production code unchanged after broad run."
+    },
+    "final_focused_tox": {
+      "status": "passed",
+      "passed": 82,
+      "warnings": 4,
+      "pytest_seconds": 4.61,
+      "tox_seconds": 11.07,
+      "ruff_check": "passed",
+      "ruff_format_check": "passed",
+      "poetry_lock_check": "passed",
+      "includes_previously_failed_test": true
+    },
+    "full_suite_repeated_after_test_only_correction": false,
+    "native_data_or_services_used": false
+  },
+  "source_sha256": {
+    "fraud_detection_mlops/storage/managed_paths.py": "6591e0f362941e7837be1666c97695d0d0ed308fb5929284f52f2fdd08f51ded",
+    "fraud_detection_mlops/config.py": "2c020fd8f531646eda0e54781f4c86aae5a48c1380aeb5373f9aa40e19f38368",
+    "examples/model_contribution.py": "4eb0d0c63cd2033e139f0bb6fd84b873471250d1879289690eb687bcc49c7054",
+    "examples/serving_smoke.py": "f5e82849d8d961452178c9d41b2b49b72f63411ff3164ff88ac23c5cef007c94",
+    "scripts/monitoring/local_stack.py": "cc3d2114ac5e8dd8ba984684bf5156922a33a7add98ec966373cee6b00f002b3",
+    "scripts/serving/check_docker_runtime.py": "fda5e914c1ad993b6b123c29694db344ab8091bff468dcf2837ae5554bdb15f8",
+    "tests/storage/test_managed_paths.py": "ca09655728a0b67821b51b1e513bb88eef1fa4dffc9888994685116c01f9804b",
+    "tests/storage/test_persistence_inventory.py": "805e648b8aedfc4629752569fa1a5b6b27bc37ac445381cc877a95784e3dad68"
+  },
+  "limits": [
+    "Coverage is partial: other CLIs, internal APIs and dependency caches are not confined by this helper.",
+    "Path preflight is not an OS sandbox or protection against concurrent symlink replacement.",
+    "No new service or model evaluation, no claim that all library writes are confined.",
+    "Native execution pending author validation."
+  ],
+  "global_destination_policy_enforced": false,
+  "project_wide_storage_inventory_complete": false,
+  "original_files_deleted_or_moved": false,
+  "scientific_code_or_contracts_changed": false,
+  "primary_storage_migrated": false,
+  "new_services": false,
+  "new_dependencies": false,
+  "next_gate": "Native focused tox validation, then isolated PostgreSQL/S3 MLflow service rehearsal without cutover to historical consumers."
+}

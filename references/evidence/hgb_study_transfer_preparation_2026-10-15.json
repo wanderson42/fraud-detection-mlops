@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-15",
+  "scope": "Existing S3 worker extended to explicit artifact bucket for consistent HGB snapshot; dataset dependency and study semantic gate on host; memory S3/generated fixtures and actual pinned SDK Stubber only",
+  "input_worktree_tree": "3642628839c955988a423880c5269ab2430e4907",
+  "published_runtime_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "tox": {
+    "py314": {
+      "selection": [
+        "tests/storage",
+        "tests/modeling/experiments/test_temporal_development_data.py",
+        "tests/modeling/experiments/test_hgb_optimization.py",
+        "tests/data/datasets/test_gold_dataset.py",
+        "tests/data/datasets/test_silver_dataset.py",
+        "tests/data/ingestion/test_handbook_bronze.py",
+        "tests/serving"
+      ],
+      "passed": 337,
+      "skipped": 2,
+      "warnings": 4,
+      "pytest_seconds": 653.98,
+      "ruff": "passed",
+      "format": "passed",
+      "poetry_lock": "passed"
+    },
+    "bronze-sdk": {
+      "passed": 5,
+      "pytest_seconds": 0.73,
+      "scope": "Stubber accepts artifact bucket conditional PUT/checksum/readback/listing in same helper; previous dataset calls preserved"
+    }
+  },
+  "new_study_transfer_cases": 9,
+  "profile": {
+    "schema": "fraud_hgb_study_bundle_v1",
+    "bucket": "fraud-artifacts",
+    "prefix": "hgb-study/v1/<bundle_id>/",
+    "max_files": 512,
+    "max_bytes": 268435456,
+    "max_manifest_bytes": 262144
+  },
+  "coverage": [
+    "One existing client/job reused; bucket chosen by validated schema, no free CLI bucket override; datasets keep their buckets/prefixes",
+    "Publish validates local snapshot/dependency before S3, conditional writes/full readback/listing/manifest last/reuse on repeat",
+    "Restore preflights explicit local dataset ID before network, then validates snapshot and dependency in downloaded quarantine before final rename",
+    "Real generated Optuna/SQLite/model/prediction/receipt fixture; recover after removing originals/prepared study with dependency only in relocated restore",
+    "Study report bytes, trials, fit attempts, logical SQLite hash and dataset binding preserved; no model deserialization/refit/MLflow or training resumption",
+    "Publication interruption retries reuse verified objects; corrupt download cleaned; wrong dependency or semantic failure preserves quarantine",
+    "Wrong bucket/prefix/candidate worker receipts rejected, existing final destination protected",
+    "SDK Stubber validates explicit fraud-artifacts routing through reused helpers; previous storage/modeling/serving regressions pass"
+  ],
+  "native_preparation_evidence": "references/evidence/hgb_study_backup_author_validation_2026-10-15.json",
+  "native_prepared_study": {
+    "bundle_id": "e18ded1975bf541fe5993698f286c86c64e8abed514e085f64330905d7ec5198",
+    "archive_files": 322,
+    "bytes": 233048483,
+    "expected_total_objects": 323,
+    "trials_used": 20,
+    "completed_trials": 20,
+    "failed_trials": 0,
+    "fit_attempts": 63,
+    "decision": "retain_reference",
+    "sqlite_logical_sha256": "c4e8397e1f1636800b45fe5cf842ce25a481df940ca5afbec62c4e691da5eee7",
+    "dataset_bundle_id": "4e20595ffe482aacfb279d8dd8dea245e0ccc0f1d602c62f17d0cc52d12d6802"
+  },
+  "native_study_publication": "pending author execution",
+  "native_study_republication": "pending author execution",
+  "native_study_restore": "pending author execution",
+  "native_data_accessed": false,
+  "s3_accessed": false,
+  "docker_executed": false,
+  "snapshot_manifest_or_identity_changed": false,
+  "dataset_transport_contracts_changed": false,
+  "new_client_or_service_added": false,
+  "sdk_lock_or_dependencies_modified": false,
+  "scientific_core_contracts_protocols_modified": false,
+  "historical_evidence_modified": false,
+  "originals_deleted": false,
+  "primary_storage_migrated": false,
+  "production_promotion": false,
+  "image_rebuild_required_before_next_s3_operation": true,
+  "limits": [
+    "No native S3 success inferred from fixtures; author must build only existing job and publish existing snapshot",
+    "Restore requires explicit locally verified dataset dependency and does not fetch it implicitly",
+    "Recovery validates stored state/metrics/artifacts; no resumed optimization, model reload/score inference, MLflow URI migration or backend migration",
+    "Worker timing excludes startup/Compose command and host semantic verification; no benchmark/SLA/PVC recovery claim"
+  ]
+}

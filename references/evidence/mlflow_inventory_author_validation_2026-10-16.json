@@ -1,0 +1,114 @@
+{
+  "date": "2026-10-16",
+  "timezone": "America/Belem",
+  "status": "author_reported_inventory_review_completed",
+  "scope": "Native read-only MLflow inventory and author metadata review of empty Default; not backup, recovery or PostgreSQL migration",
+  "corrected_inventory": {
+    "report": "data/storage/inventory/mlflow-ljdjyua8.json",
+    "status": "review_required",
+    "complete": true,
+    "scope": "offline_local_tracking_inventory_not_backup_or_migration",
+    "backend": "sqlite",
+    "artifact_files_count": 627,
+    "artifact_bytes": 253128963,
+    "run_statuses": {
+      "FINISHED": 70
+    },
+    "uri_kinds": {
+      "local_outside_artifacts_not_read": 1,
+      "local_artifacts": 140
+    },
+    "reference_json_files": 285,
+    "unresolved_references": 0,
+    "missing_local_artifact_locations": 0,
+    "issues": [
+      "Artifact locations outside managed local artifacts require explicit coverage"
+    ],
+    "source_database_opened": false,
+    "mlflow_initialized": false,
+    "models_loaded": false,
+    "network_accessed": false,
+    "backup_validated": false,
+    "migration_implemented": false,
+    "alembic_revisions": [
+      "dc11669786a5"
+    ],
+    "metadata_rows": {
+      "params": 632,
+      "metrics": 315,
+      "latest_metrics": 315,
+      "tags": 1321,
+      "logged_models": 66
+    },
+    "experiments": 5,
+    "runs": 70,
+    "logged_models": 66,
+    "registered_models": 0,
+    "model_versions": 0
+  },
+  "author_tests": {
+    "selection": "tests/storage/test_mlflow_inventory.py",
+    "passed": 21,
+    "warnings": 1,
+    "pytest_seconds": 7.31,
+    "warning": "SQLAlchemy noload deprecation during MLflow fixture setup"
+  },
+  "default_review": {
+    "experiment_id": 0,
+    "name": "Default",
+    "declared_artifact_location": "/home/wanderson/Documentos/fraud-detection-mlops/mlruns/0",
+    "ownership_source_report": "data/storage/inventory/mlflow-h1r78wa0.json",
+    "default_runs": 0,
+    "default_logged_models": 0,
+    "path_exists": false,
+    "is_directory": false,
+    "direct_entries": [],
+    "inspection": "Author used the earlier inventory rows and separately inspected local directory metadata; no atomic cross-report snapshot asserted",
+    "decision": "Preserve the Default metadata row and historical artifact_location; no existing payload at this path was observed to include. Do not ignore future Default contents automatically."
+  },
+  "classification_correction": {
+    "local_diagnostics_id": "961bb0c32fb84433af922908ea58e76b",
+    "initial_unresolved_references": 2,
+    "corrected_unresolved_references": 0,
+    "scientific_receipts_changed": false,
+    "prior_fix_evidence": "references/evidence/mlflow_inventory_classification_fix_preparation_2026-10-16.json"
+  },
+  "review_result": "Inventory and Default coverage review completed for the author-reported scope. Raw inventory status remains review_required and is not rewritten. This is not restoration or model loading evidence.",
+  "evidence_basis": "Author supplied printed pytest output, inventory summary and Default inspection JSON. Assistant did not access native report, database, artifacts or file bytes; paths are references and no receipt hashes were reconstructed.",
+  "raw_inventory_status_modified": false,
+  "native_bucket_or_database_accessed_by_assistant": false,
+  "historical_evidence_modified": false,
+  "files_deleted": false,
+  "backup_implemented": false,
+  "backup_validated": false,
+  "migration_implemented": false,
+  "postgresql_provisioned": false,
+  "mlflow_server_provisioned": false,
+  "primary_storage_migrated": false,
+  "model_reload_validated_by_this_check": false,
+  "pvc_recovery_tested": false,
+  "production_promotion": false,
+  "next_increment_proposal": {
+    "scope": "Offline coordinated backup preparation of existing MLflow metadata plus all managed artifacts, followed by isolated verification/restoration before transfer or PostgreSQL cutover",
+    "unit": "All metadata tables in one consistent SQLite snapshot plus complete artifacts and provenance/URI coverage; Default metadata preserved even when its artifact path is absent",
+    "artifact_files_observed": 627,
+    "artifact_bytes_observed": 253128963,
+    "proposed_profile_max_files": 1024,
+    "proposed_profile_max_bytes": 268435456,
+    "budget_reason": "627 artifacts alone exceed existing 512-file dataset/study profiles; use a dedicated tracking profile rather than split the logical recovery unit. Retain the 256 MiB byte cap subject to measuring normalized DB and metadata; do not infer full payload size or raise automatically.",
+    "requirements": [
+      "Pause MLflow UI/training/evaluation writers; snapshot and artifacts must represent the same quiescent state",
+      "Recheck all paths and external-location coverage, including Default, at preparation time",
+      "Verify SQLite integrity, foreign keys, full table contents and artifact file hashes; compare with archived inventory/provenance",
+      "Measure database and payload bytes before staging; refuse mutation, unknown external payload or exceeded budget without changing source",
+      "Original rows, IDs, historical URIs and scientific receipts remain untouched; any path adaptation belongs only to disposable verification copies",
+      "No refit, model promotion, new holdout evaluation, new server provisioning or automatic cleanup"
+    ]
+  },
+  "limits": [
+    "Inventory is not a coordinated backup or recovery proof",
+    "Managed artifact locations were reported present; this does not prove model reload/inference",
+    "Default absence is a time-specific observation, not a permanent coverage exception",
+    "Local inventory does not provide an independent off-machine disaster recovery copy"
+  ]
+}

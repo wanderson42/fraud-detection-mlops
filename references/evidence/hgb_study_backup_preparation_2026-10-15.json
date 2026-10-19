@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-15",
+  "scope": "Offline consistent finished HGB study snapshot and isolated verification with pinned archived development dataset; generated SQLite/Parquet/model fixtures only",
+  "published_runtime_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "input_worktree_tree": "0a17c0e6033f613967027eb74dbfced15fcd0321",
+  "tox": {
+    "py314": {
+      "selection": [
+        "tests/storage",
+        "tests/modeling/experiments/test_temporal_development_data.py",
+        "tests/modeling/experiments/test_hgb_optimization.py",
+        "tests/data/datasets/test_gold_dataset.py",
+        "tests/data/datasets/test_silver_dataset.py",
+        "tests/data/ingestion/test_handbook_bronze.py",
+        "tests/serving"
+      ],
+      "passed": 328,
+      "skipped": 2,
+      "warnings": 4,
+      "pytest_seconds": 161.16,
+      "ruff": "passed",
+      "format": "passed",
+      "poetry_lock": "passed"
+    },
+    "bronze-sdk": {
+      "passed": 4,
+      "skipped": 0,
+      "pytest_seconds": 0.55,
+      "scope": "Existing pinned SDK validated through Stubber; HGB study transport deliberately unsupported"
+    }
+  },
+  "new_hgb_study_cases": 19,
+  "profile": {
+    "schema": "fraud_hgb_study_bundle_v1",
+    "max_files": 512,
+    "max_bytes": 268435456,
+    "max_manifest_bytes": 262144,
+    "transfer_implemented": false,
+    "commands": [
+      "prepare",
+      "verify"
+    ]
+  },
+  "coverage": [
+    "Same exclusive nonblocking writer flock as optimizer, existing lock opened read-only; active writer rejected",
+    "Source SQLite mode=ro; online backup pages/deadline; integrity and foreign keys checked, SHA-256 of logical dump compared with snapshot and second source read",
+    "Coordinated model/prediction/attempt/protocol/report copy and source file-set/stat mutation gate; no WAL/SHM/journal/lock in payload",
+    "Study snapshot pins existing dataset archive ID, run ID and original dataset manifest hash, includes manifest/inventory/policy without duplicating dataset Parquets",
+    "Frozen verify_hgb_optimization reused on disposable study/dataset view for trials/objectives/models by checksum/predictions/metrics/populations/fit receipts/budget",
+    "Only study_path in disposable report copy adapted; archived report/model/receipts/tracking references remain byte-preserved, no archived SQLite opened through Optuna",
+    "Closed budget/finished trials required; no fit, features recomputation, model deserialization or MLflow call after fixture setup",
+    "Real SQLite/Optuna fixture: two trials/three folds/nine fits on generated 63 Parquets/189 rows/19 features; tracking simulated during setup",
+    "Native WAL API fixture includes committed WAL row and leaves standalone destination; live writer, corruption, missing metadata and unreviewed nested DB/sidecar reject",
+    "Report/source bytes preserved and stable repeated preparation ID; isolated verification after source removal with dependency available only as relocated restore",
+    "Logical/physical digest refresh still rejects modified trial objective/metrics/model/report decision/dataset link",
+    "Common staging requires HGB semantic callback and strict paths; raw DB still rejected in previous profiles; existing S3 worker refuses HGB schema",
+    "Pilot/Bronze/Silver/Gold/development canonical manifest bytes and identities unchanged on generated fixtures"
+  ],
+  "known_native_dependency": {
+    "bundle_id": "4e20595ffe482aacfb279d8dd8dea245e0ccc0f1d602c62f17d0cc52d12d6802",
+    "development_run_id": "9f86edf1e8f2408098c5377456e8968e3a7ca5925a20222b8ab8547ef94cbaf9",
+    "development_manifest_sha256": "b34988a71990356dd38ae62258d8f7ff232f9ecd8611fb9b9a31be80169d91e5",
+    "verified_partitions": 63,
+    "rows": 603669,
+    "evidence": "references/evidence/development_gold_archive_author_validation_2026-10-15.json"
+  },
+  "native_expected_reference": {
+    "inventory": "references/evidence/development_storage_inventory_author_2026-10-15.json",
+    "study_files_including_lock": 319,
+    "study_bytes": 232943522,
+    "sqlite_main_bytes": 540672,
+    "historical_trials": 20,
+    "historical_fit_attempts": 63,
+    "expected_archive_files_if_inventory_unchanged": 322,
+    "snapshot_bytes_and_identity": "to be measured natively"
+  },
+  "native_study_preparation": "pending author execution",
+  "native_study_verification": "pending author execution",
+  "native_study_s3_transfer_or_roundtrip": "not implemented in this increment",
+  "native_data_accessed": false,
+  "docker_executed": false,
+  "s3_accessed": false,
+  "scientific_core_dependencies_contracts_protocols_modified": false,
+  "historical_evidence_modified": false,
+  "primary_storage_migrated": false,
+  "originals_deleted": false,
+  "postgresql_migration_performed": false,
+  "production_promotion": false,
+  "image_rebuild_required_before_future_existing_s3_operations": true,
+  "limits": [
+    "This increment is offline prepare/verify only; no study publication or S3 recovery proof",
+    "Backup SQL content equivalence does not require physical SQLite file equality; source database rows are not changed",
+    "Archived report/URIs stay frozen; path adaptation is disposable verification only, not migration or resumed training",
+    "Dependency dataset bundle or verified restore must remain available locally before study verification; source development/study paths are not needed for verify",
+    "Only finished-budget studies supported; cooperative writers must honor existing flock, no distributed-writer coordination",
+    "No model reload/score parity/MLflow recovery/PVC durability/benchmark/SLA claim"
+  ],
+  "implementation_references": [
+    "https://www.sqlite.org/backup.html",
+    "https://docs.python.org/3.14/library/sqlite3.html#sqlite3.Connection.backup"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "base_revision": "eb3bb1701d5a43ef48699e1fa339e291f904507a",
+  "evidence_kind": "assistant_generated_fixtures_only",
+  "model_changed": false,
+  "native_corrective_replay_executed": false,
+  "numerical_version": "exact_binary64_mean_v1",
+  "original_runtime_code_modified": false,
+  "parity_tolerance_changed": false,
+  "production_promotion": false,
+  "refit": false,
+  "regressions": [
+    "HGB_one_ULP_at_both_observed_cuts",
+    "rational_specification_including_subnormals_and_finite_maxima",
+    "exact_19_feature_parity_at_nanosecond_boundaries",
+    "independent_DuckDB_membership_vs_SQLite_history",
+    "resumption_without_replacing_committed_scores",
+    "atomic_assessment_publication",
+    "external_hash_and_semantic_tampering_rejection",
+    "original_checkpoint_bytes_preserved"
+  ],
+  "source_Silver_reopened": false,
+  "threshold_changed": false,
+  "validation": {
+    "command": "poetry run tox -e py314",
+    "format": "passed",
+    "lockfile": "passed",
+    "pytest_seconds": 192.12,
+    "python": "3.14.4",
+    "ruff": "passed",
+    "tests_passed": 595,
+    "warnings": 93
+  },
+  "version": "native_numerical_correction_preparation_v1"
+}

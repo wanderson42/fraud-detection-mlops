@@ -1,0 +1,12 @@
+**
+!scripts/
+!scripts/storage/
+!scripts/storage/archive.py
+!scripts/storage/bronze_s3_worker.py
+!scripts/storage/mlflow_inventory.py
+!scripts/storage/mlflow_backup.py
+!infra/
+!infra/observability/
+!infra/observability/Dockerfile.storage
+!infra/observability/Dockerfile.storage.dockerignore
+!infra/observability/storage-requirements.txt

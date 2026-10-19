@@ -1,0 +1,84 @@
+{
+  "schema": "fraud_hgb_http_preparation_v1",
+  "date": "2026-10-17",
+  "status": "assistant_validated_native_fold_pending",
+  "base_delivery_tree": "613f01873261be4c80aba407ec6d68700791a7ae",
+  "scope": "Explicit HGB tracking destination for new studies; bounded one-synthetic-fold native acceptance prepared, not historical migration or new model selection",
+  "justification": "The contribution producer passed native HTTP model reload/rollback. HGB is the next producer requested by the author; its persistent destination identity and no-refit/fit-budget contracts need explicit coverage before broader use.",
+  "author_contribution_gate": "model_contribution_http_author_validation_2026-10-17.json",
+  "implementation": {
+    "local_default_unchanged": true,
+    "local_identity_shape_unchanged": true,
+    "new_http_identity_fields": [
+      "tracking_uri",
+      "tracking_experiment"
+    ],
+    "new_http_experiment": "fraud-temporal-optuna-http-v1",
+    "native_synthetic_experiment": "fraud-hgb-fold-smoke-http-v1",
+    "http_tracking_root_argument": "None; mutually exclusive with http_uri",
+    "completed_fit_reused_without_publication": true,
+    "changed_destination_blocks_resume": true,
+    "automatic_fallback_or_refit_added": false,
+    "optuna_backend_changed": false,
+    "committed_preparation_guard_unchanged": true,
+    "scientific_protocol_budgets_seed_features_or_confirmation_changed": false,
+    "server_compose_images_or_locks_changed": false,
+    "baseline_runner_changed": false,
+    "frozen_storage_sources_changed": false
+  },
+  "assistant_validation": {
+    "regression_tox": "159 passed, 11 skipped, 30 warnings in 195.15s; py314 tox OK in 204.47s; lock, lint and format passed",
+    "regression_scope": [
+      "tests/modeling/experiments/test_hgb_optimization.py",
+      "tests/modeling/experiments/test_hgb_tracking_destination.py",
+      "tests/integrations",
+      "tests/storage/test_hgb_study_backup.py",
+      "tests/storage/test_hgb_study_transfer.py",
+      "tests/storage/test_managed_paths.py",
+      "tests/storage/test_persistence_inventory.py",
+      "tests/tracking"
+    ],
+    "final_entrypoints_tox": "40 passed, 12 skipped in 1.22s; py314 tox OK in 5.83s after final CLI simplification and late-import fixture isolation",
+    "local_path_compatibility_tox": "13 passed, 4 warnings in 60.02s; py314 tox OK in 65.66s after preserving string-to-Path normalization; local fixture entrypoints now pass string roots",
+    "hgb_http_tox": "4 passed, 8 warnings in 21.26s; hgb-http tox OK in 25.75s",
+    "contribution_http_regression": "4 passed, 6 warnings in 20.52s; contribution-http tox OK in 25.66s after server-fixture extraction",
+    "http_scope": "Real SDK/server with disposable SQLite/file backend; native harness also executed against this fixture with only Docker inspection replaced. This does not validate native PostgreSQL/RustFS.",
+    "scheduler_scope": "Real Optuna SQLite, small synthetic feature data, and substituted tracking logger to reconcile identity, completed-fold reuse, global budget and no repeated publication.",
+    "failure_checks": [
+      "unreachable HTTP leaves attempt but no completed fit receipt or tracking DB",
+      "score mismatch marks remote run FAILED and leaves no completed fit receipt",
+      "destination ambiguity rejected before inputs/writes",
+      "changed endpoint/local destination rejected before new fit",
+      "committed_inputs guard propagated before study creation"
+    ],
+    "native_docker_commands_executed_by_assistant": false
+  },
+  "native_next_command": ".venv/bin/python -m tox -e tracking-hgb",
+  "native_scope": "One new synthetic HGB fold through existing service, independent reload while local model unavailable, completed-receipt reuse without fit/publication; no Optuna search, no native container mutations",
+  "native_output": "data/storage/tracking-lab/hgb-fold-<id>/dataset",
+  "native_receipt": "data/storage/tracking-lab/receipts/hgb-fold-<id>.json",
+  "native_full_search_gate": "not claimed; no repeat of completed Handbook study authorized or needed",
+  "open_boundaries": [
+    "native HGB fold success pending",
+    "new full-study provenance, prepared data and budget remain required",
+    "local reference/evaluation consumers and cross-store reference inventory not migrated",
+    "future HTTP study archive/restore not validated",
+    "PostgreSQL backup/restore and primary storage cutover pending"
+  ],
+  "historical_study_modified": false,
+  "historical_runs_migrated": false,
+  "production_promotion": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "source_sha256": {
+    "fraud_detection_mlops/modeling/experiments/hgb_optimization.py": "9ffb8cb985de2bea7785be3d26706be5d09c0e49095239625889839f47c1d3d0",
+    "fraud_detection_mlops/integrations/mlflow_tracking.py": "641de2903345d3141b0afa8c79e24ba59360572e12247304bb67a409ec35644e",
+    "tests/modeling/experiments/test_hgb_optimization.py": "62a1eb357a355a3820d4597404617f29c544a244566fb4100614791a3604b58f",
+    "tests/modeling/experiments/test_hgb_tracking_destination.py": "ba9ce74743e6fe28b6071131c101e27a9fddf7c508208faf58ed5a45c3492c11",
+    "tests/tracking/runtime/conftest.py": "068fa7c93d997b1646cf772a4d3bd3abe12671460ab378889e54a7eab245403d",
+    "tests/tracking/runtime/test_hgb_http.py": "4b115d131e95316c32c2fd326896f793eba3955375e3d95458b903e230b744a0",
+    "tests/tracking/runtime/test_model_contribution_http.py": "0af7dc8db21f5f6c7a8a15568dc4eb4cff99817783c1a85aa1762c13647b327b",
+    "tests/tracking/live/test_hgb_fold_http.py": "453843a2f8adb3e0b396a9751f36fe6246b75c15b719023bbccf1f9ecf526dba",
+    "tox.toml": "e5ce433845810b3f07e81cbb4affa453694c726d081db2fb87d971919e39a8bf"
+  }
+}

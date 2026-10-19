@@ -44,7 +44,7 @@ def study_environment(prepared_data, tmp_path, monkeypatch):
 def run(environment, count=1):
     directory, policy_path, root, _ = environment
     return hgb_optuna.optimize_hgb(
-        directory, policy_path=policy_path, tracking_root=root, new_trials=count
+        directory, policy_path=policy_path, tracking_root=str(root), new_trials=count
     )
 
 
@@ -316,3 +316,57 @@ def test_one_temporal_fold_uses_real_native_mlflow_and_skops(prepared_data, tmp_
     np.testing.assert_allclose(
         model.predict_proba(features)[:, 1], predictions.SCORE, rtol=1e-12, atol=1e-12
     )
+
+
+def test_http_study_pins_endpoint_and_reuses_completed_folds(study_environment, monkeypatch):
+    directory, policy_path, _, calls = study_environment
+    uri = "http://127.0.0.1:15001"
+    first = hgb_optuna.optimize_hgb(
+        directory, policy_path=policy_path, tracking_root=None, http_uri=uri, new_trials=1
+    )
+    assert first["fit_attempts"] == 6
+    assert all(c["http_uri"] == uri and c["root"] is None for c in calls)
+    assert all(c["experiment_name"] == hgb_optuna.HTTP_EXPERIMENT for c in calls)
+    identity = hgb_optuna.open_hgb_study(directory / "study", 42).user_attrs["identity"]
+    assert identity["tracking_uri"] == uri and "tracking_root" not in identity
+    complete = hgb_optuna.optimize_hgb(
+        directory, policy_path=policy_path, tracking_root=None, http_uri=uri, new_trials=20
+    )
+    assert complete["fit_attempts"] == 9 and complete["budget_finished"]
+    monkeypatch.setattr(train, "fit_candidate", lambda *a, **k: pytest.fail("Unauthorized fit"))
+    assert (
+        hgb_optuna.optimize_hgb(
+            directory, policy_path=policy_path, tracking_root=None, http_uri=uri, new_trials=20
+        )
+        == complete
+    )
+    with pytest.raises(hgb_optuna.HGBOptimizationError, match="identity changed"):
+        hgb_optuna.optimize_hgb(
+            directory,
+            policy_path=policy_path,
+            tracking_root=None,
+            http_uri="http://127.0.0.1:15002",
+        )
+    with pytest.raises(hgb_optuna.HGBOptimizationError, match="identity changed"):
+        hgb_optuna.optimize_hgb(
+            directory, policy_path=policy_path, tracking_root=directory / "local"
+        )
+    assert len(calls) == 9
+
+
+def test_http_does_not_bypass_committed_preparation_provenance(prepared_data, monkeypatch):
+    directory, policy_path = prepared_data
+    from fraud_detection_mlops.modeling.contracts.experiment_errors import ExperimentError
+
+    def reject(policy):
+        raise ExperimentError("Commit policy and implementation before fitting candidates")
+
+    monkeypatch.setattr(hgb_optuna, "committed_inputs", reject)
+    with pytest.raises(ExperimentError, match="Commit policy"):
+        hgb_optuna.optimize_hgb(
+            directory,
+            policy_path=policy_path,
+            tracking_root=None,
+            http_uri="http://127.0.0.1:15001",
+        )
+    assert not (directory / "study").exists()

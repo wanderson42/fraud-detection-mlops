@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "author_reported_rustfs_document_archive_roundtrip",
+  "reported_on": "2026-10-15",
+  "report_timezone": "America/Belem",
+  "source": "Author-provided terminal outputs after applying fraud-storage-pilot.zip; native report, bundle and object bytes not received.",
+  "published_base_revision": "939cf347c47ba31597cf691c3ac16b5cdf7f8cc3",
+  "execution_checkout_revision_independently_verified": false,
+  "author_tests": {
+    "command": "poetry run pytest -q tests/storage",
+    "passed": 36,
+    "seconds": 0.06
+  },
+  "inventory": {
+    "complete": true,
+    "files": 1643,
+    "bytes": 3132647292,
+    "issues": 0,
+    "disk_free_bytes": 541857722368,
+    "report_path": "data/storage/inventory/inventory-do0nss7y.json",
+    "scope": "data/ metadata, excluding data/storage and Docker volumes",
+    "families": {
+      "other_review_required": {
+        "files": 10,
+        "bytes": 778231
+      },
+      "silver": {
+        "files": 198,
+        "bytes": 40802918
+      },
+      "gold_and_variants": {
+        "files": 506,
+        "bytes": 326821198
+      },
+      "bronze": {
+        "files": 188,
+        "bytes": 107269302
+      },
+      "replay_and_measurements": {
+        "files": 104,
+        "bytes": 2401048316
+      },
+      "mlflow": {
+        "files": 637,
+        "bytes": 255927327
+      }
+    }
+  },
+  "rustfs_readiness": {
+    "url": "http://127.0.0.1:19000/health/ready",
+    "http_status": 200
+  },
+  "bundle_id_reported": "c275e438ca7e63fa716d08dd3cdf3b7f20522637b1f06dc522b7b87ee9657d76",
+  "bucket": "fraud-artifacts",
+  "selected_files": [
+    "data/replay/paced-native-v1/assessment/result.json",
+    "data/replay/paced-native-v1/assessment/receipt.json"
+  ],
+  "first_publish": {
+    "status": "success",
+    "uploaded_objects": 3,
+    "reused_objects": 0,
+    "verified_objects": 3,
+    "report_path": "data/storage/receipts/publish-8d3ez1g_.json"
+  },
+  "repeat_publish": {
+    "status": "success",
+    "uploaded_objects": 0,
+    "reused_objects": 3,
+    "verified_objects": 3,
+    "report_path": "data/storage/receipts/publish-mx0joaxx.json"
+  },
+  "restore": {
+    "status": "success",
+    "files": 2,
+    "bytes": 17559,
+    "directory_relative_to_repo": "data/storage/restored/c275e438ca7e63fa716d08dd3cdf3b7f20522637b1f06dc522b7b87ee9657d76",
+    "report_path": "data/storage/receipts/restore-xbymndne.json",
+    "scope": "byte_integrity_only_not_model_reload_or_historical_path_migration"
+  },
+  "manifest_sha256_independently_recomputed_by_assistant": false,
+  "native_file_hashes_received": false,
+  "native_reports_full_bytes_received": false,
+  "conclusion": "Reported real RustFS document upload/reuse/byte-integrity restore passed. Dataset migration milestone remains open.",
+  "pending": [
+    "Identify ten unclassified inventory files and locate complete release",
+    "Archive and reload an identified model release",
+    "Bronze/Silver/Gold coverage and layer-specific reconciliation",
+    "Consistent database backups",
+    "MLflow PostgreSQL/S3 migration preserving runs/URIs",
+    "Physically independent backup",
+    "Provisioning and rollback; then simplify obsolete operational paths with regression checks"
+  ]
+}
