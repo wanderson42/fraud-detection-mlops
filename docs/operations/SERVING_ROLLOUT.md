@@ -340,7 +340,7 @@ preservados; não é uma nova avaliação estatística nem CD de produção.
 
 ## Consumo da imagem arquivada e CI entre jobs — 2026-10-19
 
-**Gate nativo aprovado pelo autor; execução GitHub Actions pendente.**
+**Gates nativo e GitHub Actions aprovados; recibos e limites nos aceites abaixo.**
 O produtor já aprovado fica preservado. Este gate recebe o pacote qualificado,
 carrega o arquivo exato e verifica um container novo, sem build nem fit.
 
@@ -455,3 +455,53 @@ Os gates nativos de produção e consumo da entrega estão encerrados. Não repe
 build ou consumo para aplicar este fechamento documental. O próximo passo é
 versionar as mudanças e publicar a branch para executar os três jobs da CI;
 a transferência do artifact entre runners e seus recibos ainda requerem aceite.
+
+## Aceite do fluxo no GitHub Actions — 2026-10-19
+
+A [execução 39306262564, tentativa 1](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/39306262564)
+foi acionada por push da branch `feat/storage-tracking-and-rollout` no commit
+`6a3782b0ccb9d6c0a098251743483aed73e49079`. O assistente conferiu pela API os três
+jobs concluídos com sucesso e os IDs distintos dos runners hospedados.
+
+| Gate | Job / runner | Resultado |
+| --- | --- | --- |
+| Qualidade | 118244026514 / 1000000154 | Lint, formatação e testes aprovados |
+| Produção da entrega | 118250132678 / 1000000155 | Build, HTTP/blue-green e exportação aprovados |
+| Consumo da entrega | 118251573550 / 1000000156 | Download, recarga, identidade HTTP e cleanup aprovados |
+
+| Identidade | Valor |
+| --- | --- |
+| Descritor SHA-256 | `cf53a5eeff7eb5b7f3cfc65f6465263815025873d991f0ee2363ae1275f98594` |
+| ID local da imagem | `sha256:942aad4e1c3eb2865f64fa68a426b223f26a48cc1a5d8817f6851e43ea55a745` |
+| Release sintética | `dee60d7d332e4521bc38245b6b4115e3` |
+| Modelo SHA-256 | `9cc22e9bb439dc2a7c7811ae80ee461545e9ba241b0809a8e711cd3123a8c0e5` |
+| Score HTTP sintético | `0.03463335444035967`; entrada inválida 422 |
+
+O recibo registra arquivo original preservado, imagem ausente antes do load,
+tag importada e alvo próprios removidos, sem rebuild ou fit no consumidor.
+O produtor ajusta sua fixture sintética; esse resultado não reavalia fraude.
+
+A API informou os artifacts:
+
+| Artifact | ID | Bytes | Digest do ZIP |
+| --- | --- | --- | --- |
+| Entrega | 12214617466 | 556.756.319 | `sha256:2d9d3c2c70285a11a0965ec0f9dc16789fde48f6aa63981390d90fac3d93bd1a` |
+| Consumo | 12213888677 | 3.047 | `sha256:bbbc16513b2245f591475f66236bd0e07aade4107c07dd65980b07e619ca8fb7` |
+
+O assistente baixou somente o ZIP pequeno do consumo, conferiu seu digest e leu
+`result.json` e `runtime.json`. As identidades e respostas coincidem; o hash do
+controller corresponde ao código entregue. O tar de imagem e `delivery.json`
+do produtor não foram baixados independentemente. O hash do descritor e o ID da
+imagem do resumo enviado pelo autor coincidem com o recibo do consumidor.
+Digest do artifact, hash de `delivery.json` e ID local da imagem são identidades
+diferentes; nenhum deles comprova publicação em registry ou assinatura.
+
+[Evidência estruturada](../../references/evidence/serving_actions_validation_2026-10-19.json).
+Os artifacts têm expiração informada para 2026-10-22; a evidência versionada
+preserva os metadados e recibos do consumidor sem incorporar a imagem ao Git.
+
+Este aceite fecha `quality` → `serving-delivery` → `serving-consumer` entre
+runners. Não é necessário repetir os gates locais para fechar a documentação.
+Registry, promoção explícita, retenção da release anterior e provisionamento
+permanente KinD/Helm permanecem etapas seguintes. Sem promoção da referência
+histórica, migração de tracking ou CD de produção nesta execução.

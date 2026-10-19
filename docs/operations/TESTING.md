@@ -1121,7 +1121,7 @@ O retorno a A foi verificado em **3,10 s**, com score idêntico e entradas intac
 os recursos temporários foram removidos. B usa os mesmos pesos e imagem de A.
 O gate Docker está concluído neste recorte. O build e a exportação da entrega
 versionada também foram aprovados nativamente; o consumo do arquivo em outro
-alvo tem aceite nativo informado pelo autor; CI remota pendente. Não há aprovação de novo modelo, CD de produção ou zero downtime.
+alvo tem aceite nativo informado pelo autor; CI remota aprovada no aceite abaixo. Não há aprovação de novo modelo, CD de produção ou zero downtime.
 [Procedimento e limites](SERVING_ROLLOUT.md).
 
 Aceite nativo: `py314 -- tests/serving` aprovou **110 testes**, com **2 opt-in
@@ -1197,5 +1197,16 @@ O autor aprovou `serving-consumer`: **1 teste em 32,41 s**, tox OK em 44,93 s.
 Imagem recarregada do arquivo já aprovado, identidade/score HTTP e 422 verificados,
 sem rebuild ou fit; origem preservada e recursos próprios removidos. O ID da
 imagem estava ausente antes do load, sem alegar cache vazio ou engine separado.
-**Próximo: commit/push e aceite dos três jobs no GitHub Actions**, sem repetir
+**Três jobs do GitHub Actions aprovados; próximo: promoção explícita e provisionamento**, sem repetir
 os gates locais encerrados. [Resultado e limites](SERVING_ROLLOUT.md#aceite-nativo-do-consumo-da-imagem--2026-10-19).
+
+### CI de entrega e consumo aprovada — 2026-10-19
+
+A [execução 39306262564](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/39306262564)
+passou nos três jobs do commit `6a3782b0ccb9d6c0a098251743483aed73e49079`:
+qualidade → build/qualificação → consumo do artifact em outro runner. A API
+confirma sucesso e runners distintos; o artifact pequeno do consumidor foi
+baixado, teve digest conferido e seus recibos de recarga/HTTP/cleanup lidos.
+**Gate remoto encerrado.** Próximo: promoção explícita e provisionamento
+reproduzível KinD/Helm; registry e deploy permanente ainda têm critérios próprios.
+[Resultado e limites](SERVING_ROLLOUT.md#aceite-do-fluxo-no-github-actions--2026-10-19).

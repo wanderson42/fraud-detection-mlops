@@ -44,7 +44,7 @@ um commit ainda não publicado.
 | 1 | Replay programado: fechamento e desempenho representativo | Ensaio nativo acelerado concluído; idempotência e crash/retomada demonstrados no smoke gerado; custos parciais registrados | Preservar o ensaio aprovado; definir protocolo e orçamento de recorte 1x antes de executar. O ensaio completo acelerado não aprova SLA nem recuperação de todo tipo de falha nativa |
 | 2 | Monitoramento e dashboards locais | Coleta nativa e falha/alarme/retorno do exporter validados pelo autor; rotina versionada com controle pytest aprovado e teste real tox explícito; painéis confirmados no smoke | Manter o teste real explícito e concluir conferência visual dos valores nativos finais; a camada de dados/features e o ensaio 1x têm critérios próprios |
 | 3 | Armazenamento, recuperação e destinos dos produtores | Archives de datasets/estudo/tracking e recarga da referência aprovados pelo autor; inventário do checkout aprovado no recorte local; contenção inicial de quatro CLIs aprovada pelo autor; ensaio isolado MLflow/PostgreSQL/S3 aprovado após recriação de containers | Contribuição HTTP, fold HGB e trio inicial aprovados pelo autor. Revisão nativa aprovada: 17 registros/sete fronteiras locais, 48 testes. Captura nativa aprovada (38 objetos, 8 runs, 6 modelos, 44 pontos de métricas). Restore isolado aprovado pelo autor em 2026-10-19: história API conciliada, modelo recarregado com erro zero, fonte preservada e cleanup concluído. Recorte de inventário/recuperação encerrado; avançar para CD/rollback e monitoramento. Cutover, consumidores históricos e limpeza ficam no backlog próprio. Classificação não comprova recuperação; sem remoção de originais |
-| 4 | CD e rollback de release | Primeiro gate blue-green nativo aprovado em 2026-10-19: A → B → A, rejeição de pacote inválido, falha 502 e rollback verificado em 3,10 s; pesos e imagem preservados | Ensaio de troca/retorno concluído. Build único/qualificação sintética/export aprovados nativamente em 2026-10-19 (1 teste, 62,04 s; 11 arquivos e imagem de 175.020.032 bytes). Consumidor aprovado nativamente; encadeamento CI implementado, Actions pendente. Depois revisar promoção explícita; provisionamento via Helm mantém critério próprio. Não reabrir o ensaio histórico aprovado como pendência |
+| 4 | CD e rollback de release | Primeiro gate blue-green nativo aprovado em 2026-10-19: A → B → A, rejeição de pacote inválido, falha 502 e rollback verificado em 3,10 s; pesos e imagem preservados | Ensaio de troca/retorno concluído. Build único/qualificação sintética/export aprovados nativamente em 2026-10-19 (1 teste, 62,04 s; 11 arquivos e imagem de 175.020.032 bytes). Consumidor aprovado nativamente e CI entre jobs aprovada em 2026-10-19. Depois revisar promoção explícita; provisionamento via Helm mantém critério próprio. Não reabrir o ensaio histórico aprovado como pendência |
 | 5 | Monitoramento de dados/features e gestão de features | Contratos e paridade existentes; próxima extensão após métricas operacionais | Medir schema, ausência, frescor/atraso e distribuições de features com suporte; baseline temporal versionado e testes de resposta. Não confundir score drift com feature drift |
 | 6 | CT controlado | Backlog, depende de 2–5 | Gatilho explícito, labels disponíveis, orçamento, treino e avaliação temporal comparável; candidato rejeitado ou promovido com gates e rollback. Drift sozinho não promove |
 | 7 | Orquestração de jobs | Condicional à composição real de jobs | Coordenar treino/avaliação/publicação, retries e estados; escolher ferramenta pelo problema demonstrado. O consumidor de eventos continua processo próprio |
@@ -471,7 +471,7 @@ O retorno a A foi verificado em **3,10 s**, com score idêntico e entradas intac
 os recursos temporários foram removidos. B usa os mesmos pesos e imagem de A.
 O gate Docker está concluído neste recorte. O build e a exportação da entrega
 versionada também foram aprovados nativamente; o consumo do arquivo em outro
-alvo tem aceite nativo informado pelo autor; CI remota pendente. Não há aprovação de novo modelo, CD de produção ou zero downtime.
+alvo tem aceite nativo informado pelo autor; CI remota aprovada no aceite abaixo. Não há aprovação de novo modelo, CD de produção ou zero downtime.
 [Procedimento e limites](../operations/SERVING_ROLLOUT.md).
 
 ### Continuação da entrega após o gate aprovado
@@ -510,7 +510,7 @@ O consumidor verifica o pacote por commit/hash externos, carrega a imagem exata
 e testa HTTP em um container novo, sem rebuild ou fit. A entrega original e
 as tags alheias são preservadas. A CI encadeia `quality` → `serving-delivery` →
 `serving-consumer`; o último job recebe o artifact e o hash do produtor em outro
-runner. Implementação e **aceite nativo concluídos; GitHub Actions pendente**.
+runner. Implementação, aceite nativo e **GitHub Actions aprovados**; detalhes no aceite remoto abaixo.
 O teste local usa o arquivo já aprovado e não exige repetir o build.
 [Procedimento, pins e limites](../operations/SERVING_ROLLOUT.md#consumo-da-imagem-arquivada-e-ci-entre-jobs--2026-10-19).
 
@@ -520,5 +520,16 @@ O autor aprovou `serving-consumer`: **1 teste em 32,41 s**, tox OK em 44,93 s.
 Imagem recarregada do arquivo já aprovado, identidade/score HTTP e 422 verificados,
 sem rebuild ou fit; origem preservada e recursos próprios removidos. O ID da
 imagem estava ausente antes do load, sem alegar cache vazio ou engine separado.
-**Próximo: commit/push e aceite dos três jobs no GitHub Actions**, sem repetir
+**Três jobs do GitHub Actions aprovados; próximo: promoção explícita e provisionamento**, sem repetir
 os gates locais encerrados. [Resultado e limites](../operations/SERVING_ROLLOUT.md#aceite-nativo-do-consumo-da-imagem--2026-10-19).
+
+### CI de entrega e consumo aprovada — 2026-10-19
+
+A [execução 39306262564](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/39306262564)
+passou nos três jobs do commit `6a3782b0ccb9d6c0a098251743483aed73e49079`:
+qualidade → build/qualificação → consumo do artifact em outro runner. A API
+confirma sucesso e runners distintos; o artifact pequeno do consumidor foi
+baixado, teve digest conferido e seus recibos de recarga/HTTP/cleanup lidos.
+**Gate remoto encerrado.** Próximo: promoção explícita e provisionamento
+reproduzível KinD/Helm; registry e deploy permanente ainda têm critérios próprios.
+[Resultado e limites](../operations/SERVING_ROLLOUT.md#aceite-do-fluxo-no-github-actions--2026-10-19).

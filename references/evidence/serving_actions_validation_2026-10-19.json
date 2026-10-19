@@ -1,0 +1,236 @@
+{
+  "schema": "fraud_serving_actions_validation_v1",
+  "date": "2026-10-19",
+  "status": "github_api_and_consumer_artifact_verified",
+  "scope": "synthetic_build_qualification_artifact_handoff_archive_load_and_HTTP_on_separate_hosted_runners_not_permanent_CD",
+  "run": {
+    "id": 39306262564,
+    "html_url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/39306262564",
+    "head_branch": "feat/storage-tracking-and-rollout",
+    "head_sha": "6a3782b0ccb9d6c0a098251743483aed73e49079",
+    "run_attempt": 1,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-19T18:53:02Z",
+    "updated_at": "2026-10-19T19:10:18Z"
+  },
+  "source_tree": "acfc3058b0a3ba1b19bccfe83beb6fb0d02ea2a1",
+  "jobs": [
+    {
+      "id": 118244026514,
+      "name": "Lint, formatting and tests",
+      "html_url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/39306262564/job/118244026514",
+      "head_sha": "6a3782b0ccb9d6c0a098251743483aed73e49079",
+      "status": "completed",
+      "conclusion": "success",
+      "runner_id": 1000000154,
+      "started_at": "2026-10-19T18:53:05Z",
+      "completed_at": "2026-10-19T19:05:35Z"
+    },
+    {
+      "id": 118250132678,
+      "name": "Build and qualify synthetic serving delivery",
+      "html_url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/39306262564/job/118250132678",
+      "head_sha": "6a3782b0ccb9d6c0a098251743483aed73e49079",
+      "status": "completed",
+      "conclusion": "success",
+      "runner_id": 1000000155,
+      "started_at": "2026-10-19T19:05:37Z",
+      "completed_at": "2026-10-19T19:08:33Z"
+    },
+    {
+      "id": 118251573550,
+      "name": "Consume the qualified image in a separate runner",
+      "html_url": "https://github.com/wanderson42/fraud-detection-mlops/actions/runs/39306262564/job/118251573550",
+      "head_sha": "6a3782b0ccb9d6c0a098251743483aed73e49079",
+      "status": "completed",
+      "conclusion": "success",
+      "runner_id": 1000000156,
+      "started_at": "2026-10-19T19:08:35Z",
+      "completed_at": "2026-10-19T19:10:18Z"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 12214617466,
+      "name": "serving-delivery-6a3782b0ccb9d6c0a098251743483aed73e49079-39306262564-1",
+      "size_in_bytes": 556756319,
+      "digest": "sha256:2d9d3c2c70285a11a0965ec0f9dc16789fde48f6aa63981390d90fac3d93bd1a",
+      "expired": false,
+      "created_at": "2026-10-19T19:08:31Z",
+      "expires_at": "2026-10-22T19:08:27Z"
+    },
+    {
+      "id": 12213888677,
+      "name": "serving-consumption-6a3782b0ccb9d6c0a098251743483aed73e49079-39306262564-1",
+      "size_in_bytes": 3047,
+      "digest": "sha256:bbbc16513b2245f591475f66236bd0e07aade4107c07dd65980b07e619ca8fb7",
+      "expired": false,
+      "created_at": "2026-10-19T19:10:15Z",
+      "expires_at": "2026-10-22T19:10:15Z"
+    }
+  ],
+  "consumption": {
+    "schema": "fraud_serving_consumption_v1",
+    "status": "success",
+    "scope": "qualified_archive_load_and_separate_synthetic_HTTP_target_not_permanent_deployment",
+    "source_delivery_directory": "/home/runner/work/fraud-detection-mlops/fraud-detection-mlops/data/serving/deliveries/from-actions",
+    "source_commit": "6a3782b0ccb9d6c0a098251743483aed73e49079",
+    "descriptor_sha256": "cf53a5eeff7eb5b7f3cfc65f6465263815025873d991f0ee2363ae1275f98594",
+    "image_id": "sha256:942aad4e1c3eb2865f64fa68a426b223f26a48cc1a5d8817f6851e43ea55a745",
+    "import_tag": "fraud-serving-delivery:a79d88a59df4405a8e6a4e7dab64e077",
+    "controller_sha256": "c7f273b6735bafe6aad38089ff33e98a2794f8d168d956b96fbc3f233fc158c8",
+    "archive_reload_validated": true,
+    "isolated_target_container": true,
+    "separate_engine_required": false,
+    "cold_cache_validated": false,
+    "build_executed": false,
+    "fit_executed": false,
+    "historical_reference_accessed": false,
+    "production_promotion": false,
+    "permanent_deployment_created": false,
+    "original_delivery_bytes_unchanged": true,
+    "owned_import_tag_removed": true,
+    "http_target_completed_and_removed": true,
+    "image_present_before_load": false,
+    "manifest_sha256": "fa75630b56c6bd7b7a1641b8abe4ea24b3d795cdd7b82902df5ef31aa6bbc242",
+    "serving_release_id": "dee60d7d332e4521bc38245b6b4115e3",
+    "model_sha256": "9cc22e9bb439dc2a7c7811ae80ee461545e9ba241b0809a8e711cd3123a8c0e5",
+    "http_score": {
+      "schema_version": 1,
+      "transaction_id": 0,
+      "score": 0.03463335444035967,
+      "score_semantics": "uncalibrated_ranking",
+      "model_id": "hist_gradient_boosting",
+      "model_sha256": "9cc22e9bb439dc2a7c7811ae80ee461545e9ba241b0809a8e711cd3123a8c0e5",
+      "feature_contract_version": "gold_v1",
+      "serving_release_id": "dee60d7d332e4521bc38245b6b4115e3"
+    },
+    "invalid_input_http_status": 422,
+    "elapsed_seconds": 55.01310799500001,
+    "report": "/home/runner/work/fraud-detection-mlops/fraud-detection-mlops/data/serving/consumptions/a8919048480c4da091ebd8d1892560b9/result.json"
+  },
+  "runtime": {
+    "schema_version": 1,
+    "version": "laboratory_serving_docker_check_v1",
+    "status": "success",
+    "recorded_at_utc": "2026-10-19T19:10:12Z",
+    "image": {
+      "requested": "sha256:942aad4e1c3eb2865f64fa68a426b223f26a48cc1a5d8817f6851e43ea55a745",
+      "id": "sha256:942aad4e1c3eb2865f64fa68a426b223f26a48cc1a5d8817f6851e43ea55a745",
+      "repo_digests": [],
+      "size_bytes": 545914111,
+      "architecture": "amd64",
+      "os": "linux"
+    },
+    "engine": {
+      "version": "28.0.4",
+      "context": "default",
+      "operating_system": "Ubuntu 24.04.5 LTS",
+      "kernel_version": "7.0.0-1017-azure",
+      "warnings": null
+    },
+    "manifest_sha256": "fa75630b56c6bd7b7a1641b8abe4ea24b3d795cdd7b82902df5ef31aa6bbc242",
+    "serving_release_id": "dee60d7d332e4521bc38245b6b4115e3",
+    "evidence_kind": "synthetic_smoke",
+    "http_score": {
+      "schema_version": 1,
+      "transaction_id": 0,
+      "score": 0.03463335444035967,
+      "score_semantics": "uncalibrated_ranking",
+      "model_id": "hist_gradient_boosting",
+      "model_sha256": "9cc22e9bb439dc2a7c7811ae80ee461545e9ba241b0809a8e711cd3123a8c0e5",
+      "feature_contract_version": "gold_v1",
+      "serving_release_id": "dee60d7d332e4521bc38245b6b4115e3"
+    },
+    "runtime": {
+      "uid": 10001,
+      "gid": 10001,
+      "installed_module": "/opt/runtime/lib/python3.14/site-packages/fraud_detection_mlops/serving/http_service.py",
+      "excluded_packages": [
+        "mlflow",
+        "shap",
+        "duckdb",
+        "matplotlib",
+        "optuna",
+        "typer"
+      ],
+      "readonly_write_probes": "passed"
+    },
+    "runtime_environment": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "pyarrow": "25.0.1",
+      "python": "3.14.4",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "skops": "0.16.0"
+    },
+    "parity_tolerance": 1e-12,
+    "invalid_input_http_status": 422,
+    "restart_recovery": "passed",
+    "failure_scenarios": {
+      "wrong_manifest_sha256": {
+        "startup_rejected": true,
+        "exit_code": 3,
+        "reason_matched": "Release bytes changed: manifest.json"
+      },
+      "corrupt_model": {
+        "startup_rejected": true,
+        "exit_code": 3,
+        "reason_matched": "Release bytes changed: pipeline.skops"
+      },
+      "missing_model": {
+        "startup_rejected": true,
+        "exit_code": 3,
+        "reason_matched": "No such file or directory: '/model/pipeline.skops'"
+      }
+    },
+    "resources": {
+      "memory_limit_bytes": 2147483648,
+      "cpus": 4,
+      "docker_stats_snapshot": {
+        "BlockIO": "139kB / 0B",
+        "CPUPerc": "0.12%",
+        "Container": "fraud-serving-check-8eaac6c6bee74af48cfa49b9a7c5d6a1-valid",
+        "ID": "c85fee0a6e87",
+        "MemPerc": "8.67%",
+        "MemUsage": "177.6MiB / 2GiB",
+        "Name": "fraud-serving-check-8eaac6c6bee74af48cfa49b9a7c5d6a1-valid",
+        "NetIO": "35.6kB / 23.7kB",
+        "PIDs": "15"
+      },
+      "peak_memory_measured": false
+    },
+    "latency": {
+      "warmup_requests": 10,
+      "unit": "milliseconds",
+      "requests": 10,
+      "mean": 19.995625100000325,
+      "p50": 19.864752000003705,
+      "p95": 21.135116000010612,
+      "p99": 21.135116000010612,
+      "scope": "sequential_single_client_repeated_control_request_including_http",
+      "sla_validated": false
+    },
+    "refit": false,
+    "production_promotion": false,
+    "release_files_unchanged": true,
+    "check_script_sha256": "c87f54273c351dc9470d1178b66138e250e4345c9de3e5d92c86f81cb64b2f49"
+  },
+  "verification": {
+    "api_run_jobs_and_artifact_metadata_read": true,
+    "separate_runner_ids_verified": true,
+    "consumer_zip_downloaded_and_digest_verified": true,
+    "consumer_result_and_runtime_independently_read": true,
+    "controller_hash_matches_delivered_source": true,
+    "producer_image_archive_independently_downloaded": false,
+    "producer_delivery_json_independently_read": false,
+    "producer_summary": "Commit, descriptor hash and image ID pasted by author and reconciled with consumer receipt; producer job success confirmed by API",
+    "historical_reference_accessed": false,
+    "production_promotion": false,
+    "permanent_deployment_created": false
+  },
+  "next_gate": "Explicit approved release promotion and reproducible provision via KinD/Helm; registry publication and permanent rollout have separate acceptance criteria."
+}
