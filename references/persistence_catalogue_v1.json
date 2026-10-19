@@ -87,7 +87,8 @@
         "scripts/serving/check_docker_runtime.py",
         "examples/serving_smoke.py",
         "scripts/serving/blue_green_rehearsal.py",
-        "scripts/serving/delivery_gate.py"
+        "scripts/serving/delivery_gate.py",
+        "scripts/serving/delivery_consumer.py"
       ],
       "review_required": false
     },
@@ -308,6 +309,11 @@
       "scripts.serving.delivery_gate": [
         "data/serving/deliveries/<uuid>/: image.tar, synthetic release, source, runtime/rollout receipts, logs and delivery.json or failure.json",
         "data/serving/delivery-summary.json: CI summary; no registry publication or permanent deployment"
+      ],
+      "scripts.serving.delivery_consumer": [
+        "Read a pinned qualified delivery under data/serving/deliveries; no build or fit",
+        "data/serving/consumptions/<uuid>/: result.json, runtime.json, load.log and private fixture copy; fixture removed after completed target cleanup",
+        "data/serving/consumption-summary.json: CI summary; only owned imported tag and HTTP containers removed"
       ]
     },
     "no_directories_created_by_check": true,

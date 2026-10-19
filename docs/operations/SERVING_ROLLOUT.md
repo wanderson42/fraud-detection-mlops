@@ -184,16 +184,16 @@ conceituais; não implicam adoção de Argo Rollouts neste projeto.
 
 O primeiro incremento de entrega versionada está implementado na CI: build,
 qualificação sintética e exportação da imagem exata, conforme a seção abaixo.
-A execução nativa/CI deste novo gate está pendente. Depois da aprovação, o próximo
-recorte é consumir o artefato exportado em um alvo separado e definir a promoção
+O gate local deste incremento foi aprovado; a execução na CI continua pendente.
+O próximo recorte é consumir o artefato exportado em um alvo separado e definir a promoção
 explícita de uma release aprovada. KinD + Helm permanece o destino de
 provisionamento, com os mesmos controles de identidade e persistência. A política
 permanente de retenção e os recursos Kubernetes ainda não estão implementados.
 
 ## Entrega versionada na CI — implementação de 2026-10-19
 
-**Estado: implementada e testada com controles offline; build/gate Docker e
-execução no GitHub Actions pendentes.** O aceite nativo anterior continua válido
+**Estado: build, gates e exportação aprovados nativamente pelo autor em
+2026-10-19; execução no GitHub Actions pendente.** O aceite nativo anterior continua válido
 para a imagem e referência fixadas nele; não aprova automaticamente uma imagem
 construída de outro commit.
 
@@ -251,11 +251,10 @@ poetry run python -m scripts.serving.delivery_gate verify \
   --expected-descriptor-sha256 SHA256_DO_DESCRITOR_NO_RESUMO
 ```
 
-Não há `docker load` ou troca da referência neste incremento. Exportar a imagem
-não comprova sua recarga em outro engine: `archive_reload_validated=false`. O
-próximo gate de consumo deve carregar o arquivo verificado em alvo separado e
-repetir identidade/HTTP antes de qualquer promoção explícita. Uma assinatura ou
-attestation verificável também não é alegada por este descritor.
+O comando `verify` continua somente offline. O descritor do produtor conserva
+`archive_reload_validated=false`; o consumidor abaixo registra a recarga em um
+recibo separado, depois de carregar e verificar o alvo. Nenhuma assinatura ou
+attestation verificável é alegada por esse descritor.
 
 ### Gate local opt-in
 
@@ -298,4 +297,161 @@ Os testes de regressão partem de diretório 0700 e arquivos 0600, usam umasks
 022 e 077 e exigem leitura/traversal para outro UID antes de chamar o checker.
 Conferem hashes e modos da origem intactos e rejeitam uma release histórica
 antes de chmod. São testes do contrato POSIX/controlador, não uma execução
-Docker; o gate completo permanece pendente após esta correção.
+Docker. O autor posteriormente aprovou o gate nativo completo após a correção,
+conforme o aceite abaixo.
+
+## Aceite nativo da entrega versionada — 2026-10-19
+
+O autor executou `serving-delivery`: **1 teste aprovado em 62,04 s**, tox OK em
+64,51 s. Após a correção de permissões, o build da imagem e os gates HTTP e
+blue-green com fixture sintética foram concluídos. A própria execução verificou
+o pacote exportado; rollback e remoção dos recursos temporários/tag exclusiva
+foram confirmados. Não é necessário repetir o build para este fechamento.
+
+| Identidade ou resultado | Valor informado |
+| --- | --- |
+| Commit de origem e rótulo da imagem | `0b95136a462583441044d50de0884a558777b260` |
+| ID local da imagem | `sha256:bc2ba70a90de114613bd8679e79ccfbb7a17de048f72f16323ca26713e1dae8d` |
+| SHA-256 do descritor | `aa0e79886800765c516d3ed776295dc46d657a7ea50eb7c88900241d8c0ff0d7` |
+| Release sintética | `c298299b7d3540d3968b5e715937b923` |
+| Arquivo exportado | 175.020.032 bytes; 11 arquivos inventariados no pacote |
+| Rollback e cleanup | Ambos verificados; tag exclusiva removida |
+| Fonte histórica e promoção | Não acessada/retreinada; sem promoção ou serviço permanente |
+
+Diretório informado:
+`data/serving/deliveries/1b85bede4ac24fc781491ef24eea0209`. O autor também
+executou a leitura que compara o hash dos bytes de `delivery.json` com o valor
+impresso pelo teste, antes de produzir o resumo publicado. O resumo omite a
+lista `files`; o assistente não recebeu os bytes do descritor ou de `image.tar`
+para conferência independente.
+
+[Evidência do autor](../../references/evidence/serving_delivery_author_validation_2026-10-19.json).
+O campo local `image.repo_digests` não comprova envio a um registry; o descritor
+registra `registry_published=false` e `registry_digest=null`. A duração é uma
+observação do ensaio, não SLA.
+
+O aceite fecha o **gate local de build/qualificação/exportação**. A execução no
+GitHub Actions e o upload/download do artifact remoto continuam sem aceite.
+`archive_reload_validated=false`: verificar hashes não comprova recarga do tar.
+O consumidor implementado abaixo usa esse arquivo em alvo separado, sem rebuild
+ou fit, exigindo os pins do descritor, da imagem, do modelo e do HTTP. Seu aceite
+nativo foi informado pelo autor abaixo; a execução remota da CI segue pendente. A referência histórica e o ensaio anterior ficam
+preservados; não é uma nova avaliação estatística nem CD de produção.
+
+## Consumo da imagem arquivada e CI entre jobs — 2026-10-19
+
+**Gate nativo aprovado pelo autor; execução GitHub Actions pendente.**
+O produtor já aprovado fica preservado. Este gate recebe o pacote qualificado,
+carrega o arquivo exato e verifica um container novo, sem build nem fit.
+
+| Job | Entrada e responsabilidade | Saída |
+| --- | --- | --- |
+| `quality` | Lint, formatação e suíte padrão | Aprovação do código |
+| `serving-delivery` | Mesmo commit; build único e gates HTTP/blue-green sintéticos | Artifact com imagem/release/recibos; ID do artifact e hash do descritor nos outputs do job |
+| `serving-consumer` | Outro runner; baixa somente o ID fornecido pelo produtor e compara SHA do commit e hash esperado | Recarga, identidade e HTTP verificados; recibo de consumo e diagnóstico |
+
+O hash esperado vem do output do job produtor, separado dos bytes baixados;
+não é recalculado do pacote para aceitar a própria entrada. As actions de
+upload/download estão fixadas por SHA. A CI mantém push/PR/manual, permissão
+`contents: read` e retenção de três dias. Não requer credenciais da infraestrutura
+local nem contato com o laptop. O artifact é transporte temporário, não backup.
+
+### Contrato do consumidor
+
+1. Verificar descritor, inventário completo, tamanhos/hashes e coerência dos
+   recibos, exigindo commit e hash esperados, **antes de chamar Docker**.
+2. Exigir engine Linux 28+ local e que a tag exclusiva do arquivo esteja ausente.
+   Se essa tag já existir, recusar sem sobrescrever ou apagar. O ID da imagem
+   pode existir sob outras tags; registrar essa condição e preservá-las.
+3. Executar `docker image load --platform linux/amd64 --input image.tar`;
+   conferir ID exato, plataforma e rótulo OCI de revisão. O arquivo deve vir do
+   produtor controlado e escolhido: este fluxo não aceita um tar arbitrário
+   como código confiável apenas por possuir hashes internos.
+4. Copiar a release sintética para o diretório privado do consumo. Normalizar
+   somente essa cópia para leitura pelo UID 10001; bytes e permissões da entrega
+   original permanecem intactos. Reutilizar o checker existente: HTTP, score,
+   identidade, 422, reinício e rejeição de releases inválidas.
+5. Revalidar os bytes originais e remover containers próprios e somente a tag
+   importada, sem remoção por ID, `--force` ou limpeza global. Em falha, salvar
+   fase e motivo; falha de cleanup impede sucesso. A cópia da fixture é removida
+   após conclusão/cleanup do alvo; se o alvo falhar, fica no job para diagnóstico.
+
+Resultados: `data/serving/consumptions/<uuid>/{result.json,runtime.json,load.log}`.
+O recibo novo só marca `archive_reload_validated=true` após esses gates; não
+reescreve o descritor do produtor. Camadas/cache e referências alheias podem
+permanecer. Cancelamento abrupto ou perda do daemon pode impedir o cleanup.
+
+No teste nativo, o container é novo no **mesmo engine**. Não é uma prova de cache
+vazio ou engine independente. Na CI, os jobs são separados em runners hospedados;
+a evidência de transferência entre eles depende do aceite remoto. Não se alega
+assinatura, promoção da referência, zero downtime ou deploy permanente.
+
+### Primeiro aceite nativo: consumir o pacote já aprovado
+
+Depois de aplicar este incremento e passar a regressão:
+
+```bash
+.venv/bin/python -m tox -e serving-consumer
+```
+
+O teste lê os pins da evidência nativa anterior e consome
+`data/serving/deliveries/1b85bede4ac24fc781491ef24eea0209` do commit
+`0b95136a462583441044d50de0884a558777b260`. Não precisa repetir
+`serving-delivery`, treinar, restaurar tracking ou iniciar MLflow/RustFS.
+O código atual do consumidor tem hash registrado separadamente; não é necessário
+que o HEAD atual seja o commit antigo da imagem para verificar essa entrega.
+
+Para outra execução selecionada, fornecer seus pins externos:
+
+```bash
+poetry run python -m scripts.serving.delivery_consumer \
+  --directory "$PWD/data/serving/deliveries/from-actions-RUN_ID" \
+  --expected-source-sha COMMIT_COMPLETO_DA_EXECUCAO \
+  --expected-descriptor-sha256 SHA256_DO_OUTPUT_DO_PRODUTOR
+```
+
+### Ativar o fluxo no GitHub
+
+Após o aceite local, revisar e commitar o consumidor/workflow/testes e as
+atualizações documentais pendentes, mantendo `.vscode/settings.json` separado.
+O push da branch dispara a CI existente. Esse fluxo remoto cria sua própria
+fixture e imagem do commit enviado; não transfere os dados locais do autor.
+A sequência esperada é `quality` → `serving-delivery` → `serving-consumer`.
+Aceitar somente os três jobs verdes, com artifact do produtor e recibo do
+consumidor da mesma execução/commit. Uma aprovação local não marca Actions como
+executado. O próximo recorte de CD será promoção explícita e provisionamento,
+sem reabrir o histórico estatístico.
+
+Referências consultadas em 2026-10-19:
+[Docker image load](https://docs.docker.com/reference/cli/docker/image/load/),
+[download-artifact v7](https://github.com/actions/download-artifact/releases/tag/v7.0.0),
+[artifacts entre jobs](https://docs.github.com/en/actions/tutorials/store-and-share-data).
+
+## Aceite nativo do consumo da imagem — 2026-10-19
+
+O autor executou `serving-consumer`: **1 teste aprovado em 32,41 s**, tox OK em
+44,93 s. O consumidor carregou o arquivo já qualificado, verificou identidade
+por HTTP e removeu seus containers e a tag importada, sem build ou fit.
+O hash do consumidor informado coincide com o código entregue.
+
+| Verificação | Resultado informado |
+| --- | --- |
+| Origem | Commit `0b95136a462583441044d50de0884a558777b260`; mesmo descritor e imagem do aceite da entrega |
+| Recarga | `archive_reload_validated=true`; ID da imagem ausente antes do load |
+| Release / modelo | `c298299b7d3540d3968b5e715937b923`; SHA do modelo `33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106` |
+| HTTP | Score sintético `0.03463335444035967`; entrada inválida retornou 422 |
+| Preservação e cleanup | Bytes da entrega original intactos; tag importada e alvo próprios removidos |
+| Escopo | Container novo no engine local; sem fit, referência histórica ou promoção |
+
+Recibo informado:
+`data/serving/consumptions/2e889985000047029e9dbabd8a477087/result.json`.
+[Evidência do autor](../../references/evidence/serving_consumer_author_validation_2026-10-19.json).
+O resultado foi recebido pelo chat; o assistente não acessou independentemente
+o daemon, o arquivo de imagem, `runtime.json` ou `load.log`. O ID ausente antes
+do load não prova inexistência de camadas em cache; `cold_cache_validated=false`.
+A duração é observação deste teste, não SLA.
+
+Os gates nativos de produção e consumo da entrega estão encerrados. Não repetir
+build ou consumo para aplicar este fechamento documental. O próximo passo é
+versionar as mudanças e publicar a branch para executar os três jobs da CI;
+a transferência do artifact entre runners e seus recibos ainda requerem aceite.

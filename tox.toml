@@ -268,3 +268,20 @@ commands_pre = [
 commands = [
     ["python", "-m", "pytest", "-q", "-s", "tests/serving/live/test_delivery_gate.py"],
 ]
+
+# Native opt-in: only the approved archive is loaded; no build, fit or historical source access.
+[env.serving-consumer]
+description = "Opt-in qualified archive load and separate synthetic HTTP target with owned-tag cleanup"
+base_python = ["python3.14"]
+package = "skip"
+allowlist_externals = ["poetry"]
+pass_env = ["POETRY_CACHE_DIR", "DOCKER_HOST", "DOCKER_CONTEXT", "DOCKER_CONFIG", "XDG_RUNTIME_DIR"]
+set_env = { VIRTUAL_ENV = "{env_dir}", POETRY_VIRTUALENVS_CREATE = "false", POETRY_NO_INTERACTION = "1", MLFLOW_DISABLE_TELEMETRY = "true", FRAUD_SERVING_CONSUMER_LIVE = "1", OMP_NUM_THREADS = "4", OPENBLAS_NUM_THREADS = "4", MKL_NUM_THREADS = "4" }
+commands_pre = [
+    ["python", "scripts/check_test_environment.py"],
+    ["poetry", "check", "--lock"],
+    ["poetry", "sync", "--only", "main,pipeline,dev"],
+]
+commands = [
+    ["python", "-m", "pytest", "-q", "-s", "tests/serving/live/test_delivery_consumer.py"],
+]

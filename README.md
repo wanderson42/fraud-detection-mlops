@@ -397,8 +397,9 @@ cutover, limpeza e inventário global seguem em backlog próprio.
 mesma URL NGINX, pacote inválido bloqueado e falha de B observada como HTTP 502.
 O retorno a A foi verificado em **3,10 s**, com score idêntico e entradas intactas;
 os recursos temporários foram removidos. B usa os mesmos pesos e imagem de A.
-O gate Docker está concluído neste recorte; o fluxo versionado de entrega é o
-próximo incremento. Não há aprovação de novo modelo, CD de produção ou zero downtime.
+O gate Docker está concluído neste recorte. O build e a exportação da entrega
+versionada também foram aprovados nativamente; o consumo do arquivo em outro
+alvo tem aceite nativo informado pelo autor; CI remota pendente. Não há aprovação de novo modelo, CD de produção ou zero downtime.
 [Procedimento e limites](docs/operations/SERVING_ROLLOUT.md).
 
 ### Primeiro incremento da entrega versionada
@@ -406,7 +407,28 @@ próximo incremento. Não há aprovação de novo modelo, CD de produção ou ze
 A CI ganhou um job após `quality` que constrói a imagem uma vez, qualifica HTTP e
 rollback com release **sintética** e exporta essa mesma imagem com hashes e recibos
 vinculados ao commit. Sem dados históricos, publicação em registry ou deploy no
-laptop. Implementação e controles offline concluídos; **build/gate Docker e
-execução GitHub Actions pendentes**. O pacote da CI tem retenção de três dias;
-recarga do arquivo em outro engine e promoção de uma release aprovada têm gate
-próprio. [Fluxo e limites](docs/operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).
+laptop. **Build, gates e exportação aprovados nativamente pelo autor em
+2026-10-19:** uma imagem do commit `0b95136`, rollback verificado, 11 arquivos e
+arquivo de imagem com 175.020.032 bytes. Recursos temporários e tag própria
+removidos. A execução no GitHub Actions, a recarga do arquivo em outro alvo e a
+promoção de uma release aprovada têm gates próprios. O artifact da CI está
+configurado com retenção de três dias; não há aceite de upload remoto ainda. [Fluxo e limites](docs/operations/SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).
+
+### Gate de consumo e CI entre jobs — preparação de 2026-10-19
+
+O consumidor verifica o pacote por commit/hash externos, carrega a imagem exata
+e testa HTTP em um container novo, sem rebuild ou fit. A entrega original e
+as tags alheias são preservadas. A CI encadeia `quality` → `serving-delivery` →
+`serving-consumer`; o último job recebe o artifact e o hash do produtor em outro
+runner. Implementação e **aceite nativo concluídos; GitHub Actions pendente**.
+O teste local usa o arquivo já aprovado e não exige repetir o build.
+[Procedimento, pins e limites](docs/operations/SERVING_ROLLOUT.md#consumo-da-imagem-arquivada-e-ci-entre-jobs--2026-10-19).
+
+### Consumo nativo aprovado — 2026-10-19
+
+O autor aprovou `serving-consumer`: **1 teste em 32,41 s**, tox OK em 44,93 s.
+Imagem recarregada do arquivo já aprovado, identidade/score HTTP e 422 verificados,
+sem rebuild ou fit; origem preservada e recursos próprios removidos. O ID da
+imagem estava ausente antes do load, sem alegar cache vazio ou engine separado.
+**Próximo: commit/push e aceite dos três jobs no GitHub Actions**, sem repetir
+os gates locais encerrados. [Resultado e limites](docs/operations/SERVING_ROLLOUT.md#aceite-nativo-do-consumo-da-imagem--2026-10-19).

@@ -1,0 +1,74 @@
+{
+  "schema": "fraud_serving_delivery_author_validation_v1",
+  "date": "2026-10-19",
+  "status": "author_reported_success",
+  "provenance": {
+    "source": "Author-pasted successful tox output and descriptor summary in this chat on 2026-10-19",
+    "descriptor_hash_check": "The author ran a provided script that compared the original delivery.json bytes against the SHA-256 printed by the native test before producing this summary",
+    "summary_transformation": "files inventory omitted; artifact_files and image_archive_bytes derived from it; descriptor_sha256 added. No hash is recomputed from this summary",
+    "native_descriptor_bytes_independently_read": false,
+    "image_archive_independently_read": false,
+    "source_git_object_independently_fetched": false,
+    "assistant_checks": "Summary scope/flags, source commit vs image revision label, requested vs observed local image ID, and base digest reconciled with delivered controller and lock; not an independent replay of native results"
+  },
+  "native_test": {
+    "environment": "serving-delivery",
+    "selection": "tests/serving/live/test_delivery_gate.py",
+    "passed": 1,
+    "pytest_seconds": 62.04,
+    "tox_seconds": 64.51
+  },
+  "delivery_directory_relative_to_repo": "data/serving/deliveries/1b85bede4ac24fc781491ef24eea0209",
+  "descriptor_summary": {
+    "schema": "fraud_serving_delivery_v1",
+    "status": "qualified_synthetic",
+    "scope": "committed_runtime_image_synthetic_HTTP_and_blue_green_qualification_not_reference_promotion",
+    "source_commit": "0b95136a462583441044d50de0884a558777b260",
+    "exported_local_tag": "fraud-serving-delivery:d69705d9a8bf42a69f485d0660f80edf",
+    "image": {
+      "requested": "sha256:bc2ba70a90de114613bd8679e79ccfbb7a17de048f72f16323ca26713e1dae8d",
+      "id": "sha256:bc2ba70a90de114613bd8679e79ccfbb7a17de048f72f16323ca26713e1dae8d",
+      "repo_digests": [
+        "fraud-serving-delivery@sha256:bc2ba70a90de114613bd8679e79ccfbb7a17de048f72f16323ca26713e1dae8d"
+      ],
+      "size_bytes": 175002534,
+      "architecture": "amd64",
+      "os": "linux"
+    },
+    "base_image": "python:3.14.4-slim-trixie@sha256:2ca02f32b4d9d893863367ce07ec1972819f476dd38d8612f2a9cb6a41cbb727",
+    "source_revision_label": "0b95136a462583441044d50de0884a558777b260",
+    "registry_published": false,
+    "registry_digest": null,
+    "release_manifest_sha256": "589fa17eb6bc469e39e2e7b6107ba60c0f02f5cbd232d051b973b1227ef5a4c1",
+    "serving_release_id": "c298299b7d3540d3968b5e715937b923",
+    "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+    "evidence_kind": "synthetic_smoke",
+    "historical_reference_accessed": false,
+    "historical_model_refit": false,
+    "synthetic_fixture_fitted": true,
+    "production_promotion": false,
+    "permanent_deployment_created": false,
+    "archive_reload_validated": false,
+    "rollback_verified": true,
+    "temporary_resources_removed": true,
+    "owned_image_tag_removed": true,
+    "elapsed_seconds": 61.75424001799911,
+    "descriptor_sha256": "aa0e79886800765c516d3ed776295dc46d657a7ea50eb7c88900241d8c0ff0d7",
+    "artifact_files": 11,
+    "image_archive_bytes": 175020032
+  },
+  "interpretation": {
+    "closed_gate": "Local committed-source runtime build, synthetic HTTP and blue-green gates, export of tested image, offline byte/record verification and owned-resource cleanup",
+    "permission_correction_accepted_in_native_run": true,
+    "local_repo_digests_do_not_prove_registry_publication": true,
+    "github_actions_run_validated": false,
+    "image_archive_reload_validated": false,
+    "historical_reference_promoted": false,
+    "permanent_deployment_created": false,
+    "production_CD_validated": false,
+    "new_model_quality_evaluated": false,
+    "bit_reproducible_rebuild_claimed": false,
+    "signature_verified": false
+  },
+  "next_gate": "Consume the verified image archive in a separate target, recheck source/image/release identity and HTTP; no refit or rebuild. GitHub Actions execution remains separate."
+}

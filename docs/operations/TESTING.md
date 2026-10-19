@@ -1119,8 +1119,9 @@ não faz parte da suíte padrão. O fechamento documental não exige repeti-lo.
 mesma URL NGINX, pacote inválido bloqueado e falha de B observada como HTTP 502.
 O retorno a A foi verificado em **3,10 s**, com score idêntico e entradas intactas;
 os recursos temporários foram removidos. B usa os mesmos pesos e imagem de A.
-O gate Docker está concluído neste recorte; o fluxo versionado de entrega é o
-próximo incremento. Não há aprovação de novo modelo, CD de produção ou zero downtime.
+O gate Docker está concluído neste recorte. O build e a exportação da entrega
+versionada também foram aprovados nativamente; o consumo do arquivo em outro
+alvo tem aceite nativo informado pelo autor; CI remota pendente. Não há aprovação de novo modelo, CD de produção ou zero downtime.
 [Procedimento e limites](SERVING_ROLLOUT.md).
 
 Aceite nativo: `py314 -- tests/serving` aprovou **110 testes**, com **2 opt-in
@@ -1144,8 +1145,9 @@ permissões somente de leitura. Não há Docker no teste unitário.
 `tests/serving/live/test_delivery_gate.py` e tox `serving-delivery` são opt-in:
 exigem entradas commitadas e Docker Linux 28+, constroem uma imagem e executam
 HTTP/rollback reais com fixture sintética. A execução CI usa o mesmo controller
-diretamente após a suíte completa. O aceite desse novo gate permanece pendente;
-a prova anterior da referência não é reutilizada como aceite de outra imagem.
+diretamente após a suíte completa. O autor aprovou o gate local após a correção de permissões, conforme o fechamento
+abaixo. A execução GitHub Actions continua pendente; a prova anterior da
+referência não é reutilizada como aceite de outra imagem.
 [Procedimento](SERVING_ROLLOUT.md#entrega-versionada-na-ci--implementação-de-2026-10-19).
 
 ### Regressão da permissão de leitura da fixture
@@ -1157,3 +1159,43 @@ do checker, sob umask 022/077, bytes preservados e origem sem chmod; um terceiro
 caso rejeita `verified_reference` antes da normalização. O teste nativo continua
 sendo o aceite de acesso real no container, sem relaxar UID, mount ou hashes.
 [Diagnóstico e correção](SERVING_ROLLOUT.md#correção-das-permissões-da-fixture--2026-10-19).
+
+### Aceite nativo de build e exportação
+
+`serving-delivery`: **1 teste aprovado em 62,04 s**, tox OK em **64,51 s**.
+O ensaio verificou build da imagem do commit esperado, HTTP e blue-green com
+fixture sintética, exportação da mesma imagem, hashes/recibos do pacote e cleanup.
+O descritor foi novamente conferido pelo autor contra o hash impresso pelo teste.
+A correção da fixture para o UID 10001 passou no fluxo completo.
+
+O gate local está concluído. Não é necessário repetir teste ou build para aplicar
+este fechamento documental. A suíte de regressão do assistente (184 aprovados e
+3 opt-in ignorados) mantém seu escopo separado da execução Docker. A execução
+remota do workflow e a recarga do tar em outro alvo continuam sem aceite.
+[Evidência](../../references/evidence/serving_delivery_author_validation_2026-10-19.json).
+
+### Consumo da entrega e transferência entre jobs
+
+`test_delivery_consumer.py` cobre hashes inválidos antes de Docker, colisão de
+tag sem sobrescrita, identidade/plataforma/revisão divergentes, carga parcial,
+falha HTTP/cleanup e mutação da origem. Confere preservação de bytes/permissões
+da entrega e de outra tag para o mesmo ID. O contrato CI exige ID do artifact e
+hash nos outputs do produtor, outro job e ausência de rebuild. Docker é
+controlado nesses testes; eles não constituem aceite nativo ou remoto.
+
+`tests/serving/live/test_delivery_consumer.py`, tox `serving-consumer`, carrega
+o pacote nativo já aprovado e executa o checker HTTP real em container novo.
+Não constrói imagem nem gera fixture por fit; não depende do tracking. O mesmo
+engine pode conter camadas/imagem em cache, condição registrada no recibo.
+O workflow consome o artifact em outro runner; apenas a execução no GitHub
+poderá fechar essa prova. O aceite nativo foi informado pelo autor; o aceite GitHub Actions continua pendente.
+[Comandos e contrato](SERVING_ROLLOUT.md#consumo-da-imagem-arquivada-e-ci-entre-jobs--2026-10-19).
+
+### Consumo nativo aprovado — 2026-10-19
+
+O autor aprovou `serving-consumer`: **1 teste em 32,41 s**, tox OK em 44,93 s.
+Imagem recarregada do arquivo já aprovado, identidade/score HTTP e 422 verificados,
+sem rebuild ou fit; origem preservada e recursos próprios removidos. O ID da
+imagem estava ausente antes do load, sem alegar cache vazio ou engine separado.
+**Próximo: commit/push e aceite dos três jobs no GitHub Actions**, sem repetir
+os gates locais encerrados. [Resultado e limites](SERVING_ROLLOUT.md#aceite-nativo-do-consumo-da-imagem--2026-10-19).
