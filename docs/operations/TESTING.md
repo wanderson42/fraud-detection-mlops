@@ -1210,3 +1210,32 @@ baixado, teve digest conferido e seus recibos de recarga/HTTP/cleanup lidos.
 **Gate remoto encerrado.** Próximo: promoção explícita e provisionamento
 reproduzível KinD/Helm; registry e deploy permanente ainda têm critérios próprios.
 [Resultado e limites](SERVING_ROLLOUT.md#aceite-do-fluxo-no-github-actions--2026-10-19).
+
+### Saúde de dados e features persistidas
+
+`tests/monitoring/test_feature_health.py` cobre suporte e sobreposição, cálculos
+fechados de Jensen–Shannon, valores ausentes/inválidos, coerências Gold, relógios
+com nanosegundos e labels limitados. Testa o módulo do exporter sem site-packages.
+A integração cobre leitura do checkpoint preservando bytes, baseline estável,
+janela recente limitada, saída gerenciada imutável e erro de qualidade distinto
+de indisponibilidade do coletor. Não constitui aceite do checkpoint do autor,
+Docker, promtool ou painel real.
+
+Executar o tox padrão com `tests/monitoring`, `tests/storage/test_managed_paths.py`
+e `tests/storage/test_persistence_inventory.py`; depois os comandos de demo e
+snapshot do [runbook](FEATURE_MONITORING.md). A demonstração é gerada e não faz
+fit ou injeta alterações na fonte nativa. Sem alteração de lock/dependências.
+
+### Aceite nativo mínimo do monitoramento de features — 2026-10-19
+
+O autor confirmou 116 testes aprovados e um opt-in ignorado, demonstração gerada,
+snapshot nativo, exporter reconstruído, oito regras válidas e coleta Prometheus.
+Os valores do dashboard foram conciliados com o snapshot: 1.000 decisões por
+janela sem sobreposição, contagens de qualidade/relógio zeradas e quatro
+divergências entre 0,001457 e 0,004398. O limiar descritivo é 0,1.
+O aceite cobre esse recorte operacional; não mede concept drift, desempenho
+futuro ou frescor de ingestão externa e não dispara CT/promoção. O firing dos
+novos alertas não foi ensaiado na bancada. A contagem recebe cor fixa neutra,
+com conferência visual após refresh ainda pendente. Segue o provisionamento
+incremental do fluxo completo em KinD + Helm.
+[Procedimento, explicação conceitual e evidência](FEATURE_MONITORING.md#aceite-nativo-mínimo--2026-10-19).

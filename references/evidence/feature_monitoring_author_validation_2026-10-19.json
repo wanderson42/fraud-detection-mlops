@@ -1,0 +1,91 @@
+{
+  "schema": "fraud_feature_monitoring_author_validation_v1",
+  "status": "accepted_native_minimum_scope",
+  "validation_date_local": "2026-10-19",
+  "timezone": "America/Belem",
+  "scope": "persisted_replay_feature_quality_and_four_distribution_comparisons_with_exporter_Prometheus_Grafana_not_concept_drift_model_quality_or_CT",
+  "evidence_basis": "author_supplied_terminal_outputs_and_dashboard_capture_reviewed_in_conversation_not_independent_native_execution",
+  "tests": {
+    "environment": "py314",
+    "passed": 116,
+    "skipped": 1,
+    "elapsed_seconds": 3.37,
+    "ruff_check_passed": true,
+    "ruff_format_passed": true,
+    "formatted_files": 294
+  },
+  "controlled_demo": {
+    "status": "success",
+    "report": "data/reports/feature-monitoring/demo-57d851e96f0349eea96039cbfb3642a5.json",
+    "scope": "generated_windows_not_native_alert_firing"
+  },
+  "snapshot": {
+    "status": "ready",
+    "report": "data/reports/feature-monitoring/snapshot-70d41e6c18f94892918f9ac334d6ebdc.json",
+    "state_directory": "data/replay/paced-native-v1",
+    "contract_sha256": "b90b9be97bb2e2e6cf2b819487b2b805882c6d6f22587ff4671a01e25db54796",
+    "reference_rows": 1000,
+    "current_rows": 1000,
+    "nonoverlapping": true,
+    "comparison_ready": true,
+    "reference_request_sha256": "19a41ed0c8ef5a2cc7cb0135486d3af101bc8df780d31ee2a8460705680b430e",
+    "current_request_sha256": "b805b1d39e964f684f0f0465081a02cb13206c409e4f7bc0701406aab73f5a6f",
+    "missing_and_invalid_values_both_windows": 0,
+    "schema_or_clock_invalid_rows_both_windows": 0,
+    "future_clock_rows_both_windows": 0,
+    "incoherent_rows_both_windows": 0,
+    "max_feature_lag_seconds_both_windows": 0.0,
+    "jensen_shannon": {
+      "TX_AMOUNT": 0.0021550290067184723,
+      "CUSTOMER_AVG_AMOUNT_7D": 0.004398245597130813,
+      "CUSTOMER_TX_COUNT_7D": 0.001457152007270268,
+      "TERMINAL_KNOWN_FRAUD_RATE_7D": 0.002043254733260833
+    },
+    "threshold": 0.1,
+    "reference_policy": "first_1000_scored_decisions_in_same_checkpoint_not_training_baseline"
+  },
+  "stack": {
+    "exporter_rebuilt": true,
+    "exporter_ready": true,
+    "exported_metrics_match_snapshot": true,
+    "promtool_rule_check_passed": true,
+    "rules_found": 8,
+    "prometheus_query_status": "success",
+    "prometheus_job": "fraud-replay",
+    "prometheus_instance": "exporter:19100",
+    "comparison_ready_value": 1,
+    "grafana_dashboard_uid": "fraud-feature-health",
+    "grafana_values_match_snapshot_with_display_rounding": true
+  },
+  "dashboard_presentation_followup": {
+    "observation_count_color": "fixed neutral blue instead of inherited red threshold",
+    "query_and_metric_semantics_changed": false,
+    "native_visual_confirmation_of_color_fix_pending": true
+  },
+  "native_feature_alert_firing_validated": false,
+  "ingestion_wall_clock_freshness_validated": false,
+  "concept_drift_detection_validated": false,
+  "model_performance_reassessed": false,
+  "training_triggered": false,
+  "features_recomputed": false,
+  "production_promotion": false,
+  "primary_storage_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "kind_helm_provisioning_validated": false,
+  "source_code_sha256": {
+    "scripts/monitoring/feature_health.py": "cdc86a129c09f9f1aac5fb12192da5cec60f8fb04409a0bef05cc62c6a75dc86",
+    "scripts/monitoring/feature_monitoring.py": "5656e60b5b8af9294710e3153cd5976ec6e654ee4a4f96f60c6406651f664960",
+    "scripts/monitoring/collector.py": "5ffa1df86e37435716fb76ad2554da053ee31bede4ee37e43cda46119fb6fa16"
+  },
+  "limits": [
+    "Acceptance covers the observed native checkpoint and four binned marginal distributions.",
+    "Rule syntax and metric scrape confirmed; native firing/resolution of new feature alerts was not exercised.",
+    "No claim about unseen requests, source ingestion freshness, concept drift or unchanged model performance.",
+    "Dashboard color followup is a presentation-only change, pending native visual refresh."
+  ],
+  "dashboard_capture": {
+    "file_name": "screencapture-127-0-0-1-13000-d-fraud-feature-health-fraud-e28094-dados-e-features-persistidas-2026-10-19-22_31_59.png",
+    "sha256": "4ae173078836c50b8ca14e5e145a55b09cf7683cf3edefa447e63eb6ece6c429",
+    "embedded_in_package": false
+  }
+}

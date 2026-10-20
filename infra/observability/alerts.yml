@@ -43,3 +43,17 @@ groups:
         annotations:
           summary: Distribuição dos scores mudou
           action: Investigar dados e qualidade madura; sinal descritivo não autoriza retreino ou promoção.
+      - alert: FraudFeatureRequestInvalid
+        expr: fraud_feature_schema_or_clock_invalid_rows > 0
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: Features persistidas com schema ou relógio inválido
+          action: Conferir contrato, ausência e relógios do snapshot; preservar o estado. Não retreinar automaticamente.
+      - alert: FraudFeatureDistributionChanged
+        expr: (fraud_feature_jensen_shannon > 0.1) and on(job, instance) (fraud_feature_comparison_ready == 1)
+        for: 2m
+        labels: {severity: info}
+        annotations:
+          summary: Distribuição de feature mudou entre janelas operacionais
+          action: Conferir suporte, sazonalidade e baseline operacional inicial. Sinal descritivo; não implica perda de qualidade ou autorização de CT.

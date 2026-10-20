@@ -1,0 +1,59 @@
+{
+  "schema": "fraud_feature_monitoring_protocol_v1",
+  "date": "2026-10-19",
+  "scope": "persisted_request_windows_descriptive_not_training_baseline_or_CT",
+  "window_rows": 1000,
+  "minimum_decisions": 2000,
+  "reference": "first_1000_decisions_same_checkpoint",
+  "current": "latest_1000_decisions_same_checkpoint",
+  "comparison_requires": "full_nonoverlapping_windows_without_schema_or_clock_errors",
+  "feature_contract_sha256": "b90b9be97bb2e2e6cf2b819487b2b805882c6d6f22587ff4671a01e25db54796",
+  "bins": {
+    "TX_AMOUNT": [
+      0,
+      10,
+      30,
+      60,
+      100,
+      200,
+      500
+    ],
+    "CUSTOMER_AVG_AMOUNT_7D": [
+      0,
+      10,
+      30,
+      60,
+      100,
+      200,
+      500
+    ],
+    "CUSTOMER_TX_COUNT_7D": [
+      0,
+      1,
+      5,
+      10,
+      20,
+      50,
+      100
+    ],
+    "TERMINAL_KNOWN_FRAUD_RATE_7D": [
+      0,
+      0.01,
+      0.05,
+      0.1,
+      0.25,
+      0.5,
+      1
+    ]
+  },
+  "jensen_shannon_base": 2,
+  "initial_descriptive_threshold": 0.1,
+  "distribution_alert_for": "2m",
+  "invalid_request_alert_for": "30s",
+  "clock": "feature_as_of_vs_transaction_not_wall_clock_ingestion_freshness",
+  "reports": "data/reports/feature-monitoring",
+  "no_support_means": "no_divergence_series_not_zero",
+  "training_triggered": false,
+  "production_promotion": false,
+  "native_checkpoint_and_dashboard_acceptance": false
+}

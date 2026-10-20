@@ -7,3 +7,5 @@
 !infra/observability/
 !infra/observability/Dockerfile
 !infra/observability/Dockerfile.dockerignore
+!references/
+!references/gold_contract_v1.json

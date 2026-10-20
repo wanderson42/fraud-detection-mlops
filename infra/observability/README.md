@@ -134,3 +134,28 @@ O autor concluiu o ciclo MLflow: 641 uploads/readbacks, reenvio sem uploads e
 640 arquivos restaurados/verificados, preservando os dois stores. Gate de
 arquivamento S3 desse snapshot fechado. Não houve novo provisionamento, recarga
 operacional MLflow ou migração PostgreSQL. [Resultado nativo](../../docs/operations/MLFLOW.md#ciclo-s3-nativo-do-snapshot-mlflow--2026-10-16).
+
+### Monitoramento mínimo das features persistidas — preparação de 2026-10-19
+
+O exporter existente ganhou schema/ausência e relógios das 19 features, além de
+quatro distribuições com suporte e bins fixos. Compara primeiras e últimas
+1.000 decisões do checkpoint, sem sobreposição; baseline operacional, não de
+treino. Acrescenta painel Grafana e alertas sem gatilho de CT. Não carrega modelo,
+recalcula features ou altera bancos nativos. Testes controlados concluídos;
+**snapshot nativo e stack/painel pendentes**. Relatórios em
+`data/reports/feature-monitoring/`, sem sobrescrita.
+[Comandos, interpretação e limites](../../docs/operations/FEATURE_MONITORING.md).
+
+### Aceite nativo mínimo do monitoramento de features — 2026-10-19
+
+O autor confirmou 116 testes aprovados e um opt-in ignorado, demonstração gerada,
+snapshot nativo, exporter reconstruído, oito regras válidas e coleta Prometheus.
+Os valores do dashboard foram conciliados com o snapshot: 1.000 decisões por
+janela sem sobreposição, contagens de qualidade/relógio zeradas e quatro
+divergências entre 0,001457 e 0,004398. O limiar descritivo é 0,1.
+O aceite cobre esse recorte operacional; não mede concept drift, desempenho
+futuro ou frescor de ingestão externa e não dispara CT/promoção. O firing dos
+novos alertas não foi ensaiado na bancada. A contagem recebe cor fixa neutra,
+com conferência visual após refresh ainda pendente. Segue o provisionamento
+incremental do fluxo completo em KinD + Helm.
+[Procedimento, explicação conceitual e evidência](../../docs/operations/FEATURE_MONITORING.md#aceite-nativo-mínimo--2026-10-19).
