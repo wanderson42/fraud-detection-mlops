@@ -1,6 +1,16 @@
 # Mural de metas — Fraud Detection MLOps
 
-Atualizado em **2026-10-19**. Backlog principal, em ordem de dependência e valor
+<!-- kind-foundation-acceptance-2026-10-20:start -->
+**Estado em 2026-10-20 — fundação KinD/Helm aprovada.** PostgreSQL e RustFS
+prontos; marcadores SQL/S3 preservados após recriar os pods, com os mesmos PVCs.
+Regressão nativa: 45 testes aprovados. Bootstrap corrigido após ajuste de
+inotify no host; persistência desse ajuste após reboot ainda não confirmada.
+A fundação foi integrada ao MLflow; o aceite e o próximo recorte estão registrados abaixo.
+[Aceite, pré-requisito e limites](../operations/KIND_FOUNDATION_ACCEPTANCE.md). As notas anteriores mantêm seu contexto histórico.
+<!-- kind-foundation-acceptance-2026-10-20:end -->
+
+
+Atualizado em **2026-10-20**. Backlog principal, em ordem de dependência e valor
 para a demonstração. O [README](../../README.md) apresenta o projeto; a
 [arquitetura](../ARCHITECTURE.md) descreve os componentes e os
 [stakeholders](STAKEHOLDERS.md) interpretam os resultados.
@@ -21,6 +31,8 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| MLflow na fundação KinD/Helm | Publicação e recarga independente HTTP, hash S3 e recarga após recriação do pod aprovados; erro zero, mesmo Deployment/imagem e fundação preservada. Fixture sintética; sem migração histórica ou backup/restore do novo destino. [Evidência](../../references/evidence/kind_tracking_author_validation_2026-10-20.json) |
+| Fundação PostgreSQL/RustFS no KinD | Aceite nativo em 2026-10-20: dois pods recriados, mesmos PVCs/PVs e marcadores SQL/S3 relidos; 45 testes aprovados. Sem backup/restore ou migração primária. [Evidência](../../references/evidence/kind_foundation_author_validation_2026-10-20.json) |
 | Bronze, Silver e Gold | 183 dias; 1.754.155 transações; 19 preditores causais; contratos, manifestos e verificadores |
 | Referência e experimentos | HGB congelado, três ablações e 20 trials/63 fits; nenhum candidato elegível |
 | Avaliação temporal | Maio: AP 0,640703; referência de 02–15/09: AP 0,621312; reservas consumidas |
@@ -642,3 +654,26 @@ novos alertas, CT, migração primária ou nova confirmação de qualidade do mo
 [Evidência](../../references/evidence/feature_monitoring_author_validation_2026-10-19.json).
 Próximo: fluxo completo em KinD + Helm, seguido de simplificação; Terraform
 permanece o desfecho posterior. Feature store, broker e CT são condicionais.
+
+### Fundação do provisionamento — preparação de 2026-10-20
+
+O próximo marco permanece no backlog. O primeiro recorte prepara cluster
+`fraud-platform`, RustFS/PostgreSQL com PVCs, credenciais próprias e gate de
+releitura SQL/S3 após recriação de pods. Templates e testes são verificados em
+ambiente controlado; aceite Kubernetes real pendente. Não há migração primária
+nem adoção de volumes Compose. Dados Bronze–Silver–Gold, jobs, tracking, replay,
+serving e observabilidade terão gates de integração no mesmo fluxo.
+[Operação](../operations/KIND_FOUNDATION.md).
+
+### MLflow no KinD — aceite nativo de 2026-10-20
+
+O autor aprovou a regressão (135 testes, 1 live ignorado) e o gate nativo
+(1 teste em 21,56 s). Publicação e recarga independente pelo proxy, hash do modelo
+no RustFS e nova recarga após recriar o pod MLflow foram aprovados, com erro de
+score zero e identidades da fundação preservadas. O Deployment e a imagem
+permaneceram os mesmos; o pod ganhou novo UID. [Evidência e limites](../operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidade
+e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
+em andamento; não houve migração histórica, refit histórico, promoção ou
+backup/restore deste novo destino.

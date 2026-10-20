@@ -785,3 +785,13 @@ recuperação encerrado.** Próxima prioridade: CD/rollback do serving, seguido 
 monitoramento de dados/features. Migração dos sete consumidores históricos,
 cutover, limpeza e inventário global seguem em backlog próprio.
 [Comandos, escopo e limites](TRACKING_RECOVERY.md).
+
+## MLflow no KinD — aceite nativo de 2026-10-20
+
+MLflow instalado via Helm sobre PostgreSQL/RustFS dedicados. O autor aprovou
+publicação, recarga independente HTTP, comparação dos bytes do modelo no S3 e
+recarga após recriar o pod MLflow, com erro zero e fundação preservada. O gate
+nativo passou em 21,56 s. Isso demonstra persistência e integração operacional
+com uma fixture sintética; a migração histórica e o backup/restore deste novo
+destino continuam pendentes. Próximo recorte: objetos/dados no RustFS do KinD,
+com aceites próprios. [Resultado e evidência](KIND_TRACKING.md#aceite-nativo--2026-10-20).

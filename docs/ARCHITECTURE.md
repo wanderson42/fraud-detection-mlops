@@ -1,5 +1,15 @@
 # Organização e dependências
 
+<!-- kind-foundation-acceptance-2026-10-20:start -->
+**Estado em 2026-10-20 — fundação KinD/Helm aprovada.** PostgreSQL e RustFS
+prontos; marcadores SQL/S3 preservados após recriar os pods, com os mesmos PVCs.
+Regressão nativa: 45 testes aprovados. Bootstrap corrigido após ajuste de
+inotify no host; persistência desse ajuste após reboot ainda não confirmada.
+A fundação foi integrada ao MLflow; o aceite e o próximo recorte estão registrados abaixo.
+[Aceite, pré-requisito e limites](operations/KIND_FOUNDATION_ACCEPTANCE.md). As notas anteriores mantêm seu contexto histórico.
+<!-- kind-foundation-acceptance-2026-10-20:end -->
+
+
 A estrutura acompanha responsabilidades existentes. O pacote permanece na raiz
 do checkout. O serving tem runtime e recursos operacionais explícitos;
 infraestrutura entra por capacidade implementada.
@@ -537,3 +547,27 @@ novos alertas não foi ensaiado na bancada. A contagem recebe cor fixa neutra,
 com conferência visual após refresh ainda pendente. Segue o provisionamento
 incremental do fluxo completo em KinD + Helm.
 [Procedimento, explicação conceitual e evidência](operations/FEATURE_MONITORING.md#aceite-nativo-mínimo--2026-10-19).
+
+### Fundação KinD/Helm — preparação de 2026-10-20
+
+Primeiro incremento do fluxo completo: cluster dedicado de um node Kubernetes
+1.35.8 fixado por digest, chart com RustFS/PostgreSQL e dois PVCs novos. Imagens
+dos serviços preservadas dos pins já utilizados. Kubeconfig, caches, credenciais
+privadas e recibos sob `data/storage/kind-platform/`; contexto explícito.
+O ensaio grava marcadores próprios SQL/S3 e exige releitura após recriar os pods
+com os mesmos PVCs. A execução nativa ainda está pendente. Não migra os dados
+históricos, não troca o tracking e não comprova backup ou perda do cluster.
+[Runbook, limites e comandos](operations/KIND_FOUNDATION.md).
+
+### MLflow no KinD — aceite nativo de 2026-10-20
+
+O autor aprovou a regressão (135 testes, 1 live ignorado) e o gate nativo
+(1 teste em 21,56 s). Publicação e recarga independente pelo proxy, hash do modelo
+no RustFS e nova recarga após recriar o pod MLflow foram aprovados, com erro de
+score zero e identidades da fundação preservadas. O Deployment e a imagem
+permaneceram os mesmos; o pod ganhou novo UID. [Evidência e limites](operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidade
+e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
+em andamento; não houve migração histórica, refit histórico, promoção ou
+backup/restore deste novo destino.

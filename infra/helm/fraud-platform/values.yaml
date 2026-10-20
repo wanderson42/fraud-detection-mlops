@@ -1,0 +1,17 @@
+# Credentials are created separately; never put passwords in Helm values.
+existingSecret: fraud-platform-credentials
+storageClass: standard
+postgres:
+  image: postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
+  storage: 2Gi
+  database: fraud_platform
+  user: fraud_owner
+  resources:
+    requests: {cpu: 100m, memory: 128Mi}
+    limits: {cpu: "1", memory: 512Mi}
+rustfs:
+  image: rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c
+  storage: 4Gi
+  resources:
+    requests: {cpu: 100m, memory: 256Mi}
+    limits: {cpu: "1", memory: 1Gi}

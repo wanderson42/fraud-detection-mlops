@@ -1,0 +1,23 @@
+{
+  "schema": "fraud_kind_bootstrap_diagnostics_preparation_v1",
+  "prepared_on": "2026-10-20",
+  "observed_failure": "kubeadm wait-control-plane: API server connection refused on 172.18.0.4:6443; cause not established",
+  "native_foundation_tests_author_reported": 30,
+  "native_bootstrap_succeeded": false,
+  "root_cause_confirmed": false,
+  "change_scope": "additive diagnostic entrypoint retaining failed node and bounded control-plane logs; original controller/chart/pins unchanged",
+  "controlled_tests_passed": 15,
+  "controlled_python": "3.14.4",
+  "ruff_check_passed": true,
+  "ruff_format_passed": true,
+  "native_diagnostic_execution_pending": true,
+  "ownership_checks_bypassed": false,
+  "system_settings_changed": false,
+  "energy_clusters_touched": false,
+  "source_sha256": {
+    "scripts/platform/kind_bootstrap_diagnostics.py": "5badf0fc32dbd2a8ef59f744143affd5b44dcf1b925ce79d350306b99858b80f",
+    "tests/infra/test_kind_bootstrap_diagnostics.py": "12cfd08bcab578d7524a0efcdb239ba8bf1c838d9317a376ea77223998ae2f20",
+    "docs/operations/KIND_BOOTSTRAP_DIAGNOSTICS.md": "12e0c754f35fd30c2e36d3def2e6cd0ea5af5e417121afeb91e56641a12c4628"
+  },
+  "upstream_source": "https://kind.sigs.k8s.io/docs/user/known-issues/#troubleshooting-kind"
+}

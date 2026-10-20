@@ -1,5 +1,15 @@
 # Síntese para stakeholders
 
+<!-- kind-foundation-acceptance-2026-10-20:start -->
+**Estado em 2026-10-20 — fundação KinD/Helm aprovada.** PostgreSQL e RustFS
+prontos; marcadores SQL/S3 preservados após recriar os pods, com os mesmos PVCs.
+Regressão nativa: 45 testes aprovados. Bootstrap corrigido após ajuste de
+inotify no host; persistência desse ajuste após reboot ainda não confirmada.
+A fundação foi integrada ao MLflow; o aceite e o próximo recorte estão registrados abaixo.
+[Aceite, pré-requisito e limites](../operations/KIND_FOUNDATION_ACCEPTANCE.md). As notas anteriores mantêm seu contexto histórico.
+<!-- kind-foundation-acceptance-2026-10-20:end -->
+
+
 Atualizado em 2026-10-16, incorporando a recuperação nativa do histórico e da
 referência MLflow em cópia descartável dos restores já aprovados.
 O pipeline offline, a referência congelada, o serving de laboratório e o replay
@@ -640,3 +650,13 @@ baixado, teve digest conferido e seus recibos de recarga/HTTP/cleanup lidos.
 **Gate remoto encerrado.** Próximo: promoção explícita e provisionamento
 reproduzível KinD/Helm; registry e deploy permanente ainda têm critérios próprios.
 [Resultado e limites](../operations/SERVING_ROLLOUT.md#aceite-do-fluxo-no-github-actions--2026-10-19).
+
+## MLflow no KinD — aceite nativo de 2026-10-20
+
+MLflow instalado via Helm sobre PostgreSQL/RustFS dedicados. O autor aprovou
+publicação, recarga independente HTTP, comparação dos bytes do modelo no S3 e
+recarga após recriar o pod MLflow, com erro zero e fundação preservada. O gate
+nativo passou em 21,56 s. Isso demonstra persistência e integração operacional
+com uma fixture sintética; a migração histórica e o backup/restore deste novo
+destino continuam pendentes. Próximo recorte: objetos/dados no RustFS do KinD,
+com aceites próprios. [Resultado e evidência](../operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).

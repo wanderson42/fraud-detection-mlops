@@ -1,0 +1,130 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/part-of: fraud-platform
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    fraud.tracking/owner-id: {{ .Values.ownerId | quote }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: mlflow
+  ports:
+    - name: http
+      port: 5000
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/part-of: fraud-platform
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  annotations:
+    fraud.tracking/owner-id: {{ .Values.ownerId | quote }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: mlflow
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: fraud-platform
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: mlflow
+      annotations:
+        fraud.tracking/owner-id: {{ .Values.ownerId | quote }}
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: mlflow
+          image: {{ .Values.image | quote }}
+          imagePullPolicy: Never
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          command: [mlflow, server]
+          args:
+            - --host
+            - 0.0.0.0
+            - --port
+            - "5000"
+            - --workers
+            - "1"
+            - --serve-artifacts
+            - --artifacts-destination
+            - s3://fraud-kind-mlflow/v1
+            - --allowed-hosts
+            - "127.0.0.1:*,localhost:*,fraud-tracking:5000,fraud-tracking.fraud-platform.svc:5000"
+          ports:
+            - name: http
+              containerPort: 5000
+          env:
+            - name: MLFLOW_BACKEND_STORE_URI
+              valueFrom:
+                secretKeyRef: {name: {{ .Values.existingSecret | quote }}, key: backend-uri}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef: {name: {{ .Values.existingSecret | quote }}, key: rustfs-access-key}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef: {name: {{ .Values.existingSecret | quote }}, key: rustfs-secret-key}
+            - {name: MLFLOW_S3_ENDPOINT_URL, value: "http://fraud-platform-rustfs:9000"}
+            - {name: MLFLOW_BOTO_CLIENT_ADDRESSING_STYLE, value: path}
+            - {name: AWS_DEFAULT_REGION, value: us-east-1}
+            - {name: AWS_EC2_METADATA_DISABLED, value: "true"}
+            - {name: AWS_CONFIG_FILE, value: /dev/null}
+            - {name: AWS_SHARED_CREDENTIALS_FILE, value: /dev/null}
+            - {name: MLFLOW_SERVER_ENABLE_JOB_EXECUTION, value: "false"}
+            - {name: MLFLOW_SQL_TRACE_ROLLUPS_ENABLED, value: "false"}
+            - {name: MLFLOW_SQLALCHEMYSTORE_POOL_SIZE, value: "2"}
+            - {name: MLFLOW_SQLALCHEMYSTORE_MAX_OVERFLOW, value: "2"}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+              httpHeaders:
+                - {name: Host, value: "127.0.0.1:5000"}
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+              httpHeaders:
+                - {name: Host, value: "127.0.0.1:5000"}
+            periodSeconds: 5
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+              httpHeaders:
+                - {name: Host, value: "127.0.0.1:5000"}
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          volumeMounts:
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: tmp
+          emptyDir: {sizeLimit: 512Mi}

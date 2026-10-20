@@ -1,0 +1,7 @@
+apiVersion: v2
+name: fraud-platform
+description: Local portfolio foundation for fraud data and ML services
+type: application
+version: 0.1.0
+appVersion: "foundation-v1"
+kubeVersion: ">=1.35.0 <1.36.0"

@@ -1,0 +1,11 @@
+{
+  "reviewed_on": "2026-10-20",
+  "node_source": "https://github.com/kubernetes-sigs/kind/releases/tag/v0.33.0",
+  "service_source": "Existing observability/tracking image locks; no service image update",
+  "images": {
+    "node": "kindest/node:v1.35.8@sha256:07b2536e30b803ed61d1677a79df6115f798ce64c80f9e22f6ed45afd09323c0",
+    "postgres": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+    "rustfs": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+    "s3_probe": "amazon/aws-cli:2.31.36@sha256:2901b33430341f03e487de5a2309bf4b6aba420c764f562466fd89bd49f50f82"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "schema": "fraud_persistence_catalogue_v1",
-  "reviewed_on": "2026-10-19",
+  "reviewed_on": "2026-10-20",
   "reviewed_delivery_tree": "74a61ac6d74a092c7108fc884e18bf9891238768",
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
@@ -153,6 +153,25 @@
         "tests/tracking/live/test_baseline_http.py"
       ],
       "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform",
+      "family": "kind_foundation_workspace",
+      "owner": "platform_operator",
+      "producers": [
+        "scripts/platform/kind_foundation.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/tracking",
+      "family": "kind_tracking_workspace_and_receipts",
+      "owner": "platform_operator",
+      "producers": [
+        "scripts/platform/kind_tracking.py",
+        "scripts/platform/kind_tracking_client.py"
+      ],
+      "review_required": false
     }
   ],
   "source_prefixes": [
@@ -267,6 +286,27 @@
       ],
       "inspection": "author_reported_native_three_models_reload_validated",
       "reason": "Author approved three linked main runs, independent reload with local models unavailable, zero error, no local tracking DB and unchanged containers; see baseline_tracking_author_validation_2026-10-17.json. This is not primary cutover, cross-store inventory, PostgreSQL restore or historical migration."
+    },
+    {
+      "id": "kind_foundation_local_pvs",
+      "source": "infra/helm/fraud-platform/values.yaml",
+      "locations": [
+        "cluster fraud-platform: local-path PVs inside Docker node, two new PVCs",
+        "namespace fraud-platform: generated credentials Secret and Helm release metadata"
+      ],
+      "inspection": "author_reported_native_pod_recreation_and_PVC_identity_validated",
+      "reason": "Markers survived pod recreation with the same PVC/PV identities. Evidence: kind_foundation_author_validation_2026-10-20.json. Cluster/host-loss recovery and primary migration remain unvalidated."
+    },
+    {
+      "id": "kind_mlflow_postgres_s3",
+      "source": "scripts/platform/kind_tracking.py",
+      "locations": [
+        "fraud-platform namespace: database/login mlflow_kind in existing PostgreSQL PVC",
+        "fraud-platform namespace: bucket fraud-kind-mlflow/v1 in existing RustFS PVC",
+        "fraud-tracking Helm release and generated tracking Secret; Deployment tmp emptyDir"
+      ],
+      "inspection": "author_reported_native_synthetic_proxy_S3_hash_and_pod_recreation_validated",
+      "reason": "Accepted 2026-10-20: independent HTTP reload, exact S3 model hash, metric probe history and reload after MLflow pod recreation; foundation identities preserved. No historical migration or backup/restore of this destination. See kind_tracking_author_validation_2026-10-20.json."
     }
   ],
   "decisions": {
@@ -330,7 +370,7 @@
   },
   "tracking_consumers_review": {
     "schema": "fraud_tracking_consumers_review_v1",
-    "reviewed_on": "2026-10-17",
+    "reviewed_on": "2026-10-20",
     "scope": "Curated review of local/HTTP model access, indirect frozen-reference consumers, historical maintenance and independent serving runtime; source hashes checked without importing modules.",
     "consumers": [
       {
@@ -573,6 +613,18 @@
         "local_migration_blocker": false,
         "current_behavior": "Restores only a fresh private target, verifies complete API history and reloads the pinned synthetic model; no source network or historical stores.",
         "migration_gate": "Native restore acceptance; preserve scientific consumers and default routing."
+      },
+      {
+        "id": "kind_tracking_synthetic_client",
+        "source": "scripts/platform/kind_tracking_client.py",
+        "source_sha256": "63007e160f825376af2352bac90b58e89b329dac214fb3cd4fc02ca05c1f1232",
+        "functions": [
+          "execute"
+        ],
+        "kind": "service_operations",
+        "local_migration_blocker": false,
+        "current_behavior": "Cliente HTTP sintético; publica skops e recarrega em processos separados sem variáveis AWS/PG; sem consulta ao histórico local.",
+        "migration_gate": "Gate nativo PostgreSQL/S3/KinD aprovado: publicação e recarga independente, hash S3, dois pontos da métrica do probe e recarga após recriação do pod MLflow; erro zero. Não declara migração histórica ou primária; evidência kind_tracking_author_validation_2026-10-20.json."
       }
     ],
     "decisions": {
@@ -610,5 +662,32 @@
     "target_resources": "temporary project/network/PostgreSQL and RustFS volumes; removed after the rehearsal",
     "primary_cutover": "deferred independently of this recovery gate",
     "validation_evidence": "references/evidence/tracking_restore_author_validation_2026-10-19.json"
+  },
+  "kind_foundation": {
+    "controller": "scripts/platform/kind_foundation.py",
+    "workspace": "data/storage/kind-platform",
+    "cluster": "fraud-platform",
+    "namespace": "fraud-platform",
+    "chart": "infra/helm/fraud-platform",
+    "native_persistence_validated": true,
+    "primary_storage_migrated": false,
+    "validation_scope": "new_SQL_S3_markers_across_pod_recreation_same_PVCs_not_cluster_or_host_loss",
+    "validation_evidence": "references/evidence/kind_foundation_author_validation_2026-10-20.json",
+    "backup_restore_validated": false
+  },
+  "kind_tracking": {
+    "controller": "scripts/platform/kind_tracking.py",
+    "workspace": "data/storage/kind-platform/tracking",
+    "chart": "infra/helm/fraud-tracking",
+    "release": "fraud-tracking",
+    "namespace": "fraud-platform",
+    "database": "mlflow_kind",
+    "bucket": "fraud-kind-mlflow",
+    "native_acceptance_validated": true,
+    "primary_storage_migrated": false,
+    "validation_evidence": "references/evidence/kind_tracking_author_validation_2026-10-20.json",
+    "validation_scope": "synthetic_proxy_S3_hash_and_model_reload_across_MLflow_pod_recreation",
+    "backup_restore_validated": false,
+    "historical_runs_migrated": false
   }
 }
