@@ -24,6 +24,15 @@ acontece quando o processo para, os dados mudam ou um candidato é rejeitado.
 O painel torna essas evidências visíveis. Dados simulados e laboratório local
 não comprovam eficácia antifraude real nem SLA de uma instituição.
 
+## Próximo recorte — execução da cadeia de dados no cluster
+
+Fundação, MLflow e transporte dos quatro bundles para o RustFS do KinD têm
+aceite no escopo demonstrado. O próximo recorte deve definir uma execução
+limitada dos produtores/leitores em Jobs, com entradas e saídas identificadas,
+sem repetir o estudo HGB ou substituir as fontes históricas. Replay/estado,
+serving e observabilidade continuam na sequência do plano. O transporte
+concluído não declara S3 como origem primária de todos os consumidores.
+
 ## Marcos concluídos e evidência preservada
 
 Uma linha concluída encerra somente o escopo demonstrado. As extensões ainda
@@ -31,6 +40,7 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Bundles dos quatro datasets no RustFS do KinD | Aceite nativo em 2026-10-20: 489 arquivos/493 objetos verificados, 210.997.363 bytes; reenvio sem novos uploads e restauração com verificadores próprios, fundação preservada. Leitores atuais mantidos; sem recuperação por perda do cluster/host. [Evidência](../../references/evidence/kind_datasets_author_validation_2026-10-20.json) |
 | MLflow na fundação KinD/Helm | Publicação e recarga independente HTTP, hash S3 e recarga após recriação do pod aprovados; erro zero, mesmo Deployment/imagem e fundação preservada. Fixture sintética; sem migração histórica ou backup/restore do novo destino. [Evidência](../../references/evidence/kind_tracking_author_validation_2026-10-20.json) |
 | Fundação PostgreSQL/RustFS no KinD | Aceite nativo em 2026-10-20: dois pods recriados, mesmos PVCs/PVs e marcadores SQL/S3 relidos; 45 testes aprovados. Sem backup/restore ou migração primária. [Evidência](../../references/evidence/kind_foundation_author_validation_2026-10-20.json) |
 | Bronze, Silver e Gold | 183 dias; 1.754.155 transações; 19 preditores causais; contratos, manifestos e verificadores |

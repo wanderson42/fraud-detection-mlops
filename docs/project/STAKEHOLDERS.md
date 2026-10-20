@@ -660,3 +660,12 @@ nativo passou em 21,56 s. Isso demonstra persistência e integração operaciona
 com uma fixture sintética; a migração histórica e o backup/restore deste novo
 destino continuam pendentes. Próximo recorte: objetos/dados no RustFS do KinD,
 com aceites próprios. [Resultado e evidência](../operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+## Transporte dos datasets no KinD aprovado
+
+O autor confirmou o ciclo das quatro camadas em 2026-10-20: 489 arquivos de
+payload e quatro manifestos recuperados com verificadores próprios; os reenvios
+não fizeram novos uploads e a fundação permaneceu com as mesmas identidades.
+O resultado preserva dados e proveniência no novo destino. Os leitores ainda
+usam seus caminhos atuais; recuperação após perda da máquina não foi avaliada.
+[Aceite e evidência](../operations/KIND_DATASETS.md#aceite-nativo--2026-10-20).

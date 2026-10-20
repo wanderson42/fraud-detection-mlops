@@ -257,3 +257,7 @@ Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidad
 e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
 em andamento; não houve migração histórica, refit histórico, promoção ou
 backup/restore deste novo destino.
+
+O [transporte de bundles para o RustFS do KinD](operations/KIND_DATASETS.md#aceite-nativo--2026-10-20)
+foi aprovado pelo autor nas quatro camadas: idempotência e restauração independente,
+com os caminhos primários dos leitores preservados.

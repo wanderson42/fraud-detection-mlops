@@ -1,0 +1,147 @@
+{
+  "schema": "fraud_kind_datasets_author_validation_v1",
+  "status": "author_reported_native_success",
+  "validated_on": "2026-10-20",
+  "evidence_basis": "Author-provided terminal output including full rehearsal JSON and successful native pytest/tox result; semantic transcription, not an independent execution or a byte-for-byte archive of the receipt.",
+  "native_receipt_bytes_archived": false,
+  "receipt_sha256": null,
+  "native_test": {
+    "command": ".venv/bin/python -m tox -e kind-datasets",
+    "tests_passed": 1,
+    "pytest_seconds": 66.78,
+    "tox_reported_elapsed_seconds": 81.18
+  },
+  "implementation_source_hashes": {
+    "scripts/platform/kind_datasets.py": "1d5a38fff0d7c30ff23fb4d37f7856ead309a25dbe74046bdc60f8002fe729af",
+    "scripts/platform/kind_datasets_worker.py": "503698735fc48cb04e1adc53a8a80b5841d487319cea2e9e6e260ca8be3fe2ad",
+    "infra/kind/datasets/Dockerfile": "bfc91204265557849e2792b56da1514f41f08ce982c7d4f2da2907eb02c7819c",
+    "infra/kind/datasets/Dockerfile.dockerignore": "56dc97650cf43e055943a161733e9a5bc3aef499279b6d01d01764ca334bfb03"
+  },
+  "totals": {
+    "payload_files": 489,
+    "bundle_completion_manifests": 4,
+    "verified_objects": 493,
+    "payload_bytes": 210997363,
+    "ownership_marker_included_in_object_totals": false,
+    "dataset_rows_are_not_additive": true
+  },
+  "republication_zero_uploads_gate_passed": true,
+  "native_receipt": {
+    "schema": "fraud_kind_datasets_rehearsal_v1",
+    "status": "success",
+    "scope": "prepared_dataset_bundle_kind_S3_roundtrip_not_primary_storage_migration",
+    "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/rehearsal-1d25a05058064c8fb9aa4d070a646a33.json",
+    "datasets": {
+      "bronze": {
+        "bundle_id": "bca0bdcbd60853db575dcdd5af986fd7608057c69fb368fd5fa0007aa62bc4c0",
+        "files": 188,
+        "bytes": 107309243,
+        "manifest_sha256": "bca0bdcbd60853db575dcdd5af986fd7608057c69fb368fd5fa0007aa62bc4c0",
+        "uploaded_objects": 189,
+        "reused_objects": 189,
+        "verified_objects": 189,
+        "semantic_verification": {
+          "snapshot_path": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-579885a65ac345339a1043dcb4afcba3/downloads/bronze-amp4kw_g/data/raw/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a",
+          "verified_file_count": 183,
+          "expected_file_count": 183,
+          "complete": true
+        },
+        "publication_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/publish-2e7093695d914358995bf37674801e50/result.json",
+        "republication_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/publish-1800c06e2097446695c1e6d6e945f7a6/result.json",
+        "restore_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-579885a65ac345339a1043dcb4afcba3/result.json",
+        "restored_directory": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-579885a65ac345339a1043dcb4afcba3/restored",
+        "independent_restored_bundle_verified": true,
+        "foundation_identities_preserved": true
+      },
+      "silver": {
+        "bundle_id": "f9ec010e67cdd4bd7b8fe992b7503ed4c8a3c0147a63caadf882b8f7db2cf224",
+        "files": 187,
+        "bytes": 40288931,
+        "manifest_sha256": "f9ec010e67cdd4bd7b8fe992b7503ed4c8a3c0147a63caadf882b8f7db2cf224",
+        "uploaded_objects": 188,
+        "reused_objects": 188,
+        "verified_objects": 188,
+        "semantic_verification": {
+          "silver_path": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-0bf61ac823a84abc8f3bc3043bbadb5f/downloads/silver-ot_tf4cr/data/interim/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/silver_v1",
+          "verified_partitions": 183,
+          "rows": 1754155,
+          "distinct_transaction_ids": 1754155,
+          "fraud_count": 14681,
+          "genuine_count": 1739474,
+          "zero_amounts": 42
+        },
+        "publication_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/publish-91e94a0d6bc64ceaafdcf361c4c12aac/result.json",
+        "republication_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/publish-f2cc95fcc0234f28b2ab69f9e3ed0f08/result.json",
+        "restore_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-0bf61ac823a84abc8f3bc3043bbadb5f/result.json",
+        "restored_directory": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-0bf61ac823a84abc8f3bc3043bbadb5f/restored",
+        "independent_restored_bundle_verified": true,
+        "foundation_identities_preserved": true
+      },
+      "gold": {
+        "bundle_id": "af32af6befe8ad2dba7f36965011ead09d9cdf7c0ac9be81bffcdea92e2e45aa",
+        "files": 48,
+        "bytes": 25196448,
+        "manifest_sha256": "af32af6befe8ad2dba7f36965011ead09d9cdf7c0ac9be81bffcdea92e2e45aa",
+        "uploaded_objects": 49,
+        "reused_objects": 49,
+        "verified_objects": 49,
+        "semantic_verification": {
+          "gold_path": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-dbd6c7950543490681f14ba02768a735/downloads/gold-paktezxq/data/processed/handbook/6e67dbd0a3bfe0d7ec33abc4bce5f37cd4ff0d6a/gold_v1",
+          "verified_partitions": 42,
+          "feature_count": 19,
+          "split_rows": {
+            "train": 268668,
+            "validation": 67255,
+            "test": 66954
+          },
+          "rows": 402877
+        },
+        "publication_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/publish-623fb7c03afd46cd803c4c1b42212341/result.json",
+        "republication_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/publish-0245782dc38443d4aee300931437151a/result.json",
+        "restore_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-dbd6c7950543490681f14ba02768a735/result.json",
+        "restored_directory": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-dbd6c7950543490681f14ba02768a735/restored",
+        "independent_restored_bundle_verified": true,
+        "foundation_identities_preserved": true
+      },
+      "development-gold": {
+        "bundle_id": "4e20595ffe482aacfb279d8dd8dea245e0ccc0f1d602c62f17d0cc52d12d6802",
+        "files": 66,
+        "bytes": 38202741,
+        "manifest_sha256": "4e20595ffe482aacfb279d8dd8dea245e0ccc0f1d602c62f17d0cc52d12d6802",
+        "uploaded_objects": 67,
+        "reused_objects": 67,
+        "verified_objects": 67,
+        "semantic_verification": {
+          "verified_partitions": 63,
+          "rows": 603669,
+          "confirmation_evaluated": false,
+          "development_run_id": "9f86edf1e8f2408098c5377456e8968e3a7ca5925a20222b8ab8547ef94cbaf9",
+          "development_manifest_sha256": "b34988a71990356dd38ae62258d8f7ff232f9ecd8611fb9b9a31be80169d91e5",
+          "feature_count": 19
+        },
+        "publication_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/publish-fdd06dfe13404dfea9c3ab7fee10acdd/result.json",
+        "republication_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/publish-e79c319610764a84ab8afda6990f1c1e/result.json",
+        "restore_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-c2b310e4599d4cf9968d9355d95dc6c1/result.json",
+        "restored_directory": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/datasets/restore-c2b310e4599d4cf9968d9355d95dc6c1/restored",
+        "independent_restored_bundle_verified": true,
+        "foundation_identities_preserved": true
+      }
+    },
+    "primary_storage_migrated": false,
+    "project_wide_storage_inventory_complete": false,
+    "production_promotion": false,
+    "fit_executed": false,
+    "features_recomputed": false
+  },
+  "path_interpretation": "snapshot_path/silver_path/gold_path record the quarantine location at verification time. After successful verification, each candidate directory was renamed to its reported restored_directory; these former paths are retained verbatim, not presented as current filesystem paths.",
+  "limits": {
+    "primary_reader_paths_changed": false,
+    "pipeline_jobs_in_kind_validated": false,
+    "historical_tracking_migrated": false,
+    "project_wide_storage_inventory_complete": false,
+    "cluster_loss_recovery_validated": false,
+    "host_loss_recovery_validated": false,
+    "production_promotion": false,
+    "independent_native_reexecution_by_assistant": false
+  }
+}

@@ -571,3 +571,13 @@ Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidad
 e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
 em andamento; não houve migração histórica, refit histórico, promoção ou
 backup/restore deste novo destino.
+
+## Transporte dos datasets para a fundação KinD
+
+Um cliente Docker temporário usa a imagem SDK travada e um port-forward explícito
+para o RustFS instalado pelo Helm. Monta somente o bundle local para leitura e
+um novo diretório para download. O bucket `fraud-datasets` nesse endpoint tem
+marcador próprio; as cópias do Compose continuam separadas. Os verificadores
+Bronze/Silver/Gold/development são reutilizados depois do download. Não altera
+os charts aceitos, o runtime MLflow ou os caminhos primários dos produtores.
+[Aceite nativo das quatro camadas e desenho operacional](operations/KIND_DATASETS.md#aceite-nativo--2026-10-20).

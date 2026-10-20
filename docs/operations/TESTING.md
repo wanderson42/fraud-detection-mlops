@@ -1273,3 +1273,18 @@ Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidad
 e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
 em andamento; não houve migração histórica, refit histórico, promoção ou
 backup/restore deste novo destino.
+
+## Gate de datasets no KinD
+
+Regressão offline: `tests/infra/test_kind_datasets.py` e
+`tests/infra/test_kind_dataset_layers.py`. Usa S3 em memória, bytes opacos Bronze
+e Parquet sintético com os verificadores existentes das quatro camadas. Cobre
+reenvio, corrupção, bucket sem ownership, manifesto por último, fonte local
+ausente na restauração e limpeza das credenciais temporárias após falha.
+
+O opt-in `.venv/bin/python -m tox -e kind-datasets` usa os quatro bundles já
+preparados e a fundação existente. Publica, repete e restaura cada camada;
+o gate permanece pulado na suíte comum. Aceite nativo do autor: 1 teste passou
+em 66,78 s; tox concluiu em 81,18 s, com as quatro camadas aprovadas. A regressão
+offline de preparação teve 69 testes aprovados no ambiente do assistente; isso
+não substitui a execução nativa. [Recibos, resultado e limites](KIND_DATASETS.md#aceite-nativo--2026-10-20).

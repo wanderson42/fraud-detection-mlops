@@ -172,6 +172,16 @@
         "scripts/platform/kind_tracking_client.py"
       ],
       "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/datasets",
+      "family": "kind_dataset_archives_and_receipts",
+      "owner": "platform_operator",
+      "producers": [
+        "scripts/platform/kind_datasets.py",
+        "scripts/platform/kind_datasets_worker.py"
+      ],
+      "review_required": false
     }
   ],
   "source_prefixes": [
@@ -307,6 +317,16 @@
       ],
       "inspection": "author_reported_native_synthetic_proxy_S3_hash_and_pod_recreation_validated",
       "reason": "Accepted 2026-10-20: independent HTTP reload, exact S3 model hash, metric probe history and reload after MLflow pod recreation; foundation identities preserved. No historical migration or backup/restore of this destination. See kind_tracking_author_validation_2026-10-20.json."
+    },
+    {
+      "id": "kind_dataset_objects",
+      "source": "scripts/platform/kind_datasets.py",
+      "locations": [
+        "fraud-platform namespace: fraud-datasets bucket in existing RustFS PVC",
+        "temporary host Docker worker with explicit loopback port-forward; source bundle read-only, download directory writable"
+      ],
+      "inspection": "author_reported_native_four_dataset_roundtrips_validated",
+      "reason": "Accepted 2026-10-20: 489 payload files plus four manifests, full readback, zero-upload republication, independent semantic restore and foundation identities preserved. Primary reader paths and cluster/host-loss recovery remain outside this gate. Evidence: kind_datasets_author_validation_2026-10-20.json."
     }
   ],
   "decisions": {
@@ -689,5 +709,24 @@
     "validation_scope": "synthetic_proxy_S3_hash_and_model_reload_across_MLflow_pod_recreation",
     "backup_restore_validated": false,
     "historical_runs_migrated": false
+  },
+  "kind_datasets": {
+    "controller": "scripts/platform/kind_datasets.py",
+    "worker": "scripts/platform/kind_datasets_worker.py",
+    "workspace": "data/storage/kind-platform/datasets",
+    "bucket": "fraud-datasets",
+    "native_acceptance_validated": true,
+    "primary_storage_migrated": false,
+    "dataset_layers": [
+      "bronze",
+      "silver",
+      "gold",
+      "development-gold"
+    ],
+    "source": "existing locally prepared bundles only",
+    "runbook": "docs/operations/KIND_DATASETS.md",
+    "validation_evidence": "references/evidence/kind_datasets_author_validation_2026-10-20.json",
+    "validation_scope": "four_prepared_dataset_bundle_S3_roundtrips_and_semantic_verifiers_not_primary_reader_cutover",
+    "primary_reader_paths_changed": false
   }
 }

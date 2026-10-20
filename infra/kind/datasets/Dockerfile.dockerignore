@@ -1,0 +1,15 @@
+**
+!infra/
+!infra/observability/
+!infra/observability/storage-requirements.txt
+!infra/kind/
+!infra/kind/datasets/
+!infra/kind/datasets/Dockerfile
+!scripts/
+!scripts/storage/
+!scripts/storage/archive.py
+!scripts/storage/bronze_s3_worker.py
+!scripts/storage/mlflow_inventory.py
+!scripts/storage/mlflow_backup.py
+!scripts/platform/
+!scripts/platform/kind_datasets_worker.py

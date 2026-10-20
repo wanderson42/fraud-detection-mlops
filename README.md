@@ -502,3 +502,11 @@ Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidad
 e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
 em andamento; não houve migração histórica, refit histórico, promoção ou
 backup/restore deste novo destino.
+
+## Datasets no RustFS do KinD — aceite nativo
+
+Bronze, Silver, Gold e development Gold foram publicados, reenviados sem novos
+uploads e restaurados com seus verificadores no RustFS do KinD: 489 arquivos,
+493 objetos verificados e 210.997.363 bytes de payload. Fundação preservada;
+os caminhos primários dos leitores permanecem os atuais.
+[Procedimento e limites](docs/operations/KIND_DATASETS.md).

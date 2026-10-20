@@ -1493,3 +1493,14 @@ nativo passou em 21,56 s. Isso demonstra persistência e integração operaciona
 com uma fixture sintética; a migração histórica e o backup/restore deste novo
 destino continuam pendentes. Próximo recorte: objetos/dados no RustFS do KinD,
 com aceites próprios. [Resultado e evidência](KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+## Bundles de datasets no RustFS do KinD
+
+[Runbook do novo destino](KIND_DATASETS.md). O transporte reutiliza os bundles
+já preparados e seus verificadores; não consulta o RustFS do Compose nem muda
+leitores para S3. A área local é `data/storage/kind-platform/datasets/`, com
+recibos e restauração separados. Aceite nativo das quatro camadas em 2026-10-20:
+489 arquivos, 493 objetos verificados e 210.997.363 bytes de payload. Reenvio
+sem novos uploads, verificadores semânticos e identidades da fundação aprovados.
+[Evidência](../../references/evidence/kind_datasets_author_validation_2026-10-20.json).
+Esse resultado não muda os leitores nem comprova recuperação após perda do PVC.
