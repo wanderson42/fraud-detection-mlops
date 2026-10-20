@@ -16,6 +16,9 @@ não comprovam eficácia antifraude real nem SLA de uma instituição.
 
 ## Marcos concluídos e evidência preservada
 
+Uma linha concluída encerra somente o escopo demonstrado. As extensões ainda
+necessárias estão separadas no backlog; não reabrimos os ensaios já aprovados.
+
 | Marco | Estado e limite |
 | --- | --- |
 | Bronze, Silver e Gold | 183 dias; 1.754.155 transações; 19 preditores causais; contratos, manifestos e verificadores |
@@ -28,46 +31,125 @@ não comprovam eficácia antifraude real nem SLA de uma instituição.
 | Resultado descritivo da fila | 768 capturas/358 perdas de clientes-dia fraudulentos em 16–30/09; precisão 52,86% e recall 68,21% agregados |
 | Replay programado nativo | 556.824 eventos em 14 sessões a 8.640×; 143.945 decisões medidas, zero lacunas e paridade independente aprovada pelo autor; não avalia SLA |
 | Visibilidade local inicial | Stack Docker ativa, scrape Prometheus e valores dos dois dashboards confirmados pelo autor no smoke; o fechamento nativo está registrado na linha seguinte |
-| Recuperação PostgreSQL/S3 do tracking | Aceite de 2026-10-19: 38 objetos, 8 runs, 6 modelos e 44 pontos históricos; modelo pelo proxy com erro zero; fonte preservada e alvo removido |
 | Coleta nativa e recuperação do exporter | Resumo/Prometheus conferidos no volume final; alerta observado em 56,36 s e retorno em 12,29 s, arquivos preservados; rotina incorporada com pytest/tox |
+| Arquivamento e recuperação S3 dos datasets | Bronze, Silver, Gold e dataset de desenvolvimento publicados, reenviados sem novos uploads e restaurados com verificações próprias. Não declara S3 como origem primária dos leitores. [Gates e evidências](../operations/STORAGE.md) |
+| Backup e recuperação do estudo HGB concluído | Snapshot consistente SQLite + artefatos; 322 arquivos, 20 trials/63 tentativas e decisão `retain_reference` preservados; ciclo S3 aprovado. Sem retomada de treino ou conversão do estudo para PostgreSQL. [Evidência](../../references/evidence/hgb_study_transfer_author_validation_2026-10-16.json) |
+| Backup e recuperação do tracking histórico | Dois stores: 71 runs e 67 modelos; snapshot/S3 e acesso ao histórico pelo SDK aprovados; referência recarregada com erro zero. Sem migração primária. [Runbook](../operations/MLFLOW.md) |
+| Inventário do checkout e contenção inicial dos destinos | Coleta/revisão do checkout e quatro CLIs aprovadas; consumidores revisados em 17 registros, com sete fronteiras locais mapeadas. Não encerra cobertura global de writers, volumes ou arquivos externos. [Inventário](../../references/evidence/persistence_inventory_author_validation_2026-10-16.json) e [consumidores](../../references/evidence/tracking_consumers_author_validation_2026-10-19.json) |
+| Tracking PostgreSQL/S3 e produtores HTTP | Persistência após recriação dos containers; contribuição, fold HGB e trio dummy/logística/HGB com recarga independente e paridade aprovados. Rotas explícitas; histórico preservado e busca Optuna completa não repetida. [Operação](../operations/MLFLOW.md) |
+| Recuperação PostgreSQL/S3 do tracking | Captura e restore isolado aprovados em 2026-10-19: 38 objetos, 8 runs, 6 modelos e 44 pontos históricos; recarga pelo proxy com erro zero; fonte preservada e alvo removido. Não comprova recuperação após perda da máquina. [Evidência](../../references/evidence/tracking_restore_author_validation_2026-10-19.json) |
+| Troca blue-green e rollback no Docker | A → B → A na mesma URL; pacote inválido bloqueado, falha 502 e retorno verificado em 3,10 s; pesos/imagem preservados. Ensaio isolado, sem promoção de novo modelo ou garantia de zero downtime. [Evidência](../../references/evidence/serving_rollout_author_validation_2026-10-19.json) |
+| Entrega versionada e consumo da imagem | Build único, qualificação sintética, exportação e recarga nativos aprovados; entrega original preservada e recursos próprios removidos. [Produção](../../references/evidence/serving_delivery_author_validation_2026-10-19.json) e [consumo](../../references/evidence/serving_consumer_author_validation_2026-10-19.json) |
+| CI de entrega entre runners | `quality` → `serving-delivery` → `serving-consumer` aprovados na execução 39306262564, commit `6a3782b`; mesma imagem transferida, recarregada e conferida por HTTP em outro runner, sem rebuild/fit no consumidor. Sem registry ou deploy permanente. [Evidência](../../references/evidence/serving_actions_validation_2026-10-19.json) |
+| Monitoramento mínimo de dados e features | Snapshot nativo, exporter, oito regras, coleta Prometheus e dashboard conciliados; duas janelas de 1.000 decisões, sem problemas de qualidade/relógio e quatro divergências abaixo de 0,1. Sem CT, concept drift comprovado ou nova avaliação do modelo. [Evidência](../../references/evidence/feature_monitoring_author_validation_2026-10-19.json) |
 
-O replay corretivo já foi executado e verificado pelo autor. Não volta ao backlog
-como execução futura. [Recibo e origem](../../references/evidence/native_numerical_correction_author_validation_2026-10-13.json).
-Os protocolos, os resultados anteriores e seus checkpoints permanecem preservados.
-Os números de testes históricos descrevem a entrega correspondente, não a CI de
-um commit ainda não publicado.
+O replay corretivo e os gates nativos/CI acima não são execuções futuras.
+Recibos, protocolos, checkpoints e resultados históricos permanecem preservados.
+Contagens de testes e tempos pertencem à execução registrada; não são SLA nem
+aceite automático de outro commit, ambiente ou modelo.
 
 ## Backlog ordenado
 
-| Ordem | Entrega | Estado atual | Critério de conclusão |
-| --- | --- | --- | --- |
-| 1 | Replay programado: fechamento e desempenho representativo | Ensaio nativo acelerado concluído; idempotência e crash/retomada demonstrados no smoke gerado; custos parciais registrados | Preservar o ensaio aprovado; definir protocolo e orçamento de recorte 1x antes de executar. O ensaio completo acelerado não aprova SLA nem recuperação de todo tipo de falha nativa |
-| 2 | Monitoramento e dashboards locais | Coleta nativa e falha/alarme/retorno do exporter validados pelo autor; rotina versionada com controle pytest aprovado e teste real tox explícito; painéis confirmados no smoke | Manter o teste real explícito e concluir conferência visual dos valores nativos finais; a camada de dados/features e o ensaio 1x têm critérios próprios |
-| 3 | Armazenamento, recuperação e destinos dos produtores | Archives de datasets/estudo/tracking e recarga da referência aprovados pelo autor; inventário do checkout aprovado no recorte local; contenção inicial de quatro CLIs aprovada pelo autor; ensaio isolado MLflow/PostgreSQL/S3 aprovado após recriação de containers | Contribuição HTTP, fold HGB e trio inicial aprovados pelo autor. Revisão nativa aprovada: 17 registros/sete fronteiras locais, 48 testes. Captura nativa aprovada (38 objetos, 8 runs, 6 modelos, 44 pontos de métricas). Restore isolado aprovado pelo autor em 2026-10-19: história API conciliada, modelo recarregado com erro zero, fonte preservada e cleanup concluído. Recorte de inventário/recuperação encerrado; avançar para CD/rollback e monitoramento. Cutover, consumidores históricos e limpeza ficam no backlog próprio. Classificação não comprova recuperação; sem remoção de originais |
-| 4 | CD e rollback de release | Primeiro gate blue-green nativo aprovado em 2026-10-19: A → B → A, rejeição de pacote inválido, falha 502 e rollback verificado em 3,10 s; pesos e imagem preservados | Ensaio de troca/retorno concluído. Build único/qualificação sintética/export aprovados nativamente em 2026-10-19 (1 teste, 62,04 s; 11 arquivos e imagem de 175.020.032 bytes). Consumidor aprovado nativamente e CI entre jobs aprovada em 2026-10-19. Depois revisar promoção explícita; provisionamento via Helm mantém critério próprio. Não reabrir o ensaio histórico aprovado como pendência |
-| 5 | Monitoramento de dados/features e gestão de features | Contratos e paridade existentes; próxima extensão após métricas operacionais | Medir schema, ausência, frescor/atraso e distribuições de features com suporte; baseline temporal versionado e testes de resposta. Não confundir score drift com feature drift |
-| 6 | CT controlado | Backlog, depende de 2–5 | Gatilho explícito, labels disponíveis, orçamento, treino e avaliação temporal comparável; candidato rejeitado ou promovido com gates e rollback. Drift sozinho não promove |
-| 7 | Orquestração de jobs | Condicional à composição real de jobs | Coordenar treino/avaliação/publicação, retries e estados; escolher ferramenta pelo problema demonstrado. O consumidor de eventos continua processo próprio |
-| 8 | Spike de feature store | Condicional aos critérios abaixo | Demonstrar reutilização, joins point-in-time corretos, disponibilidade/frescor online, paridade, recuperação e custo comparados à solução atual |
-| 9 | Transporte externo e carga sustentada | Condicional à necessidade demonstrada | Broker, política de atraso/reentrega, backpressure, falha e recuperação medidos sob carga declarada; não inferir entrega distribuída a partir de uma fila em processo |
-| 10 | Provisionamento local em KinD + Helm | Destino final escolhido pelo autor; implementação adiada até recuperação e rollback estáveis | Criar cluster limpo, instalar versões fixadas com um procedimento reproduzível, validar persistência, saúde e rollback; comparar custo operacional com a bancada Compose. Terraform/cloud não são pré-requisitos |
-| 11 | Novo ciclo de modelos e confirmação estatística | Condicional a hipótese/candidato e avaliação preservada | Novo desenho antes do acesso, efeito relevante e dependência temporal/por entidade tratados; não reutilizar maio ou setembro como confirmação nova |
+O compromisso principal fica limitado a **dois marcos**. Terraform é o
+**desfecho posterior**, conforme desejo do autor. As ferramentas em análise
+abaixo não se tornam entregas obrigatórias por aparecerem neste documento.
 
-O replay acelerado da ordem 1 e os checks de coleta/indisponibilidade da ordem 2
-estão concluídos no escopo relatado. A conferência visual final dos painéis ainda
-precisa ser informada, sem repetir a janela nativa. O recorte de inventário e
-recuperação da ordem 3 está encerrado pelo aceite de 2026-10-19. A próxima
-prioridade é conectar o gate aprovado da ordem 4 ao fluxo versionado de entrega.
-Um recorte 1x precisa de protocolo
-e não deve bloquear os demais marcos por exigir semanas de replay integral.
-Armazenamento de objetos antecede CD/CT: não fica escondido atrás de Kubernetes ou de novas
-buscas de hiperparâmetros. Dados/features, CT, orquestração e inferência por eventos
-continuam no plano. O incremento de Prefect de checagem isolada foi retirado;
-um futuro orquestrador depende de uma composição de jobs que o justifique.
+| Ordem | Marco | Critério de conclusão |
+| --- | --- | --- |
+| 1 | Infraestrutura do fluxo completo em KinD + Helm | Após o monitoramento mínimo: provisionar por incrementos dados/objetos Bronze–Silver–Gold, bancos e estado de replay, jobs, tracking, serving e observabilidade. Cluster limpo, versões/pins, mounts/PVCs adequados, probes, recursos, permissões e recuperação. Demonstrar promoção/troca/rollback do serving com uma réplica ativa e candidata durante atualização; preservar as fontes até aceitar cada destino |
+| 2 | Simplificação e fechamento funcional do portfolio | Definir os fluxos suportados, consolidar comandos, resolver persistência fora dos destinos gerenciados nesses fluxos e remover componentes substituídos após revisar dependências. Demonstrar instalação limpa, execução/recuperação e documentação clara, preservando evidências históricas |
+| 3 — posterior | Terraform como desfecho de infraestrutura como código | Após a simplificação, gerenciar o ambiente estabilizado com configuração declarativa, versões/lock de providers e state protegido. Reutilizar o chart Helm; demonstrar apply real no alvo escolhido, segundo plan sem mudanças e recuperação/recriação documentadas. Delimitar bootstrap do KinD e ownership dos recursos; não exigir cloud paga |
 
-As metas condicionais de CT, orquestração, feature store e broker não são
-pré-requisitos para KinD + Helm. A migração depende dos critérios operacionais
-de persistência/restauração e rollback, não de instalar toda a lista de ferramentas.
+A conferência visual do dashboard de features foi concluída usando o estado
+nativo já aprovado, sem repetir a janela. A cor neutra da contagem é um ajuste
+de apresentação posterior, sem alterar o aceite funcional. O ensaio 1× só será
+executado com pergunta, protocolo e orçamento explícitos; a ausência desse
+ensaio continuará documentada, sem bloquear o fechamento funcional.
+
+A revisão dos destinos e a limpeza pertencem ao marco 2. Não significam migrar
+indiscriminadamente todo SQLite ou inventariar todo o Linux. Os sete consumidores
+históricos mapeados exigem decisão explícita de suporte/preservação; não serão
+adaptados apenas para eliminar uma ferramenta do diagrama. PVCs, quando houver
+serviços com estado, precisam de testes de persistência e backup/restore.
+
+## Análise de adoção: CT, orquestração, feature store e broker
+
+A análise é planejada após validar o monitoramento e estabilizar a infraestrutura
+provisionada, antes de decidir
+se alguma extensão entra no escopo da simplificação. Concluir essa análise é
+registrar uma decisão fundamentada; não exige instalar todas as opções. Se uma
+extensão for aprovada, ganha recorte, orçamento e aceite próprios antes do marco
+3. Terraform permanece posterior à simplificação do conjunto então escolhido.
+
+| Possibilidade | Benefício que precisa demonstrar | Decisão atual |
+| --- | --- | --- |
+| CT automático com orquestração | Ciclo repetível de dados/labels elegíveis → validação → treino → avaliação temporal → candidato aceito/rejeitado, com gatilho, identidade, orçamento, exclusão mútua, retomada e recibos | Analisar um fluxo pequeno e limitado. Treino automático e promoção automática são decisões separadas; manter promoção explícita inicialmente. Não reexecutar períodos já consumidos como teste estatístico novo |
+| Plataforma de orquestração | Dependências, retries, recuperação e estados que se tornem difíceis de manter no fluxo existente | CT exige coordenação das etapas, mas não implica adotar Prefect/Airflow/Kubeflow. Comparar primeiro o executor atual e workflows/jobs existentes; adicionar serviço apenas se reduzir complexidade total |
+| Feature store | Reutilização concreta de features entre treino e serving/consumidores, recuperação histórica e leitura online com frescor/paridade demonstrados | Desejo do autor mantido como spike com decisão de adoção. Avaliar um pequeno grupo de features de cliente/terminal contra a solução atual, sem substituir as 19 features nem mudar sua semântica para acomodar a ferramenta |
+| Broker externo | Desacoplar produtores/consumidores ou permitir reentrega, múltiplos consumidores e recuperação que a fila local não atende | Adiar enquanto não houver esse requisito demonstrado. Não é dependência automática de CT, de um orquestrador ou de uma feature store |
+
+### CT e orquestração: proposta para a análise
+
+O primeiro passo será explicitar de onde vêm dados adicionais e labels já
+amadurecidos. No problema atual, feedback aparece sete dias depois; um evento
+novo não é automaticamente um exemplo rotulado elegível. Mudança de distribuição
+é sinal de investigação, não prova de que retreinar melhora o modelo.
+
+Usar o pipeline/modelos existentes e um orçamento limitado; evitar começar por
+outra busca Optuna. Preservar identidades e a referência congelada. Um ensaio
+sintético pode provar agendamento, falhas/retries, rejeição e recibos; deve ser
+identificado como demonstração operacional, não como melhoria estatística.
+Sem dados adicionais elegíveis e protocolo novo, não alegar CT produtivo contínuo.
+
+O fluxo deve provar também que repetir o gatilho não duplica a mesma execução e
+que falhas não promovem candidato incompleto. O resultado pode ser manter a
+referência. Escolher o mecanismo de execução depois desse contrato; o servidor
+do orquestrador é uma opção de implementação, não o objetivo do marco.
+
+### Feature store: decidir com um spike útil
+
+Começar por identificar uma leitura histórica e uma leitura online que realmente
+reutilizem as mesmas features. Comparar com a implementação atual: duplicação de
+lógica evitada, latência, frescor, RAM, disco e esforço de recuperação/operação.
+Testar dados atrasados, backfills e a diferença entre instante do evento e
+instante em que o valor/feedback ficou disponível. O estado causal atual e seus
+verificadores continuam sendo a referência da comparação.
+
+Feast é um candidato, não uma escolha já aprovada. A documentação distingue
+join por event timestamp de filtragem pela disponibilidade/created timestamp;
+o comportamento depende da configuração e do offline store. O spike precisa
+fixar uma versão compatível e testar essas condições, sem assumir que instalar
+uma feature store elimina vazamento temporal. Adotar somente se houver ganho
+mensurável com custo aceitável. Caso contrário, documentar a decisão de manter
+a gestão de features existente.
+
+### Terraform: etapa final após a simplificação
+
+O chart Helm continua responsável pelos manifests da aplicação. A futura camada
+Terraform poderá gerenciar releases Helm e recursos de infraestrutura com
+ownership claro, sem dois controladores disputando os mesmos objetos. Definir
+se o KinD é bootstrap separado ou recurso gerenciado; não tratar um
+`local-exec` que roda scripts como prova suficiente de IaC reproduzível.
+
+Preferir um alvo local para este portfolio, sem custo de cloud obrigatório.
+O aceite exige provisionamento real, um segundo plan sem mudanças, state e
+credenciais fora do Git, e política explícita para preservar/restaurar dados
+persistentes. Destroy/recriação será exercitado em ambiente descartável; a
+retenção dos dados precisa ser deliberada, não um efeito colateral.
+
+Referências técnicas consultadas em 2026-10-19:
+[MLOps e CT](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning),
+[Feast: point-in-time e disponibilidade](https://docs.feast.dev/getting-started/concepts/point-in-time-joins),
+[Terraform e Helm](https://developer.hashicorp.com/terraform/tutorials/kubernetes/helm-provider),
+[state e dados sensíveis](https://developer.hashicorp.com/terraform/language/manage-sensitive-data).
+
+## Registros dos incrementos e critérios de extensão
+
+As seções abaixo preservam a evolução e a justificativa dos ensaios. Referências
+a próximos passos de um incremento devem ser lidas em sua sequência histórica;
+o estado consolidado, o compromisso de escopo e a prioridade atuais são os das
+tabelas de marcos/backlog e da análise de adoção acima. Desejos de expansão
+nesses registros não acrescentam obrigações ao backlog principal.
 
 ## Monitoramento local — marco exercitado
 
@@ -205,14 +287,15 @@ usar somente os perfis necessários. Não adicionar serviços pagos como requisi
 
 A gestão atual já inclui schema, 19 features causais, versão da regra numérica,
 features offline e estado online com paridade independente. Uma feature store
-pode ajudar quando duas ou mais aplicações/treinos realmente reutilizarem as
-mesmas features e o trabalho de materialização/frescor precisar de gestão comum.
-O spike, por exemplo com Feast local, só começa com esse caso e orçamento claros.
+pode ajudar quando treino e serving ou outros consumidores realmente reutilizarem
+as mesmas features e houver ganho na materialização, recuperação histórica ou
+gestão de frescor. O spike de adoção descrito acima, por exemplo com Feast local,
+começa com esse caso e orçamento claros; não exige criar outro consumidor artificial.
 
 | Pergunta do spike | Evidência exigida |
 | --- | --- |
 | Qual consumidor adicional reutiliza quais features? | Consulta e materialização comparadas com o fluxo atual, sem duplicar lógica |
-| O join histórico respeita o instante de decisão? | Testes de point-in-time e de disponibilidade: feedback conhecido só sete dias depois; um timestamp de ocorrência sozinho não resolve disponibilidade |
+| O join histórico respeita o instante de decisão? | Testes de point-in-time e disponibilidade, incluindo atrasos/backfills: feedback conhecido só sete dias depois; verificar também suporte/configuração do store para created timestamp |
 | O online respeita frescor e atraso? | TTL, freshness, política de eventos atrasados, materialização, falha e recuperação explícitos |
 | A semântica fica igual? | As 19 features e os scores mantêm a regra numérica e a paridade; não trocar a definição para acomodar a ferramenta |
 | Qual custo e ganho operacional? | RAM, disco, processos, latência e esforço de manutenção medidos contra o estado SQLite atual |
@@ -489,11 +572,11 @@ O workflow existente encadeia `quality` → `serving-delivery`. O novo job const
 uma imagem do commit, verifica HTTP/rollback com release sintética e preserva
 o arquivo exato com descritor/hashes no artifact (três dias). A implementação e
 a regressão offline foram concluídas; o **aceite Docker local foi aprovado**.
-A execução GitHub Actions permanece pendente.
+A execução GitHub Actions foi aprovada em 2026-10-19; o aceite está registrado abaixo.
 Não requer nova confirmação estatística, acesso à referência ou migração.
 
-Próximo gate: consumo do arquivo verificado em um alvo separado, comprovação
-de identidade/HTTP e promoção explícita de release aprovada. O ensaio anterior
+Consumo do arquivo e identidade/HTTP concluídos nos aceites nativo e CI abaixo.
+Permanece pendente a promoção explícita de release aprovada. O ensaio anterior
 com os mesmos pesos continua fechado. A política de retenção anterior e o
 provisionamento KinD + Helm permanecem planejados; publicar uma imagem no
 registry ou adicionar um controlador não é parte deste incremento.
@@ -501,8 +584,9 @@ registry ou adicionar um controlador não é parte deste incremento.
 
 O aceite de 2026-10-19 vincula a entrega ao commit `0b95136`, com hashes da imagem,
 release e descritor preservados na [evidência](../../references/evidence/serving_delivery_author_validation_2026-10-19.json).
-Não reabrir o build/qualificação local como pendência. O próximo recorte valida
-o consumo do arquivo; a execução remota da CI continua tendo aceite separado.
+Não reabrir build/qualificação, consumo local ou CI como pendências. Os aceites
+posteriores registram a recarga e a execução entre runners; promoção e
+provisionamento continuam no backlog.
 
 ### Gate de consumo e CI entre jobs — preparação de 2026-10-19
 
@@ -533,3 +617,28 @@ baixado, teve digest conferido e seus recibos de recarga/HTTP/cleanup lidos.
 **Gate remoto encerrado.** Próximo: promoção explícita e provisionamento
 reproduzível KinD/Helm; registry e deploy permanente ainda têm critérios próprios.
 [Resultado e limites](../operations/SERVING_ROLLOUT.md#aceite-do-fluxo-no-github-actions--2026-10-19).
+
+### Primeiro recorte de monitoramento de features — preparação de 2026-10-19
+
+Implementados leitura somente de requests persistidos, métricas no exporter
+existente, terceiro dashboard Grafana e alertas descritivos. Referência: primeiras
+1.000 decisões; comparação: últimas 1.000, sem sobreposição e com dados válidos.
+Não é baseline de treino nem medida de perda de qualidade. Demonstração gerada
+sem fit cobre igualdade, mudança de valor, ausência e atraso de relógio. O aceite
+nativo e a conferência da stack ainda estão pendentes.
+
+[Procedimento e limites](../operations/FEATURE_MONITORING.md). Depois desse aceite,
+seguir para o provisionamento do fluxo completo com KinD + Helm; CT permanece
+sujeito a dados/labels/protocolo elegíveis, e Terraform sucede a simplificação.
+
+### Aceite mínimo de features concluído — 2026-10-19
+
+O aceite pendente na nota de preparação acima foi concluído: 116 testes e demo
+aprovados; duas janelas válidas; exporter reconstruído, oito regras validadas,
+scrape e dashboard conciliados. O marco foi removido do backlog e registrado
+na tabela de concluídos. A contagem passa a usar cor neutra; sua apresentação
+atualizada será conferida no próximo refresh. Não houve teste de firing dos
+novos alertas, CT, migração primária ou nova confirmação de qualidade do modelo.
+[Evidência](../../references/evidence/feature_monitoring_author_validation_2026-10-19.json).
+Próximo: fluxo completo em KinD + Helm, seguido de simplificação; Terraform
+permanece o desfecho posterior. Feature store, broker e CT são condicionais.

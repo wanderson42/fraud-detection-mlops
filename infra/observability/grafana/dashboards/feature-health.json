@@ -1,0 +1,420 @@
+{
+  "schemaVersion": 41,
+  "editable": false,
+  "timezone": "utc",
+  "refresh": "10s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "annotations": {
+    "list": []
+  },
+  "uid": "fraud-feature-health",
+  "title": "Fraud — dados e features persistidas",
+  "version": 2,
+  "tags": [
+    "fraud",
+    "local",
+    "features-v1"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Escopo e leitura",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 4
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Requisições já persistidas: primeiras 1.000 decisões versus últimas 1.000, sem sobreposição. Baseline operacional, não de treino. Sem suporte ou com dados inválidos, divergência ausente. Relógio de features comparado ao evento, nunca agora − 2018. Sem CT, nova avaliação ou SLA."
+      }
+    },
+    {
+      "id": 2,
+      "title": "Coletor válido",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Snapshot de janelas do protocolo. Ausência de série não é zero.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_monitor_collector_up",
+          "instant": true,
+          "legendFormat": "{{feature}}{{window}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem suporte ou coletor indisponível"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Comparação com suporte e dados válidos",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Snapshot de janelas do protocolo. Ausência de série não é zero.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_feature_comparison_ready",
+          "instant": true,
+          "legendFormat": "{{feature}}{{window}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem suporte ou coletor indisponível"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Observações por janela",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 11,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Contagem de suporte por janela; cor fixa neutra, sem interpretar maior contagem como falha. Comparação válida é indicada no painel próprio.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_feature_rows",
+          "instant": true,
+          "legendFormat": "{{feature}}{{window}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem suporte ou coletor indisponível",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 5,
+      "title": "Linhas com schema/relógio inválido",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 11,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Snapshot de janelas do protocolo. Ausência de série não é zero.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_feature_schema_or_clock_invalid_rows",
+          "instant": true,
+          "legendFormat": "{{feature}}{{window}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem suporte ou coletor indisponível"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 6,
+      "title": "Ausência por feature — janela recente",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Snapshot de janelas do protocolo. Ausência de série não é zero.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_feature_missing_fraction",
+          "instant": true,
+          "legendFormat": "{{feature}}{{window}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "noValue": "Sem suporte ou coletor indisponível"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 7,
+      "title": "Valores inválidos por feature — janela recente",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 18,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Snapshot de janelas do protocolo. Ausência de série não é zero.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_feature_invalid_values",
+          "instant": true,
+          "legendFormat": "{{feature}}{{window}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem suporte ou coletor indisponível"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 8,
+      "title": "Jensen–Shannon por feature (0–1)",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 25,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Snapshot de janelas do protocolo. Ausência de série não é zero.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_feature_jensen_shannon",
+          "instant": true,
+          "legendFormat": "{{feature}}{{window}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem suporte ou coletor indisponível"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 9,
+      "title": "Maior atraso feature → evento",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 25,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Snapshot de janelas do protocolo. Ausência de série não é zero.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_feature_max_feature_lag_seconds",
+          "instant": true,
+          "legendFormat": "{{feature}}{{window}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Sem suporte ou coletor indisponível"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 10,
+      "title": "Relógios futuros ao evento",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Snapshot de janelas do protocolo. Ausência de série não é zero.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_feature_future_clock_rows",
+          "instant": true,
+          "legendFormat": "{{feature}}{{window}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem suporte ou coletor indisponível"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    }
+  ]
+}

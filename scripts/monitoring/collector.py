@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import time
 
+from scripts.monitoring import feature_health
 from scripts.monitoring.statistics import (
     LATENCY_BOUNDS,
     jensen_shannon,
@@ -75,6 +76,7 @@ def snapshot(directory: Path):
             ).fetchone()[0]
         else:
             context = 0
+        features = feature_health.snapshot(con, counts["decisions"])
         con.execute("COMMIT")
     with closing(readonly(directory / "telemetry.sqlite")) as con:
         con.execute("BEGIN")
@@ -109,6 +111,7 @@ def snapshot(directory: Path):
     measured_ids = {r[0] for r in timings if r[7] == "measured"}
     recovered = len({r[0] for r in timings if r[7] == "recovered_unmeasured"} - measured_ids)
     return {
+        "feature_health": features,
         "snapshot_timestamp": time.time(),
         "complete": complete,
         "counts": counts,
@@ -201,4 +204,4 @@ def exposition(data):
             label = "+Inf" if bound == float("inf") else str(bound)
             lines.append(f'{full}_bucket{{le="{label}"}} {sum(v <= bound for v in values)}')
         lines.extend([f"{full}_sum {sum(values):.17g}", f"{full}_count {len(values)}"])
-    return "\n".join(lines) + "\n"
+    return "\n".join(lines) + "\n" + feature_health.exposition(data["feature_health"])

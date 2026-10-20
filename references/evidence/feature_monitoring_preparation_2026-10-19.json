@@ -1,0 +1,45 @@
+{
+  "schema": "fraud_feature_monitoring_preparation_v1",
+  "date": "2026-10-19",
+  "status": "implemented_controlled_checks_passed_native_acceptance_pending",
+  "base_commit": "492a257714917f0418f4f803de86f8e63b2085a5",
+  "scope": "read_only_persisted_request_windows_and_existing_exporter_Prometheus_Grafana_not_CT_or_new_model_evaluation",
+  "code_sha256": {
+    "scripts/monitoring/feature_health.py": "cdc86a129c09f9f1aac5fb12192da5cec60f8fb04409a0bef05cc62c6a75dc86",
+    "scripts/monitoring/feature_monitoring.py": "5656e60b5b8af9294710e3153cd5976ec6e654ee4a4f96f60c6406651f664960",
+    "scripts/monitoring/collector.py": "5ffa1df86e37435716fb76ad2554da053ee31bede4ee37e43cda46119fb6fa16"
+  },
+  "protocol_sha256": "112afe13a1d12043f8f52b6d94702ae28ec3dd6b4ee1d089e71383a5f6d38b54",
+  "validation": {
+    "pytest": "tests/monitoring tests/storage/test_managed_paths.py tests/storage/test_persistence_inventory.py",
+    "passed": 116,
+    "skipped": 1,
+    "seconds": 10.36,
+    "python": "3.14.4",
+    "ruff_check": true,
+    "ruff_formatted_files": 294,
+    "controlled_cli_demo_status": "success",
+    "no_site_packages_exporter_module_test": true
+  },
+  "demo_expected": {
+    "unchanged_JS": 0.0,
+    "amount_shift_JS": 1.0,
+    "missing_feature_values": 1,
+    "feature_clock_lag_seconds": 60
+  },
+  "acceptance": {
+    "native_checkpoint_read": false,
+    "native_Docker_exporter_built": false,
+    "native_promtool_checked": false,
+    "native_Grafana_panel_confirmed": false,
+    "production_promotion": false,
+    "training_triggered": false
+  },
+  "limits": [
+    "First 1000 persisted decisions are an operational reference, not offline training distribution",
+    "Latest 1000 compared only with full disjoint windows and valid data; four fixed histograms, descriptive JS threshold not significance test",
+    "Feature clock relative to transaction, not real-time ingestion freshness or host-clock age of historical events",
+    "No native data, model or replay accessed by assistant; no state mutation requested",
+    "Pipeline-wide Bronze-to-serving observability and Kubernetes provision retain separate incremental acceptance"
+  ]
+}
