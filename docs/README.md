@@ -261,3 +261,7 @@ backup/restore deste novo destino.
 O [transporte de bundles para o RustFS do KinD](operations/KIND_DATASETS.md#aceite-nativo--2026-10-20)
 foi aprovado pelo autor nas quatro camadas: idempotência e restauração independente,
 com os caminhos primários dos leitores preservados.
+
+A [execução Bronze → Silver → Gold em Jobs Helm](operations/KIND_PIPELINE.md#aceite-nativo--2026-10-20)
+foi aprovada pelo autor: novas saídas S3 restauradas, fundação preservada e
+Jobs temporários removidos. Caminhos primários dos leitores mantidos.

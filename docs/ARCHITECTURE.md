@@ -581,3 +581,15 @@ marcador próprio; as cópias do Compose continuam separadas. Os verificadores
 Bronze/Silver/Gold/development são reutilizados depois do download. Não altera
 os charts aceitos, o runtime MLflow ou os caminhos primários dos produtores.
 [Aceite nativo das quatro camadas e desenho operacional](operations/KIND_DATASETS.md#aceite-nativo--2026-10-20).
+
+## Execução dos produtores em Jobs
+
+O chart separado `fraud-data-jobs` cria uma release temporária por execução.
+Silver precisa publicar e passar pelo restore independente antes de Gold ser
+acrescentado à release. Cada Job usa init containers para download e transformação,
+seguidos pelo publicador; apenas download/publicação recebem credenciais S3.
+Estado de trabalho em `emptyDir`; saídas identificadas no RustFS e restores no
+host. Não atualiza as releases da fundação ou do MLflow.
+Aceite nativo em 2026-10-20: cadeia concluída, saídas restauradas e verificadas,
+mesmas identidades da fundação e release temporária removida.
+[Desenho, evidência e limites](operations/KIND_PIPELINE.md#aceite-nativo--2026-10-20).

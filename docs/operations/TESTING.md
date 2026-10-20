@@ -1288,3 +1288,21 @@ o gate permanece pulado na suíte comum. Aceite nativo do autor: 1 teste passou
 em 66,78 s; tox concluiu em 81,18 s, com as quatro camadas aprovadas. A regressão
 offline de preparação teve 69 testes aprovados no ambiente do assistente; isso
 não substitui a execução nativa. [Recibos, resultado e limites](KIND_DATASETS.md#aceite-nativo--2026-10-20).
+
+## Jobs de dados no KinD
+
+`tests/infra/test_kind_pipeline_workers.py` exercita produtores/verificadores
+reais com fixtures sintéticas e S3 em memória; verifica a cadeia e recupera
+saídas após remover projetos e áreas de trabalho. O inventário congelado é
+conferido antes de desserializar pickle. `tests/infra/test_kind_pipeline.py`
+renderiza o chart com Helm real, verifica ausência de credenciais na transformação,
+imutabilidade do Job Silver no upgrade e interrupção antes de Gold em caso de falha.
+
+O opt-in `.venv/bin/python -m tox -e kind-pipeline` usa o snapshot congelado no
+RustFS do KinD, executa dois Jobs e restaura suas novas saídas. É pulado na suíte
+comum; seu aceite é separado dos testes offline e da renderização dos templates.
+Resultado nativo do autor em 2026-10-20: 1 teste passou em 63,98 s; tox concluiu
+em 80,06 s. Ambos os Jobs, ligação de bundles, restores, contagens, imagens e
+limpeza da release temporária foram aprovados. A regressão offline teve 74 testes
+aprovados no ambiente do assistente; não foi inferida como execução nativa.
+[Resultado, recursos e diagnóstico](KIND_PIPELINE.md#aceite-nativo--2026-10-20).

@@ -669,3 +669,14 @@ não fizeram novos uploads e a fundação permaneceu com as mesmas identidades.
 O resultado preserva dados e proveniência no novo destino. Os leitores ainda
 usam seus caminhos atuais; recuperação após perda da máquina não foi avaliada.
 [Aceite e evidência](../operations/KIND_DATASETS.md#aceite-nativo--2026-10-20).
+
+## Produtores em Jobs aprovados no KinD
+
+O autor confirmou Bronze → Silver → Gold em dois Jobs Helm em 2026-10-20:
+Silver com 1.754.155 transações e Gold com 402.877 linhas/19 features. As novas
+saídas foram publicadas e recuperadas independentemente; o segundo Job usou
+exatamente o bundle produzido pelo primeiro. Fundação preservada e Jobs
+removidos após sucesso. O resultado demonstra execução e recuperação da cadeia,
+com transformação separada das credenciais. Não altera a evidência de qualidade
+do modelo nem os caminhos primários dos leitores.
+[Aceite e limites](../operations/KIND_PIPELINE.md#aceite-nativo--2026-10-20).

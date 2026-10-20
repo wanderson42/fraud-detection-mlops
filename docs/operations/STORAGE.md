@@ -1504,3 +1504,14 @@ recibos e restauração separados. Aceite nativo das quatro camadas em 2026-10-2
 sem novos uploads, verificadores semânticos e identidades da fundação aprovados.
 [Evidência](../../references/evidence/kind_datasets_author_validation_2026-10-20.json).
 Esse resultado não muda os leitores nem comprova recuperação após perda do PVC.
+
+## Saídas novas dos Jobs da cadeia
+
+O [gate de Jobs no KinD](KIND_PIPELINE.md#aceite-nativo--2026-10-20) foi aprovado
+pelo autor em 2026-10-20: novos bundles Silver/Gold publicados e restaurados
+independentemente no host, com 235 arquivos/237 objetos de bundles verificados
+e 65.485.309 bytes de payload. Manifestos/auditorias
+pertencem a novas execuções, preservando os bundles aceitos anteriormente.
+Envelopes de conclusão ficam em `platform-jobs/v1/<run>/<etapa>/receipt.json`;
+recibos locais e valores Helm, em `data/storage/kind-platform/pipeline/`.
+Não altera o default dos leitores nem declara backup externo do PVC.

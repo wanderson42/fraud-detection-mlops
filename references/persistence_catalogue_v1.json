@@ -182,6 +182,15 @@
         "scripts/platform/kind_datasets_worker.py"
       ],
       "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/pipeline",
+      "family": "kind_pipeline_images_plans_and_receipts",
+      "owner": "platform_operator",
+      "producers": [
+        "scripts/platform/kind_pipeline.py"
+      ],
+      "review_required": false
     }
   ],
   "source_prefixes": [
@@ -327,6 +336,17 @@
       ],
       "inspection": "author_reported_native_four_dataset_roundtrips_validated",
       "reason": "Accepted 2026-10-20: 489 payload files plus four manifests, full readback, zero-upload republication, independent semantic restore and foundation identities preserved. Primary reader paths and cluster/host-loss recovery remain outside this gate. Evidence: kind_datasets_author_validation_2026-10-20.json."
+    },
+    {
+      "id": "kind_data_jobs",
+      "source": "scripts/platform/kind_pipeline.py",
+      "locations": [
+        "fraud-platform namespace: temporary Helm Job release with per-pod emptyDir work/tmp",
+        "existing RustFS fraud-datasets: new Silver/Gold bundles and platform-jobs/v1 completion receipts",
+        "host Docker build cache and KinD node loaded pipeline images"
+      ],
+      "inspection": "author_reported_native_two_producer_Jobs_and_independent_restores_validated",
+      "reason": "Accepted 2026-10-20: linked Bronze/Silver/Gold producer Jobs, 235 payload files and 237 bundle objects verified, independent semantic restores, foundation preserved and temporary release removed. S3 bundles, completion envelopes, node images/build cache and host receipts remain inventoried boundaries. No primary cutover or model evaluation."
     }
   ],
   "decisions": {
@@ -728,5 +748,22 @@
     "validation_evidence": "references/evidence/kind_datasets_author_validation_2026-10-20.json",
     "validation_scope": "four_prepared_dataset_bundle_S3_roundtrips_and_semantic_verifiers_not_primary_reader_cutover",
     "primary_reader_paths_changed": false
+  },
+  "kind_pipeline": {
+    "controller": "scripts/platform/kind_pipeline.py",
+    "compute_worker": "scripts/platform/kind_pipeline_compute.py",
+    "transport_worker": "scripts/platform/kind_pipeline_transport.py",
+    "chart": "infra/helm/fraud-data-jobs",
+    "workspace": "data/storage/kind-platform/pipeline",
+    "native_acceptance_validated": true,
+    "primary_storage_migrated": false,
+    "historical_sources_mounted": false,
+    "fit_executed": false,
+    "gold_features_recomputed": true,
+    "runbook": "docs/operations/KIND_PIPELINE.md",
+    "validation_evidence": "references/evidence/kind_pipeline_author_validation_2026-10-20.json",
+    "validation_scope": "two_sequential_Helm_producer_Jobs_new_S3_bundles_independent_host_restores_and_owned_cleanup",
+    "primary_reader_paths_changed": false,
+    "temporary_jobs_removed": true
   }
 }

@@ -1,0 +1,56 @@
+{
+  "schema": "fraud_kind_pipeline_preparation_v1",
+  "status": "prepared_native_jobs_acceptance_pending",
+  "prepared_on": "2026-10-20",
+  "scope": "two_Helm_Jobs_Bronze_Silver_Gold_existing_producers_and_independent_S3_restores_not_model_evaluation",
+  "local_validation": {
+    "python": "3.14.4",
+    "helm": "v4.3.1",
+    "pytest_passed": 74,
+    "pytest_skipped": 1,
+    "pytest_seconds": 23.22,
+    "full_scientific_Poetry_sync_executed": false,
+    "real_Helm_lint_and_template_executed": true,
+    "real_producers_with_synthetic_fixtures_executed": true,
+    "S3_backend": "in_memory_fake",
+    "fresh_process_without_model_or_SDK_imports_validated": true,
+    "ruff_check_passed": true,
+    "ruff_format_passed": true,
+    "docker_images_built": false,
+    "native_Kubernetes_jobs_executed": false
+  },
+  "native_gate": ".venv/bin/python -m tox -e kind-pipeline",
+  "input": "unique previously prepared and published trusted Handbook Bronze bundle",
+  "sequence": [
+    "download_verify_Bronze",
+    "produce_verify_Silver",
+    "publish_new_Silver_bundle",
+    "independent_host_restore_Silver",
+    "download_verified_new_Silver",
+    "produce_verify_Gold",
+    "publish_new_Gold_bundle",
+    "independent_host_restore_Gold",
+    "verify_foundation_and_remove_only_owned_Helm_release"
+  ],
+  "credential_separation": "AWS keys from existing foundation Secret only in download and publish; compute receives no AWS/PG/MLflow variables or service account token",
+  "network_policy_isolation_implemented": false,
+  "historical_sources_mounted": false,
+  "primary_storage_migrated": false,
+  "fit_executed": false,
+  "gold_features_recomputed_by_native_gate": true,
+  "new_model_quality_evidence": false,
+  "production_promotion": false,
+  "project_wide_storage_inventory_complete": false,
+  "worker_source_hashes": {
+    "scripts/platform/kind_pipeline.py": "443bf8cb9fc3717b5a86f50164f277f9a99069697d36a0d614bcd7188c199626",
+    "scripts/platform/kind_pipeline_compute.py": "753386897b09edb47094818fb740a57c779aaf756cfab2b1c9c29961b1f63f87",
+    "scripts/platform/kind_pipeline_transport.py": "575a24f3c4bcb72f7d5122d0c0fc68d4ba400950e3c22e5da7b29264996473ee"
+  },
+  "preserved": [
+    "accepted foundation/tracking/dataset controllers and charts",
+    "scientific producer and verifier source bytes",
+    "poetry.lock",
+    "historical datasets, models and studies",
+    "existing primary reader routing"
+  ]
+}

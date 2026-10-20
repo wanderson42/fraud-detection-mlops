@@ -1,0 +1,110 @@
+{{- $seen := dict }}
+{{- range .Values.jobs }}
+{{- if hasKey $seen .stage }}{{ fail "Each pipeline stage may occur only once" }}{{ end }}
+{{- $_ := set $seen .stage true }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $.Release.Name }}-{{ .stage }}
+  labels:
+    app.kubernetes.io/part-of: fraud-platform
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    fraud.pipeline/stage: {{ .stage }}
+  annotations:
+    fraud.pipeline/run-id: {{ $.Values.runId | quote }}
+    fraud.pipeline/owner-id: {{ $.Values.ownerId | quote }}
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 1800
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: fraud-platform
+        app.kubernetes.io/instance: {{ $.Release.Name }}
+        fraud.pipeline/stage: {{ .stage }}
+      annotations:
+        fraud.pipeline/run-id: {{ $.Values.runId | quote }}
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 20
+      nodeSelector:
+        kubernetes.io/hostname: fraud-platform-control-plane
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      initContainers:
+        - name: download
+          image: {{ $.Values.images.transport | quote }}
+          imagePullPolicy: Never
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          args: [download, --stage, {{ .stage | quote }}, --input-bundle-id, {{ .inputBundleId | quote }}, --run-id, {{ $.Values.runId | quote }}, --owner-id, {{ $.Values.ownerId | quote }}]
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef: {name: {{ $.Values.existingSecret }}, key: rustfs-access-key}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef: {name: {{ $.Values.existingSecret }}, key: rustfs-secret-key}
+            - {name: AWS_EC2_METADATA_DISABLED, value: "true"}
+            - {name: AWS_SHARED_CREDENTIALS_FILE, value: /dev/null}
+            - {name: AWS_CONFIG_FILE, value: /dev/null}
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: "1", memory: 512Mi}
+          volumeMounts:
+            - {name: work, mountPath: /work}
+            - {name: tmp, mountPath: /tmp}
+        - name: compute
+          image: {{ $.Values.images.science | quote }}
+          imagePullPolicy: Never
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          args: [--stage, {{ .stage | quote }}, --input-bundle-id, {{ .inputBundleId | quote }}, --run-id, {{ $.Values.runId | quote }}]
+          resources:
+            requests: {cpu: "1", memory: 2Gi}
+            limits: {cpu: "2", memory: 4Gi}
+          volumeMounts:
+            - {name: work, mountPath: /work}
+            - {name: tmp, mountPath: /tmp}
+      containers:
+        - name: publish
+          image: {{ $.Values.images.transport | quote }}
+          imagePullPolicy: Never
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          args: [publish, --stage, {{ .stage | quote }}, --input-bundle-id, {{ .inputBundleId | quote }}, --run-id, {{ $.Values.runId | quote }}, --owner-id, {{ $.Values.ownerId | quote }}]
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef: {name: {{ $.Values.existingSecret }}, key: rustfs-access-key}
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef: {name: {{ $.Values.existingSecret }}, key: rustfs-secret-key}
+            - {name: AWS_EC2_METADATA_DISABLED, value: "true"}
+            - {name: AWS_SHARED_CREDENTIALS_FILE, value: /dev/null}
+            - {name: AWS_CONFIG_FILE, value: /dev/null}
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: "1", memory: 512Mi}
+          volumeMounts:
+            - {name: work, mountPath: /work}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: work
+          emptyDir: {sizeLimit: 4Gi}
+        - name: tmp
+          emptyDir: {sizeLimit: 128Mi}
+{{- end }}

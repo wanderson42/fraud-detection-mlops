@@ -510,3 +510,11 @@ uploads e restaurados com seus verificadores no RustFS do KinD: 489 arquivos,
 493 objetos verificados e 210.997.363 bytes de payload. Fundação preservada;
 os caminhos primários dos leitores permanecem os atuais.
 [Procedimento e limites](docs/operations/KIND_DATASETS.md).
+
+## Jobs da cadeia de dados no KinD — aceite nativo
+
+Os dois Jobs Helm executaram Bronze → Silver → Gold com entrada S3 identificada,
+novas saídas publicadas e restauração independente no host. Silver: 1.754.155
+transações; Gold: 402.877 linhas e 19 features. Fundação preservada e Jobs
+removidos após sucesso. Gold recalculou features, sem treino ou nova avaliação
+de modelos; os caminhos primários dos leitores permanecem os atuais. [Procedimento](docs/operations/KIND_PIPELINE.md).
