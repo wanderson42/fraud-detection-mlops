@@ -1,0 +1,5 @@
+apiVersion: v2
+name: fraud-replay
+version: 0.1.0
+description: Isolated synthetic durable replay and retained checkpoint PVC
+type: application

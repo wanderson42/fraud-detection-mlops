@@ -518,3 +518,11 @@ novas saídas publicadas e restauração independente no host. Silver: 1.754.155
 transações; Gold: 402.877 linhas e 19 features. Fundação preservada e Jobs
 removidos após sucesso. Gold recalculou features, sem treino ou nova avaliação
 de modelos; os caminhos primários dos leitores permanecem os atuais. [Procedimento](docs/operations/KIND_PIPELINE.md).
+
+### Retomada do replay no KinD — aceite nativo
+
+Pod recriado durante a transação de feedback aberta, mesmo PVC e rollback
+aprovados. Ledger sintético final igual à execução sem interrupção: 20 eventos,
+10 scores e 6 alertas; reentrega sem rescoring. Fundação preservada, processamento
+temporário removido e PVC retido. Aceite do autor em 2026-10-20.
+[Operação e limites](docs/operations/KIND_REPLAY.md).

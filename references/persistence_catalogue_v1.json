@@ -5,6 +5,15 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/storage/kind-platform/replay",
+      "family": "kind_replay_images_plans_and_receipts",
+      "owner": "platform",
+      "producers": [
+        "scripts/platform/kind_replay.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/raw",
       "family": "bronze",
       "owner": "ingestion",
@@ -347,6 +356,15 @@
       ],
       "inspection": "author_reported_native_two_producer_Jobs_and_independent_restores_validated",
       "reason": "Accepted 2026-10-20: linked Bronze/Silver/Gold producer Jobs, 235 payload files and 237 bundle objects verified, independent semantic restores, foundation preserved and temporary release removed. S3 bundles, completion envelopes, node images/build cache and host receipts remain inventoried boundaries. No primary cutover or model evaluation."
+    },
+    {
+      "id": "kind_replay_retained_pvcs",
+      "inspection": "native_rehearsal_accepted_retained_PVC_not_backup_or_host_loss_recovery",
+      "source": "scripts/platform/kind_replay.py",
+      "reason": "One new synthetic checkpoint PVC per rehearsal; retained after Helm uninstall. Not historical migration, backup or host-loss protection.",
+      "locations": [
+        "fraud-platform/fraud-replay-<run>-state PVC:/state/run"
+      ]
     }
   ],
   "decisions": {
@@ -765,5 +783,21 @@
     "validation_scope": "two_sequential_Helm_producer_Jobs_new_S3_bundles_independent_host_restores_and_owned_cleanup",
     "primary_reader_paths_changed": false,
     "temporary_jobs_removed": true
+  },
+  "kind_replay": {
+    "controller": "scripts/platform/kind_replay.py",
+    "worker": "scripts/platform/kind_replay_worker.py",
+    "chart": "infra/helm/fraud-replay",
+    "workspace": "data/storage/kind-platform/replay",
+    "native_acceptance_validated": true,
+    "retained_storage": "one 1Gi PVC per synthetic rehearsal",
+    "historical_sources_mounted": false,
+    "primary_storage_migrated": false,
+    "backup_restore_validated": false,
+    "runbook": "docs/operations/KIND_REPLAY.md",
+    "validation_evidence": "references/evidence/kind_replay_author_validation_2026-10-20.json",
+    "validation_scope": "synthetic_feedback_transaction_rollback_same_PVC_pod_recreation_full_ledger_equality",
+    "retained_pvc": "fraud-replay-2de730eacb52-state",
+    "retained_pvc_uid": "d68d5529-7b3d-4a08-a569-0ca8c72c9366"
   }
 }

@@ -1515,3 +1515,12 @@ pertencem a novas execuções, preservando os bundles aceitos anteriormente.
 Envelopes de conclusão ficam em `platform-jobs/v1/<run>/<etapa>/receipt.json`;
 recibos locais e valores Helm, em `data/storage/kind-platform/pipeline/`.
 Não altera o default dos leitores nem declara backup externo do PVC.
+
+## Checkpoint do replay no KinD — aceite nativo
+
+O [ensaio de replay](KIND_REPLAY.md#aceite-nativo--2026-10-20) recuperou uma transação
+de feedback interrompida e retomou no mesmo PVC, com ledger sintético igual à
+execução contínua. O processamento foi removido; o PVC
+`fraud-replay-2de730eacb52-state` permanece retido e não foi migrado de outro
+checkpoint. Persistência após perda do cluster/host e backup desse PVC não foram
+avaliados. O estado histórico permanece em sua origem atual.

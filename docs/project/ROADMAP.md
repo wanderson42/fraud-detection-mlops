@@ -24,15 +24,15 @@ acontece quando o processo para, os dados mudam ou um candidato é rejeitado.
 O painel torna essas evidências visíveis. Dados simulados e laboratório local
 não comprovam eficácia antifraude real nem SLA de uma instituição.
 
-## Próximo recorte — replay e estado no cluster
+## Próximo recorte — serving no KinD
 
-Fundação, MLflow, transporte dos quatro datasets e execução Bronze → Silver →
-Gold em Jobs têm aceite nos respectivos escopos. A próxima fronteira é uma
-execução limitada e isolada do replay, com estado/checkpoint identificados e
-retomada verificável. Preservar os replays históricos e o modelo congelado;
-não repetir estudo HGB ou criar nova afirmação de qualidade. Serving e
-observabilidade no KinD continuam depois dessa fronteira. Os caminhos primários
-atuais permanecem explícitos até um gate próprio de mudança de origem.
+Fundação, MLflow, transporte dos quatro datasets, Jobs Bronze → Silver → Gold e
+retomada sintética do replay no mesmo PVC têm aceite nos respectivos escopos.
+A próxima fronteira é instalar o serving via Helm no cluster, com release/imagem
+identificadas, gates HTTP, troca controlada e rollback. Observabilidade no KinD
+vem em seguida. Preservar fontes históricas e modelo congelado; não repetir
+estudo HGB ou criar nova afirmação de qualidade. Os caminhos primários atuais
+permanecem explícitos até um gate próprio de mudança de origem.
 
 ## Marcos concluídos e evidência preservada
 
@@ -41,6 +41,7 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Replay sintético com checkpoint no KinD | Aceite nativo em 2026-10-20: pod recriado durante transação de feedback, rollback e retomada no mesmo PVC; todas as tabelas iguais à execução contínua, reentrega sem rescoring. 20 eventos/10 scores/6 alertas; processamento removido e PVC retido. Sem migração histórica ou recuperação por perda do host. [Evidência](../../references/evidence/kind_replay_author_validation_2026-10-20.json) |
 | Produtores Bronze → Silver → Gold em Jobs Helm | Aceite nativo em 2026-10-20: Silver 1.754.155 transações; Gold 402.877 linhas/19 features; ligação exata dos novos bundles, restores independentes, fundação preservada e Jobs removidos. Gold recalculou features, sem treino, nova avaliação ou mudança primária. [Evidência](../../references/evidence/kind_pipeline_author_validation_2026-10-20.json) |
 | Bundles dos quatro datasets no RustFS do KinD | Aceite nativo em 2026-10-20: 489 arquivos/493 objetos verificados, 210.997.363 bytes; reenvio sem novos uploads e restauração com verificadores próprios, fundação preservada. Leitores atuais mantidos; sem recuperação por perda do cluster/host. [Evidência](../../references/evidence/kind_datasets_author_validation_2026-10-20.json) |
 | MLflow na fundação KinD/Helm | Publicação e recarga independente HTTP, hash S3 e recarga após recriação do pod aprovados; erro zero, mesmo Deployment/imagem e fundação preservada. Fixture sintética; sem migração histórica ou backup/restore do novo destino. [Evidência](../../references/evidence/kind_tracking_author_validation_2026-10-20.json) |
@@ -689,3 +690,13 @@ Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidad
 e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
 em andamento; não houve migração histórica, refit histórico, promoção ou
 backup/restore deste novo destino.
+
+### Replay no KinD — aceite nativo de 2026-10-20
+
+O gate passou: 1 teste em 17,89 s, tox em 33,80 s. O pod interrompido em
+`feedback:2` foi substituído; a transação incompleta foi revertida, o PVC/PV e
+o Deployment permaneceram os mesmos e todas as tabelas coincidiram com a
+execução sintética sem interrupção. Reentrega sem rescoring, fundação preservada,
+processamento removido e PVC retido. O recorte foi registrado como concluído;
+o fluxo completo continua no backlog pelos gates restantes de serving e
+observabilidade. [Operação e limites](../operations/KIND_REPLAY.md).

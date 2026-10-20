@@ -680,3 +680,16 @@ removidos após sucesso. O resultado demonstra execução e recuperação da cad
 com transformação separada das credenciais. Não altera a evidência de qualidade
 do modelo nem os caminhos primários dos leitores.
 [Aceite e limites](../operations/KIND_PIPELINE.md#aceite-nativo--2026-10-20).
+
+## Retomada do replay no KinD aprovada
+
+Em 2026-10-20 o autor confirmou que o replay sintético retoma após interromper
+um pod durante uma transação de feedback: o novo pod usa o mesmo armazenamento,
+reverte o evento incompleto e preserva os resultados confirmados. A comparação
+integral resultou em 20 eventos, 10 scores e 6 alertas iguais aos da execução
+sem interrupção. Reentrega não recalculou scores. O ensaio foi encerrado e seu
+PVC ficou retido; histórico e modelo de referência permanecem preservados.
+O resultado demonstra recuperação operacional neste cenário, sem nova afirmação
+de qualidade do modelo ou proteção contra perda da máquina.
+[Aceite e evidência](../operations/KIND_REPLAY.md#aceite-nativo--2026-10-20).
+Próximo recorte: serving no KinD, com identidade da release, troca e rollback.

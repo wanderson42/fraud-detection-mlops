@@ -1,0 +1,13 @@
+**
+!infra/
+!infra/kind/
+!infra/kind/replay/
+!infra/kind/replay/requirements.txt
+!fraud_detection_mlops/
+!fraud_detection_mlops/**/
+!fraud_detection_mlops/**/*.py
+!examples/
+!examples/serving_smoke.py
+!scripts/
+!scripts/platform/
+!scripts/platform/kind_replay_worker.py

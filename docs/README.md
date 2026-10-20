@@ -265,3 +265,7 @@ com os caminhos primários dos leitores preservados.
 A [execução Bronze → Silver → Gold em Jobs Helm](operations/KIND_PIPELINE.md#aceite-nativo--2026-10-20)
 foi aprovada pelo autor: novas saídas S3 restauradas, fundação preservada e
 Jobs temporários removidos. Caminhos primários dos leitores mantidos.
+
+- [Replay e recuperação de transação no KinD](operations/KIND_REPLAY.md):
+  rollback de transação de feedback, novo pod no mesmo PVC, ledger integral e
+  reentrega sem rescoring aprovados; PVC retido para inspeção.

@@ -593,3 +593,12 @@ host. Não atualiza as releases da fundação ou do MLflow.
 Aceite nativo em 2026-10-20: cadeia concluída, saídas restauradas e verificadas,
 mesmas identidades da fundação e release temporária removida.
 [Desenho, evidência e limites](operations/KIND_PIPELINE.md#aceite-nativo--2026-10-20).
+
+### Estado do replay no KinD
+
+O ensaio aceito usa um Deployment Helm de réplica única e PVC exclusivo.
+A transação por evento continua no `DurableTriageReplay`. A interrupção nativa
+ocorreu no feedback `feedback:2`, antes do COMMIT; o novo pod recuperou o journal
+e retomou no mesmo PVC. Todas as tabelas ficaram iguais à execução sintética
+sem interrupção, incluindo scores/alertas; reentrega não chamou o scorer.
+Processamento temporário removido e PVC retido para inspeção. [Recorte e limites](operations/KIND_REPLAY.md).

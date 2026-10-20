@@ -1306,3 +1306,19 @@ em 80,06 s. Ambos os Jobs, ligação de bundles, restores, contagens, imagens e
 limpeza da release temporária foram aprovados. A regressão offline teve 74 testes
 aprovados no ambiente do assistente; não foi inferida como execução nativa.
 [Resultado, recursos e diagnóstico](KIND_PIPELINE.md#aceite-nativo--2026-10-20).
+
+### Gate de checkpoint do replay no KinD
+
+`tests/infra/test_kind_replay.py` executa interrupção real de processo com
+transação SQLite aberta, retomada e comparação integral com referência sintética.
+Também confere os templates Helm reais e rejeita identidades/artefatos alterados.
+`tox -e kind-replay` executa o gate opt-in no cluster existente, recria somente
+o pod do ensaio e preserva o PVC. [Procedimento](KIND_REPLAY.md).
+
+Aceite nativo do autor em 2026-10-20: 1 teste passou em 17,89 s, tox em 33,80 s.
+O pod foi recriado durante `feedback:2`, com recuperação da transação incompleta,
+mesmo PVC e igualdade de todas as tabelas. O fixture terminou com 20 eventos,
+10 scores e 6 alertas; somente quatro scores foram calculados após a retomada.
+A regressão de preparação (181 testes/4 live ignorados) pertence ao ambiente do
+assistente; não foi inferida como nova execução nativa.
+[Evidência e limites](KIND_REPLAY.md#aceite-nativo--2026-10-20).
