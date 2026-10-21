@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  labels:
+    {{- include "obs.labels" . | nindent 4 }}
+  annotations:
+    {{- include "obs.owner" . | nindent 4 }}
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 10s
+      evaluation_interval: 10s
+    rule_files: [/etc/prometheus/alerts.yml]
+    scrape_configs:
+      - job_name: fraud-replay
+        static_configs:
+          - targets: [{{ .Release.Name }}-exporter:19100]
+  alerts.yml: |
+{{ .Files.Get "files/alerts.yml" | indent 4 }}
+  datasource.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Fraud KinD Prometheus
+        uid: fraud-prometheus
+        type: prometheus
+        access: proxy
+        url: http://{{ .Release.Name }}-prometheus:9090
+        isDefault: true
+        editable: false
+  provider.yaml: |
+    apiVersion: 1
+    providers:
+      - name: Fraud KinD completed replay
+        folder: Fraud MLOps
+        type: file
+        disableDeletion: false
+        allowUiUpdates: false
+        updateIntervalSeconds: 10
+        options:
+          path: /var/lib/fraud-dashboards
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-dashboards
+  labels:
+    {{- include "obs.labels" . | nindent 4 }}
+  annotations:
+    {{- include "obs.owner" . | nindent 4 }}
+data:
+{{ (.Files.Glob "files/dashboards/*.json").AsConfig | indent 2 }}

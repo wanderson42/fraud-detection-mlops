@@ -1,0 +1,51 @@
+{
+  "schema": "fraud_kind_observability_helm4_fix_v1",
+  "status": "prepared_native_retry_pending",
+  "prepared_on": "2026-10-21",
+  "author_observed_failure": {
+    "report": "data/storage/kind-platform/observability/installation-4c32b5d9614d479e932f68f6f32821cb.json",
+    "phase": "Helm release listing before any deployment",
+    "snapshot_prepared": true,
+    "images_imported": true,
+    "counts": {
+      "events": 556824,
+      "transactions": 278412,
+      "feedback": 278412,
+      "decisions": 143945,
+      "alerts": 1453
+    },
+    "native_Helm_output_was_suppressed": true
+  },
+  "local_reproduction": {
+    "helm_version": "4.3.1",
+    "obsolete_command": "helm list --all",
+    "native_diagnostic": "Error: unknown flag: --all",
+    "fixed_command": "helm list --filter ^fraud-observability$ --output json with explicit private kubeconfig/context/namespace",
+    "fixed_parser_reached_only_explicitly_missing_config": "No live cluster contacted"
+  },
+  "changes": [
+    "remove Helm 3 --all; Helm 4 default includes all release statuses",
+    "surface bounded native Helm stdout/stderr for this non-secret-values flow",
+    "reuse existing image receipt only when every preparation pin matches, except the exact known pre-fix host controller hash; image sources are unchanged",
+    "never rewrite snapshot/image/credential receipts or rebuild to bypass the mismatch"
+  ],
+  "accepted_previous_host_controller_sha256": "683f8267ead449cc684f76c0fa21201e3c082771a9d9ee95f4a0ccbe8fce33ae",
+  "local_validation": {
+    "python": "3.14.4",
+    "ruff": "0.16.10",
+    "helm": "4.3.1",
+    "passed": 32,
+    "native_opt_in_skipped": 1,
+    "seconds": 4.84,
+    "real_Helm_parser_checked": true,
+    "native_Docker_KinD_executed": false,
+    "ruff_check_and_format_passed": true
+  },
+  "source_hashes": {
+    "scripts/platform/kind_observability.py": "bad2242b151162356ff967d85f9d2680662f831acb0e3ec90552152aee7022b8"
+  },
+  "native_acceptance_validated": false,
+  "images_rebuilt_by_fix": false,
+  "state_reprepared_by_fix": false,
+  "production_promotion": false
+}

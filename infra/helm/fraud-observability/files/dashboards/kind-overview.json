@@ -1,0 +1,277 @@
+{
+  "id": null,
+  "uid": "fraud-kind-overview",
+  "title": "Fraud — KinD / replay concluído",
+  "tags": [
+    "fraud",
+    "kind",
+    "completed-replay"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 4,
+  "refresh": "10s",
+  "panels": [
+    {
+      "id": 1,
+      "type": "text",
+      "title": "Origem e limites desta demonstração",
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "## Replay concluído, coleta atual\n\nO exporter lê somente uma **cópia verificada** de um replay nativo concluído. A coleta Prometheus acontece agora; as transações e as latências pertencem à execução histórica identificada. Não há ingestão ao vivo ou novo resultado de qualidade.\n\nA comparação das features usa as primeiras e últimas 1.000 decisões do mesmo checkpoint; não é baseline de treino nem prova de concept drift.\n\n- [Operação do replay](/d/fraud-replay-ops)\n- [Resultados maduros da triagem](/d/fraud-triage-quality)\n- [Dados e features](/d/fraud-feature-health)\n\nEste painel foi provisionado via Helm. As evidências de identidade e recuperação estão no recibo do gate.\n\n**Cores:** azul = informação; verde = condição válida verificada; amarelo = investigar; vermelho = violação explícita; cinza = indisponível ou não aplicável. Cor não substitui o texto e o suporte da métrica."
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Eventos persistidos do replay concluído",
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 11
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "fraud_replay_events_total",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "noValue": "Sem dados / sem suporte"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "colorMode": "value"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número."
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Collector válido nesta coleta",
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 11
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "fraud_monitor_collector_up",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Inválido",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Válido",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "noValue": "Sem dados / sem suporte"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "colorMode": "value"
+      },
+      "description": "Válido (verde): snapshot coletado; Inválido (vermelho): collector sem snapshot válido. Ausência de amostra é cinza, não zero."
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Replay marcado como concluído",
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 11
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "fraud_replay_complete",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Não concluído",
+                  "color": "blue"
+                },
+                "1": {
+                  "text": "Concluído",
+                  "color": "blue"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ],
+          "noValue": "Sem dados / sem suporte"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "values": false
+        },
+        "colorMode": "value"
+      },
+      "description": "Estado informativo do replay. Concluído não representa novo processamento ou nova avaliação de qualidade."
+    }
+  ],
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  }
+}

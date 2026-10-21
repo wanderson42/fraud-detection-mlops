@@ -837,5 +837,49 @@
     "runbook": "docs/operations/KIND_SERVING.md",
     "validation_evidence": "references/evidence/kind_serving_author_validation_2026-10-21.json",
     "validation_scope": "qualified_synthetic_runtime_Helm_Service_blue_green_and_native_rollback_not_reference_promotion"
+  },
+  "kind_observability": {
+    "controller": "scripts/platform/kind_observability.py",
+    "state_worker": "scripts/platform/kind_observability_state.py",
+    "chart": "infra/helm/fraud-observability",
+    "release": "fraud-observability",
+    "workspace": "data/storage/kind-platform/observability",
+    "runbook": "docs/operations/KIND_OBSERVABILITY.md",
+    "source_scope": "copied_completed_native_replay_not_live_stream",
+    "source_mounted_in_cluster": false,
+    "state_exporter_mount_read_only": true,
+    "native_acceptance_validated": true,
+    "backup_restore_validated": false,
+    "primary_storage_migrated": false,
+    "production_promotion": false,
+    "author_visual_review_validated": true,
+    "validation_evidence": "references/evidence/kind_observability_author_validation_2026-10-21.json",
+    "exporter_pod_recreation_validated": true,
+    "validation_scope": "completed_native_replay_copy_readonly_exporter_Prometheus_Grafana_not_live_stream_or_new_model_quality",
+    "retained_pvcs": {
+      "state": {
+        "uid": "0556675e-d90e-4acb-a9d6-ef1301b58d14",
+        "volume_name": "pvc-0556675e-d90e-4acb-a9d6-ef1301b58d14"
+      },
+      "prometheus": {
+        "uid": "6a7d90c2-de8f-4de6-9b09-ed3e853c3d83",
+        "volume_name": "pvc-6a7d90c2-de8f-4de6-9b09-ed3e853c3d83"
+      },
+      "grafana": {
+        "uid": "0004805e-7cd3-4d49-98a1-1e89cd3256d7",
+        "volume_name": "pvc-0004805e-7cd3-4d49-98a1-1e89cd3256d7"
+      }
+    },
+    "host_reboot_validated": false,
+    "alert_firing_validated": false,
+    "dashboard_color_policy": {
+      "policy": "semantic_colors_v1",
+      "runbook": "docs/operations/DASHBOARD_COLORS.md",
+      "updated_native_configuration_validated": true,
+      "updated_author_visual_review_validated": true,
+      "prior_validation_evidence": "references/evidence/kind_observability_author_validation_2026-10-21.json",
+      "validation_evidence": "references/evidence/dashboard_color_policy_author_validation_2026-10-21.json",
+      "validation_scope": "completed_native_replay_copy_readonly_exporter_Prometheus_Grafana_not_live_stream_or_new_model_quality"
+    }
   }
 }

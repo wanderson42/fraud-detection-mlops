@@ -1,0 +1,8 @@
+**
+!scripts/
+!scripts/monitoring/
+!scripts/monitoring/*.py
+!scripts/platform/
+!scripts/platform/kind_observability_state.py
+!references/
+!references/gold_contract_v1.json

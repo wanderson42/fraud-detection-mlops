@@ -274,3 +274,22 @@ Jobs temporários removidos. Caminhos primários dos leitores mantidos.
   qualificado, entrega de release por init container, troca de Service e rollback
   Helm aprovados pelo autor em 2026-10-21; baseline instalada, candidata removida,
   fundação preservada. Próximo: observabilidade no KinD.
+
+### Observabilidade no KinD aprovada
+
+O autor aprovou o gate nativo e confirmou a conferência visual em 2026-10-21.
+A cópia somente de leitura foi conciliada com a origem: **556.824 eventos,
+143.945 decisões e 1.453 alertas**. Scrape Prometheus, oito regras saudáveis,
+proxy autenticado do Grafana e quatro dashboards provisionados foram conferidos.
+O exporter ganhou novo pod, manteve Deployment/PVC e repetiu as verificações.
+Prometheus, Grafana, fundação, tracking, serving e PVC retido do replay
+preservaram suas identidades; arquivos da origem permaneceram iguais.
+A coleta atual apresenta um replay concluído, sem nova ingestão ou resultado
+de qualidade do modelo. Próximo: operação de parada/subida, reboot e fechamento
+integrado. [Evidência e limites](operations/KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).
+
+Refinamento visual aprovado em 2026-10-21: [política semântica de cores](operations/DASHBOARD_COLORS.md#aceite-da-política--2026-10-21),
+com informações azuis e estados explícitos em texto/cor. Configuração verificada
+pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
+autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
+Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.

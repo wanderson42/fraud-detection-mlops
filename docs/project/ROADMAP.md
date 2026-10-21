@@ -24,15 +24,16 @@ acontece quando o processo para, os dados mudam ou um candidato é rejeitado.
 O painel torna essas evidências visíveis. Dados simulados e laboratório local
 não comprovam eficácia antifraude real nem SLA de uma instituição.
 
-## Próximo recorte — observabilidade no KinD
+## Próximo recorte — operação e fechamento integrado do KinD
 
-Fundação, MLflow, datasets, Jobs Bronze → Silver → Gold, retomada do replay e
-serving com troca/rollback têm aceite nos respectivos escopos. Integrar agora
-exporter, Prometheus e Grafana ao cluster, com coleta e painéis conferidos e
-fontes históricas preservadas. Depois, fechar a operação de parada/subida e
-retomada após reboot, incluindo limites inotify e identidade dos volumes.
-O fluxo completo permanece em andamento até esses gates; não repetir estudo
-HGB, refit histórico ou nova afirmação de qualidade do modelo.
+Fundação, MLflow, datasets, Jobs, replay, serving e observabilidade têm aceite
+nos respectivos escopos. Falta demonstrar parada/subida e retomada após reboot,
+reutilizando o cluster e os volumes, com dependências e aplicações prontas,
+identidades conferidas e ajuste inotify persistente. Consolidar também os comandos
+e a sequência integrada. O marco de infraestrutura continua em andamento até
+esses gates; não recriar o cluster ou apagar volumes para simular retomada.
+Depois vem a simplificação e o fechamento funcional do portfólio; Terraform
+permanece posterior. Streamlit não é requisito para concluir este marco.
 
 ## Marcos concluídos e evidência preservada
 
@@ -41,6 +42,8 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Política de cores dos dashboards | Aceite separado em 2026-10-21: cores, mappings, thresholds e legendas conferidos via API e visualmente pelo autor; métricas e três PVCs iguais ao aceite anterior. Informações não herdam classificação arbitrária por magnitude. Sem replay ou novo resultado de qualidade. [Evidência](../../references/evidence/dashboard_color_policy_author_validation_2026-10-21.json) |
+| Observabilidade no KinD | Aceite nativo e visual em 2026-10-21: cópia de replay concluído conciliada, scrape, oito regras, proxy Grafana e quatro dashboards conferidos; exporter recriado no mesmo PVC, origem e demais recursos preservados. Sem ingestão ao vivo, novo resultado de qualidade, firing ou reboot validados. [Evidência](../../references/evidence/kind_observability_author_validation_2026-10-21.json) |
 | Serving via Helm no KinD | Aceite nativo em 2026-10-21: seis eventos blue → green → blue, pacote inválido bloqueado, EndpointSlices conferidos, falha 502 e rollback Helm em 1,99 s observado. Mesma imagem qualificada/pesos sintéticos, baseline/gateway e fundação preservados. Baseline instalada, candidata removida; sem promoção histórica ou garantia de zero downtime. [Evidência](../../references/evidence/kind_serving_author_validation_2026-10-21.json) |
 | Replay sintético com checkpoint no KinD | Aceite nativo em 2026-10-20: pod recriado durante transação de feedback, rollback e retomada no mesmo PVC; todas as tabelas iguais à execução contínua, reentrega sem rescoring. 20 eventos/10 scores/6 alertas; processamento removido e PVC retido. Sem migração histórica ou recuperação por perda do host. [Evidência](../../references/evidence/kind_replay_author_validation_2026-10-20.json) |
 | Produtores Bronze → Silver → Gold em Jobs Helm | Aceite nativo em 2026-10-20: Silver 1.754.155 transações; Gold 402.877 linhas/19 features; ligação exata dos novos bundles, restores independentes, fundação preservada e Jobs removidos. Gold recalculou features, sem treino, nova avaliação ou mudança primária. [Evidência](../../references/evidence/kind_pipeline_author_validation_2026-10-20.json) |
@@ -713,3 +716,22 @@ Baseline/gateway mantiveram seus pods e a fundação permaneceu igual; candidata
 removida, baseline instalada no laboratório e port-forward temporário encerrado.
 Gate: 1 teste em 19,48 s; tox em 34,53 s. Próximo: observabilidade no KinD.
 [Operação e limites](../operations/KIND_SERVING.md#aceite-nativo--2026-10-21).
+
+### Observabilidade no KinD — aceite nativo e visual de 2026-10-21
+
+O autor aprovou o gate nativo e confirmou a conferência visual em 2026-10-21.
+A cópia somente de leitura foi conciliada com a origem: **556.824 eventos,
+143.945 decisões e 1.453 alertas**. Scrape Prometheus, oito regras saudáveis,
+proxy autenticado do Grafana e quatro dashboards provisionados foram conferidos.
+O exporter ganhou novo pod, manteve Deployment/PVC e repetiu as verificações.
+Prometheus, Grafana, fundação, tracking, serving e PVC retido do replay
+preservaram suas identidades; arquivos da origem permaneceram iguais.
+Gate: 1 teste em 62,64 s; tox em 73,91 s. Próximo: operação e fechamento
+integrado, mantendo o marco de infraestrutura aberto até o aceite desses gates.
+[Escopo e limites](../operations/KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).
+
+Refinamento visual aprovado em 2026-10-21: [política semântica de cores](../operations/DASHBOARD_COLORS.md#aceite-da-política--2026-10-21),
+com informações azuis e estados explícitos em texto/cor. Configuração verificada
+pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
+autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
+Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.

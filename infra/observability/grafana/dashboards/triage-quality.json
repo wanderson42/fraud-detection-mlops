@@ -2,7 +2,7 @@
   "uid": "fraud-triage-quality",
   "title": "Fraud — qualidade madura e scores",
   "schemaVersion": 41,
-  "version": 1,
+  "version": 4,
   "editable": false,
   "tags": [
     "fraud",
@@ -27,11 +27,11 @@
         "x": 0,
         "y": 0,
         "w": 24,
-        "h": 4
+        "h": 6
       },
       "options": {
         "mode": "markdown",
-        "content": "Precisão e recall agregados são por **cliente/data**, AP é por transação. Só entram dias completos com todos os rótulos observados, após sete dias de atraso, ou no EOF verificado. Métrica indefinida fica ausente. Uma captura pode envolver fraude posterior ao alerta. JS compara os últimos 1.000 scores com o desenvolvimento; 0,1 é um alarme exploratório. Sem promoção automática."
+        "content": "Precisão e recall agregados são por **cliente/data**, AP é por transação. Só entram dias completos com todos os rótulos observados, após sete dias de atraso, ou no EOF verificado. Métrica indefinida fica ausente. Uma captura pode envolver fraude posterior ao alerta. JS compara os últimos 1.000 scores com o desenvolvimento; 0,1 é um alarme exploratório. Sem promoção automática.\n\n**Cores:** azul = informação; verde = condição válida verificada; amarelo = investigar; vermelho = violação explícita; cinza = indisponível ou não aplicável. Cor não substitui o texto e o suporte da métrica."
       }
     },
     {
@@ -40,7 +40,7 @@
       "type": "stat",
       "gridPos": {
         "x": 0,
-        "y": 4,
+        "y": 6,
         "w": 12,
         "h": 7
       },
@@ -48,7 +48,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -60,7 +60,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -82,7 +117,7 @@
       "type": "stat",
       "gridPos": {
         "x": 12,
-        "y": 4,
+        "y": 6,
         "w": 12,
         "h": 7
       },
@@ -90,7 +125,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -102,7 +137,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -124,7 +194,7 @@
       "type": "stat",
       "gridPos": {
         "x": 0,
-        "y": 11,
+        "y": 13,
         "w": 12,
         "h": 7
       },
@@ -132,7 +202,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -144,7 +214,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -166,7 +271,7 @@
       "type": "stat",
       "gridPos": {
         "x": 12,
-        "y": 11,
+        "y": 13,
         "w": 12,
         "h": 7
       },
@@ -174,7 +279,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -186,7 +291,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -208,7 +348,7 @@
       "type": "stat",
       "gridPos": {
         "x": 0,
-        "y": 18,
+        "y": 20,
         "w": 12,
         "h": 7
       },
@@ -216,7 +356,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -228,7 +368,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -250,7 +425,7 @@
       "type": "stat",
       "gridPos": {
         "x": 12,
-        "y": 18,
+        "y": 20,
         "w": 12,
         "h": 7
       },
@@ -258,7 +433,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -270,7 +445,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -292,7 +502,7 @@
       "type": "stat",
       "gridPos": {
         "x": 0,
-        "y": 25,
+        "y": 27,
         "w": 12,
         "h": 7
       },
@@ -300,7 +510,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -312,7 +522,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -334,7 +579,7 @@
       "type": "stat",
       "gridPos": {
         "x": 12,
-        "y": 25,
+        "y": 27,
         "w": 12,
         "h": 7
       },
@@ -342,7 +587,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "Agregado observado; a data corrente pode estar incompleta.",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -354,7 +599,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "percentunit",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -376,7 +656,7 @@
       "type": "stat",
       "gridPos": {
         "x": 0,
-        "y": 32,
+        "y": 34,
         "w": 12,
         "h": 7
       },
@@ -384,7 +664,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -396,7 +676,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -418,7 +733,7 @@
       "type": "stat",
       "gridPos": {
         "x": 12,
-        "y": 32,
+        "y": 34,
         "w": 12,
         "h": 7
       },
@@ -426,7 +741,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -438,7 +753,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -460,7 +810,7 @@
       "type": "stat",
       "gridPos": {
         "x": 0,
-        "y": 39,
+        "y": 41,
         "w": 12,
         "h": 7
       },
@@ -468,7 +818,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -480,7 +830,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -502,7 +887,7 @@
       "type": "stat",
       "gridPos": {
         "x": 12,
-        "y": 39,
+        "y": 41,
         "w": 12,
         "h": 7
       },
@@ -510,7 +895,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -522,7 +907,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -544,7 +964,7 @@
       "type": "stat",
       "gridPos": {
         "x": 0,
-        "y": 46,
+        "y": 48,
         "w": 12,
         "h": 7
       },
@@ -552,7 +972,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -564,7 +984,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },
@@ -586,7 +1041,7 @@
       "type": "stat",
       "gridPos": {
         "x": 12,
-        "y": 46,
+        "y": 48,
         "w": 12,
         "h": 7
       },
@@ -594,7 +1049,7 @@
         "type": "prometheus",
         "uid": "fraud-prometheus"
       },
-      "description": "",
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
       "targets": [
         {
           "refId": "A",
@@ -606,7 +1061,42 @@
       "fieldConfig": {
         "defaults": {
           "unit": "short",
-          "noValue": "Sem suporte"
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
         },
         "overrides": []
       },

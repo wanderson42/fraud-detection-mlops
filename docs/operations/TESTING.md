@@ -1340,3 +1340,34 @@ removidos. A regressão nativa anterior registrou 222 testes/4 ignorados; o conj
 privado após a correção registrou 228/4, sem executar Docker/KinD no assistente.
 [Recibo e limites](KIND_SERVING.md#aceite-nativo--2026-10-21). Não é necessário
 repetir o gate para aplicar somente este fechamento documental.
+
+### Observabilidade no KinD
+
+`tests/infra/test_kind_observability.py` verifica cópia SQLite consistente,
+rejeição de fonte ativa/alterada, hash/limite/atomicidade do transporte, contratos
+Helm reais, mounts somente leitura, importação por plataforma e controlador sob
+chamadas controladas. Reutiliza fixture sintética dos testes de monitoramento.
+Não acessa fontes nativas ou Docker/KinD.
+`tox -e kind-observability` é opt-in: consulta exporter/Prometheus/Grafana reais,
+verifica provisão e recria somente o exporter, preservando identidades e estado.
+[Runbook](KIND_OBSERVABILITY.md). Aceite nativo registrado abaixo.
+
+Aceite nativo de observabilidade em 2026-10-21: **1 teste em 62,64 s**, tox OK
+em 73,91 s. Bytes e summary conciliados, scrape e oito regras conferidos,
+proxy Grafana e quatro dashboards aprovados antes/depois da recriação do
+exporter, com mesmos PVCs e demais recursos preservados. O autor confirmou
+posteriormente a conferência visual; ela é separada do gate automatizado.
+Não houve novo teste de firing, backup/restore ou reboot.
+[Evidência](../../references/evidence/kind_observability_author_validation_2026-10-21.json).
+
+Refinamento visual aprovado em 2026-10-21: [política semântica de cores](DASHBOARD_COLORS.md#aceite-da-política--2026-10-21),
+com informações azuis e estados explícitos em texto/cor. Configuração verificada
+pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
+autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
+Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+O recibo atualizado identifica `dashboard_color_policy_verified=semantic_colors_v1`
+nas duas verificações. Duração do controlador: 62,36 s; tempos pytest/tox não
+foram fornecidos neste anexo. Regra de cores e apoio da legenda não alteram
+consultas, unidades ou resultados. Sem necessidade de repetir testes para
+aplicar somente este fechamento documental.

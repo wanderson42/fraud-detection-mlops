@@ -1533,3 +1533,14 @@ para emptyDir e montados somente leitura pela API; este recorte não cria PVC de
 modelo nem altera os PVCs da fundação/replay. A entrega original e suas evidências
 permanecem preservadas. Não muda a origem primária dos dados ou do tracking.
 [Aceite e limites](KIND_SERVING.md#aceite-nativo--2026-10-21).
+
+### Destinos da observabilidade KinD — aceite nativo
+
+Workspace privado `data/storage/kind-platform/observability`; cópia SQLite somente
+leitura do replay concluído transferida a PVC próprio de 2 GiB. Prometheus reserva
+1 GiB com retenção de 48 h/512 MB; Grafana reserva 512 MiB. Todos mantidos pelo
+Helm. Origem não é montada e não muda a fonte primária dos produtores. Persistência,
+backup/restore e recuperação por perda do host são escopos distintos.
+Origem e cópia conciliadas no gate nativo de 2026-10-21; novo pod exporter,
+mesmos três PVCs e fonte preservada. Isso não equivale a backup/restore dos
+PVCs ou recuperação por perda do host. [Runbook e evidência](KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).

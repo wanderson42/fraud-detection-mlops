@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ownerId",
+    "stateReady",
+    "images"
+  ],
+  "properties": {
+    "ownerId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "stateReady": {
+      "type": "boolean"
+    },
+    "images": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exporter",
+        "prometheus",
+        "grafana"
+      ],
+      "properties": {
+        "exporter": {
+          "type": "string",
+          "pattern": "^fraud-kind-observability-exporter:[a-f0-9]{32}$"
+        },
+        "prometheus": {
+          "type": "string",
+          "pattern": "^fraud-kind-observability-prometheus:[a-f0-9]{32}$"
+        },
+        "grafana": {
+          "type": "string",
+          "pattern": "^fraud-kind-observability-grafana:[a-f0-9]{32}$"
+        }
+      }
+    }
+  }
+}

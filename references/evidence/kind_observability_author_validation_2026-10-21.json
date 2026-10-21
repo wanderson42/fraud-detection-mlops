@@ -1,0 +1,798 @@
+{
+  "schema": "fraud_kind_observability_author_validation_v1",
+  "status": "native_and_author_visual_review_accepted",
+  "validated_on": "2026-10-21",
+  "evidence_source": "complete author-provided terminal JSON and pytest/tox output; later author visual confirmation in this conversation",
+  "terminal_attachment_sha256": "f53e7c4d4d8705960f18353a9d4b3251b8b8afdfd2e1487610f4819c80f1c13d",
+  "native_receipt_file_sha256": null,
+  "native_receipt_file_hash_scope": "Original native receipt bytes were not supplied; no byte hash inferred from terminal formatting.",
+  "native_tests": {
+    "passed": 1,
+    "pytest_seconds": 62.64,
+    "tox_seconds": 73.91
+  },
+  "native_report": {
+    "schema": "fraud_kind_observability_rehearsal_v1",
+    "status": "success",
+    "scope": "completed_native_replay_copy_readonly_exporter_Prometheus_Grafana_not_live_stream_or_new_model_quality",
+    "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/observability/rehearsal-2aac8fb48194420e92c651d0db63ac1e.json",
+    "production_promotion": false,
+    "fit_executed": false,
+    "features_recomputed": false,
+    "live_ingestion_validated": false,
+    "backup_restore_validated": false,
+    "host_reboot_validated": false,
+    "controller_sha256": "bad2242b151162356ff967d85f9d2680662f831acb0e3ec90552152aee7022b8",
+    "source_pins": {
+      "infra/helm/fraud-observability/Chart.yaml": "90d477206418b37bdf4a8eb31a62fb7d12c8c5494db2967cb637888ca9a420b2",
+      "infra/helm/fraud-observability/README.md": "f8e640f861d658f069901a3ef1dda42e53ea2c9813976e202d3b74bad87af45b",
+      "infra/helm/fraud-observability/files/alerts.yml": "ea3af123ffec28c04d074d4725b417783f5b14fd2ba3d4d7aafc4362cd547c79",
+      "infra/helm/fraud-observability/files/dashboards/feature-health.json": "61dd9acc75163031bc2a3462b1521b87952d5cc3765cedd51be4891732f24bae",
+      "infra/helm/fraud-observability/files/dashboards/kind-overview.json": "cd94dfe8b894f9b953d2124a701add96a92a753fee160a4b43b4d986acf3e845",
+      "infra/helm/fraud-observability/files/dashboards/replay-operations.json": "0870501419e3e92761978905530e34ee6da955deb818613207f9e4f48494e4e5",
+      "infra/helm/fraud-observability/files/dashboards/triage-quality.json": "1ef16f0f2a73758b389eccf5c930faa19404c2e81f9f28b7cfea467f8e202aa3",
+      "infra/helm/fraud-observability/templates/_helpers.tpl": "054a8929b58bb36654929f3bdfaa42426960c7b0614669db7cda3d3b98b0aa3d",
+      "infra/helm/fraud-observability/templates/config.yaml": "ea3bbe2ec648a6d2ca69a9a33297c5da5b6d7cefd9a15e3fad80203a0d2f0f2c",
+      "infra/helm/fraud-observability/templates/storage.yaml": "e73bae9a7ef3c0e60b758d6e0efad7c83d8c5fbe938a6561d5dc3362216d3b54",
+      "infra/helm/fraud-observability/templates/workloads.yaml": "7b645bd5eff92fb76a4170c22535a39b2aca68d81704bbbc94102ead1b1b9138",
+      "infra/helm/fraud-observability/values.schema.json": "aada7a0b6a4506fe2a6dfba313fd49e97c65984b4a9286bb85cff2ea0f0a0305",
+      "infra/helm/fraud-observability/values.yaml": "4e1b89a80a2e6c716da7b2028e9b455ab69b7114e666eeafa4352e27b4bde95b",
+      "infra/kind/observability/Dockerfile": "c1073ef5d2b87821435d032c1d61f41f98cf1b05d3f48f091f024f7b7e1fcc78",
+      "infra/kind/observability/Dockerfile.dockerignore": "a80b5cbbca412159b51dca8f585e50c7e147c02f7ee1588ac5a693bfc2ae0919",
+      "infra/kind/observability/README.md": "87f7def1b990c336039cda4303042a44abd32e89087921e395f8ece2363eb4f3",
+      "infra/observability/images.lock.json": "a65c3a30d2d7dce13d182344e03e249d1f98606117f4ef4c0ed90b950dc70dbb",
+      "references/gold_contract_v1.json": "b90b9be97bb2e2e6cf2b819487b2b805882c6d6f22587ff4671a01e25db54796",
+      "scripts/monitoring/collector.py": "5ffa1df86e37435716fb76ad2554da053ee31bede4ee37e43cda46119fb6fa16",
+      "scripts/monitoring/feature_health.py": "cdc86a129c09f9f1aac5fb12192da5cec60f8fb04409a0bef05cc62c6a75dc86",
+      "scripts/monitoring/feature_monitoring.py": "5656e60b5b8af9294710e3153cd5976ec6e654ee4a4f96f60c6406651f664960",
+      "scripts/monitoring/local_stack.py": "cc3d2114ac5e8dd8ba984684bf5156922a33a7add98ec966373cee6b00f002b3",
+      "scripts/monitoring/monitoring_exporter.py": "ef722d60b2197c1825bdf229c6863ba7d578b8df4075aea7f63156659ee67881",
+      "scripts/monitoring/statistics.py": "1f4a6a05d7df1afa54e8db646b6fd480eb2978445ed6c3e562e7834e88e6861b",
+      "scripts/monitoring/telemetry.py": "0e47dfc993f76d3ca51a7df24382780d7b7f538ec5d3c1ea8c557d03637d0f07",
+      "scripts/platform/kind_foundation.py": "956730f550bc6f89c5fe452045fcc893f956ee141a2f4ce99203bf1678e50fd0",
+      "scripts/platform/kind_observability.py": "bad2242b151162356ff967d85f9d2680662f831acb0e3ec90552152aee7022b8",
+      "scripts/platform/kind_observability_state.py": "6d12e078e0afceec64c435dd867a9c99214b7be957aa8a299825fd89388bc590"
+    },
+    "before": {
+      "pods": {
+        "exporter": {
+          "pod": "fraud-observability-exporter-565cfd55f5-2pm86",
+          "pod_uid": "cf5d51a0-8478-44bd-b8c3-de470cdeb472",
+          "deployment_uid": "967bb11f-0e0b-4897-b1cb-6956031974e1",
+          "service_uid": "07fd3860-c818-4830-b85b-172e74e49e0d",
+          "image_id": "docker.io/library/import-2026-10-21@sha256:2c7e219fa9188878efa108bf897e517aa113c83b4eebae1ee29c0a3952321707"
+        },
+        "prometheus": {
+          "pod": "fraud-observability-prometheus-5866c95f-fkld9",
+          "pod_uid": "2e0fefb6-ecba-4616-abdd-6835eedc7f90",
+          "deployment_uid": "f1291b60-48f5-4579-b163-01f588d2eaf7",
+          "service_uid": "f8999955-835a-4beb-aaeb-2e191b1db841",
+          "image_id": "docker.io/library/import-2026-10-21@sha256:c5a53f755fb643797b8fea6ecc2450e0efe2913f0578ae93f1e60bb07d04695b"
+        },
+        "grafana": {
+          "pod": "fraud-observability-grafana-594c7c84df-94qfg",
+          "pod_uid": "f81a735f-3477-4438-b156-e29db1960b72",
+          "deployment_uid": "0913a4dc-50e4-4e37-9096-8c0eb25a5cef",
+          "service_uid": "f6a99b5f-efa3-4ccb-bf57-72eaa771e50f",
+          "image_id": "docker.io/library/import-2026-10-21@sha256:656709d0d64f9e5b33fb6ed8b43a3877b52683fca3f3b69939b4cb0b077d13cb"
+        }
+      },
+      "pvcs": {
+        "state": {
+          "uid": "0556675e-d90e-4acb-a9d6-ef1301b58d14",
+          "volume_name": "pvc-0556675e-d90e-4acb-a9d6-ef1301b58d14"
+        },
+        "prometheus": {
+          "uid": "6a7d90c2-de8f-4de6-9b09-ed3e853c3d83",
+          "volume_name": "pvc-6a7d90c2-de8f-4de6-9b09-ed3e853c3d83"
+        },
+        "grafana": {
+          "uid": "0004805e-7cd3-4d49-98a1-1e89cd3256d7",
+          "volume_name": "pvc-0004805e-7cd3-4d49-98a1-1e89cd3256d7"
+        }
+      }
+    },
+    "foundation_before": {
+      "pods": {
+        "postgres": {
+          "name": "fraud-platform-postgres-0",
+          "uid": "10d34cb6-6bb1-4616-b92e-1bae71c52efa",
+          "image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+          "image_id": "docker.io/library/postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-0",
+          "uid": "8e0a956a-b457-4b80-8151-0b9332eeccbd",
+          "image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+          "image_id": "docker.io/rustfs/rustfs@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c"
+        }
+      },
+      "pvcs": {
+        "postgres": {
+          "name": "fraud-platform-postgres-data",
+          "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+          "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-data",
+          "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+          "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+        }
+      }
+    },
+    "protected_before": [
+      [
+        "Deployment",
+        "fraud-serving-blue",
+        "4ae71c73-9fe2-4e2a-bcf5-d02e627ebb3c"
+      ],
+      [
+        "Deployment",
+        "fraud-serving-gateway",
+        "3ecd1fa2-a74f-4bd5-9443-8e0edbbb93d0"
+      ],
+      [
+        "Deployment",
+        "fraud-tracking",
+        "cbd0b152-bc80-454f-8845-190fbc35514a"
+      ],
+      [
+        "PersistentVolumeClaim",
+        "fraud-platform-postgres-data",
+        "1285d051-1165-46a8-8a6e-95040df1a448"
+      ],
+      [
+        "PersistentVolumeClaim",
+        "fraud-platform-rustfs-data",
+        "7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+      ],
+      [
+        "PersistentVolumeClaim",
+        "fraud-replay-2de730eacb52-state",
+        "d68d5529-7b3d-4a08-a569-0ca8c72c9366"
+      ],
+      [
+        "Pod",
+        "fraud-platform-postgres-0",
+        "10d34cb6-6bb1-4616-b92e-1bae71c52efa"
+      ],
+      [
+        "Pod",
+        "fraud-platform-rustfs-0",
+        "8e0a956a-b457-4b80-8151-0b9332eeccbd"
+      ],
+      [
+        "Pod",
+        "fraud-serving-blue-7db8c474fb-mnlxc",
+        "e386ee96-93ae-460d-a26d-0711a4c92cc1"
+      ],
+      [
+        "Pod",
+        "fraud-serving-gateway-9cc4f667f-kjspw",
+        "a5463ee0-b65f-4517-9d11-1171bf5335ac"
+      ],
+      [
+        "Pod",
+        "fraud-tracking-7d5bbd469f-5qthv",
+        "0d10e3f2-5d77-443c-a683-38a6cab3ae18"
+      ],
+      [
+        "Service",
+        "fraud-platform-postgres",
+        "3aa0e9f0-ca1c-472f-87f8-c11fe3b9cfcf"
+      ],
+      [
+        "Service",
+        "fraud-platform-postgres-headless",
+        "de40b84f-38ea-4ad3-9926-cc3a42bc072b"
+      ],
+      [
+        "Service",
+        "fraud-platform-rustfs",
+        "1a612212-ba2a-4caf-aa47-1405f468b264"
+      ],
+      [
+        "Service",
+        "fraud-platform-rustfs-headless",
+        "391a3e4f-2356-4718-b992-bb4379979268"
+      ],
+      [
+        "Service",
+        "fraud-serving-active",
+        "3b855224-3b1b-4868-8ec6-ffda4474122e"
+      ],
+      [
+        "Service",
+        "fraud-serving-gateway",
+        "5f54e19b-5bc6-4c9a-8101-dea75a06dae5"
+      ],
+      [
+        "Service",
+        "fraud-tracking",
+        "8a793e9e-74de-41d1-adec-254d9e16f880"
+      ],
+      [
+        "StatefulSet",
+        "fraud-platform-postgres",
+        "77c65cf4-4416-40d2-8083-321407448e10"
+      ],
+      [
+        "StatefulSet",
+        "fraud-platform-rustfs",
+        "de54e72d-3133-49f2-bda3-27ef7c355921"
+      ]
+    ],
+    "source_files": {
+      "metadata.json": {
+        "sha256": "198d7d4fa0af471e0262df9d1a7085f529dfc0895e86aefc002e3315a2415296",
+        "bytes": 3351
+      },
+      "checkpoint.sqlite": {
+        "sha256": "cf96cf6a010bcc8e0c69ce8a84808fecb7d955a6afbb4b185dc3c0189dc00421",
+        "bytes": 727322624
+      },
+      "telemetry.sqlite": {
+        "sha256": "fbb32f5d5e7b7ede8d37b3ded7cd506899436b25aad9a9ffc39cea09f5e7c24b",
+        "bytes": 51617792
+      }
+    },
+    "copied_files": {
+      "metadata.json": {
+        "sha256": "198d7d4fa0af471e0262df9d1a7085f529dfc0895e86aefc002e3315a2415296",
+        "bytes": 3351
+      },
+      "checkpoint.sqlite": {
+        "sha256": "aea7f7338b3052d7f39ef8010812ab71a1d70753636fe4c38ca26c49b11e2d92",
+        "bytes": 727322624
+      },
+      "telemetry.sqlite": {
+        "sha256": "bc09e0b1dadb4b1ae6c254471fae69b4b0c57a301c6194463d3249925b4eae9e",
+        "bytes": 51617792
+      }
+    },
+    "source_summary": {
+      "feature_health": {
+        "schema": "fraud_operational_feature_health_v1",
+        "scope": "persisted_request_windows_not_training_baseline_or_model_quality_or_CT",
+        "contract_sha256": "b90b9be97bb2e2e6cf2b819487b2b805882c6d6f22587ff4671a01e25db54796",
+        "window_rows": 1000,
+        "reference_policy": "first_1000_scored_decisions_in_same_checkpoint",
+        "current_policy": "latest_1000_scored_decisions_in_same_checkpoint",
+        "freshness_scope": "feature_as_of_vs_transaction_clock_not_wall_clock_ingestion_freshness",
+        "nonoverlapping": true,
+        "comparison_ready": true,
+        "status": "ready",
+        "threshold": 0.1,
+        "reference": {
+          "rows": 1000,
+          "schema_or_clock_invalid_rows": 0,
+          "invalid_clock_rows": 0,
+          "future_clock_rows": 0,
+          "incoherent_rows": 0,
+          "max_feature_lag_seconds": 0.0,
+          "missing_values": {
+            "TX_AMOUNT": 0,
+            "TX_HOUR": 0,
+            "TX_WEEKDAY": 0,
+            "CUSTOMER_TX_COUNT_1D": 0,
+            "CUSTOMER_AVG_AMOUNT_1D": 0,
+            "CUSTOMER_AMOUNT_RATIO_1D": 0,
+            "CUSTOMER_AMOUNT_RATIO_VALID_1D": 0,
+            "CUSTOMER_TX_COUNT_7D": 0,
+            "CUSTOMER_AVG_AMOUNT_7D": 0,
+            "CUSTOMER_AMOUNT_RATIO_7D": 0,
+            "CUSTOMER_AMOUNT_RATIO_VALID_7D": 0,
+            "TERMINAL_TX_COUNT_1D": 0,
+            "TERMINAL_KNOWN_LABEL_COUNT_1D": 0,
+            "TERMINAL_KNOWN_FRAUD_COUNT_1D": 0,
+            "TERMINAL_KNOWN_FRAUD_RATE_1D": 0,
+            "TERMINAL_TX_COUNT_7D": 0,
+            "TERMINAL_KNOWN_LABEL_COUNT_7D": 0,
+            "TERMINAL_KNOWN_FRAUD_COUNT_7D": 0,
+            "TERMINAL_KNOWN_FRAUD_RATE_7D": 0
+          },
+          "invalid_values": {
+            "TX_AMOUNT": 0,
+            "TX_HOUR": 0,
+            "TX_WEEKDAY": 0,
+            "CUSTOMER_TX_COUNT_1D": 0,
+            "CUSTOMER_AVG_AMOUNT_1D": 0,
+            "CUSTOMER_AMOUNT_RATIO_1D": 0,
+            "CUSTOMER_AMOUNT_RATIO_VALID_1D": 0,
+            "CUSTOMER_TX_COUNT_7D": 0,
+            "CUSTOMER_AVG_AMOUNT_7D": 0,
+            "CUSTOMER_AMOUNT_RATIO_7D": 0,
+            "CUSTOMER_AMOUNT_RATIO_VALID_7D": 0,
+            "TERMINAL_TX_COUNT_1D": 0,
+            "TERMINAL_KNOWN_LABEL_COUNT_1D": 0,
+            "TERMINAL_KNOWN_FRAUD_COUNT_1D": 0,
+            "TERMINAL_KNOWN_FRAUD_RATE_1D": 0,
+            "TERMINAL_TX_COUNT_7D": 0,
+            "TERMINAL_KNOWN_LABEL_COUNT_7D": 0,
+            "TERMINAL_KNOWN_FRAUD_COUNT_7D": 0,
+            "TERMINAL_KNOWN_FRAUD_RATE_7D": 0
+          },
+          "histograms": {
+            "TX_AMOUNT": [
+              0,
+              104,
+              239,
+              265,
+              259,
+              131,
+              1,
+              1
+            ],
+            "CUSTOMER_AVG_AMOUNT_7D": [
+              0,
+              65,
+              191,
+              316,
+              363,
+              62,
+              3,
+              0
+            ],
+            "CUSTOMER_TX_COUNT_7D": [
+              0,
+              3,
+              36,
+              127,
+              384,
+              450,
+              0,
+              0
+            ],
+            "TERMINAL_KNOWN_FRAUD_RATE_7D": [
+              0,
+              967,
+              0,
+              4,
+              22,
+              2,
+              2,
+              3
+            ]
+          },
+          "window_request_sha256": "19a41ed0c8ef5a2cc7cb0135486d3af101bc8df780d31ee2a8460705680b430e",
+          "first_source_ns": 1537056059000000000,
+          "last_source_ns": 1537075187000000000
+        },
+        "current": {
+          "rows": 1000,
+          "schema_or_clock_invalid_rows": 0,
+          "invalid_clock_rows": 0,
+          "future_clock_rows": 0,
+          "incoherent_rows": 0,
+          "max_feature_lag_seconds": 0.0,
+          "missing_values": {
+            "TX_AMOUNT": 0,
+            "TX_HOUR": 0,
+            "TX_WEEKDAY": 0,
+            "CUSTOMER_TX_COUNT_1D": 0,
+            "CUSTOMER_AVG_AMOUNT_1D": 0,
+            "CUSTOMER_AMOUNT_RATIO_1D": 0,
+            "CUSTOMER_AMOUNT_RATIO_VALID_1D": 0,
+            "CUSTOMER_TX_COUNT_7D": 0,
+            "CUSTOMER_AVG_AMOUNT_7D": 0,
+            "CUSTOMER_AMOUNT_RATIO_7D": 0,
+            "CUSTOMER_AMOUNT_RATIO_VALID_7D": 0,
+            "TERMINAL_TX_COUNT_1D": 0,
+            "TERMINAL_KNOWN_LABEL_COUNT_1D": 0,
+            "TERMINAL_KNOWN_FRAUD_COUNT_1D": 0,
+            "TERMINAL_KNOWN_FRAUD_RATE_1D": 0,
+            "TERMINAL_TX_COUNT_7D": 0,
+            "TERMINAL_KNOWN_LABEL_COUNT_7D": 0,
+            "TERMINAL_KNOWN_FRAUD_COUNT_7D": 0,
+            "TERMINAL_KNOWN_FRAUD_RATE_7D": 0
+          },
+          "invalid_values": {
+            "TX_AMOUNT": 0,
+            "TX_HOUR": 0,
+            "TX_WEEKDAY": 0,
+            "CUSTOMER_TX_COUNT_1D": 0,
+            "CUSTOMER_AVG_AMOUNT_1D": 0,
+            "CUSTOMER_AMOUNT_RATIO_1D": 0,
+            "CUSTOMER_AMOUNT_RATIO_VALID_1D": 0,
+            "CUSTOMER_TX_COUNT_7D": 0,
+            "CUSTOMER_AVG_AMOUNT_7D": 0,
+            "CUSTOMER_AMOUNT_RATIO_7D": 0,
+            "CUSTOMER_AMOUNT_RATIO_VALID_7D": 0,
+            "TERMINAL_TX_COUNT_1D": 0,
+            "TERMINAL_KNOWN_LABEL_COUNT_1D": 0,
+            "TERMINAL_KNOWN_FRAUD_COUNT_1D": 0,
+            "TERMINAL_KNOWN_FRAUD_RATE_1D": 0,
+            "TERMINAL_TX_COUNT_7D": 0,
+            "TERMINAL_KNOWN_LABEL_COUNT_7D": 0,
+            "TERMINAL_KNOWN_FRAUD_COUNT_7D": 0,
+            "TERMINAL_KNOWN_FRAUD_RATE_7D": 0
+          },
+          "histograms": {
+            "TX_AMOUNT": [
+              0,
+              119,
+              263,
+              260,
+              245,
+              111,
+              2,
+              0
+            ],
+            "CUSTOMER_AVG_AMOUNT_7D": [
+              0,
+              81,
+              241,
+              297,
+              331,
+              49,
+              1,
+              0
+            ],
+            "CUSTOMER_TX_COUNT_7D": [
+              0,
+              1,
+              37,
+              139,
+              410,
+              413,
+              0,
+              0
+            ],
+            "TERMINAL_KNOWN_FRAUD_RATE_7D": [
+              0,
+              967,
+              0,
+              6,
+              17,
+              3,
+              0,
+              7
+            ]
+          },
+          "window_request_sha256": "b805b1d39e964f684f0f0465081a02cb13206c409e4f7bc0701406aab73f5a6f",
+          "first_source_ns": 1538332735000000000,
+          "last_source_ns": 1538351997000000000
+        },
+        "features": {
+          "TX_AMOUNT": {
+            "bounds": [
+              0,
+              10,
+              30,
+              60,
+              100,
+              200,
+              500
+            ],
+            "jensen_shannon": 0.0021550290067184723
+          },
+          "CUSTOMER_AVG_AMOUNT_7D": {
+            "bounds": [
+              0,
+              10,
+              30,
+              60,
+              100,
+              200,
+              500
+            ],
+            "jensen_shannon": 0.004398245597130813
+          },
+          "CUSTOMER_TX_COUNT_7D": {
+            "bounds": [
+              0,
+              1,
+              5,
+              10,
+              20,
+              50,
+              100
+            ],
+            "jensen_shannon": 0.001457152007270268
+          },
+          "TERMINAL_KNOWN_FRAUD_RATE_7D": {
+            "bounds": [
+              0,
+              0.01,
+              0.05,
+              0.1,
+              0.25,
+              0.5,
+              1
+            ],
+            "jensen_shannon": 0.002043254733260833
+          }
+        },
+        "production_promotion": false,
+        "training_triggered": false
+      },
+      "complete": true,
+      "counts": {
+        "events": 556824,
+        "transactions": 278412,
+        "feedback": 278412,
+        "decisions": 143945,
+        "alerts": 1453
+      },
+      "context_events": 201667,
+      "source_watermark_seconds": 1538956797.0,
+      "speed": 8640.0,
+      "session_running": 0,
+      "heartbeat": 1792084555.2621655,
+      "pending_uncommitted_events": 0,
+      "unmeasured_committed_events": 0,
+      "quality": {
+        "mature_days": 15,
+        "mature_transactions": 143945,
+        "mature_fraud_transactions": 1256,
+        "mature_alerts": 1453,
+        "mature_fraud_customer_days": 1126,
+        "captured_customer_days": 768,
+        "missed_customer_days": 358,
+        "nonfraudulent_alert_customer_days": 685,
+        "precision": 0.52856159669649,
+        "recall": 0.6820603907637656,
+        "average_precision": 0.5787830296305974
+      },
+      "decision_statuses": {
+        "alert": 1453,
+        "already_alerted": 1988,
+        "below_threshold": 140412,
+        "budget_exhausted": 92
+      },
+      "pending_feedback_transactions": 0,
+      "observed_scoring_dates": 15,
+      "daily_customer_budget": 100,
+      "score_window_observations": 1000,
+      "score_jensen_shannon": 0.04109085256664577,
+      "source_scope": "materialized_native_events_operational_reuse_not_new_quality_confirmation",
+      "measurement_scope": "local_scheduled_emission_to_decision_commit_no_external_broker"
+    },
+    "verification": {
+      "state_bytes_verified": true,
+      "summary_matches_source": true,
+      "prometheus_metrics_verified": {
+        "fraud_monitor_collector_up": 1.0,
+        "fraud_replay_events_total": 556824.0,
+        "fraud_replay_decisions_total": 143945.0,
+        "fraud_replay_alerts_total": 1453.0,
+        "fraud_replay_complete": 1.0,
+        "fraud_feature_comparison_ready": 1.0,
+        "fraud_feature_jensen_shannon{feature=\"TX_AMOUNT\"}": 0.0021550290067184723,
+        "fraud_feature_jensen_shannon{feature=\"CUSTOMER_AVG_AMOUNT_7D\"}": 0.004398245597130813,
+        "fraud_feature_jensen_shannon{feature=\"CUSTOMER_TX_COUNT_7D\"}": 0.001457152007270268,
+        "fraud_feature_jensen_shannon{feature=\"TERMINAL_KNOWN_FRAUD_RATE_7D\"}": 0.002043254733260833
+      },
+      "scrape_target_verified": true,
+      "healthy_alert_rules": 8,
+      "grafana_datasource_proxy_verified": true,
+      "provisioned_dashboard_UIDs": [
+        "fraud-feature-health",
+        "fraud-kind-overview",
+        "fraud-replay-ops",
+        "fraud-triage-quality"
+      ],
+      "visual_dashboard_review_validated": false,
+      "alert_firing_validated": false,
+      "temporary_port_forwards_removed": true
+    },
+    "after_recreation_verification": {
+      "state_bytes_verified": true,
+      "summary_matches_source": true,
+      "prometheus_metrics_verified": {
+        "fraud_monitor_collector_up": 1.0,
+        "fraud_replay_events_total": 556824.0,
+        "fraud_replay_decisions_total": 143945.0,
+        "fraud_replay_alerts_total": 1453.0,
+        "fraud_replay_complete": 1.0,
+        "fraud_feature_comparison_ready": 1.0,
+        "fraud_feature_jensen_shannon{feature=\"TX_AMOUNT\"}": 0.0021550290067184723,
+        "fraud_feature_jensen_shannon{feature=\"CUSTOMER_AVG_AMOUNT_7D\"}": 0.004398245597130813,
+        "fraud_feature_jensen_shannon{feature=\"CUSTOMER_TX_COUNT_7D\"}": 0.001457152007270268,
+        "fraud_feature_jensen_shannon{feature=\"TERMINAL_KNOWN_FRAUD_RATE_7D\"}": 0.002043254733260833
+      },
+      "scrape_target_verified": true,
+      "healthy_alert_rules": 8,
+      "grafana_datasource_proxy_verified": true,
+      "provisioned_dashboard_UIDs": [
+        "fraud-feature-health",
+        "fraud-kind-overview",
+        "fraud-replay-ops",
+        "fraud-triage-quality"
+      ],
+      "visual_dashboard_review_validated": false,
+      "alert_firing_validated": false,
+      "temporary_port_forwards_removed": true
+    },
+    "after": {
+      "pods": {
+        "exporter": {
+          "pod": "fraud-observability-exporter-565cfd55f5-cscp5",
+          "pod_uid": "b3a2fc1f-899b-43d3-9789-475e65550834",
+          "deployment_uid": "967bb11f-0e0b-4897-b1cb-6956031974e1",
+          "service_uid": "07fd3860-c818-4830-b85b-172e74e49e0d",
+          "image_id": "docker.io/library/import-2026-10-21@sha256:2c7e219fa9188878efa108bf897e517aa113c83b4eebae1ee29c0a3952321707"
+        },
+        "prometheus": {
+          "pod": "fraud-observability-prometheus-5866c95f-fkld9",
+          "pod_uid": "2e0fefb6-ecba-4616-abdd-6835eedc7f90",
+          "deployment_uid": "f1291b60-48f5-4579-b163-01f588d2eaf7",
+          "service_uid": "f8999955-835a-4beb-aaeb-2e191b1db841",
+          "image_id": "docker.io/library/import-2026-10-21@sha256:c5a53f755fb643797b8fea6ecc2450e0efe2913f0578ae93f1e60bb07d04695b"
+        },
+        "grafana": {
+          "pod": "fraud-observability-grafana-594c7c84df-94qfg",
+          "pod_uid": "f81a735f-3477-4438-b156-e29db1960b72",
+          "deployment_uid": "0913a4dc-50e4-4e37-9096-8c0eb25a5cef",
+          "service_uid": "f6a99b5f-efa3-4ccb-bf57-72eaa771e50f",
+          "image_id": "docker.io/library/import-2026-10-21@sha256:656709d0d64f9e5b33fb6ed8b43a3877b52683fca3f3b69939b4cb0b077d13cb"
+        }
+      },
+      "pvcs": {
+        "state": {
+          "uid": "0556675e-d90e-4acb-a9d6-ef1301b58d14",
+          "volume_name": "pvc-0556675e-d90e-4acb-a9d6-ef1301b58d14"
+        },
+        "prometheus": {
+          "uid": "6a7d90c2-de8f-4de6-9b09-ed3e853c3d83",
+          "volume_name": "pvc-6a7d90c2-de8f-4de6-9b09-ed3e853c3d83"
+        },
+        "grafana": {
+          "uid": "0004805e-7cd3-4d49-98a1-1e89cd3256d7",
+          "volume_name": "pvc-0004805e-7cd3-4d49-98a1-1e89cd3256d7"
+        }
+      }
+    },
+    "foundation_after": {
+      "pods": {
+        "postgres": {
+          "name": "fraud-platform-postgres-0",
+          "uid": "10d34cb6-6bb1-4616-b92e-1bae71c52efa",
+          "image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+          "image_id": "docker.io/library/postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-0",
+          "uid": "8e0a956a-b457-4b80-8151-0b9332eeccbd",
+          "image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+          "image_id": "docker.io/rustfs/rustfs@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c"
+        }
+      },
+      "pvcs": {
+        "postgres": {
+          "name": "fraud-platform-postgres-data",
+          "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+          "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-data",
+          "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+          "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+        }
+      }
+    },
+    "protected_after": [
+      [
+        "Deployment",
+        "fraud-serving-blue",
+        "4ae71c73-9fe2-4e2a-bcf5-d02e627ebb3c"
+      ],
+      [
+        "Deployment",
+        "fraud-serving-gateway",
+        "3ecd1fa2-a74f-4bd5-9443-8e0edbbb93d0"
+      ],
+      [
+        "Deployment",
+        "fraud-tracking",
+        "cbd0b152-bc80-454f-8845-190fbc35514a"
+      ],
+      [
+        "PersistentVolumeClaim",
+        "fraud-platform-postgres-data",
+        "1285d051-1165-46a8-8a6e-95040df1a448"
+      ],
+      [
+        "PersistentVolumeClaim",
+        "fraud-platform-rustfs-data",
+        "7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+      ],
+      [
+        "PersistentVolumeClaim",
+        "fraud-replay-2de730eacb52-state",
+        "d68d5529-7b3d-4a08-a569-0ca8c72c9366"
+      ],
+      [
+        "Pod",
+        "fraud-platform-postgres-0",
+        "10d34cb6-6bb1-4616-b92e-1bae71c52efa"
+      ],
+      [
+        "Pod",
+        "fraud-platform-rustfs-0",
+        "8e0a956a-b457-4b80-8151-0b9332eeccbd"
+      ],
+      [
+        "Pod",
+        "fraud-serving-blue-7db8c474fb-mnlxc",
+        "e386ee96-93ae-460d-a26d-0711a4c92cc1"
+      ],
+      [
+        "Pod",
+        "fraud-serving-gateway-9cc4f667f-kjspw",
+        "a5463ee0-b65f-4517-9d11-1171bf5335ac"
+      ],
+      [
+        "Pod",
+        "fraud-tracking-7d5bbd469f-5qthv",
+        "0d10e3f2-5d77-443c-a683-38a6cab3ae18"
+      ],
+      [
+        "Service",
+        "fraud-platform-postgres",
+        "3aa0e9f0-ca1c-472f-87f8-c11fe3b9cfcf"
+      ],
+      [
+        "Service",
+        "fraud-platform-postgres-headless",
+        "de40b84f-38ea-4ad3-9926-cc3a42bc072b"
+      ],
+      [
+        "Service",
+        "fraud-platform-rustfs",
+        "1a612212-ba2a-4caf-aa47-1405f468b264"
+      ],
+      [
+        "Service",
+        "fraud-platform-rustfs-headless",
+        "391a3e4f-2356-4718-b992-bb4379979268"
+      ],
+      [
+        "Service",
+        "fraud-serving-active",
+        "3b855224-3b1b-4868-8ec6-ffda4474122e"
+      ],
+      [
+        "Service",
+        "fraud-serving-gateway",
+        "5f54e19b-5bc6-4c9a-8101-dea75a06dae5"
+      ],
+      [
+        "Service",
+        "fraud-tracking",
+        "8a793e9e-74de-41d1-adec-254d9e16f880"
+      ],
+      [
+        "StatefulSet",
+        "fraud-platform-postgres",
+        "77c65cf4-4416-40d2-8083-321407448e10"
+      ],
+      [
+        "StatefulSet",
+        "fraud-platform-rustfs",
+        "de54e72d-3133-49f2-bda3-27ef7c355921"
+      ]
+    ],
+    "original_source_bytes_unchanged": true,
+    "state_volume_read_only": true,
+    "existing_services_preserved": true,
+    "exporter_pod_recreation_validated": true,
+    "elapsed_seconds": 62.63097562800067
+  },
+  "visual_review": {
+    "status": "author_confirmed",
+    "author_reply": "tudo certo!",
+    "context": "reply to instructions to open Grafana and check overview, operations, triage and feature panels against the report",
+    "confirmed_on": "2026-10-21",
+    "independent_assistant_browser_review": false,
+    "native_receipt_unmodified": true,
+    "scope": "subsequent human review, separate from automated gate whose visual_review flag remains false"
+  },
+  "remaining_limits": [
+    "completed replay copy, not live ingestion or new model quality",
+    "no alert firing/recovery test in this KinD gate",
+    "no backup/restore, host reboot or host-loss recovery validated",
+    "observability services and three PVCs remain in the laboratory",
+    "operational shutdown/startup/reboot and integrated closure remain pending"
+  ]
+}
