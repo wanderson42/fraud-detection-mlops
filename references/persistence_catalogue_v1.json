@@ -881,5 +881,30 @@
       "validation_evidence": "references/evidence/dashboard_color_policy_author_validation_2026-10-21.json",
       "validation_scope": "completed_native_replay_copy_readonly_exporter_Prometheus_Grafana_not_live_stream_or_new_model_quality"
     }
+  },
+  "kind_operations": {
+    "controller": "scripts/platform/kind_operations.py",
+    "workspace": "data/storage/kind-platform/operations",
+    "runbook": "docs/operations/KIND_OPERATIONS.md",
+    "baseline_private_immutable": true,
+    "secret_contents_recorded": false,
+    "native_stop_start_validated": true,
+    "host_reboot_validated": true,
+    "primary_storage_migrated": false,
+    "host_loss_recovery_validated": false,
+    "inotify_persistence_after_reboot_validated": true,
+    "planned_shutdown_required": true,
+    "validation_evidence": "references/evidence/kind_operations_author_validation_2026-10-21.json",
+    "integrated_runbook": "docs/operations/KIND_PLATFORM.md"
+  },
+  "kind_platform_milestone": {
+    "status": "accepted_incremental_laboratory_scope",
+    "validated_on": "2026-10-21",
+    "runbook": "docs/operations/KIND_PLATFORM.md",
+    "operations_evidence": "references/evidence/kind_operations_author_validation_2026-10-21.json",
+    "one_new_monolithic_end_to_end_run": false,
+    "primary_storage_migrated": false,
+    "project_wide_storage_inventory_complete": false,
+    "host_loss_recovery_validated": false
   }
 }

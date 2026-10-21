@@ -1,13 +1,13 @@
 # Fraud Detection MLOps
 
-<!-- kind-foundation-acceptance-2026-10-20:start -->
-**Estado em 2026-10-20 — fundação KinD/Helm aprovada.** PostgreSQL e RustFS
-prontos; marcadores SQL/S3 preservados após recriar os pods, com os mesmos PVCs.
-Regressão nativa: 45 testes aprovados. Bootstrap corrigido após ajuste de
-inotify no host; persistência desse ajuste após reboot ainda não confirmada.
-A fundação foi integrada ao MLflow; o aceite e o próximo recorte estão registrados abaixo.
-[Aceite, pré-requisito e limites](docs/operations/KIND_FOUNDATION_ACCEPTANCE.md). As notas anteriores mantêm seu contexto histórico.
-<!-- kind-foundation-acceptance-2026-10-20:end -->
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](docs/operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
 
 
 Laboratório de MLOps para priorização de investigação de fraude, desenvolvido por
@@ -558,3 +558,8 @@ com informações azuis e estados explícitos em texto/cor. Configuração verif
 pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
 autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
 Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+
+## Operação do KinD — aceite nativo
+
+Parada/subida e reboot planejado aprovados em 2026-10-21: mesmo node, volumes e plano de réplicas; tracking/S3, identidade/score da API e monitoramento conferidos. O inotify persistiu em 512/524288. O marco KinD/Helm passa para os concluídos no escopo de laboratório. Próximo: simplificação e fechamento funcional; Terraform depois. [Operação](docs/operations/KIND_OPERATIONS.md) e [guia integrado](docs/operations/KIND_PLATFORM.md).

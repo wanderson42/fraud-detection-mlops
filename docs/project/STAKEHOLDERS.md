@@ -1,13 +1,13 @@
 # Síntese para stakeholders
 
-<!-- kind-foundation-acceptance-2026-10-20:start -->
-**Estado em 2026-10-20 — fundação KinD/Helm aprovada.** PostgreSQL e RustFS
-prontos; marcadores SQL/S3 preservados após recriar os pods, com os mesmos PVCs.
-Regressão nativa: 45 testes aprovados. Bootstrap corrigido após ajuste de
-inotify no host; persistência desse ajuste após reboot ainda não confirmada.
-A fundação foi integrada ao MLflow; o aceite e o próximo recorte estão registrados abaixo.
-[Aceite, pré-requisito e limites](../operations/KIND_FOUNDATION_ACCEPTANCE.md). As notas anteriores mantêm seu contexto histórico.
-<!-- kind-foundation-acceptance-2026-10-20:end -->
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](../operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
 
 
 Atualizado em 2026-10-16, incorporando a recuperação nativa do histórico e da
@@ -728,3 +728,8 @@ com informações azuis e estados explícitos em texto/cor. Configuração verif
 pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
 autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
 Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+
+## Laboratório retomado após reboot
+
+O autor demonstrou parada/subida e retomada depois de reiniciar a máquina: mesmos volumes, identidade e score da API, histórico de tracking e indicadores operacionais. O ajuste inotify persistiu. Isso encerra o marco KinD/Helm no escopo do laboratório; agora a prioridade é simplificar a reprodução e a apresentação do portfólio. Recuperação por perda do host e interrupção abrupta seguem fora desse recorte. [Runbook](../operations/KIND_OPERATIONS.md).

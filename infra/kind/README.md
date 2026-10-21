@@ -1,13 +1,13 @@
 # Cluster dedicado do portfólio
 
-<!-- kind-foundation-acceptance-2026-10-20:start -->
-**Estado em 2026-10-20 — fundação KinD/Helm aprovada.** PostgreSQL e RustFS
-prontos; marcadores SQL/S3 preservados após recriar os pods, com os mesmos PVCs.
-Regressão nativa: 45 testes aprovados. Bootstrap corrigido após ajuste de
-inotify no host; persistência desse ajuste após reboot ainda não confirmada.
-A fundação foi integrada ao MLflow; o aceite e o próximo recorte estão registrados abaixo.
-[Aceite, pré-requisito e limites](../../docs/operations/KIND_FOUNDATION_ACCEPTANCE.md). As notas anteriores mantêm seu contexto histórico.
-<!-- kind-foundation-acceptance-2026-10-20:end -->
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](../../docs/operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
 
 
 Configuração de um node Kubernetes 1.35.8 fixado por digest. O controlador cria
@@ -26,7 +26,13 @@ no RustFS e nova recarga após recriar o pod MLflow foram aprovados, com erro de
 score zero e identidades da fundação preservadas. O Deployment e a imagem
 permaneceram os mesmos; o pod ganhou novo UID. [Evidência e limites](../../docs/operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).
 
-Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidade
-e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
-em andamento; não houve migração histórica, refit histórico, promoção ou
-backup/restore deste novo destino.
+## Operação aceita e próximo marco
+
+Os recortes de datasets, Jobs, replay, serving e observabilidade foram aceitos
+por incrementos. Parada/subida e reboot planejado passaram em 2026-10-21, com
+mesmo node/PVCs e valores inotify persistentes. O marco KinD/Helm está concluído
+no escopo do laboratório; próximo: simplificação e fechamento funcional.
+[Guia integrado](../../docs/operations/KIND_PLATFORM.md) e
+[operação diária](../../docs/operations/KIND_OPERATIONS.md).
+Os aceites não declaram migração histórica, promoção ou recuperação por perda
+do host. Notas datadas acima preservam o escopo do respectivo incremento.

@@ -1,13 +1,13 @@
 # Mural de metas — Fraud Detection MLOps
 
-<!-- kind-foundation-acceptance-2026-10-20:start -->
-**Estado em 2026-10-20 — fundação KinD/Helm aprovada.** PostgreSQL e RustFS
-prontos; marcadores SQL/S3 preservados após recriar os pods, com os mesmos PVCs.
-Regressão nativa: 45 testes aprovados. Bootstrap corrigido após ajuste de
-inotify no host; persistência desse ajuste após reboot ainda não confirmada.
-A fundação foi integrada ao MLflow; o aceite e o próximo recorte estão registrados abaixo.
-[Aceite, pré-requisito e limites](../operations/KIND_FOUNDATION_ACCEPTANCE.md). As notas anteriores mantêm seu contexto histórico.
-<!-- kind-foundation-acceptance-2026-10-20:end -->
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](../operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
 
 
 Atualizado em **2026-10-21**. Backlog principal, em ordem de dependência e valor
@@ -24,16 +24,19 @@ acontece quando o processo para, os dados mudam ou um candidato é rejeitado.
 O painel torna essas evidências visíveis. Dados simulados e laboratório local
 não comprovam eficácia antifraude real nem SLA de uma instituição.
 
-## Próximo recorte — operação e fechamento integrado do KinD
+## Próximo marco — simplificação e fechamento funcional
 
-Fundação, MLflow, datasets, Jobs, replay, serving e observabilidade têm aceite
-nos respectivos escopos. Falta demonstrar parada/subida e retomada após reboot,
-reutilizando o cluster e os volumes, com dependências e aplicações prontas,
-identidades conferidas e ajuste inotify persistente. Consolidar também os comandos
-e a sequência integrada. O marco de infraestrutura continua em andamento até
-esses gates; não recriar o cluster ou apagar volumes para simular retomada.
-Depois vem a simplificação e o fechamento funcional do portfólio; Terraform
-permanece posterior. Streamlit não é requisito para concluir este marco.
+O marco de infraestrutura KinD + Helm está concluído **no escopo de laboratório**:
+componentes aceitos por incrementos, parada/subida e reboot planejado aprovados,
+mesmo node/PVCs e leituras funcionais conferidas. A [sequência integrada](../operations/KIND_PLATFORM.md)
+consolida os comandos e os limites. Isso não declara migração primária, promoção
+histórica, recuperação por perda do host ou uma nova execução monolítica do fluxo.
+
+Agora vamos definir os fluxos suportados e simplificar a experiência de uso,
+com documentação de instalação, demonstração e retomada. Componentes antigos só
+serão removidos após revisar dependências e preservar evidências. Streamlit segue
+opcional, condicionado a uma jornada que acrescente valor à investigação.
+Terraform permanece posterior a esse fechamento.
 
 ## Marcos concluídos e evidência preservada
 
@@ -42,6 +45,8 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Infraestrutura do fluxo em KinD + Helm | Concluída no escopo do laboratório por aceites incrementais de fundação, tracking, datasets, Jobs, replay, serving, observabilidade e operação. Sequência consolidada; fontes históricas preservadas. Não é migração primária nem execução integral nova em produção. [Guia integrado](../operations/KIND_PLATFORM.md) |
+| Parada/subida e reboot planejado | Aceite nativo em 2026-10-21: oito workloads retomados no mesmo node/PVCs, boot_id mudou e inotify 512/524288 persistiu. Tracking/S3, serving e monitoramento iguais ao baseline. Sem recuperação por perda do host ou interrupção abrupta. [Evidência](../../references/evidence/kind_operations_author_validation_2026-10-21.json) |
 | Política de cores dos dashboards | Aceite separado em 2026-10-21: cores, mappings, thresholds e legendas conferidos via API e visualmente pelo autor; métricas e três PVCs iguais ao aceite anterior. Informações não herdam classificação arbitrária por magnitude. Sem replay ou novo resultado de qualidade. [Evidência](../../references/evidence/dashboard_color_policy_author_validation_2026-10-21.json) |
 | Observabilidade no KinD | Aceite nativo e visual em 2026-10-21: cópia de replay concluído conciliada, scrape, oito regras, proxy Grafana e quatro dashboards conferidos; exporter recriado no mesmo PVC, origem e demais recursos preservados. Sem ingestão ao vivo, novo resultado de qualidade, firing ou reboot validados. [Evidência](../../references/evidence/kind_observability_author_validation_2026-10-21.json) |
 | Serving via Helm no KinD | Aceite nativo em 2026-10-21: seis eventos blue → green → blue, pacote inválido bloqueado, EndpointSlices conferidos, falha 502 e rollback Helm em 1,99 s observado. Mesma imagem qualificada/pesos sintéticos, baseline/gateway e fundação preservados. Baseline instalada, candidata removida; sem promoção histórica ou garantia de zero downtime. [Evidência](../../references/evidence/kind_serving_author_validation_2026-10-21.json) |
@@ -79,15 +84,14 @@ aceite automático de outro commit, ambiente ou modelo.
 
 ## Backlog ordenado
 
-O compromisso principal fica limitado a **dois marcos**. Terraform é o
+O compromisso principal agora fica limitado a **um marco restante**. Terraform é o
 **desfecho posterior**, conforme desejo do autor. As ferramentas em análise
 abaixo não se tornam entregas obrigatórias por aparecerem neste documento.
 
 | Ordem | Marco | Critério de conclusão |
 | --- | --- | --- |
-| 1 | Infraestrutura do fluxo completo em KinD + Helm | Após o monitoramento mínimo: provisionar por incrementos dados/objetos Bronze–Silver–Gold, bancos e estado de replay, jobs, tracking, serving e observabilidade. Cluster limpo, versões/pins, mounts/PVCs adequados, probes, recursos, permissões e recuperação. Demonstrar promoção/troca/rollback do serving com uma réplica ativa e candidata durante atualização; preservar as fontes até aceitar cada destino |
-| 2 | Simplificação e fechamento funcional do portfolio | Definir os fluxos suportados, consolidar comandos, resolver persistência fora dos destinos gerenciados nesses fluxos e remover componentes substituídos após revisar dependências. Demonstrar instalação limpa, execução/recuperação e documentação clara, preservando evidências históricas |
-| 3 — posterior | Terraform como desfecho de infraestrutura como código | Após a simplificação, gerenciar o ambiente estabilizado com configuração declarativa, versões/lock de providers e state protegido. Reutilizar o chart Helm; demonstrar apply real no alvo escolhido, segundo plan sem mudanças e recuperação/recriação documentadas. Delimitar bootstrap do KinD e ownership dos recursos; não exigir cloud paga |
+| 1 | Simplificação e fechamento funcional do portfolio | Definir os fluxos suportados, consolidar comandos, resolver persistência fora dos destinos gerenciados nesses fluxos e remover componentes substituídos após revisar dependências. Demonstrar instalação limpa, execução/recuperação e documentação clara, preservando evidências históricas |
+| 2 — posterior | Terraform como desfecho de infraestrutura como código | Após a simplificação, gerenciar o ambiente estabilizado com configuração declarativa, versões/lock de providers e state protegido. Reutilizar o chart Helm; demonstrar apply real no alvo escolhido, segundo plan sem mudanças e recuperação/recriação documentadas. Delimitar bootstrap do KinD e ownership dos recursos; não exigir cloud paga |
 
 A conferência visual do dashboard de features foi concluída usando o estado
 nativo já aprovado, sem repetir a janela. A cor neutra da contagem é um ajuste
@@ -95,7 +99,7 @@ de apresentação posterior, sem alterar o aceite funcional. O ensaio 1× só se
 executado com pergunta, protocolo e orçamento explícitos; a ausência desse
 ensaio continuará documentada, sem bloquear o fechamento funcional.
 
-A revisão dos destinos e a limpeza pertencem ao marco 2. Não significam migrar
+A revisão dos destinos e a limpeza pertencem à simplificação. Não significam migrar
 indiscriminadamente todo SQLite ou inventariar todo o Linux. Os sete consumidores
 históricos mapeados exigem decisão explícita de suporte/preservação; não serão
 adaptados apenas para eliminar uma ferramenta do diagrama. PVCs, quando houver
@@ -107,8 +111,7 @@ A análise é planejada após validar o monitoramento e estabilizar a infraestru
 provisionada, antes de decidir
 se alguma extensão entra no escopo da simplificação. Concluir essa análise é
 registrar uma decisão fundamentada; não exige instalar todas as opções. Se uma
-extensão for aprovada, ganha recorte, orçamento e aceite próprios antes do marco
-3. Terraform permanece posterior à simplificação do conjunto então escolhido.
+extensão for aprovada, ganha recorte, orçamento e aceite próprios antes de Terraform. Terraform permanece posterior à simplificação do conjunto então escolhido.
 
 | Possibilidade | Benefício que precisa demonstrar | Decisão atual |
 | --- | --- | --- |
@@ -735,3 +738,14 @@ com informações azuis e estados explícitos em texto/cor. Configuração verif
 pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
 autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
 Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+
+### Fechamento operacional e integrado — 2026-10-21
+
+O gate nativo de parada/subida passou (1 teste em 252,23 s; tox 264,31 s).
+Em seguida, o reboot manual foi reconhecido por outro boot_id; o mesmo container,
+node, engine e PVCs foram preservados. Réplicas restauradas, histórico MLflow,
+hash S3, score/identidade HTTP e métricas/dashboards conferidos. Valores inotify
+512/524288 persistiram. Sem fit, replay, nova avaliação ou promoção histórica.
+Os pendentes operacionais das notas anteriores estão encerrados nesse escopo.
+[Runbook](../operations/KIND_OPERATIONS.md) e [guia integrado](../operations/KIND_PLATFORM.md).

@@ -1544,3 +1544,8 @@ backup/restore e recuperação por perda do host são escopos distintos.
 Origem e cópia conciliadas no gate nativo de 2026-10-21; novo pod exporter,
 mesmos três PVCs e fonte preservada. Isso não equivale a backup/restore dos
 PVCs ou recuperação por perda do host. [Runbook e evidência](KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).
+
+
+## Identidade dos volumes durante parada/subida — aceite
+
+O recorte operacional compara UIDs e specs dos PVCs e configurações, além de leituras funcionais antes/depois. Guarda baseline e eventos em `data/storage/kind-platform/operations`, sem copiar credenciais em texto. Parada/subida e reboot planejado foram aprovados em 2026-10-21, com os mesmos PVCs e leituras funcionais. Isso não conclui migração primária, inventário global, restauração de backup ou recuperação por perda do host. [Runbook](KIND_OPERATIONS.md).

@@ -1,13 +1,13 @@
 # Validação com pytest, Poetry e tox
 
-<!-- kind-foundation-acceptance-2026-10-20:start -->
-**Estado em 2026-10-20 — fundação KinD/Helm aprovada.** PostgreSQL e RustFS
-prontos; marcadores SQL/S3 preservados após recriar os pods, com os mesmos PVCs.
-Regressão nativa: 45 testes aprovados. Bootstrap corrigido após ajuste de
-inotify no host; persistência desse ajuste após reboot ainda não confirmada.
-A fundação foi integrada ao MLflow; o aceite e o próximo recorte estão registrados abaixo.
-[Aceite, pré-requisito e limites](KIND_FOUNDATION_ACCEPTANCE.md). As notas anteriores mantêm seu contexto histórico.
-<!-- kind-foundation-acceptance-2026-10-20:end -->
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](../../docs/operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
 
 
 Os checks protegem contratos e falhas usando dados controlados. Resultados locais,
@@ -1371,3 +1371,8 @@ nas duas verificações. Duração do controlador: 62,36 s; tempos pytest/tox n�
 foram fornecidos neste anexo. Regra de cores e apoio da legenda não alteram
 consultas, unidades ou resultados. Sem necessidade de repetir testes para
 aplicar somente este fechamento documental.
+
+
+## Gate operacional opt-in do KinD
+
+Regressão sem Docker: `poetry run python -m pytest -q tests/infra/test_kind_operations.py`. O ambiente tox `kind-operations` exige `FRAUD_KIND_NO_OTHER_WRITERS=1` e `FRAUD_KIND_TRACKING_REPORT` explícitos. Interrompe e retoma o cluster próprio; não deve entrar na CI comum. O teste live permanece skipped na suíte padrão. Reboot manual tem gate separado `verify --expect-reboot`; ambos os gates nativos foram aprovados em 2026-10-21. O ciclo teve 1 teste em 252,23 s; o reboot foi uma verificação CLI separada. Mocks não comprovam persistência nativa. [Comandos e limites](KIND_OPERATIONS.md).
