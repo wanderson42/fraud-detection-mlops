@@ -1,0 +1,9 @@
+FROM python:3.14.4-slim@sha256:2ca02f32b4d9d893863367ce07ec1972819f476dd38d8612f2a9cb6a41cbb727
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY blue/ /seed/blue/
+COPY green/ /seed/green/
+COPY seed.py /app/seed.py
+RUN chmod 0555 /seed /seed/blue /seed/green && chmod 0444 /seed/blue/* /seed/green/* /app/seed.py
+USER 10001:10001
+ENTRYPOINT ["python", "/app/seed.py"]

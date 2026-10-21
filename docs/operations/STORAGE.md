@@ -1524,3 +1524,12 @@ execução contínua. O processamento foi removido; o PVC
 `fraud-replay-2de730eacb52-state` permanece retido e não foi migrado de outro
 checkpoint. Persistência após perda do cluster/host e backup desse PVC não foram
 avaliados. O estado histórico permanece em sua origem atual.
+
+### Serving no KinD — destino de laboratório aceito
+
+A entrega sintética qualificada foi importada e instalada via Helm, com troca e
+rollback nativos aprovados em 2026-10-21. Modelos são copiados por init container
+para emptyDir e montados somente leitura pela API; este recorte não cria PVC de
+modelo nem altera os PVCs da fundação/replay. A entrega original e suas evidências
+permanecem preservadas. Não muda a origem primária dos dados ou do tracking.
+[Aceite e limites](KIND_SERVING.md#aceite-nativo--2026-10-21).

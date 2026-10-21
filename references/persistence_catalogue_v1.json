@@ -5,6 +5,16 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/storage/kind-platform/serving",
+      "family": "kind_serving_preparation_images_values_and_receipts",
+      "owner": "platform",
+      "producers": [
+        "scripts/platform/kind_serving.py",
+        "scripts/platform/kind_serving_delivery.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/storage/kind-platform/replay",
       "family": "kind_replay_images_plans_and_receipts",
       "owner": "platform",
@@ -365,6 +375,18 @@
       "locations": [
         "fraud-platform/fraud-replay-<run>-state PVC:/state/run"
       ]
+    },
+    {
+      "id": "kind_serving_runtime_and_emptyDir",
+      "source": "scripts/platform/kind_serving.py",
+      "locations": [
+        "fraud-platform/fraud-serving-blue",
+        "fraud-platform/fraud-serving-gateway",
+        "optional fraud-serving-green",
+        "model releases in per-pod emptyDir; authoritative carrier image and original delivery retained"
+      ],
+      "inspection": "declared_only_native_acceptance_pending",
+      "reason": "Qualified synthetic API image and copied release distribution. Baseline persists in the lab; no primary storage migration or historical model promotion."
     }
   ],
   "decisions": {
@@ -799,5 +821,21 @@
     "validation_scope": "synthetic_feedback_transaction_rollback_same_PVC_pod_recreation_full_ledger_equality",
     "retained_pvc": "fraud-replay-2de730eacb52-state",
     "retained_pvc_uid": "d68d5529-7b3d-4a08-a569-0ca8c72c9366"
+  },
+  "kind_serving": {
+    "controller": "scripts/platform/kind_serving.py",
+    "delivery_controller": "scripts/platform/kind_serving_delivery.py",
+    "init_worker": "scripts/platform/kind_serving_seed.py",
+    "chart": "infra/helm/fraud-serving",
+    "release": "fraud-serving",
+    "workspace": "data/storage/kind-platform/serving",
+    "native_acceptance_validated": true,
+    "runtime_rebuilt": false,
+    "fit_executed": false,
+    "primary_storage_migrated": false,
+    "production_promotion": false,
+    "runbook": "docs/operations/KIND_SERVING.md",
+    "validation_evidence": "references/evidence/kind_serving_author_validation_2026-10-21.json",
+    "validation_scope": "qualified_synthetic_runtime_Helm_Service_blue_green_and_native_rollback_not_reference_promotion"
   }
 }

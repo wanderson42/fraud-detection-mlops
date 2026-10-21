@@ -1,0 +1,10 @@
+**
+!blue/
+!blue/manifest.json
+!blue/smoke.json
+!blue/pipeline.skops
+!green/
+!green/manifest.json
+!green/smoke.json
+!green/pipeline.skops
+!seed.py

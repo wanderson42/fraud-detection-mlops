@@ -1322,3 +1322,21 @@ mesmo PVC e igualdade de todas as tabelas. O fixture terminou com 20 eventos,
 A regressão de preparação (181 testes/4 live ignorados) pertence ao ambiente do
 assistente; não foi inferida como nova execução nativa.
 [Evidência e limites](KIND_REPLAY.md#aceite-nativo--2026-10-20).
+
+### Gate do serving no KinD
+
+`tests/infra/test_kind_serving.py` confere templates Helm reais, semântica HTTP
+com releases copiadas, identidades, rejeição de artefatos e rollback sob controle
+de Kubernetes/Docker simulado. Os testes não substituem build/import reais.
+`tox -e kind-serving` executa o gate opt-in na release própria já instalada:
+Service blue/green, EndpointSlices, falha 502 e rollback Helm para a baseline.
+[Entrada confiável, comandos e diagnóstico](KIND_SERVING.md).
+
+Aceite nativo em 2026-10-21: **1 teste em 19,48 s**, tox OK em 34,53 s.
+Seis eventos completos, candidata no EndpointSlice, zero endpoints prontos na
+falha, HTTP 502 e rollback Helm para blue aprovados. A correção de importação
+por arquivo `linux/amd64` foi exercitada nas três imagens, com arquivos temporários
+removidos. A regressão nativa anterior registrou 222 testes/4 ignorados; o conjunto
+privado após a correção registrou 228/4, sem executar Docker/KinD no assistente.
+[Recibo e limites](KIND_SERVING.md#aceite-nativo--2026-10-21). Não é necessário
+repetir o gate para aplicar somente este fechamento documental.

@@ -602,3 +602,15 @@ ocorreu no feedback `feedback:2`, antes do COMMIT; o novo pod recuperou o journa
 e retomou no mesmo PVC. Todas as tabelas ficaram iguais à execução sintética
 sem interrupção, incluindo scores/alertas; reentrega não chamou o scorer.
 Processamento temporário removido e PVC retido para inspeção. [Recorte e limites](operations/KIND_REPLAY.md).
+
+### Serving e distribuição de release no KinD
+
+Chart separado `fraud-serving`: runtime da entrega qualificada, carrier de
+releases em init container e modelo em emptyDir somente leitura para a API.
+Um gateway estável encaminha ao Service ClusterIP com seletor blue/green.
+O gate prepara uma nova identidade com os mesmos pesos, confere EndpointSlices
+e executa rollback Helm. Baseline fica instalada; candidata é removida.
+Aceite nativo em 2026-10-21: rota e EndpointSlices conferidos, falha 502 e
+rollback Helm aprovados; mesmos pods baseline/gateway e fundação preservada.
+O port-forward encerrou; os Services privados permanecem no laboratório.
+[Desenho e limites](operations/KIND_SERVING.md#aceite-nativo--2026-10-21).

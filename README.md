@@ -526,3 +526,16 @@ aprovados. Ledger sintético final igual à execução sem interrupção: 20 eve
 10 scores e 6 alertas; reentrega sem rescoring. Fundação preservada, processamento
 temporário removido e PVC retido. Aceite do autor em 2026-10-20.
 [Operação e limites](docs/operations/KIND_REPLAY.md).
+
+### Serving no KinD — aceite nativo
+
+O autor aprovou os seis eventos do gate em 2026-10-21: baseline, bloqueio de
+pacote inválido, candidata direta, troca na mesma URL, falha HTTP 502 e retorno
+por `helm rollback`. A imagem qualificada da API foi reutilizada, sem rebuild
+do runtime ou fit; somente o carrier foi construído. Os mesmos pesos sintéticos
+produziram score `0.03463335444035967` antes/depois da troca e do rollback.
+Baseline/gateway mantiveram seus pods e a fundação permaneceu igual; candidata
+removida, baseline instalada no laboratório e port-forward temporário encerrado.
+Rollback observado em 1,99 s neste ensaio, sem garantia de SLA ou zero downtime.
+[Operação e evidência](docs/operations/KIND_SERVING.md#aceite-nativo--2026-10-21).
+Próximo recorte: observabilidade no KinD.

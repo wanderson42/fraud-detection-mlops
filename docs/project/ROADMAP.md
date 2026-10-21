@@ -10,7 +10,7 @@ A fundação foi integrada ao MLflow; o aceite e o próximo recorte estão regis
 <!-- kind-foundation-acceptance-2026-10-20:end -->
 
 
-Atualizado em **2026-10-20**. Backlog principal, em ordem de dependência e valor
+Atualizado em **2026-10-21**. Backlog principal, em ordem de dependência e valor
 para a demonstração. O [README](../../README.md) apresenta o projeto; a
 [arquitetura](../ARCHITECTURE.md) descreve os componentes e os
 [stakeholders](STAKEHOLDERS.md) interpretam os resultados.
@@ -24,15 +24,15 @@ acontece quando o processo para, os dados mudam ou um candidato é rejeitado.
 O painel torna essas evidências visíveis. Dados simulados e laboratório local
 não comprovam eficácia antifraude real nem SLA de uma instituição.
 
-## Próximo recorte — serving no KinD
+## Próximo recorte — observabilidade no KinD
 
-Fundação, MLflow, transporte dos quatro datasets, Jobs Bronze → Silver → Gold e
-retomada sintética do replay no mesmo PVC têm aceite nos respectivos escopos.
-A próxima fronteira é instalar o serving via Helm no cluster, com release/imagem
-identificadas, gates HTTP, troca controlada e rollback. Observabilidade no KinD
-vem em seguida. Preservar fontes históricas e modelo congelado; não repetir
-estudo HGB ou criar nova afirmação de qualidade. Os caminhos primários atuais
-permanecem explícitos até um gate próprio de mudança de origem.
+Fundação, MLflow, datasets, Jobs Bronze → Silver → Gold, retomada do replay e
+serving com troca/rollback têm aceite nos respectivos escopos. Integrar agora
+exporter, Prometheus e Grafana ao cluster, com coleta e painéis conferidos e
+fontes históricas preservadas. Depois, fechar a operação de parada/subida e
+retomada após reboot, incluindo limites inotify e identidade dos volumes.
+O fluxo completo permanece em andamento até esses gates; não repetir estudo
+HGB, refit histórico ou nova afirmação de qualidade do modelo.
 
 ## Marcos concluídos e evidência preservada
 
@@ -41,6 +41,7 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Serving via Helm no KinD | Aceite nativo em 2026-10-21: seis eventos blue → green → blue, pacote inválido bloqueado, EndpointSlices conferidos, falha 502 e rollback Helm em 1,99 s observado. Mesma imagem qualificada/pesos sintéticos, baseline/gateway e fundação preservados. Baseline instalada, candidata removida; sem promoção histórica ou garantia de zero downtime. [Evidência](../../references/evidence/kind_serving_author_validation_2026-10-21.json) |
 | Replay sintético com checkpoint no KinD | Aceite nativo em 2026-10-20: pod recriado durante transação de feedback, rollback e retomada no mesmo PVC; todas as tabelas iguais à execução contínua, reentrega sem rescoring. 20 eventos/10 scores/6 alertas; processamento removido e PVC retido. Sem migração histórica ou recuperação por perda do host. [Evidência](../../references/evidence/kind_replay_author_validation_2026-10-20.json) |
 | Produtores Bronze → Silver → Gold em Jobs Helm | Aceite nativo em 2026-10-20: Silver 1.754.155 transações; Gold 402.877 linhas/19 features; ligação exata dos novos bundles, restores independentes, fundação preservada e Jobs removidos. Gold recalculou features, sem treino, nova avaliação ou mudança primária. [Evidência](../../references/evidence/kind_pipeline_author_validation_2026-10-20.json) |
 | Bundles dos quatro datasets no RustFS do KinD | Aceite nativo em 2026-10-20: 489 arquivos/493 objetos verificados, 210.997.363 bytes; reenvio sem novos uploads e restauração com verificadores próprios, fundação preservada. Leitores atuais mantidos; sem recuperação por perda do cluster/host. [Evidência](../../references/evidence/kind_datasets_author_validation_2026-10-20.json) |
@@ -700,3 +701,15 @@ execução sintética sem interrupção. Reentrega sem rescoring, fundação pre
 processamento removido e PVC retido. O recorte foi registrado como concluído;
 o fluxo completo continua no backlog pelos gates restantes de serving e
 observabilidade. [Operação e limites](../operations/KIND_REPLAY.md).
+
+### Serving no KinD — aceite nativo de 2026-10-21
+
+O autor aprovou os seis eventos do gate em 2026-10-21: baseline, bloqueio de
+pacote inválido, candidata direta, troca na mesma URL, falha HTTP 502 e retorno
+por `helm rollback`. A imagem qualificada da API foi reutilizada, sem rebuild
+do runtime ou fit; somente o carrier foi construído. Os mesmos pesos sintéticos
+produziram score `0.03463335444035967` antes/depois da troca e do rollback.
+Baseline/gateway mantiveram seus pods e a fundação permaneceu igual; candidata
+removida, baseline instalada no laboratório e port-forward temporário encerrado.
+Gate: 1 teste em 19,48 s; tox em 34,53 s. Próximo: observabilidade no KinD.
+[Operação e limites](../operations/KIND_SERVING.md#aceite-nativo--2026-10-21).

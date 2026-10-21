@@ -269,3 +269,8 @@ Jobs temporários removidos. Caminhos primários dos leitores mantidos.
 - [Replay e recuperação de transação no KinD](operations/KIND_REPLAY.md):
   rollback de transação de feedback, novo pod no mesmo PVC, ledger integral e
   reentrega sem rescoring aprovados; PVC retido para inspeção.
+
+- [Serving via Helm no KinD](operations/KIND_SERVING.md): consumo de runtime
+  qualificado, entrega de release por init container, troca de Service e rollback
+  Helm aprovados pelo autor em 2026-10-21; baseline instalada, candidata removida,
+  fundação preservada. Próximo: observabilidade no KinD.

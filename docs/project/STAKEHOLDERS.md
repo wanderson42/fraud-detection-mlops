@@ -693,3 +693,19 @@ O resultado demonstra recuperação operacional neste cenário, sem nova afirma�
 de qualidade do modelo ou proteção contra perda da máquina.
 [Aceite e evidência](../operations/KIND_REPLAY.md#aceite-nativo--2026-10-20).
 Próximo recorte: serving no KinD, com identidade da release, troca e rollback.
+
+## Serving no KinD aprovado
+
+O autor aprovou os seis eventos do gate em 2026-10-21: baseline, bloqueio de
+pacote inválido, candidata direta, troca na mesma URL, falha HTTP 502 e retorno
+por `helm rollback`. A imagem qualificada da API foi reutilizada, sem rebuild
+do runtime ou fit; somente o carrier foi construído. Os mesmos pesos sintéticos
+produziram score `0.03463335444035967` antes/depois da troca e do rollback.
+Baseline/gateway mantiveram seus pods e a fundação permaneceu igual; candidata
+removida, baseline instalada no laboratório e port-forward temporário encerrado.
+A atualização controlada agora tem evidência no Kubernetes: Service apontando
+para o pod candidato, indisponibilidade observada e recuperação da baseline na
+mesma URL do ensaio. O retorno foi observado em 1,99 s, sem constituir SLA.
+O próximo recorte integra observabilidade ao cluster. Parada/subida e retomada
+após reboot continuam pendentes; não há evidência de que reboot causou a falha
+anterior de importação. [Aceite e limites](../operations/KIND_SERVING.md#aceite-nativo--2026-10-21).
