@@ -3,7 +3,7 @@
 Rodada canônica aceita no KinD: Bronze → Jobs Silver/Gold → três candidatos com datasets registrados → HGB versão 1 em `fraud-detector@champion` → API e rollback verificados.
 [Sucessores com busca opcional e aprovação explícita de tráfego](docs/operations/MODEL_UPDATES.md): retenção nativa de candidatos aceita nas rodadas fixa e de busca; ativação de um sucessor com pesos diferentes ainda pendente.
 [Guia da rodada operacional](docs/operations/OPERATIONAL_ROUND.md).
-[Usuários e entregas do produto](docs/operations/PRODUCT_DELIVERY.md#usuários-e-entregas): sistema transacional, analista, operação e equipe de ML. O fluxo eventos → HTTP do champion → triagem passou no ensaio nativo. [Retomada idempotente do serving](docs/operations/SERVING_RECOVERY.md): manutenção aplicada e verificada no KinD, preservando o champion e a consulta de casos. [Explicações SHAP por caso](docs/operations/CASE_EXPLANATIONS.md): implementação preparada para aceite nativo do modelo ativo.
+[Usuários e entregas do produto](docs/operations/PRODUCT_DELIVERY.md#usuários-e-entregas): sistema transacional, analista, operação e equipe de ML. O fluxo eventos → HTTP do champion → triagem passou no ensaio nativo. [Retomada idempotente do serving](docs/operations/SERVING_RECOVERY.md): manutenção aplicada e verificada no KinD, preservando o champion e a consulta de casos. [Explicações SHAP por caso](docs/operations/CASE_EXPLANATIONS.md): cinco casos do modelo ativo publicados e verificados no ensaio nativo, com 19 contribuições por caso e score reconstruído.
 
 
 <!-- kind-operations-acceptance-2026-10-21:start -->
@@ -574,3 +574,12 @@ Parada/subida e reboot planejado aprovados em 2026-10-21: mesmo node, volumes e 
 ## Executar e apresentar o laboratório
 
 Use `make help`, `make platform-status` e os acessos `platform-api`, `platform-mlflow` e `platform-grafana`. O [guia de execução e demonstração](docs/operations/PORTFOLIO_WALKTHROUGH.md) separa ambiente pronto, reprodução Bronze–Silver–Gold e ensaios blue/green/recuperação. O Make delega aos controladores existentes. Replay, API sintética e monitoramento da cópia concluída não passam a formar uma única nova execução de transações HTTP por esses atalhos.
+
+
+### Portal de investigação
+
+A jornada do analista reúne visão da janela, fila com filtros e caso detalhado
+com contexto, feedback e waterfall SHAP. A API pontua; Grafana opera; MLflow
+mantém linhagem e governança. O portal reutiliza as decisões aceitas e distingue
+os cinco casos explicados dos demais. [Guia e comandos](docs/operations/FRAUD_PORTAL.md).
+Implementação e testes locais preparados; aceite nativo da interface pendente.

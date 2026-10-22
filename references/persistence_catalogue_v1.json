@@ -5,6 +5,24 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/storage/kind-platform/portal",
+      "family": "private_portal_access_receipt_with_external_manifest_digest",
+      "owner": "product",
+      "producers": [
+        "scripts/fraud_portal/export.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/reports/fraud-portal",
+      "family": "verified_read_only_investigation_snapshot_and_manifest",
+      "owner": "product",
+      "producers": [
+        "scripts/fraud_portal/export.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/reports/case-explanations",
       "family": "identity_bound_HTTP_case_SHAP_html_svg_json_and_manifest",
       "owner": "product_and_modeling",

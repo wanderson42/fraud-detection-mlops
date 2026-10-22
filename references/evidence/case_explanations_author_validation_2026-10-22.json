@@ -1,0 +1,172 @@
+{
+  "schema": "fraud_champion_case_explanations_author_validation_v1",
+  "status": "success",
+  "validated_on": "2026-10-22",
+  "scope": "five_persisted_current_champion_HTTP_cases_exact_release_SHAP_and_offline_report_verification",
+  "acceptance_basis": "author_supplied_native_generation_and_verification_console_and_attached_HTML",
+  "generation": {
+    "status": "case_explanations_published",
+    "directory": "/home/wanderson/Documentos/fraud-detection-mlops/data/reports/case-explanations/champion-shap-v1",
+    "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/reports/case-explanations/champion-shap-v1/index.html",
+    "manifest_sha256": "1f780b2d7eb9de7a553435f3ccd69ede37eca735cbdddae6dadbb01981e0d91c",
+    "case_count": 5,
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+    "champion_modified": false
+  },
+  "verification": {
+    "status": "case_explanations_verified",
+    "case_count": 5,
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "manifest_sha256": "1f780b2d7eb9de7a553435f3ccd69ede37eca735cbdddae6dadbb01981e0d91c",
+    "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/reports/case-explanations/champion-shap-v1/index.html",
+    "model_loaded": false,
+    "champion_modified": false
+  },
+  "attachment": {
+    "filename": "index.html",
+    "sha256": "440469d785602d6e50299f770d6162caea14315f02fbc3293bf7858a3c13d450",
+    "artifact_scope": "HTML_contents_only_SVG_cases_JSON_and_manifest_not_attached",
+    "visual_SVG_review_from_native_attachment": false
+  },
+  "HTML_checks": {
+    "case_count": 5,
+    "features_per_case": 19,
+    "rounded_contribution_sum_and_sigmoid_reconciled": true,
+    "arithmetic_tolerance_for_rounded_HTML": 1e-06,
+    "referenced_SVG_files": [
+      "case-1610254.svg",
+      "case-1610229.svg",
+      "case-1610324.svg",
+      "case-1610316.svg",
+      "case-1610407.svg"
+    ]
+  },
+  "cases": [
+    {
+      "transaction_id": 1610254,
+      "score_displayed": 0.99922529,
+      "base_log_odds_displayed": -1.57293325,
+      "raw_log_odds_displayed": 7.16225028,
+      "feedback": 1,
+      "feature_count": 19,
+      "largest_absolute_contributions_displayed": [
+        [
+          "TERMINAL_KNOWN_FRAUD_RATE_7D",
+          4.79087707
+        ],
+        [
+          "TERMINAL_KNOWN_FRAUD_RATE_1D",
+          1.8114857
+        ],
+        [
+          "TERMINAL_KNOWN_FRAUD_COUNT_7D",
+          1.64873344
+        ]
+      ]
+    },
+    {
+      "transaction_id": 1610229,
+      "score_displayed": 0.93497685,
+      "base_log_odds_displayed": -1.57293325,
+      "raw_log_odds_displayed": 2.66577847,
+      "feedback": 0,
+      "feature_count": 19,
+      "largest_absolute_contributions_displayed": [
+        [
+          "TERMINAL_KNOWN_FRAUD_RATE_1D",
+          2.20451993
+        ],
+        [
+          "CUSTOMER_AVG_AMOUNT_7D",
+          1.07897646
+        ],
+        [
+          "TERMINAL_KNOWN_FRAUD_RATE_7D",
+          0.47875388
+        ]
+      ]
+    },
+    {
+      "transaction_id": 1610324,
+      "score_displayed": 0.92505914,
+      "base_log_odds_displayed": -1.57293325,
+      "raw_log_odds_displayed": 2.51315838,
+      "feedback": 0,
+      "feature_count": 19,
+      "largest_absolute_contributions_displayed": [
+        [
+          "CUSTOMER_AMOUNT_RATIO_7D",
+          2.17509989
+        ],
+        [
+          "CUSTOMER_TX_COUNT_7D",
+          0.66573161
+        ],
+        [
+          "TERMINAL_KNOWN_LABEL_COUNT_7D",
+          0.44466937
+        ]
+      ]
+    },
+    {
+      "transaction_id": 1610316,
+      "score_displayed": 0.7340074,
+      "base_log_odds_displayed": -1.57293325,
+      "raw_log_odds_displayed": 1.01505061,
+      "feedback": 0,
+      "feature_count": 19,
+      "largest_absolute_contributions_displayed": [
+        [
+          "Feature</th><th>Valor enviado</th><th>SHAP (log-odds)</th></tr></thead><tbody><tr><th>TX_AMOUNT",
+          0.9876312
+        ],
+        [
+          "TX_HOUR",
+          0.43068655
+        ],
+        [
+          "CUSTOMER_AMOUNT_RATIO_7D",
+          0.3486382
+        ]
+      ]
+    },
+    {
+      "transaction_id": 1610407,
+      "score_displayed": 0.71979137,
+      "base_log_odds_displayed": -1.57293325,
+      "raw_log_odds_displayed": 0.94342699,
+      "feedback": 0,
+      "feature_count": 19,
+      "largest_absolute_contributions_displayed": [
+        [
+          "TERMINAL_KNOWN_FRAUD_RATE_7D",
+          4.66941306
+        ],
+        [
+          "CUSTOMER_TX_COUNT_7D",
+          -0.94157317
+        ],
+        [
+          "CUSTOMER_AVG_AMOUNT_7D",
+          -0.57259398
+        ]
+      ]
+    }
+  ],
+  "labels_used_in_explanation": false,
+  "new_training_executed": false,
+  "features_recomputed": false,
+  "champion_modified": false,
+  "global_quality_or_feature_importance_estimated": false,
+  "different_weight_successor_promotion_validated": false,
+  "native_pytest_pass_count_and_duration_supplied": false,
+  "method": {
+    "name": "TreeExplainer",
+    "output": "raw_log_odds",
+    "feature_perturbation": "tree_path_dependent",
+    "background": "training_path_counts_in_pinned_model"
+  },
+  "preparation_evidence": "case_explanations_preparation_2026-10-22.json",
+  "runbook": "docs/operations/CASE_EXPLANATIONS.md"
+}

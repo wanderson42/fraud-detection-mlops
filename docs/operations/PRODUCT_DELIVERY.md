@@ -264,8 +264,8 @@ O input preparado permite retomar sem abrir novamente os originais. Se champion,
 contrato ou código mudar, o controlador recusa a execução e conserva os recibos.
 
 A consulta de casos já mostra requisição, score, motivo de triagem e feedback;
-a [consulta enriquecida com SHAP](CASE_EXPLANATIONS.md) está implementada e
-testada localmente, aguardando aceite nativo do champion atual. Grafana
+a [consulta enriquecida com SHAP](CASE_EXPLANATIONS.md) passou no aceite nativo
+do champion atual, com cinco casos, 19 contribuições por caso e score reconstruído. Grafana
 continua com os painéis existentes; exportar métricas do novo ledger também é
 uma ligação posterior e não é inferido do sucesso do HTTP.
 
@@ -285,6 +285,22 @@ reinício no mesmo volume antes de atualizar a imagem portadora. O autor aplicou
 e verificou essa manutenção em 2026-10-22: o champion versão 1 continuou no blue,
 com a mesma release e os cinco casos consultáveis. Não foi preciso repetir o
 replay para instalar a correção. [Evidência](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json).
-O recorte de explicações por caso está preparado para o ensaio nativo: usa a
-mesma requisição HTTP e os pesos pinados do champion, confere o score e a
-aditividade e entrega HTML/SVG/JSON. [Operação](CASE_EXPLANATIONS.md).
+O recorte de explicações por caso foi aceito em 2026-10-22: usa a mesma
+requisição HTTP e os pesos pinados do champion, confere o score e a aditividade
+e entrega HTML/SVG/JSON. A verificação offline passou sem carregar o modelo.
+[Operação](CASE_EXPLANATIONS.md) · [Evidência](../../references/evidence/case_explanations_author_validation_2026-10-22.json).
+
+
+## Interface orientada à investigação
+
+O [portal Streamlit/Plotly](FRAUD_PORTAL.md) implementa visão da janela, fila
+priorizada e investigação de um caso: contexto, score, motivo da triagem,
+feedback, waterfall SHAP e rastreabilidade. A preparação inclui todas as decisões
+HTTP aceitas e associa as cinco explicações disponíveis. Casos sem SHAP continuam
+consultáveis. Os filtros ajudam a investigar e não alteram a política de alertas.
+
+A UI consulta um snapshot verificado com data/período explícitos. Seu ambiente
+isolado preserva os componentes científicos e o backend KinD. Autorização de
+pagamentos e resolução persistente de casos são contratos do produto integrador;
+a interface atual oferece consulta e exportação. O aceite nativo deste portal
+está pendente; o fluxo HTTP e as explicações anteriores continuam aceitos.

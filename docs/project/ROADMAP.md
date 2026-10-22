@@ -46,13 +46,17 @@ prioriza investigação e associa feedback. O ensaio nativo passou em
 2026-10-22, com pausa/retomada, reconciliação e consulta de casos. A
 [manutenção idempotente da release](../operations/SERVING_RECOVERY.md) também foi
 aplicada e verificada no KinD, mantendo modelo, release e casos consultáveis.
-A [integração SHAP por caso](../operations/CASE_EXPLANATIONS.md) está implementada
-e testada localmente; falta o aceite nativo dos casos do champion atual.
+A [integração SHAP por caso](../operations/CASE_EXPLANATIONS.md) foi aceita pelo
+autor em 2026-10-22: cinco casos do champion, 19 contribuições por caso,
+reconstrução do score e verificação offline do relatório, preservando o modelo.
 
-Em seguida, reaproveitar o diagnóstico SHAP existente para casos do champion
-atual. Grafana permanece com a observabilidade; consulta de casos e relatório
-explicativo vêm antes da decisão sobre uma interface adicional. Sem segunda
-implementação de features, inferência ou triagem.
+O [portal de investigação](../operations/FRAUD_PORTAL.md) está implementado e
+testado localmente: visão da janela, fila pesquisável e caso com contexto,
+feedback e SHAP Plotly. Reutiliza todas as decisões HTTP aceitas, distinguindo
+os cinco casos explicados. Falta o aceite nativo da captura e da experiência
+visual. Em seguida, consolidar instalação limpa e roteiro de demonstração por
+usuário. Grafana e MLflow mantêm suas funções; a interface não duplica inferência,
+features ou triagem.
 
 A simplificação consolidará comandos/responsabilidades, removerá componentes
 substituídos após revisar dependências e validará instalação limpa e demonstração.
@@ -68,6 +72,7 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Explicações SHAP dos casos do champion | Aceite nativo em 2026-10-22: cinco casos identificados pelos mesmos pesos/release/requests, 19 contribuições por caso, score reconstruído, HTML/SVG/JSON publicados e verificação offline sem carregar modelo. Champion preservado. [Evidência](../../references/evidence/case_explanations_author_validation_2026-10-22.json) |
 | Retomada idempotente do instalador do champion | Aceite nativo em 2026-10-22: Job com reinício no mesmo volume, manutenção aprovada da portadora, API/Registry versão 1 no blue e cinco casos consultados após a troca. Mesmo modelo e release; sem novo treino. [Evidência](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json) |
 | Eventos causais pela API do champion | Aceite do autor em 2026-10-22: teste nativo aprovado, decisões HTTP e feedback consultáveis, pausa/retomada e reinvocação conferidas pelo teste. Não altera champion nem conclui SHAP por caso. [Evidência](../../references/evidence/product_http_flow_author_validation_2026-10-22.json) |
 | Retenção governada do champion | Aceite nativo em 2026-10-22: duas rodadas, três candidatos por rodada, Inputs/artefatos/validação conferidos, ganho insuficiente e champion versão 1 preservado. Não conclui ativação ou rollback de sucessor com pesos diferentes. [Evidência](../../references/evidence/model_updates_author_validation_2026-10-22.json) |

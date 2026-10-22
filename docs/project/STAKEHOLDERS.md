@@ -38,9 +38,10 @@ Modelo, versão do champion e consulta de casos foram preservados.
 [operação](../operations/SERVING_RECOVERY.md).
 [Jornada, contratos e sequência](../operations/PRODUCT_DELIVERY.md).
 
-A integração do método SHAP existente aos casos do champion está preparada:
-relatório local com contexto, 19 contribuições, score reconstruído e vínculos com
-os pesos/features usados. O aceite nativo será registrado após o ensaio do autor.
+O autor validou as explicações SHAP de cinco casos do champion: contexto,
+19 contribuições por caso, score reconstruído e vínculos com pesos/features usados.
+A verificação offline do relatório passou sem carregar o modelo e o champion foi
+preservado. [Aceite](../../references/evidence/case_explanations_author_validation_2026-10-22.json).
 [Entrega ao analista](../operations/CASE_EXPLANATIONS.md). Grafana mantém a operação;
 a investigação usa o relatório e a consulta de casos, sem outro serviço.
 
@@ -766,3 +767,20 @@ Próximo: operação de parada/subida, retomada após reboot e fechamento integr
 ## Laboratório retomado após reboot
 
 O autor demonstrou parada/subida e retomada depois de reiniciar a máquina: mesmos volumes, identidade e score da API, histórico de tracking e indicadores operacionais. O ajuste inotify persistiu. Isso encerra o marco KinD/Helm no escopo do laboratório; agora a prioridade é simplificar a reprodução e a apresentação do portfólio. Recuperação por perda do host e interrupção abrupta seguem fora desse recorte. [Runbook](../operations/KIND_OPERATIONS.md).
+
+
+## Portal orientado à investigação — preparação em 2026-10-22
+
+| Usuário | Entrega |
+| --- | --- |
+| Sistema transacional | API com score e identidade do modelo |
+| Analista | Fila priorizada, contexto, feedback e explicação SHAP ligada ao caso |
+| Gestor de risco | Indicadores da janela e cobertura das informações |
+| Operação | Grafana com saúde, erros, atrasos e qualidade de dados |
+| Equipe de ML | MLflow com linhagem, comparação e implantação governada |
+
+O portal Streamlit/Plotly reúne a jornada do analista em três telas conectadas.
+Inclui todas as decisões do fluxo HTTP aceito; somente cinco têm a explicação
+SHAP já aceita. Não transforma feedback tardio em sinal disponível na decisão.
+Implementação/testes locais preparados; aceite visual e captura nativa pendentes.
+[Guia](../operations/FRAUD_PORTAL.md).

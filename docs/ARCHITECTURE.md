@@ -643,3 +643,17 @@ Próximo: operação de parada/subida, retomada após reboot e fechamento integr
 ## Ciclo operacional aceito
 
 O controlador `scripts.platform.kind_operations` usa ownership offline do Docker e kubeconfig privado. Escala dependentes para zero antes das dependências, para o node exato e restaura o plano inicial no mesmo container. Baselines/recibos privados ficam em `data/storage/kind-platform/operations`; Secrets entram somente como hashes. O ensaio interrompe o laboratório, sem Helm upgrade, fit, nova publicação ou recriação de volumes. Parada/subida, reboot planejado e persistência inotify aprovados em 2026-10-21, no mesmo host/node/PVCs. A composição dos aceites não equivale a migração primária ou a novo pipeline monolítico. [Guia integrado](operations/KIND_PLATFORM.md). [Procedimento](operations/KIND_OPERATIONS.md).
+
+
+## Interface de investigação
+
+O exportador `scripts/fraud_portal/export.py` reconcilia o ledger HTTP aceito e o
+relatório SHAP verificado, confere o champion na captura e publica um snapshot.
+A aplicação Streamlit/Plotly lê esse bundle com digest pinado, sem carregar o
+modelo ou herdar credenciais AWS/DB. O fluxo de pontuação e a triagem permanecem
+nos produtores existentes. O estado de navegação vive apenas na sessão da UI.
+
+A fila inclui todas as decisões do fluxo aceito; SHAP enriquece somente os casos
+já explicados. O instante da captura e o período distinguem consulta histórica de
+operação online. [Contrato e jornada](operations/FRAUD_PORTAL.md).
+O cliente local tem ambiente hash-locked próprio; o backend continua no KinD.

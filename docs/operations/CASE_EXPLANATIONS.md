@@ -102,7 +102,23 @@ promoção posterior não transforma explicações antigas em explicações dos 
 
 ## Estado do aceite
 
-Implementação e regressão local preparadas. O aceite dos casos do champion no
-KinD será fechado a partir da saída do ensaio nativo do autor. A manutenção do
-instalador já está aceita. Promoção e rollback de sucessor com pesos diferentes
-continuam como aceite independente, condicionado a candidato qualificado.
+O autor publicou e verificou os cinco casos no ensaio nativo em 2026-10-22.
+O relatório `champion-shap-v1` está vinculado ao modelo
+`6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b`
+e à release `e8350e0a841f4136983e0d905068a743`, com digest de manifest
+`1f780b2d7eb9de7a553435f3ccd69ede37eca735cbdddae6dadbb01981e0d91c`.
+A verificação offline passou sem carregar o modelo; o champion foi preservado.
+[Evidência](../../references/evidence/case_explanations_author_validation_2026-10-22.json).
+
+No caso 1610254, a taxa conhecida de fraude do terminal em 7 dias contribui
+`+4,79087707` log-odds para o score `0,99922529`. O feedback posterior dessa
+transação é 1. No caso 1610229, score `0,93497685`, a contribuição da taxa de
+1 dia é `+2,20451993`; o feedback posterior é 0. Esses exemplos permitem
+inspecionar os fatores de alertas com resultados posteriores distintos; não
+medem a qualidade global nem estabelecem causalidade.
+
+O anexo fornecido contém o HTML com as tabelas. Os cinco SVG são referenciados
+por caminhos relativos; para compartilhar o relatório completo, preserve todo
+o diretório de saída. A manutenção do instalador também está aceita. Promoção
+e rollback de sucessor com pesos diferentes permanecem como aceite independente,
+condicionado a candidato qualificado.

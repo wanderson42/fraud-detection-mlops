@@ -1479,3 +1479,34 @@ score, requisição, ledger, arquivos, links ou mudança da API bloqueia publica
 A verificação concluída não carrega modelo. O ensaio opt-in `case-explanations`
 usa os casos persistidos do champion no KinD e não treina nem repete o replay.
 [Procedimento e entrega](CASE_EXPLANATIONS.md).
+
+
+### Aceite nativo SHAP por caso — 2026-10-22
+
+O ensaio `case-explanations` publicou cinco casos e retornou
+`case_explanations_verified` na verificação offline, sem carregar modelo.
+Pesos/release do champion foram preservados. O HTML fornecido contém 19 valores
+e contribuições por caso; as somas e a sigmoide conferem na precisão exibida.
+O console confirma o digest `1f780b2d7eb9de7a553435f3ccd69ede37eca735cbdddae6dadbb01981e0d91c`.
+O anexo não inclui os SVG/JSON/manifest, nem o resumo final de quantidade/duração
+do pytest; o aceite registra exatamente as saídas de geração/verificação fornecidas.
+[Evidência](../../references/evidence/case_explanations_author_validation_2026-10-22.json).
+
+
+### Portal de investigação — preparação
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/fraud_portal tests/case_explanations tests/product_flow \
+  tests/serving_recovery tests/storage/test_managed_paths.py \
+  tests/storage/test_persistence_inventory.py tests/infra/test_platform_entrypoints.py &&
+.venv/bin/python -m tox -e portal-ui
+```
+
+O primeiro grupo verifica exportação reconciliada com a fonte, idempotência,
+recibos, contratos e regressões existentes. Os testes de UI usam o lock separado
+com Streamlit AppTest e Plotly: navegação, filtros, paginação, caso com/sem SHAP,
+feedback, rejeição de corrupção e saúde HTTP de um servidor real com fixture.
+O ambiente científico pode pular os testes opcionais de UI; `portal-ui` os executa.
+A inspeção visual no navegador nativo complementa AppTest; não foi declarada
+aprovada nesta preparação. Para aceite: [runbook](FRAUD_PORTAL.md).
