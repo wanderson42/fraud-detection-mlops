@@ -30,8 +30,10 @@ o novo ensaio programado passaram a verificação de features, scores e decisõe
 O produto ajuda uma equipe a escolher quais clientes investigar. O sistema
 transacional integra-se pela API; o analista consulta casos priorizados e os
 fatores do score; a operação acompanha saúde/qualidade no Grafana. O fluxo de eventos pela API do champion passou no ensaio nativo de 2026-10-22,
-com decisões consultáveis, feedback e retomada. A manutenção preparada da imagem instaladora
-trata a repetição segura de startup sem mudar o modelo.
+com decisões consultáveis, feedback e retomada. A imagem instaladora foi atualizada
+e verificada no KinD: startup repetido reutiliza a release sem reescrever os arquivos.
+Modelo, versão do champion e consulta de casos foram preservados.
+[Aceite da manutenção](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json).
 [Evidência](../../references/evidence/product_http_flow_author_validation_2026-10-22.json) e
 [operação](../operations/SERVING_RECOVERY.md).
 [Jornada, contratos e sequência](../operations/PRODUCT_DELIVERY.md).

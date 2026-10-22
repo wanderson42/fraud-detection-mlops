@@ -1444,3 +1444,19 @@ O teste da especificação do Job usa doubles; o reinício real é validado no K
 por `serving-recovery-prepare`, antes de qualquer alteração do slot ativo.
 Não é necessário repetir o replay completo ou treinar outro modelo.
 [Procedimento](SERVING_RECOVERY.md).
+
+
+### Aceite nativo da manutenção do instalador — 2026-10-22
+
+O autor retomou o Job existente sem novo build, aplicou a portadora com o digest
+revisado e executou `serving-recovery-verify` e `product-cases`. Resultado:
+`serving_seed_maintenance_applied` e `serving_seed_recovery_verified`, versão 1
+no blue, mesmo hash de modelo e release, entrada inválida recusada com HTTP 422
+e cinco casos consultáveis. O smoke HTTP mediu p95 de 91,33 ms em 20 requisições;
+essa amostra funcional não constitui teste de carga nem SLA.
+
+Regressão local da correção: 361 testes aprovados, 5 ignorados e 12 subtests,
+com Ruff aprovado. O ensaio isolado valida reinício do init container no mesmo
+volume; este aceite não executou outro reboot do host. A promoção recorrente com
+pesos diferentes e rollback continua pendente de candidato qualificado.
+[Evidência do autor](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json).

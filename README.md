@@ -3,7 +3,7 @@
 Rodada canônica aceita no KinD: Bronze → Jobs Silver/Gold → três candidatos com datasets registrados → HGB versão 1 em `fraud-detector@champion` → API e rollback verificados.
 [Sucessores com busca opcional e aprovação explícita de tráfego](docs/operations/MODEL_UPDATES.md): retenção nativa de candidatos aceita nas rodadas fixa e de busca; ativação de um sucessor com pesos diferentes ainda pendente.
 [Guia da rodada operacional](docs/operations/OPERATIONAL_ROUND.md).
-[Usuários e entregas do produto](docs/operations/PRODUCT_DELIVERY.md#usuários-e-entregas): sistema transacional, analista, operação e equipe de ML. O fluxo eventos → HTTP do champion → triagem passou no ensaio nativo. [Retomada idempotente do serving](docs/operations/SERVING_RECOVERY.md): manutenção preparada, sem troca de pesos.
+[Usuários e entregas do produto](docs/operations/PRODUCT_DELIVERY.md#usuários-e-entregas): sistema transacional, analista, operação e equipe de ML. O fluxo eventos → HTTP do champion → triagem passou no ensaio nativo. [Retomada idempotente do serving](docs/operations/SERVING_RECOVERY.md): manutenção aplicada e verificada no KinD, preservando o champion e a consulta de casos.
 
 
 <!-- kind-operations-acceptance-2026-10-21:start -->

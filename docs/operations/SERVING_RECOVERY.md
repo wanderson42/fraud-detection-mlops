@@ -151,3 +151,25 @@ estabelecidos somente após conferir o contexto existente. Uma tentativa de buil
 incompleta que ainda não chegou a criar `restart-job.json` permanece bloqueada para
 diagnóstico. O preparo concluído continua exigindo revisão e aprovação do digest
 antes de aplicar a manutenção.
+
+
+## Aceite operacional — 2026-10-22
+
+A manutenção foi aplicada e verificada no KinD com aprovação vinculada ao digest
+`87e33df468833c22ede18fb2899052bc2f8e7af2e2dea0c4cf4b1df6fb25ad72`.
+O preparo retomou o Job existente sem rebuild. A API permaneceu associada ao
+champion versão 1, slot blue, modelo
+`6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b`
+e release `e8350e0a841f4136983e0d905068a743`.
+
+A verificação HTTP reproduziu score `0.4178630794049542`, recusou entrada inválida
+com 422 e mediu p95 de 91,33 ms em 20 requisições locais. A consulta posterior
+retornou os cinco casos existentes com o mesmo modelo/release; suas explicações
+SHAP continuam como próximo recorte. O recibo nativo está em
+`data/storage/kind-platform/serving-maintenance/seed-restart-v1/applied.json`.
+
+A [evidência versionada](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json)
+registra o aceite a partir das saídas fornecidas pelo autor. Este passo valida
+o instalador e a manutenção do mesmo modelo; não inclui outro reboot do host
+nem a promoção de um sucessor com pesos diferentes. O fluxo de eventos concluído
+foi reutilizado, sem treino ou replay completo adicional.

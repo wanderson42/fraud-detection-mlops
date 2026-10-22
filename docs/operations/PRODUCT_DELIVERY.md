@@ -280,6 +280,9 @@ gates ou alterar aliases para fabricar uma promoção.
 
 A [manutenção do instalador](SERVING_RECOVERY.md) trata a reinicialização sobre
 uma release já presente. Reutiliza bytes iguais, recusa divergências e testa
-reinício no mesmo volume antes de atualizar a imagem portadora. O próximo
-aceite operacional é específico dessa manutenção; o fluxo de eventos HTTP
-já foi aprovado pelo autor, sem exigir novo replay para instalar a correção.
+reinício no mesmo volume antes de atualizar a imagem portadora. O autor aplicou
+e verificou essa manutenção em 2026-10-22: o champion versão 1 continuou no blue,
+com a mesma release e os cinco casos consultáveis. Não foi preciso repetir o
+replay para instalar a correção. [Evidência](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json).
+O próximo recorte liga as explicações SHAP aos pesos e às features efetivamente
+usados em cada caso do champion atual.
