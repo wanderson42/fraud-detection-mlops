@@ -195,3 +195,5 @@ hgb-optuna-optimize:
 hgb-optuna-verify:
 	@test -n "$(STUDY_PATH)" || (echo "Set STUDY_PATH"; exit 1)
 	poetry run python -m fraud_detection_mlops.modeling.experiments.hgb_optimization verify "$(STUDY_PATH)"
+
+include infra/make/updates.mk

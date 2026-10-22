@@ -1,7 +1,8 @@
 # Índice da documentação
 
 Caminho principal de execução: nova rodada com linhagem dos datasets, comparação, promoção e serving.
-[Guia da rodada operacional](operations/OPERATIONAL_ROUND.md).
+[Guia da rodada operacional](operations/OPERATIONAL_ROUND.md). Rodada inicial aceita pelo autor.
+[Sucessores: comparação, busca opcional e aprovação de tráfego](operations/MODEL_UPDATES.md); aceite nativo desse incremento pendente.
 
 Histórico dos experimentos, comparação dos três baselines e Registry:
 [transferência verificada para o KinD](operations/KIND_HISTORY.md).

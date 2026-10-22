@@ -1,0 +1,5 @@
+apiVersion: v2
+name: fraud-model-updates
+description: Qualified runtime, release init container and explicit blue-green Service routing
+version: 0.1.0
+type: application

@@ -1,0 +1,20 @@
+ownerId: '00000000000000000000000000000000'
+images:
+  runtime: fraud-kind-serving-runtime:00000000000000000000000000000000
+  artifacts: fraud-kind-serving-artifacts:00000000000000000000000000000000
+  gateway: fraud-kind-serving-gateway:00000000000000000000000000000000
+activeSlot: blue
+greenEnabled: false
+greenReplicas: 1
+manifests:
+  blue: '0000000000000000000000000000000000000000000000000000000000000000'
+  green: '0000000000000000000000000000000000000000000000000000000000000000'
+
+blueReplicas: 1
+slotImages:
+  blue:
+    runtime: fraud-kind-serving-runtime:00000000000000000000000000000000
+    artifacts: fraud-kind-serving-artifacts:00000000000000000000000000000000
+  green:
+    runtime: fraud-kind-serving-runtime:00000000000000000000000000000000
+    artifacts: fraud-kind-serving-artifacts:00000000000000000000000000000000

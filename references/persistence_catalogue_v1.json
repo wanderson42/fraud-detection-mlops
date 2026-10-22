@@ -5,6 +5,16 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/storage/kind-platform/model-updates",
+      "family": "model_update_training_comparison_approvals_transactions_and_active_identity",
+      "owner": "platform_and_modeling",
+      "producers": [
+        "scripts/model_updates/controller.py",
+        "scripts/model_updates/deployment.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/storage/kind-platform/rounds",
       "family": "operational_round_policies_data_training_promotion_and_serving",
       "owner": "platform_and_modeling",
@@ -806,6 +816,70 @@
         "local_migration_blocker": false,
         "current_behavior": "Cliente HTTP de manutenção histórica, sem novo treino.",
         "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
+      },
+      {
+        "id": "recurring_controller",
+        "source": "scripts/model_updates/controller.py",
+        "source_sha256": "2b881e1397d7d30c708ba44d9b4fa8cc97befe35ee6cab5926924f177494940d",
+        "functions": [
+          "init",
+          "qualify"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "recurring_deployment",
+        "source": "scripts/model_updates/deployment.py",
+        "source_sha256": "b01d446e99fa03cfffa24ed679a33861e37a3f374382a090665686fb48b48550",
+        "functions": [
+          "stage",
+          "release"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "recurring_registry",
+        "source": "scripts/model_updates/registry.py",
+        "source_sha256": "32bd83932d52751828e7812676b458241151da6bb5010781fe5ef38f4af9be7b",
+        "functions": [
+          "assess",
+          "register"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "recurring_search",
+        "source": "scripts/model_updates/search.py",
+        "source_sha256": "43c23d9ec3895084b025c3f316d241f59b4b9d2e2c982d940de4973c70e93c68",
+        "functions": [
+          "choose"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "recurring_training",
+        "source": "scripts/model_updates/training.py",
+        "source_sha256": "57a400ca7163aef9d36e0621e5e11bfeccdb1805e5690b706ef174481baef31e",
+        "functions": [
+          "candidates",
+          "execute"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
       }
     ],
     "decisions": {
@@ -1037,5 +1111,38 @@
     "native_cycle_validated": false,
     "historical_models_used": false,
     "production_promotion": false
+  },
+  "model_updates": {
+    "policy": "references/model_update_policy_v1.json",
+    "workspace": "data/storage/kind-platform/model-updates",
+    "controller": "scripts/model_updates/controller.py",
+    "managed_receipts": [
+      "<update-id>/update.json",
+      "<update-id>/trainer-image.json",
+      "<update-id>/training.json",
+      "<update-id>/training-job.json",
+      "<update-id>/assessment.json",
+      "<update-id>/decision.json",
+      "<update-id>/challenger.json",
+      "<update-id>/stage.json",
+      "<update-id>/release.json",
+      "<update-id>/carrier/*",
+      "<update-id>/helm-values-*.json",
+      "<update-id>/job-values.json",
+      "<update-id>/training-failure-*.json",
+      "current.json"
+    ],
+    "registry": "fraud-detector",
+    "aliases": [
+      "champion",
+      "challenger"
+    ],
+    "training_search_modes": [
+      "fixed",
+      "grid",
+      "optuna"
+    ],
+    "native_update_validated": false,
+    "retention": "Preservar modelos e datasets; nunca reescrever recibos canônicos; journal mutável registra recuperação e eventos de release. Aprovação explícita para alterar tráfego."
   }
 }

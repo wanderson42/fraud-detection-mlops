@@ -26,11 +26,12 @@ não comprovam eficácia antifraude real nem SLA de uma instituição.
 
 ## Próximo marco — simplificação e fechamento funcional
 
-Recorte em preparação: [nova rodada operacional canônica](../operations/OPERATIONAL_ROUND.md),
-com nova execução Bronze–Silver–Gold, linhagem nativa dos datasets, três candidatos,
-seleção por critérios previamente definidos e promoção em `fraud-detector@champion`,
-seguida de serving e blue/green. O histórico anterior fica como arquivo, fora dessa
-seleção. Aceite nativo da nova rodada pendente.
+A [rodada operacional canônica](../operations/OPERATIONAL_ROUND.md) foi aceita pelo
+autor: dados recompostos, três candidatos com Inputs, HGB versão 1 em champion,
+API com os mesmos pesos e rollback verificado. O próximo recorte implementa
+[substituição recorrente](../operations/MODEL_UPDATES.md), busca opcional por
+modelo e aprovação explícita da mudança de tráfego. Preparação validada
+localmente; aceite nativo dos sucessores pendente.
 
 O marco de infraestrutura KinD + Helm está concluído **no escopo de laboratório**:
 componentes aceitos por incrementos, parada/subida e reboot planejado aprovados,

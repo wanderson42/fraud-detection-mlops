@@ -1,0 +1,16 @@
+{
+  "schema": "fraud_model_update_compatibility_v1",
+  "catalogue_before_sha256": "f83e371a717bb6dfbc249877f5f87375c6e49f49c2a8a7099e5a1489af9eefc6",
+  "catalogue_after_sha256": "074353dfbb44844a9067023ed8a225d718123386416e508c5a3a023ec8bef6d6",
+  "allowed_changes": {
+    "references/persistence_catalogue_v1.json": {
+      "before": "f83e371a717bb6dfbc249877f5f87375c6e49f49c2a8a7099e5a1489af9eefc6",
+      "after": "074353dfbb44844a9067023ed8a225d718123386416e508c5a3a023ec8bef6d6"
+    },
+    "README.md": {
+      "before": "1311bbb2caa0cb1c2b1c690f2ac8a52537ba0629734e5ad34fb63095bb177d9e",
+      "after": "31cf2c4b16a4d143048dec5772c97b2a269ad6137c1e1888dabce68c019702f2"
+    }
+  },
+  "allowed_change": "additive catalogue and README acceptance documentation for model_updates; scientific first-round source unchanged; accepted receipts remain untouched"
+}

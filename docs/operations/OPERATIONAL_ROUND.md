@@ -3,7 +3,12 @@
 Esta é a nova rodada oficial de modelagem e entrega do portfólio. Ela parte do
 Bronze identificado, recompõe Silver/Gold em Jobs no KinD, treina três candidatos
 com datasets registrados no MLflow, promove o vencedor aprovado e serve seus
-pesos pela API. **Implementação preparada; aceite nativo pendente.**
+pesos pela API. **Aceite nativo fornecido pelo autor: `canonical_round_complete`.**
+
+HGB versão 1, AP de validação 0,6239485 e precisão diária por cliente @100 de 0,54.
+Os três modelos têm Inputs e recarga integral; Registry e API conferidos.
+O ensaio de mesmos pesos registrou troca, falha e rollback.
+[Atualizações futuras e aprovação explícita](MODEL_UPDATES.md).
 
 O experimento principal será `fraud-operational-portfolio-v1`. O Registry da tarefa
 é `fraud-detector`, com alias `champion`, independentemente do algoritmo vencedor.
