@@ -38,9 +38,11 @@ Modelo, versão do champion e consulta de casos foram preservados.
 [operação](../operations/SERVING_RECOVERY.md).
 [Jornada, contratos e sequência](../operations/PRODUCT_DELIVERY.md).
 
-Já existe diagnóstico SHAP do HGB. Vamos reaproveitá-lo para o champion atual e
-consulta de casos, sem atribuir explicações dos pesos antigos ao modelo ativo.
-A interface será escolhida após o contrato de consulta, sem substituir Grafana.
+A integração do método SHAP existente aos casos do champion está preparada:
+relatório local com contexto, 19 contribuições, score reconstruído e vínculos com
+os pesos/features usados. O aceite nativo será registrado após o ensaio do autor.
+[Entrega ao analista](../operations/CASE_EXPLANATIONS.md). Grafana mantém a operação;
+a investigação usa o relatório e a consulta de casos, sem outro serviço.
 
 **Os limites numéricos de promoção são específicos do laboratório. Em uma operação
 real, precisam ser calibrados com custos de fraude, falsos positivos, capacidade

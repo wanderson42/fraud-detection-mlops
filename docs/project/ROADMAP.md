@@ -46,7 +46,8 @@ prioriza investigação e associa feedback. O ensaio nativo passou em
 2026-10-22, com pausa/retomada, reconciliação e consulta de casos. A
 [manutenção idempotente da release](../operations/SERVING_RECOVERY.md) também foi
 aplicada e verificada no KinD, mantendo modelo, release e casos consultáveis.
-O próximo recorte integra SHAP ao champion atual e à consulta de investigação.
+A [integração SHAP por caso](../operations/CASE_EXPLANATIONS.md) está implementada
+e testada localmente; falta o aceite nativo dos casos do champion atual.
 
 Em seguida, reaproveitar o diagnóstico SHAP existente para casos do champion
 atual. Grafana permanece com a observabilidade; consulta de casos e relatório

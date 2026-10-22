@@ -1,0 +1,54 @@
+{
+  "schema": "fraud_champion_case_explanations_preparation_v1",
+  "status": "prepared_native_current_champion_acceptance_pending",
+  "prepared_on": "2026-10-22",
+  "scope": "bounded_persisted_HTTP_cases_exact_release_HGB_SHAP_and_readonly_investigation_report",
+  "method": {
+    "explainer": "TreeExplainer",
+    "model_output": "raw",
+    "feature_perturbation": "tree_path_dependent",
+    "background": "training_path_counts_in_pinned_model",
+    "units": "log_odds",
+    "feature_count": 19,
+    "labels_used_for_selection_or_explanation": false,
+    "reference": "fraud_detection_mlops/evaluation/validation_diagnostics.py:explain_sample",
+    "reference_source_sha256": "36a71bc933d9b530f36065823187b7a0bb0983e98a0fea70fbcb6c22318b217b"
+  },
+  "source_files": {
+    "scripts/case_explanations/__init__.py": "137de2dc9e5b5b2f9875b8a478b18a57685dd2aa4fa8cc5fb4d7ab5b9a2f07b1",
+    "scripts/case_explanations/controller.py": "0f14d223da9fca403c54a789321be25df5325df40aaba37b8e64926630401e90",
+    "scripts/case_explanations/hgb_shap.py": "4fe512f049bcda390e16aa765e7f3e65e406146aa09f403d1af8da668169904d",
+    "scripts/case_explanations/report.py": "e5f993365fdaf05b9cbcf002ca725e67796592015321e683cc53c87a268baff8"
+  },
+  "local_validation": {
+    "python": "3.14.4",
+    "shap": "0.52.0",
+    "GNU_Make": "4.4.1",
+    "passed": 327,
+    "skipped": 6,
+    "warnings": 57,
+    "subtests_passed": 12,
+    "followup_after_manifest_link_guard": {
+      "passed": 80,
+      "skipped": 1,
+      "subtests_passed": 12
+    },
+    "ruff_check_and_format_passed": true,
+    "real_synthetic_HTTP_and_real_SHAP": true,
+    "same_contributions_as_existing_diagnostics": true,
+    "source_ledger_bytes_preserved": true,
+    "offline_verify_without_model_load": true,
+    "negative_model_score_request_ledger_report_additivity_and_API_change_cases": true,
+    "native_Kubernetes_used": false,
+    "SVG_visual_review": true
+  },
+  "deployment_or_Registry_modified": false,
+  "scientific_package_or_product_flow_source_modified": false,
+  "new_dependency_or_service_added": false,
+  "model_training_executed": false,
+  "features_recomputed": false,
+  "promotion_gate_changed": false,
+  "native_current_champion_cases_validated": false,
+  "output": "data/reports/case-explanations/champion-shap-v1",
+  "runbook": "docs/operations/CASE_EXPLANATIONS.md"
+}

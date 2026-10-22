@@ -312,3 +312,5 @@ Próximo: operação de parada/subida, retomada após reboot e fechamento integr
 ## Guia para executar e apresentar
 
 [Execução e demonstração do portfólio](operations/PORTFOLIO_WALKTHROUGH.md): entradas Make para operar localhost, reproduzir os Jobs desde Bronze e escolher os ensaios. Expõe as ligações já demonstradas e as fronteiras ainda separadas.
+
+- [Explicações dos casos do champion](operations/CASE_EXPLANATIONS.md): operação, vínculo com a decisão e relatório de investigação.

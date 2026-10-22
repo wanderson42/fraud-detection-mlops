@@ -264,7 +264,8 @@ O input preparado permite retomar sem abrir novamente os originais. Se champion,
 contrato ou código mudar, o controlador recusa a execução e conserva os recibos.
 
 A consulta de casos já mostra requisição, score, motivo de triagem e feedback;
-a explicação SHAP do champion atual será ligada no próximo recorte. Grafana
+a [consulta enriquecida com SHAP](CASE_EXPLANATIONS.md) está implementada e
+testada localmente, aguardando aceite nativo do champion atual. Grafana
 continua com os painéis existentes; exportar métricas do novo ledger também é
 uma ligação posterior e não é inferido do sucesso do HTTP.
 
@@ -284,5 +285,6 @@ reinício no mesmo volume antes de atualizar a imagem portadora. O autor aplicou
 e verificou essa manutenção em 2026-10-22: o champion versão 1 continuou no blue,
 com a mesma release e os cinco casos consultáveis. Não foi preciso repetir o
 replay para instalar a correção. [Evidência](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json).
-O próximo recorte liga as explicações SHAP aos pesos e às features efetivamente
-usados em cada caso do champion atual.
+O recorte de explicações por caso está preparado para o ensaio nativo: usa a
+mesma requisição HTTP e os pesos pinados do champion, confere o score e a
+aditividade e entrega HTML/SVG/JSON. [Operação](CASE_EXPLANATIONS.md).

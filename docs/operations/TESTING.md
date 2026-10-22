@@ -1460,3 +1460,22 @@ com Ruff aprovado. O ensaio isolado valida reinício do init container no mesmo
 volume; este aceite não executou outro reboot do host. A promoção recorrente com
 pesos diferentes e rollback continua pendente de candidato qualificado.
 [Evidência do autor](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json).
+
+
+## Explicações SHAP dos casos HTTP
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/case_explanations tests/serving_recovery tests/product_flow \
+  tests/model_updates tests/operational_round tests/evaluation/test_validation_diagnostics.py \
+  tests/serving tests/storage/test_managed_paths.py \
+  tests/storage/test_persistence_inventory.py tests/infra/test_platform_entrypoints.py
+```
+
+Usa HTTP real com release sintética e SHAP real. Confere contribuições iguais ao
+diagnóstico existente, score registrado, aditividade, seleção sem rótulos, fontes
+inalteradas, integridade do relatório e digest externo. Divergência de modelo,
+score, requisição, ledger, arquivos, links ou mudança da API bloqueia publicação.
+A verificação concluída não carrega modelo. O ensaio opt-in `case-explanations`
+usa os casos persistidos do champion no KinD e não treina nem repete o replay.
+[Procedimento e entrega](CASE_EXPLANATIONS.md).

@@ -5,6 +5,16 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/reports/case-explanations",
+      "family": "identity_bound_HTTP_case_SHAP_html_svg_json_and_manifest",
+      "owner": "product_and_modeling",
+      "producers": [
+        "scripts/case_explanations/controller.py",
+        "scripts/case_explanations/report.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/storage/kind-platform/serving-maintenance",
       "family": "same_model_seed_carrier_build_restart_probe_and_approval_receipts",
       "owner": "platform",

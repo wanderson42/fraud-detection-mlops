@@ -201,3 +201,5 @@ include infra/make/updates.mk
 include infra/make/product.mk
 
 include infra/make/serving-recovery.mk
+
+include infra/make/case-explanations.mk
