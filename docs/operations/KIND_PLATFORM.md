@@ -113,3 +113,8 @@ recuperação de host perdido, falha abrupta de energia, disponibilidade contín
 promoção de modelo histórico, suporte de todos os consumidores locais ou um
 inventário global completo. Cada conclusão continua vinculada ao respectivo
 recorte e recibo, sem ampliar os aceites anteriores.
+
+
+## Entrada pelo Make
+
+O [guia de execução e demonstração](PORTFOLIO_WALKTHROUGH.md) oferece os comandos `make platform-*` e um roteiro para avaliadores. O Make é uma camada fina sobre os CLIs; não cria um novo orquestrador nem conecta implicitamente novo Gold, replay e modelo da API. Os atalhos aguardam a conferência local; os aceites nativos anteriores permanecem preservados.

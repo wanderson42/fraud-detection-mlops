@@ -1,0 +1,44 @@
+{
+  "schema": "fraud_kind_history_readback_fix_preparation_v1",
+  "status": "prepared_native_verification_pending",
+  "prepared_on": "2026-10-21",
+  "scope": "empty_artifact_missing_listing_size_with_mandatory_byte_readback_and_narrow_plan_revision",
+  "author_diagnostic": {
+    "origin": "snapshot-extras",
+    "path": "data/tracking/publish.lock",
+    "expected_bytes": 0,
+    "listed_bytes": null,
+    "missing_paths": [],
+    "unexpected_paths": []
+  },
+  "behavior": {
+    "only_None_for_expected_zero_accepted_in_listing": true,
+    "all_downloaded_sizes_and_SHA256_checked": true,
+    "missing_or_extra_paths_rejected": true,
+    "known_size_mismatch_rejected": true,
+    "None_for_nonempty_rejected": true,
+    "original_plan_preserved": true,
+    "revised_plan_preserves_payload_reference_and_destination": true,
+    "unknown_source_pin_changes_rejected": true,
+    "target_API_writes_during_plan_revision": false
+  },
+  "previous_transfer_sha256": "ec4abeb238bf34e080e19ce6f8cbf5174c3725de7b3f3035f8ab0b7588e5ef73",
+  "current_transfer_sha256": "c65ffcae8095042c31abdd0ee10a7d91e89e55fa9bbfab072f385f5f1da08e93",
+  "local_validation": {
+    "python": "3.14.4",
+    "mlflow": "3.17.0",
+    "passed": 23,
+    "seconds": 43.42,
+    "additional_tests": 9,
+    "real_HTTP_import_and_three_baseline_reload_regression_passed": true,
+    "zero_size_null_listing_download_size_and_hash_negatives_passed": true,
+    "plan_revision_preservation_idempotence_and_foreign_pin_refusal_passed": true,
+    "ruff_check_and_format_passed": true,
+    "native_KinD_not_executed_here": true
+  },
+  "native_verification_passed": false,
+  "champion_assignment_validated": false,
+  "historical_release_deployed": false,
+  "refit": false,
+  "production_promotion": false
+}

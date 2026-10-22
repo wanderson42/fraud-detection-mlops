@@ -1,5 +1,10 @@
 # Armazenamento, persistência e recuperação
 
+A [transferência histórica para o MLflow do KinD](KIND_HISTORY.md) consome apenas
+os bundles restaurados e verificados. Ela preserva as fontes, mapeia os novos IDs
+e lê integralmente os artefatos de volta pelo proxy HTTP. O aceite nativo do
+recorte está pendente; ele não declara migração primária de todo o projeto.
+
 Atualizado em **2026-10-19**. Esta decisão define o destino de datasets, artefatos,
 estado e métricas. Inventário e piloto limitado de upload/restauração estão implementados e testados
 com arquivos gerados e S3 simulado. O autor também validou inventário completo

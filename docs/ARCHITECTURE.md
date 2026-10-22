@@ -1,5 +1,10 @@
 # Organização e dependências
 
+A transferência do snapshot histórico usa a API do MLflow existente no KinD.
+Um mapa liga IDs originais e novos, e o Registry vincula o HGB aprovado ao gate
+histórico. [Contrato e aceites](operations/KIND_HISTORY.md). O aceite nativo deste
+recorte está pendente; o registro não muda a release instalada no serving.
+
 <!-- kind-operations-acceptance-2026-10-21:start -->
 **Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
 Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
