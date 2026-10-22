@@ -1,0 +1,43 @@
+{
+  "schema": "fraud_serving_seed_probe_fix_preparation_v1",
+  "status": "prepared_native_resume_pending",
+  "date": "2026-10-22",
+  "observed_native_diagnostic": {
+    "source_sha256": "548c722cce6a0f75500cee7fb701502c89fb1d70a5cf014cb7ef1d86f83e8ee5",
+    "job": "fraud-seed-check-c26bfeaf350a",
+    "job_uid": "9ca5720e-6634-4ae5-9a1b-75889d53600f",
+    "job_succeeded": true,
+    "init_restarts": 1,
+    "init_exit_code": 0,
+    "verification_exit_code": 0,
+    "both_current_results": "canonical_release_reused",
+    "files_written_each": 0,
+    "files_reused_each": 3,
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "previous_log_available": false,
+    "active_API_maintenance_applied": false
+  },
+  "fix": {
+    "previous_log_dependency_removed": true,
+    "live_job_and_pod_spec_UID_image_and_exactly_one_restart_required": true,
+    "exact_model_three_files_and_zero_writes_required": true,
+    "old_job_reused_without_build": true,
+    "source_and_release_context_verified_before_resume": true,
+    "prior_receipts_not_rewritten": true,
+    "completed_probe_retained_for_inspection": true
+  },
+  "local_validation": {
+    "passed": 361,
+    "skipped": 5,
+    "subtests_passed": 12,
+    "ruff_check_and_format_passed": true,
+    "native_Kubernetes_used": false,
+    "HTTP_SQLite_and_MLflow_regression": true,
+    "negative_spec_owner_image_restart_and_release_cases": true,
+    "telemetry_disabled": true
+  },
+  "native_resume_validated": false,
+  "native_active_maintenance_validated": false,
+  "training_executed": false,
+  "champion_changed": false
+}

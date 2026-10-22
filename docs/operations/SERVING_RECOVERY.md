@@ -61,8 +61,13 @@ O Job isolado começa com volume vazio, instala a release e encerra seu init
 container deliberadamente com exit 17. O Kubernetes o reinicia no mesmo pod e
 volume; a segunda execução precisa retornar `canonical_release_reused` e exit 0.
 O contêiner de verificação confirma a reutilização mais uma vez. São conferidos
-restart count, imagem efetiva e logs de instalação/reutilização. O Job é removido
-apenas depois de gravar seu recibo; Jobs com falha permanecem para diagnóstico.
+especificação do Job/pod, vínculo pelo UID, exatamente um reinício, imagem efetiva
+e os dois resultados de reutilização (modelo exato, zero escritas, três arquivos).
+O comando revisado só encerra com 17 depois da instalação; a prova combina esse
+comando, o reinício e a reutilização no mesmo volume. Não depende de `logs --previous`,
+que pode estar indisponível após a conclusão. O recibo identifica essa base de
+comprovação e não inventa o conteúdo do log anterior. O Job permanece para inspeção;
+uma repetição do preparo reutiliza o mesmo Job, sem criar outro.
 Esse ensaio não interrompe a API ativa nem reinicia a máquina.
 
 A saída esperada é `prepared_awaiting_approval`, com `native_restart_check` igual
@@ -129,3 +134,20 @@ deve ser confundido com o ponteiro atual `fraud-detector@champion`.
 O aceite desta correção será registrado depois de executar prepare/apply/verify
 no ambiente nativo. A correção não declara um novo reboot do host. A ativação e
 rollback nativos de um sucessor com pesos diferentes continuam pendentes.
+
+
+## Retomar uma preparação interrompida na coleta de evidência
+
+Após aplicar, testar e commitar a correção do coletor, repita o mesmo comando
+`make serving-recovery-prepare SERVING_NO_OTHER_WRITERS=1`. Preserve o diretório
+`seed-restart-v1` e seu Job. A retomada verifica os arquivos do contexto contra as
+releases ativas, o instalador e o Dockerfile atuais, consulta a identidade da imagem
+já carregada e confere o plano e o pod do Job retido. Não reconstrói a imagem nem
+troca a API. Conteúdo divergente, outro node ou baseline diferente são recusados.
+
+`preparing.json` fixa a baseline e o node; `image.json` fixa a identidade carregada.
+Na primeira retomada de uma tentativa anterior à criação desses recibos, eles são
+estabelecidos somente após conferir o contexto existente. Uma tentativa de build
+incompleta que ainda não chegou a criar `restart-job.json` permanece bloqueada para
+diagnóstico. O preparo concluído continua exigindo revisão e aprovação do digest
+antes de aplicar a manutenção.

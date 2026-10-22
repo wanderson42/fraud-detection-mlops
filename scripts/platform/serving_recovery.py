@@ -110,9 +110,27 @@ def config():
     return json.loads((f.ROOT / "references/model_update_policy_v1.json").read_bytes())
 
 
+def includes(expected, actual):
+    """Compare declared fields while allowing API-server defaults and status fields."""
+    if isinstance(expected, dict):
+        return isinstance(actual, dict) and all(
+            key in actual and includes(value, actual[key]) for key, value in expected.items()
+        )
+    if isinstance(expected, list):
+        return (
+            isinstance(actual, list)
+            and len(expected) == len(actual)
+            and all(includes(left, right) for left, right in zip(expected, actual, strict=True))
+        )
+    return expected == actual
+
+
 def seed_job(image, active, folder):
     """Force init exit 17 once, then require reuse on restart over the SAME emptyDir."""
-    name = "fraud-seed-check-" + uuid4().hex[:12]
+    saved_path = folder / "restart-job.json"
+    saved = json.loads(saved_path.read_bytes()) if saved_path.exists() else None
+    name = saved["metadata"]["name"] if saved else "fraud-seed-check-" + uuid4().hex[:12]
+    p.require(name.startswith("fraud-seed-check-") and len(name) == 29, "Invalid restart Job name")
     slot = active["slot"]
     digest = active["plan"]["releases"][slot]["manifest_sha256"]
     script = (
@@ -170,12 +188,16 @@ def seed_job(image, active, folder):
             },
         },
     }
-    f.private_json(folder / "restart-job.json", job)
-    f.kube("create", "-f", "-", data=json.dumps(job))
+    if saved:
+        p.require(saved == job, "Saved restart Job differs from the reviewed probe")
+    else:
+        f.private_json(saved_path, job)
+        f.kube("create", "-f", "-", data=json.dumps(job))
     deadline = time.monotonic() + 150
     print("Waiting for isolated init-container restart/reuse check...", flush=True)
     while True:
         state = json.loads(f.kube("get", "job", name, "-o", "json").stdout)
+        p.require(includes(job, state), "Live restart Job differs from the reviewed probe")
         if state.get("status", {}).get("succeeded") == 1:
             break
         p.require(
@@ -188,11 +210,20 @@ def seed_job(image, active, folder):
     ]
     p.require(len(pods) == 1, "Expected one isolated restart-check pod")
     pod = pods[0]
+    p.require(
+        includes(job["spec"]["template"]["spec"], pod["spec"])
+        and pod["status"]["phase"] == "Succeeded"
+        and any(
+            owner.get("uid") == state["metadata"]["uid"] and owner.get("controller") is True
+            for owner in pod["metadata"].get("ownerReferences", [])
+        ),
+        "Restart-check pod spec or Job ownership differs",
+    )
     init = pod["status"]["initContainerStatuses"][0]
     probe = pod["status"]["containerStatuses"][0]
     p.require(
         init["name"] == "release"
-        and init["restartCount"] >= 1
+        and init["restartCount"] == 1
         and init["state"]["terminated"]["exitCode"]
         == probe["state"]["terminated"]["exitCode"]
         == 0,
@@ -204,31 +235,42 @@ def seed_job(image, active, folder):
             in {kind_tracking.image_digest(v) for v in image["loaded_identities"]},
             "Restart-check image differs",
         )
-    previous = f.kube("logs", pod["metadata"]["name"], "-c", "release", "--previous").stdout
     reused = f.kube("logs", pod["metadata"]["name"], "-c", "release").stdout
     verified = f.kube("logs", pod["metadata"]["name"], "-c", "verify").stdout
-    p.require(
-        json.loads(previous)["status"] == "canonical_release_seeded"
-        and json.loads(reused)["status"]
-        == json.loads(verified)["status"]
-        == "canonical_release_reused",
-        "Seed Job logs do not prove install then reuse",
-    )
+    for output in (reused, verified):
+        p.require(
+            json.loads(output)
+            == {
+                "status": "canonical_release_reused",
+                "model_sha256": active["model_sha256"],
+                "files_written": 0,
+                "files_reused": 3,
+            },
+            "Seed Job logs do not prove exact-model reuse without writes",
+        )
     receipt = {
         "status": "seed_restart_verified",
         "job": name,
         "job_uid": state["metadata"]["uid"],
         "pod_uid": pod["metadata"]["uid"],
         "init_restarts": init["restartCount"],
-        "initial": json.loads(previous),
+        "installation_evidence": "reviewed_forced_exit_command_one_restart_and_exact_model_reuse",
+        "previous_log_required": False,
         "restarted": json.loads(reused),
         "probe": json.loads(verified),
         "same_emptyDir": True,
         "image": image,
         "production_API_interrupted": False,
     }
-    f.private_json(folder / "restart-check.json", receipt)
-    f.kube("delete", "job", name, "--wait=true")
+    receipt_path = folder / "restart-check.json"
+    if receipt_path.exists():
+        p.require(
+            json.loads(receipt_path.read_bytes()) == receipt, "Saved restart receipt differs"
+        )
+    else:
+        f.private_json(receipt_path, receipt)
+    # Retain the bounded completed probe for diagnosis; prepare retries do not create another Job.
+    # No correctness decision depends on kubelet retaining an earlier container's logs.
     return receipt
 
 
@@ -242,42 +284,104 @@ def prepare(key, no_other_writers):
     before = current()
     baseline_gate = deployment.check_active(before, config())
     folder.mkdir(mode=0o700, parents=True, exist_ok=True)
-    p.require(
-        not any(folder.iterdir()) and folder.stat().st_mode & 0o077 == 0,
-        "Use a new private recovery workspace; preserve incomplete attempts",
-    )
+    p.require(folder.stat().st_mode & 0o077 == 0, "Recovery workspace must be private")
     context = folder / "carrier"
-    context.mkdir()
+    resumed = any(folder.iterdir())
+    if resumed:
+        p.require(
+            {v.name for v in folder.iterdir()}
+            <= {
+                "carrier",
+                "restart-job.json",
+                "restart-check.json",
+                "image.json",
+                "preparing.json",
+            }
+            and (folder / "restart-job.json").is_file(),
+            "Incomplete build has no restart Job; preserve the attempt for diagnosis",
+        )
+        p.require(not context.is_symlink(), "Carrier context must not be a symlink")
+        expected_files = {"seed.py", "Dockerfile"}
+        expected_files.update(
+            f"{slot}/{name}"
+            for slot in ("blue", "green")
+            for name in ("manifest.json", "pipeline.skops", "smoke.json")
+        )
+        p.require(
+            {v.relative_to(context).as_posix() for v in context.rglob("*") if not v.is_dir()}
+            == expected_files
+            and not any(v.is_symlink() for v in context.rglob("*")),
+            "Carrier context contains unexpected files or links",
+        )
+    else:
+        context.mkdir()
     for slot in ("blue", "green"):
         destination = context / slot
-        destination.mkdir()
+        if not resumed:
+            destination.mkdir()
         for name in ("manifest.json", "pipeline.skops", "smoke.json"):
-            shutil.copyfile(Path(before["paths"][slot]) / name, destination / name)
-    shutil.copyfile(f.ROOT / "scripts/operational_round/seed.py", context / "seed.py")
-    shutil.copyfile(f.ROOT / "infra/kind/serving/Dockerfile.artifacts", context / "Dockerfile")
-    tag = "fraud-kind-serving-artifacts:" + uuid4().hex
-    print("Building the idempotent carrier with the SAME release bytes...", flush=True)
-    original.image_command(
-        [
-            "docker",
-            "build",
-            "--platform",
-            "linux/amd64",
-            "--file",
-            context / "Dockerfile",
-            "--tag",
-            tag,
-            context,
-        ],
-        timeout=300,
-    )
-    loaded = original.load_image(tag)
+            source = Path(before["paths"][slot]) / name
+            if resumed:
+                p.require(p.sha(source) == p.sha(destination / name), "Saved release bytes differ")
+            else:
+                shutil.copyfile(source, destination / name)
+    for source, target in (
+        (f.ROOT / "scripts/operational_round/seed.py", context / "seed.py"),
+        (f.ROOT / "infra/kind/serving/Dockerfile.artifacts", context / "Dockerfile"),
+    ):
+        if resumed:
+            p.require(p.sha(source) == p.sha(target), "Saved carrier source differs")
+        else:
+            shutil.copyfile(source, target)
+    preparing = {
+        "before_active": before,
+        "node_uid": node_uid,
+        "seed_sha256": p.sha(context / "seed.py"),
+    }
+    if (folder / "preparing.json").exists():
+        p.require(
+            json.loads((folder / "preparing.json").read_bytes()) == preparing,
+            "Recovery baseline or node changed",
+        )
+    else:
+        f.private_json(folder / "preparing.json", preparing)
+    if resumed:
+        saved_job = json.loads((folder / "restart-job.json").read_bytes())
+        tag = saved_job["spec"]["template"]["spec"]["initContainers"][0]["image"]
+        p.require(tag.startswith("fraud-kind-serving-artifacts:"), "Unexpected carrier tag")
+        print("Resuming the retained restart probe without rebuilding...", flush=True)
+        loaded = original.cri(tag)
+    else:
+        tag = "fraud-kind-serving-artifacts:" + uuid4().hex
+        print("Building the idempotent carrier with the SAME release bytes...", flush=True)
+        original.image_command(
+            [
+                "docker",
+                "build",
+                "--platform",
+                "linux/amd64",
+                "--file",
+                context / "Dockerfile",
+                "--tag",
+                tag,
+                context,
+            ],
+            timeout=300,
+        )
+        loaded = original.load_image(tag)
     image = {
         "image": tag,
         "identity": loaded["id"],
         "loaded_identities": [loaded["id"], *loaded.get("repoDigests", [])],
         "seed_sha256": p.sha(context / "seed.py"),
     }
+    if (folder / "image.json").exists():
+        p.require(
+            json.loads((folder / "image.json").read_bytes()) == image,
+            "Recovery carrier image identity changed",
+        )
+    else:
+        f.private_json(folder / "image.json", image)
     check = seed_job(image, before, folder)
     p.require(current() == before, "Serving state changed during recovery preparation")
     after = copy.deepcopy(before)

@@ -254,7 +254,10 @@ def test_completed_HTTP_flow_receipt_and_ledger_survive_operational_transition(
     assert (folder / "checkpoint.sqlite").read_bytes() == checkpoint_bytes
 
 
-def test_restart_probe_spec_allows_forced_retry_and_preserves_failed_job(tmp_path, monkeypatch):
+@pytest.mark.parametrize("tamper", [None, "command", "owner", "image", "restarts"])
+def test_restart_probe_spec_allows_forced_retry_and_preserves_failed_job(
+    tmp_path, monkeypatch, tamper
+):
     from types import SimpleNamespace
 
     from fraud_detection_mlops.storage import managed_paths
@@ -277,7 +280,13 @@ def test_restart_probe_spec_allows_forced_retry_and_preserves_failed_job(tmp_pat
             return SimpleNamespace(stdout="")
         if args[:2] == ("get", "job"):
             return SimpleNamespace(
-                stdout=json.dumps({"metadata": {"uid": "job-uid"}, "status": {"succeeded": 1}})
+                stdout=json.dumps(
+                    {
+                        **created[-1],
+                        "metadata": {**created[-1]["metadata"], "uid": "job-uid"},
+                        "status": {"succeeded": 1},
+                    }
+                )
             )
         if args[:2] == ("get", "pods"):
             return SimpleNamespace(
@@ -285,10 +294,30 @@ def test_restart_probe_spec_allows_forced_retry_and_preserves_failed_job(tmp_pat
                     {
                         "items": [
                             {
-                                "metadata": {"name": "probe-pod", "uid": "pod-uid"},
+                                "metadata": {
+                                    "name": "probe-pod",
+                                    "uid": "pod-uid",
+                                    "ownerReferences": [
+                                        {
+                                            "uid": "foreign" if tamper == "owner" else "job-uid",
+                                            "controller": True,
+                                        }
+                                    ],
+                                },
+                                "spec": {}
+                                if tamper == "command"
+                                else copy.deepcopy(created[-1]["spec"]["template"]["spec"]),
                                 "status": {
+                                    "phase": "Succeeded",
                                     "initContainerStatuses": [
-                                        {**statuses, "name": "release", "restartCount": 1}
+                                        {
+                                            **statuses,
+                                            "name": "release",
+                                            "restartCount": 2 if tamper == "restarts" else 1,
+                                            "imageID": "sha256:" + "f" * 64
+                                            if tamper == "image"
+                                            else statuses["imageID"],
+                                        }
                                     ],
                                     "containerStatuses": [{**statuses, "name": "verify"}],
                                 },
@@ -303,18 +332,39 @@ def test_restart_probe_spec_allows_forced_retry_and_preserves_failed_job(tmp_pat
             )
             if bad[0]:
                 state = "wrong"
-            return SimpleNamespace(stdout=json.dumps({"status": state}))
+            assert "--previous" not in args, (
+                "Previous container logs may already have been collected"
+            )
+            return SimpleNamespace(
+                stdout=json.dumps(
+                    {
+                        "status": state,
+                        "model_sha256": snapshot["model_sha256"],
+                        "files_written": 0,
+                        "files_reused": 3,
+                    }
+                )
+            )
         return SimpleNamespace(stdout="")
 
     monkeypatch.setattr(r.f, "kube", kube)
+    if tamper:
+        with pytest.raises(ValueError):
+            r.seed_job(image, snapshot, folder)
+        assert not (folder / "restart-check.json").exists()
+        assert not any(c[0] == "delete" for c in calls)
+        return
     assert r.seed_job(image, snapshot, folder)["init_restarts"] == 1
+    calls.clear()
+    assert r.seed_job(image, snapshot, folder)["previous_log_required"] is False
+    assert not any(c[0] in {"create", "delete"} for c in calls)
     spec = created[0]["spec"]["template"]["spec"]
     assert spec["restartPolicy"] == "OnFailure" and created[0]["spec"]["backoffLimit"] > 1
     assert spec["automountServiceAccountToken"] is False
     assert spec["volumes"] == [{"name": "model", "emptyDir": {"sizeLimit": "64Mi"}}]
     assert spec["initContainers"][0]["volumeMounts"] == spec["containers"][0]["volumeMounts"]
     assert "SystemExit(17" in spec["initContainers"][0]["command"][-1]
-    assert any(c[0] == "delete" for c in calls)
+    assert not any(c[0] == "delete" for c in calls)
     second = tmp_path / "storage/rejected-probe"
     second.mkdir()
     calls.clear()
@@ -323,3 +373,64 @@ def test_restart_probe_spec_allows_forced_retry_and_preserves_failed_job(tmp_pat
         r.seed_job(image, snapshot, second)
     assert not any(c[0] == "delete" for c in calls)
     assert (second / "restart-job.json").exists() and not (second / "restart-check.json").exists()
+
+
+@pytest.mark.parametrize("changed", [False, True])
+def test_prepare_resumes_existing_carrier_without_build_or_new_job(tmp_path, monkeypatch, changed):
+    from fraud_detection_mlops.storage import managed_paths
+
+    monkeypatch.setattr(managed_paths, "DATA_DIR", tmp_path)
+    folder = tmp_path / "storage/maintenance"
+    root = tmp_path / "source"
+    seed = root / "scripts/operational_round/seed.py"
+    dockerfile = root / "infra/kind/serving/Dockerfile.artifacts"
+    for file in (seed, dockerfile):
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_text(file.name)
+    before = active()
+    for slot in ("blue", "green"):
+        source = tmp_path / slot
+        source.mkdir()
+        before["paths"][slot] = str(source)
+        for name in ("manifest.json", "pipeline.skops", "smoke.json"):
+            (source / name).write_text(slot + name)
+    monkeypatch.setattr(r.f, "ROOT", root)
+    monkeypatch.setattr(r.f, "owner", lambda: {"node_uid": "node"})
+    monkeypatch.setattr(r, "work", lambda _: folder)
+    monkeypatch.setattr(r, "committed", lambda: {"reviewed": "yes"})
+    monkeypatch.setattr(r, "current", lambda: copy.deepcopy(before))
+    monkeypatch.setattr(r, "config", dict)
+    monkeypatch.setattr(r.deployment, "check_active", lambda *_: {"ready": True})
+    builds = []
+    monkeypatch.setattr(r.original, "image_command", lambda *a, **k: builds.append(a))
+    loaded = {"id": "sha256:" + "a" * 64}
+    monkeypatch.setattr(r.original, "load_image", lambda _: loaded)
+    monkeypatch.setattr(r.original, "cri", lambda _: loaded)
+    probes = []
+
+    def probe(image, active, folder):
+        probes.append(image)
+        if len(probes) == 1:
+            r.f.private_json(
+                folder / "restart-job.json",
+                {"spec": {"template": {"spec": {"initContainers": [{"image": image["image"]}]}}}},
+            )
+            raise ValueError("logs unavailable")
+        return {"status": "seed_restart_verified"}
+
+    monkeypatch.setattr(r, "seed_job", probe)
+    with pytest.raises(ValueError, match="logs"):
+        r.prepare("same", True)
+    snapshot = (folder / "restart-job.json").read_bytes()
+    if changed:
+        (tmp_path / "blue/pipeline.skops").write_text("changed")
+        with pytest.raises(ValueError, match="release bytes differ"):
+            r.prepare("same", True)
+        assert len(probes) == 1
+    else:
+        result = r.prepare("same", True)
+        assert result["before_active"] == before
+        assert result["status"] == "prepared_awaiting_approval"
+        assert probes[0] == probes[1]
+    assert len(builds) == 1
+    assert (folder / "restart-job.json").read_bytes() == snapshot

@@ -26,7 +26,7 @@
     },
     "scripts/platform/serving_recovery.py": {
       "before": null,
-      "after": "7719933dee4c258f3f4945f03206fb42660c83c7ceb238793d78765e3386e007"
+      "after": "f640f8979966b1fb387030bd804bfd321d0f857c6a319ea0103b02412e15a94c"
     }
   }
 }
