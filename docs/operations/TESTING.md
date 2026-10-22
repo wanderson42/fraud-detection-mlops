@@ -1427,3 +1427,20 @@ A preparação exige código/política commitados e fonte concluída. Após
 O teste chama a API já instalada, pausa e retoma o ledger próprio, confere
 Registry/rota/HTTP e publica um recibo somente depois dos gates finais.
 Não modifica workloads, pesos, aliases ou o replay fonte. [Runbook](PRODUCT_DELIVERY.md#executar-eventos-pela-api-do-champion).
+
+
+## Retomada idempotente da release
+
+O ensaio nativo do produto passou com 1 teste em 493,00 s; consulte a
+[evidência do autor](../../references/evidence/product_http_flow_author_validation_2026-10-22.json).
+O anexo traz a saída do teste e cinco casos, sem o rehearsal.json completo;
+não se inferem contagens totais ou métricas de qualidade a partir dessa amostra.
+
+`tests/serving_recovery` verifica release igual sem regravação, release parcial,
+interrupção da cópia e da publicação atômica, recusa de divergências/links,
+aprovação, recusa de estado de terceiros, retomada da publicação de current.json
+e leitura de recibo/ledger HTTP antigo após a transição operacional exata.
+O teste da especificação do Job usa doubles; o reinício real é validado no KinD
+por `serving-recovery-prepare`, antes de qualquer alteração do slot ativo.
+Não é necessário repetir o replay completo ou treinar outro modelo.
+[Procedimento](SERVING_RECOVERY.md).

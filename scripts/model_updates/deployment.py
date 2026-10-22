@@ -191,7 +191,9 @@ def stage(key):
         )
         files(intent["plan"])
         return intent
-    baseline = info["baseline"]
+    from scripts.platform.serving_recovery import resolve_active
+
+    baseline = resolve_active(info["baseline"])
     check_active(baseline, info["policy"])
     selected = json.loads((path / "challenger.json").read_bytes())
     summary = u.training_result(key)

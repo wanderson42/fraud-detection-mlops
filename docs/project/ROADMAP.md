@@ -40,12 +40,12 @@ mesmo node/PVCs e leituras funcionais conferidas. A [sequência integrada](../op
 consolida os comandos e os limites. Isso não declara migração primária, promoção
 histórica, recuperação por perda do host ou uma nova execução monolítica do fluxo.
 
-O próximo aceite é a [jornada de entrega ao usuário](../operations/PRODUCT_DELIVERY.md):
-conectar eventos e features causais à API do champion, persistir scores/decisões,
-priorizar investigação e associar feedback. O aceite deve reconciliar uma mesma
-execução e demonstrar falha/retomada sem duplicação. O adaptador HTTP está
-preparado, com testes reais locais; pausa/retomada contra a API do KinD ainda
-aguarda execução nativa. Não há novo treino ou implantação neste recorte.
+A [jornada de entrega ao usuário](../operations/PRODUCT_DELIVERY.md) conecta
+eventos e features causais à API do champion, persiste scores/decisões,
+prioriza investigação e associa feedback. O ensaio nativo passou em
+2026-10-22, com pausa/retomada, reconciliação e consulta de casos. O próximo
+aceite operacional é a [retomada idempotente da release](../operations/SERVING_RECOVERY.md),
+seguida da integração SHAP do champion e da consulta de investigação.
 
 Em seguida, reaproveitar o diagnóstico SHAP existente para casos do champion
 atual. Grafana permanece com a observabilidade; consulta de casos e relatório
@@ -66,6 +66,7 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Eventos causais pela API do champion | Aceite do autor em 2026-10-22: teste nativo aprovado, decisões HTTP e feedback consultáveis, pausa/retomada e reinvocação conferidas pelo teste. Não altera champion nem conclui SHAP por caso. [Evidência](../../references/evidence/product_http_flow_author_validation_2026-10-22.json) |
 | Retenção governada do champion | Aceite nativo em 2026-10-22: duas rodadas, três candidatos por rodada, Inputs/artefatos/validação conferidos, ganho insuficiente e champion versão 1 preservado. Não conclui ativação ou rollback de sucessor com pesos diferentes. [Evidência](../../references/evidence/model_updates_author_validation_2026-10-22.json) |
 | Infraestrutura do fluxo em KinD + Helm | Concluída no escopo do laboratório por aceites incrementais de fundação, tracking, datasets, Jobs, replay, serving, observabilidade e operação. Sequência consolidada; fontes históricas preservadas. Não é migração primária nem execução integral nova em produção. [Guia integrado](../operations/KIND_PLATFORM.md) |
 | Parada/subida e reboot planejado | Aceite nativo em 2026-10-21: oito workloads retomados no mesmo node/PVCs, boot_id mudou e inotify 512/524288 persistiu. Tracking/S3, serving e monitoramento iguais ao baseline. Sem recuperação por perda do host ou interrupção abrupta. [Evidência](../../references/evidence/kind_operations_author_validation_2026-10-21.json) |

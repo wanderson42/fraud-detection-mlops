@@ -14,6 +14,7 @@ from scripts.model_updates import deployment
 from scripts.operational_round import policy as p
 from scripts.operational_round import serving
 from scripts.platform import kind_foundation as f
+from scripts.platform import source_compatibility
 from scripts.product_flow import inputs
 from scripts.product_flow.http_scoring import HTTPScorer, checked_response, digest
 from scripts.product_flow.ledger import HTTPReplay
@@ -66,9 +67,7 @@ def work(key):
 def read(key):
     folder = work(key)
     value = json.loads(f.managed_destination(folder / "input.json", "storage").read_bytes())
-    p.require(
-        value["source_pins"] == pins(), "Product flow implementation changed; preserve receipt"
-    )
+    source_compatibility.accept(value["source_pins"], pins(), f.ROOT)
     p.require(
         value["policy"] == policy(), "Product policy changed; use an explicit reviewed revision"
     )
@@ -354,7 +353,9 @@ def verify_ledger(folder, value):
 
 @contextmanager
 def target(value):
-    expected = value["active"]
+    from scripts.platform.serving_recovery import resolve_active
+
+    expected = resolve_active(value["active"])
     p.require(active() == expected, "Active deployment changed; preserve this product flow")
     config = json.loads((f.ROOT / "references/model_update_policy_v1.json").read_bytes())
     before = deployment.check_active(expected, config)

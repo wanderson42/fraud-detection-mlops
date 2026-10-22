@@ -152,8 +152,8 @@ Terraform sucede a estabilização dessa experiência.
 
 ## Executar eventos pela API do champion
 
-A implementação deste recorte foi preparada e testada com HTTP real local.
-O aceite contra a API instalada no KinD será registrado após execução pelo autor.
+O ensaio do autor passou em 2026-10-22: 1 teste nativo em 493,00 s, com casos
+pontuados pelo champion e feedback associado. [Evidência do fluxo](../../references/evidence/product_http_flow_author_validation_2026-10-22.json).
 Não há novo treino, build, Helm upgrade, troca de tráfego ou mudança de alias.
 A tabela de usuários é a referência para a entrega, não declaração de que todas
 as interfaces de investigação já estejam implementadas.
@@ -274,3 +274,12 @@ A promoção recorrente de um sucessor com pesos diferentes e seu rollback ainda
 precisam de aceite nativo no KinD quando existir candidato qualificado. A retenção
 nativa já aceita não é reaberta. Este fluxo usa o champion atual, sem flexibilizar
 gates ou alterar aliases para fabricar uma promoção.
+
+
+## Retomada do instalador da release
+
+A [manutenção do instalador](SERVING_RECOVERY.md) trata a reinicialização sobre
+uma release já presente. Reutiliza bytes iguais, recusa divergências e testa
+reinício no mesmo volume antes de atualizar a imagem portadora. O próximo
+aceite operacional é específico dessa manutenção; o fluxo de eventos HTTP
+já foi aprovado pelo autor, sem exigir novo replay para instalar a correção.

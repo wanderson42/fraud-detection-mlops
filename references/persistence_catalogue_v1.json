@@ -5,6 +5,15 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/storage/kind-platform/serving-maintenance",
+      "family": "same_model_seed_carrier_build_restart_probe_and_approval_receipts",
+      "owner": "platform",
+      "producers": [
+        "scripts/platform/serving_recovery.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/storage/kind-platform/product-flow",
       "family": "causal_HTTP_champion_events_exchanges_triage_feedback_and_receipts",
       "owner": "product_and_platform",
@@ -831,7 +840,7 @@
       {
         "id": "recurring_controller",
         "source": "scripts/model_updates/controller.py",
-        "source_sha256": "2b881e1397d7d30c708ba44d9b4fa8cc97befe35ee6cab5926924f177494940d",
+        "source_sha256": "8507b9e1739132efdddfa1b72ac33a90dea014f998e0b0df569653a3d91cf785",
         "functions": [
           "init",
           "qualify"
@@ -844,7 +853,7 @@
       {
         "id": "recurring_deployment",
         "source": "scripts/model_updates/deployment.py",
-        "source_sha256": "b01d446e99fa03cfffa24ed679a33861e37a3f374382a090665686fb48b48550",
+        "source_sha256": "032cebb34a206782bd4a59f3f73eef2790f7c6e569fb162c10f065eb65347525",
         "functions": [
           "stage",
           "release"

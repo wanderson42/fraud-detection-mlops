@@ -1,0 +1,66 @@
+{
+  "schema": "fraud_product_http_flow_author_validation_v1",
+  "status": "accepted_in_author_environment",
+  "validated_on": "2026-10-22",
+  "validation_mode": "author_supplied_native_test_output_and_case_sample_not_independent_cluster_execution",
+  "source_commit": "4468075",
+  "source_console_sha256": "b4970a4b81553115565473e584db588f1d74a86aa93ba03fdb0f93055c80abed",
+  "flow_id": "champion-http-v1",
+  "native_test": {
+    "passed": 1,
+    "pytest_seconds": 493.0,
+    "tox_seconds": 508.11
+  },
+  "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+  "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+  "case_sample": [
+    {
+      "transaction_id": 1610254,
+      "source_clock": "2018-09-16T00:31:38",
+      "score": 0.9992252927052574,
+      "triage_status": "alert",
+      "feedback_available_ns": 1537662698000000000,
+      "transaction_feedback": 1
+    },
+    {
+      "transaction_id": 1610229,
+      "source_clock": "2018-09-16T00:15:00",
+      "score": 0.9349768537095329,
+      "triage_status": "alert",
+      "feedback_available_ns": 1537661700000000000,
+      "transaction_feedback": 0
+    },
+    {
+      "transaction_id": 1610324,
+      "source_clock": "2018-09-16T01:11:56",
+      "score": 0.9250591387049124,
+      "triage_status": "alert",
+      "feedback_available_ns": 1537665116000000000,
+      "transaction_feedback": 0
+    },
+    {
+      "transaction_id": 1610316,
+      "source_clock": "2018-09-16T01:09:48",
+      "score": 0.7340073968778428,
+      "triage_status": "alert",
+      "feedback_available_ns": 1537664988000000000,
+      "transaction_feedback": 0
+    },
+    {
+      "transaction_id": 1610407,
+      "source_clock": "2018-09-16T01:55:49",
+      "score": 0.7197913731380251,
+      "triage_status": "alert",
+      "feedback_available_ns": 1537667749000000000,
+      "transaction_feedback": 0
+    }
+  ],
+  "sample_is_not_a_quality_estimate": true,
+  "full_rehearsal_json_supplied": false,
+  "acceptance_basis": "The author reports the passing committed live test, whose assertions require pause/resume, HTTP receipt/decision count equality and no new score calls on completed reinvocation.",
+  "fit_executed": false,
+  "champion_modified": false,
+  "current_champion_SHAP_integration_validated": false,
+  "native_distinct_weight_successor_activation_validated": false,
+  "permanent_seed_restart_fix_validated": false
+}

@@ -199,3 +199,5 @@ hgb-optuna-verify:
 include infra/make/updates.mk
 
 include infra/make/product.mk
+
+include infra/make/serving-recovery.mk

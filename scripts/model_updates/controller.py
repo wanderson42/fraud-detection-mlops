@@ -11,7 +11,7 @@ from scripts.model_updates import policy
 from scripts.operational_round import controller as c
 from scripts.operational_round import policy as p
 from scripts.operational_round import serving as original_serving
-from scripts.platform import kind_datasets, kind_pipeline, kind_tracking
+from scripts.platform import kind_datasets, kind_pipeline, kind_tracking, source_compatibility
 from scripts.platform import kind_foundation as f
 from scripts.storage import gold_archive
 
@@ -57,6 +57,8 @@ def pins():
         "references/model_update_compatibility_v1.json",
         "references/model_update_policy_v1.json",
         "references/model_update_policy_search_v1.json",
+        "scripts/platform/source_compatibility.py",
+        "scripts/platform/serving_recovery.py",
     ]:
         values[name] = p.sha(f.ROOT / name)
     for folder in [
@@ -93,9 +95,9 @@ def committed(policy_path):
 def read(key):
     value = json.loads((work(key) / "update.json").read_bytes())
     current = {**pins(), value["policy_path"]: p.sha(f.ROOT / value["policy_path"])}
+    source_compatibility.accept(value["source_pins"], current, f.ROOT)
     p.require(
-        value["source_pins"] == current
-        and value["node_uid"] == f.owner()["node_uid"]
+        value["node_uid"] == f.owner()["node_uid"]
         and value["policy"] == policy.load(f.ROOT / value["policy_path"]),
         "Update implementation, policy or node changed; preserve receipts",
     )

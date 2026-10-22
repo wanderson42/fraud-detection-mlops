@@ -4,6 +4,11 @@
 com o mesmo node/PVCs e persistência dos valores inotify. Não há recuperação
 por perda do host, restauração de backup ou nova avaliação do modelo neste gate.
 
+Para o champion canônico `fraud-detector`, a [manutenção da imagem instaladora](SERVING_RECOVERY.md)
+trata startup repetido no mesmo volume, com comandos Make e sem alterar pesos/alias.
+Os baselines deste documento pertencem ao ensaio que os gerou; não representam
+automaticamente o estado de uma release posterior.
+
 O controlador usa o kubeconfig privado e o namespace `fraud-platform`. Confere o
 recibo da fundação, o ID exato do container do node, o UID Kubernetes e a identidade
 do Docker Engine. Não usa o contexto global para escolher um cluster. Não cria

@@ -29,8 +29,11 @@ o novo ensaio programado passaram a verificação de features, scores e decisõe
 
 O produto ajuda uma equipe a escolher quais clientes investigar. O sistema
 transacional integra-se pela API; o analista consulta casos priorizados e os
-fatores do score; a operação acompanha saúde/qualidade no Grafana. O adaptador de eventos à API do champion está preparado com testes HTTP locais;
-o aceite no KinD verificará a mesma execução, decisões persistidas e retomada.
+fatores do score; a operação acompanha saúde/qualidade no Grafana. O fluxo de eventos pela API do champion passou no ensaio nativo de 2026-10-22,
+com decisões consultáveis, feedback e retomada. A manutenção preparada da imagem instaladora
+trata a repetição segura de startup sem mudar o modelo.
+[Evidência](../../references/evidence/product_http_flow_author_validation_2026-10-22.json) e
+[operação](../operations/SERVING_RECOVERY.md).
 [Jornada, contratos e sequência](../operations/PRODUCT_DELIVERY.md).
 
 Já existe diagnóstico SHAP do HGB. Vamos reaproveitá-lo para o champion atual e
