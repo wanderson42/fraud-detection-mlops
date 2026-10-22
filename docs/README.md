@@ -321,3 +321,6 @@ Próximo: operação de parada/subida, retomada após reboot e fechamento integr
 
 - [Desempenho do modelo no portal](operations/PORTAL_PERFORMANCE.md): contrato
   independente do algoritmo, métricas temporais e interpretação para investigação.
+
+- [Operação do produto](operations/PRODUCT_OPERATIONS.md): estado atual,
+  responsabilidades, chegada de eventos e próxima consolidação operacional.

@@ -302,8 +302,8 @@ consultáveis. Os filtros ajudam a investigar e não alteram a política de aler
 A UI consulta um snapshot verificado com data/período explícitos. Seu ambiente
 isolado preserva os componentes científicos e o backend KinD. Autorização de
 pagamentos e resolução persistente de casos são contratos do produto integrador;
-a interface atual oferece consulta e exportação. O aceite nativo deste portal
-está pendente; o fluxo HTTP e as explicações anteriores continuam aceitos.
+a interface atual oferece consulta e exportação. O aceite nativo deste portal e da avaliação foi concluído em 2026-10-22;
+o fluxo HTTP e as explicações anteriores continuam aceitos.
 
 
 ## Transparência para o usuário
@@ -316,3 +316,13 @@ usar o ranking, as consequências do limiar/orçamento e a identidade avaliada.
 A interface segue o contrato do snapshot; promover outro algoritmo não exige
 reescrever telas. Ganho sobre revisão humana ou economia financeira deve ser
 medido em operação, não inferido de AP, ROC-AUC ou um caso com score elevado.
+
+
+## Aceite do portal e próxima jornada operacional
+
+O autor confirmou a conferência visual em 2026-10-22 após prepare/verify/smoke
+nativos: 67.255 transações na avaliação e 200 decisões na consulta, mesmo modelo,
+recall e falsos positivos calculados por política/unidade, champion preservado.
+O [próximo recorte](PRODUCT_OPERATIONS.md) consolida a sessão com chegada gradual,
+fila atualizada e métricas da mesma execução. O analista consulta a fila; um
+operador controla o produtor de demonstração. Refresh da consulta não cria dados.

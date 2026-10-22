@@ -28,8 +28,8 @@ não comprovam eficácia antifraude real nem SLA de uma instituição.
 
 A [rodada operacional canônica](../operations/OPERATIONAL_ROUND.md) foi aceita pelo
 autor: dados recompostos, três candidatos com Inputs, HGB versão 1 em champion,
-API com os mesmos pesos e rollback verificado. O próximo recorte implementa
-[substituição recorrente](../operations/MODEL_UPDATES.md), busca opcional por
+API com os mesmos pesos e rollback verificado. A implementação de
+[substituição recorrente](../operations/MODEL_UPDATES.md) inclui busca opcional por
 modelo e aprovação explícita da mudança de tráfego. Em 2026-10-22, as rodadas
 fixa e de busca validaram a retenção nativa do champion; ativação, rollback e
 recuperação de um sucessor com pesos diferentes no KinD continuam pendentes.
@@ -50,13 +50,19 @@ A [integração SHAP por caso](../operations/CASE_EXPLANATIONS.md) foi aceita pe
 autor em 2026-10-22: cinco casos do champion, 19 contribuições por caso,
 reconstrução do score e verificação offline do relatório, preservando o modelo.
 
-O [portal de investigação](../operations/FRAUD_PORTAL.md) está implementado e
-testado localmente: visão da janela, fila pesquisável e caso com contexto,
-feedback e SHAP Plotly. Reutiliza todas as decisões HTTP aceitas, distinguindo
-os cinco casos explicados. Falta o aceite nativo da captura e da experiência
-visual. Em seguida, consolidar instalação limpa e roteiro de demonstração por
-usuário. Grafana e MLflow mantêm suas funções; a interface não duplica inferência,
-features ou triagem.
+O [portal de investigação](../operations/FRAUD_PORTAL.md) e sua
+[página de desempenho](../operations/PORTAL_PERFORMANCE.md) foram aceitos
+funcional e visualmente em 2026-10-22: 200 casos consultáveis e 67.255 transações
+de validação identificadas, com comparação, curvas e métricas da política.
+O portal é independente do algoritmo; explicações são capacidades opcionais.
+Esse recorte está encerrado.
+
+**Próximo recorte: [consolidação da demonstração operacional](../operations/PRODUCT_OPERATIONS.md).**
+Unificar comandos/destino ativo e demonstrar chegada gradual de eventos pela API,
+fila e métricas da mesma sessão, com pausa/retomada e atualização visível.
+O portal atual é um snapshot; o monitoramento KinD aceito usa cópia concluída.
+Não abrir novos estudos de modelo, broker, feature store ou CT para esse recorte.
+A simplificação e revisão de redundâncias fazem parte dessa consolidação.
 
 A simplificação consolidará comandos/responsabilidades, removerá componentes
 substituídos após revisar dependências e validará instalação limpa e demonstração.
@@ -72,6 +78,7 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Portal e transparência do modelo | Aceite nativo e visual em 2026-10-22: 200 decisões/13 alertas/cinco explicações; avaliação de 67.255 transações, comparação, curvas e recall/falsos positivos com unidade/política explícitas. Mesmo modelo, champion preservado. Consulta por snapshot; sessão contínua é próxima consolidação. [Evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json) |
 | Explicações SHAP dos casos do champion | Aceite nativo em 2026-10-22: cinco casos identificados pelos mesmos pesos/release/requests, 19 contribuições por caso, score reconstruído, HTML/SVG/JSON publicados e verificação offline sem carregar modelo. Champion preservado. [Evidência](../../references/evidence/case_explanations_author_validation_2026-10-22.json) |
 | Retomada idempotente do instalador do champion | Aceite nativo em 2026-10-22: Job com reinício no mesmo volume, manutenção aprovada da portadora, API/Registry versão 1 no blue e cinco casos consultados após a troca. Mesmo modelo e release; sem novo treino. [Evidência](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json) |
 | Eventos causais pela API do champion | Aceite do autor em 2026-10-22: teste nativo aprovado, decisões HTTP e feedback consultáveis, pausa/retomada e reinvocação conferidas pelo teste. Não altera champion nem conclui SHAP por caso. [Evidência](../../references/evidence/product_http_flow_author_validation_2026-10-22.json) |
@@ -782,12 +789,13 @@ Os pendentes operacionais das notas anteriores estão encerrados nesse escopo.
 [Runbook](../operations/KIND_OPERATIONS.md) e [guia integrado](../operations/KIND_PLATFORM.md).
 
 
-### Recorte preparado — desempenho e transparência no portal
+### Recorte concluído — desempenho e transparência no portal
 
 Quarta página implementada, com contrato independente do algoritmo, Inputs e
 pesos conferidos, ranking temporal, curvas, métricas da política e rastreabilidade.
 A fila pode existir sem explicador compatível. Testes e navegador locais usam
-fixtures; falta preparar e aceitar a avaliação do snapshot nativo. O produto
+fixtures; o autor aceitou a avaliação do snapshot nativo e a conferência visual
+em 2026-10-22. O produto
 prioriza investigação, com políticas e feedback; não transforma alvo binário em
 veredito automático nem afirma economia operacional sem medição.
 [Guia](../operations/PORTAL_PERFORMANCE.md). O próximo fechamento consolida o

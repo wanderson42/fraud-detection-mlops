@@ -589,5 +589,11 @@ O portal ganhou uma área de [desempenho e transparência](docs/operations/PORTA
 com avaliação temporal, comparação de candidatos e carga da política de alertas,
 sempre vinculadas ao modelo/release do snapshot. A interface é independente do
 algoritmo; explicações são capacidades opcionais. O produto apoia priorização e
-investigação, com feedback posterior e decisões governadas. Preparação local
-concluída; aceite nativo da nova página pendente.
+investigação, com feedback posterior e decisões governadas. Aceite nativo funcional e visual concluído em 2026-10-22, com 67.255 transações
+de validação e o mesmo modelo dos casos.
+
+
+[Operação do produto e próximo recorte](docs/operations/PRODUCT_OPERATIONS.md):
+responsabilidades, dados históricos como fluxo reproduzível e consolidação da
+sessão operacional. O portal atual consulta snapshots; atualização contínua da
+fila e das métricas da mesma sessão é o próximo aceite, sem novo treinamento.

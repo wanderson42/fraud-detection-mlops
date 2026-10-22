@@ -118,3 +118,13 @@ recorte e recibo, sem ampliar os aceites anteriores.
 ## Entrada pelo Make
 
 O [guia de execução e demonstração](PORTFOLIO_WALKTHROUGH.md) oferece os comandos `make platform-*` e um roteiro para avaliadores. O Make é uma camada fina sobre os CLIs; não cria um novo orquestrador nem conecta implicitamente novo Gold, replay e modelo da API. Os atalhos aguardam a conferência local; os aceites nativos anteriores permanecem preservados.
+
+
+## Produto atual e operação centralizada
+
+Make/CLIs controlam a plataforma; Helm mantém workloads; Grafana observa;
+Streamlit serve a investigação; MLflow mantém evidência e Registry. O portal e
+a avaliação temporal estão aceitos em 2026-10-22. Eles consultam evidências
+identificadas, sem declarar uma sessão contínua já concluída. A consolidação
+revisará também atalhos de serving inicial versus champion ativo.
+[Guia de responsabilidades, dados e próximos critérios](PRODUCT_OPERATIONS.md).

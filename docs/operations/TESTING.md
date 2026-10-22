@@ -1528,3 +1528,15 @@ não são lidos pelo loader de validação, que a política conserva primeira pa
 e orçamento, publicação idempotente, métricas corrompidas/fora de contexto e UI
 para HGB, regressão e identidade de algoritmo futuro. Os rótulos não participam
 da seleção de alertas. [Aceite nativo e comandos](PORTAL_PERFORMANCE.md).
+
+
+### Aceite nativo da página de desempenho — 2026-10-22
+
+O autor executou portal-performance-prepare, portal-performance-verify e
+portal-smoke. A avaliação usou 67.255 transações; o snapshot manteve 200 decisões,
+199 clientes, 13 alertas, 200 feedbacks e cinco explicações. O verificador offline
+não carregou modelo. Hash de pesos e champion preservados; conferência visual
+explicitamente concluída pelo autor. O manifest da avaliação está registrado na
+[evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json).
+Não implica nova confirmação independente, promoção de sucessor ou chegada
+contínua de novos eventos ao portal.

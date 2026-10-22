@@ -128,8 +128,9 @@ pontuação. Grafana e MLflow mantêm suas responsabilidades especializadas.
 
 ## Aceite deste recorte
 
-Implementação e testes locais preparados; falta executar a exportação com os
-recibos nativos e conferir a interface na máquina do autor. O aceite deve mostrar
+O smoke nativo aprovou 200 decisões, 199 clientes, 13 alertas, 200 feedbacks
+e cinco explicações. O autor confirmou a revisão visual do portal e da página
+de desempenho em 2026-10-22. O aceite deve mostrar
 contagens completas do fluxo, cobertura SHAP correta, navegação/filtros,
 reconstrução de um caso explicado e estado de caso sem explicação. Pesos,
 release, champion e arquivos de origem devem permanecer iguais.
@@ -160,4 +161,10 @@ modelo do snapshot. [Guia de desempenho](PORTAL_PERFORMANCE.md): comparação,
 Precision–Recall, ROC, recall/precisão da política e proveniência. A UI não depende
 do tipo do estimador; score, avaliação e explicação são capacidades distintas.
 O alvo 0/1 do treinamento não representa uma decisão automática sobre pagamentos.
-A preparação nativa dessa página está pendente. O smoke de casos permanece aceito.
+A preparação nativa, a verificação offline e a revisão visual da página foram
+aceitas em 2026-10-22. [Evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json).
+
+
+O aceite acima encerra consulta de casos e avaliação identificada. A operação
+com chegada gradual e consulta acompanhando a mesma sessão será consolidada
+no [próximo recorte operacional](PRODUCT_OPERATIONS.md).

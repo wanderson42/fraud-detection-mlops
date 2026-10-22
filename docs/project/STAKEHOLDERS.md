@@ -794,4 +794,15 @@ falsos positivos e carga por cliente/dia. O analista conserva o contexto por cas
 A UI lê evidência identificada e não depende de HGB: uma nova versão/algoritmo
 entra por outro snapshot e relatório compatível. Explicações ausentes são
 informadas; não há explicações fabricadas nem score tratado como certeza.
-[Aceite da nova página ainda pendente](../operations/PORTAL_PERFORMANCE.md).
+[Aceite nativo e visual concluído em 2026-10-22](../operations/PORTAL_PERFORMANCE.md).
+
+
+### Aceite nativo do portal e da avaliação — 2026-10-22
+
+Prepare, verificação offline, smoke e conferência visual aceitos: 67.255 transações
+na avaliação e 200 decisões na consulta. Recall e falsos positivos são calculados,
+com limiar, orçamento, período e unidades definidos; a AP não é usada para
+inferir essas quantidades. Mesmo modelo dos casos e champion preservado.
+[Evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json).
+A próxima entrega consolida a chegada dos eventos e a fila/métricas da mesma
+sessão. [Responsabilidades de cada usuário](../operations/PRODUCT_OPERATIONS.md).

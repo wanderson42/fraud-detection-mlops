@@ -120,6 +120,15 @@ request, unidade e reconstrução antes de fornecer dados à UI.
 - `data/storage/kind-platform/portal/<portal-id>-performance.json`: vínculo pinado ao snapshot.
 
 Arquivos originais de casos/SHAP são preservados. O recibo é privado e contém
-caminho absoluto; não o publique. A evidência desta entrega é de preparação:
-testes locais e navegador com fixture. A avaliação dos dados nativos e a revisão
-dessa página no ambiente do autor ainda precisam do aceite correspondente.
+caminho absoluto; não o publique. O autor aprovou o prepare, a verificação offline,
+o smoke e a conferência visual em 2026-10-22: 67.255 transações de validação,
+mesmo modelo do snapshot e champion preservado. O objetivo de recall/falsos
+positivos, com política, limiar, orçamento, período e unidades explícitas, foi
+aceito. [Evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json).
+
+A avaliação está pinada pelo manifest
+`6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475`;
+o snapshot de casos, por
+`ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af`.
+Os valores detalhados permanecem no performance.json verificado, sem inferi-los
+da AP ou copiar números não fornecidos no console. [Próxima consolidação operacional](PRODUCT_OPERATIONS.md).

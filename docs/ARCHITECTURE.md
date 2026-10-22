@@ -666,3 +666,13 @@ MLflow/Gold e do cálculo offline. A UI não importa estimadores ou bibliotecas 
 treinamento. O produtor verifica pesos, Inputs, métricas e validação; o leitor
 recusa ligação a outro snapshot/modelo/release. Inferência, avaliação e explicação
 são capacidades independentes. [Contrato](operations/PORTAL_PERFORMANCE.md).
+
+
+### Aceite da avaliação e consolidação operacional
+
+A página de desempenho foi aceita funcional e visualmente pelo autor em
+2026-10-22, com validação completa de 67.255 transações e vínculos ao mesmo
+modelo/release da consulta de 200 casos. O portal continua lendo snapshots;
+o monitoramento KinD aceito consulta uma cópia de replay concluído. O próximo
+recorte liga a chegada gradual de eventos, a fila e a observabilidade de uma
+mesma sessão. [Responsabilidades e critério](operations/PRODUCT_OPERATIONS.md).
