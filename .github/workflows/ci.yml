@@ -12,7 +12,7 @@ jobs:
   quality:
     name: Lint, formatting and tests
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     env:
       POETRY_VIRTUALENVS_IN_PROJECT: "true"
@@ -39,7 +39,7 @@ jobs:
         run: poetry install
 
       - name: Run isolated quality checks with tox
-        run: poetry run tox -e py314
+        run: poetry run tox -e py314 -- tests --durations=25
 
   serving-delivery:
     name: Build and qualify synthetic serving delivery
