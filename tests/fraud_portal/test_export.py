@@ -62,3 +62,15 @@ def test_make_prepare_requires_verified_digest_and_writer_declaration(dispatch):
         "scripts.fraud_portal.controller",
         "prepare",
     ]
+
+
+def test_accepted_queue_can_be_exported_without_algorithm_specific_explanation(
+    accepted, tmp_path, monkeypatch
+):
+    monkeypatch.setattr(
+        export.f, "managed_destination", lambda path, area: data.checked_path(path)
+    )
+    result = export.prepare(tmp_path / "no-explainer", "queue", "fixture", None, None, True)
+    value, _ = data.load_bundle(Path(result["directory"]), result["manifest_sha256"])
+    assert len(value["cases"]) == 2 and result["summary"]["explanations"] == 0
+    assert value["source_explanation_manifest_sha256"] is None

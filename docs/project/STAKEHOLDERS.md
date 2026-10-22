@@ -784,3 +784,14 @@ Inclui todas as decisões do fluxo HTTP aceito; somente cinco têm a explicaçã
 SHAP já aceita. Não transforma feedback tardio em sinal disponível na decisão.
 Implementação/testes locais preparados; aceite visual e captura nativa pendentes.
 [Guia](../operations/FRAUD_PORTAL.md).
+
+
+### Evidência do modelo e interpretação do produto
+
+A área de desempenho preparada permite ao gestor e à equipe de ML comparar
+candidatos na validação temporal, ver Precision–Recall/ROC e entender recall,
+falsos positivos e carga por cliente/dia. O analista conserva o contexto por caso.
+A UI lê evidência identificada e não depende de HGB: uma nova versão/algoritmo
+entra por outro snapshot e relatório compatível. Explicações ausentes são
+informadas; não há explicações fabricadas nem score tratado como certeza.
+[Aceite da nova página ainda pendente](../operations/PORTAL_PERFORMANCE.md).

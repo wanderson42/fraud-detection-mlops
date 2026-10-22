@@ -71,6 +71,7 @@ def load_bundle(directory, expected):
         ids.add(tid)
         require(
             response["model_sha256"] == value["model_sha256"]
+            and response["model_id"] == value["model_id"]
             and response["serving_release_id"] == value["serving_release_id"]
             and isinstance(response["score"], (int, float))
             and math.isfinite(response["score"])

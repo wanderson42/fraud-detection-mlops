@@ -9,7 +9,8 @@
       "family": "private_portal_access_receipt_with_external_manifest_digest",
       "owner": "product",
       "producers": [
-        "scripts/fraud_portal/export.py"
+        "scripts/fraud_portal/export.py",
+        "scripts/fraud_portal/performance/collect.py"
       ],
       "review_required": false
     },
@@ -18,7 +19,8 @@
       "family": "verified_read_only_investigation_snapshot_and_manifest",
       "owner": "product",
       "producers": [
-        "scripts/fraud_portal/export.py"
+        "scripts/fraud_portal/export.py",
+        "scripts/fraud_portal/performance/collect.py"
       ],
       "review_required": false
     },
@@ -928,6 +930,19 @@
         "local_migration_blocker": false,
         "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
         "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "portal_validation_performance",
+        "source": "scripts/fraud_portal/performance/collect.py",
+        "source_sha256": "0502c1505d51654d7558ddf2a4c1ee46470e695460305082b16fee7a97d72b81",
+        "functions": [
+          "collect",
+          "prepare"
+        ],
+        "kind": "readonly_snapshot_evaluation",
+        "local_migration_blocker": false,
+        "current_behavior": "Leitura HTTP MLflow de Inputs, relatórios e pesos; validação identificada somente; métricas e simulação de fila offline; sem fit, escrita Registry ou mudança de tráfego.",
+        "migration_gate": "Preparação da página de desempenho; aceite nativo pendente em PORTAL_PERFORMANCE.md."
       }
     ],
     "decisions": {

@@ -135,3 +135,29 @@ reconstrução de um caso explicado e estado de caso sem explicação. Pesos,
 release, champion e arquivos de origem devem permanecer iguais.
 A promoção recorrente de sucessor com pesos diferentes continua aguardando
 candidato qualificado, independentemente do aceite do portal.
+
+
+## Aparência e contraste
+
+O portal usa tema escuro próprio, aplicado pelo launcher aos componentes nativos
+Streamlit: fundo azul profundo, superfícies de cartões mais claras, texto claro,
+controles azuis e contribuições SHAP em azul/âmbar. Plotly usa a mesma paleta,
+incluindo eixos, legendas e hover, sem receber substituição automática do tema.
+A paleta e os estilos ficam em `scripts/fraud_portal/theme.py`.
+
+Uma alteração no launcher exige encerrar `make portal-open` com Ctrl+C e executar
+o mesmo comando novamente. Não é necessário reinstalar dependências, recapturar
+dados ou regenerar explicações. A conferência no navegador do autor deve cobrir
+as três telas e os filtros, além do smoke funcional já aprovado com 200 decisões,
+199 clientes, 13 alertas, 200 feedbacks e cinco explicações. Esse resultado confirma
+HTTP/snapshot; a aprovação visual do tema escuro é um aceite complementar.
+
+
+## Desempenho e independência do algoritmo
+
+A quarta página apresenta avaliação temporal e carga de investigação ligadas ao
+modelo do snapshot. [Guia de desempenho](PORTAL_PERFORMANCE.md): comparação,
+Precision–Recall, ROC, recall/precisão da política e proveniência. A UI não depende
+do tipo do estimador; score, avaliação e explicação são capacidades distintas.
+O alvo 0/1 do treinamento não representa uma decisão automática sobre pagamentos.
+A preparação nativa dessa página está pendente. O smoke de casos permanece aceito.

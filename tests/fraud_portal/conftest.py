@@ -64,6 +64,8 @@ def bundle(tmp_path, monkeypatch):
         "schema": "fraud_investigation_snapshot_v1",
         "model_sha256": model,
         "serving_release_id": release,
+        "model_id": "hist_gradient_boosting",
+        "registry_version_at_capture": "7",
         "cases": cases,
         "alert_policy": {"score_threshold": 0.5, "daily_customer_budget": 100},
     }

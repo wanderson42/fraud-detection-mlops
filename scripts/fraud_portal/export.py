@@ -21,16 +21,21 @@ from fraud_detection_mlops.streaming.replay.native_causal_replay import job_lock
 
 def prepare(root, key, flow_id, explanation_id, explanation_sha, no_other_writers):
     data.require(no_other_writers, "Declare PRODUCT_NO_OTHER_WRITERS=1")
-    # The accepted reader verifies the external digest, all report bytes and source checkpoint.
-    report_result = explanations.verify(explanation_id, explanation_sha)
     source, value = flow.work(flow_id), flow.read(flow_id)
-    report_dir = explanations.work(explanation_id)
-    report_manifest = json.loads((report_dir / "manifest.json").read_bytes())
-    data.require(report_manifest["flow_id"] == flow_id, "Relatório pertence a outro fluxo")
-    explained = {
-        c["request"]["transaction_id"]: c
-        for c in json.loads((report_dir / "cases.json").read_bytes())
-    }
+    if explanation_id is None:
+        data.require(explanation_sha is None, "Não informe digest sem relatório")
+        # Snapshot verification checks the accepted checkpoint without invoking an explainer.
+        explanations.snapshot(flow_id, 1)
+        explained, report_result = {}, {"case_count": 0}
+    else:
+        report_result = explanations.verify(explanation_id, explanation_sha)
+        report_dir = explanations.work(explanation_id)
+        report_manifest = json.loads((report_dir / "manifest.json").read_bytes())
+        data.require(report_manifest["flow_id"] == flow_id, "Relatório pertence a outro fluxo")
+        explained = {
+            c["request"]["transaction_id"]: c
+            for c in json.loads((report_dir / "cases.json").read_bytes())
+        }
     before = explanations.source_files(source)
     manifest = ReleaseManifest.model_validate(value["release_manifest"])
     cases = []

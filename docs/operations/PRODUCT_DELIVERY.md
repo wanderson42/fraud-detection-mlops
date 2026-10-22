@@ -304,3 +304,15 @@ isolado preserva os componentes científicos e o backend KinD. Autorização de
 pagamentos e resolução persistente de casos são contratos do produto integrador;
 a interface atual oferece consulta e exportação. O aceite nativo deste portal
 está pendente; o fluxo HTTP e as explicações anteriores continuam aceitos.
+
+
+## Transparência para o usuário
+
+O score ordena risco para apoiar investigação, não substitui contexto e políticas
+de decisão por um veredito binário. O alvo supervisionado 0/1 tem um papel no
+aprendizado e na avaliação, enquanto o produto entrega fila, evidência, capacidade
+e rastreabilidade. A [página de desempenho](PORTAL_PERFORMANCE.md) mostra por que
+usar o ranking, as consequências do limiar/orçamento e a identidade avaliada.
+A interface segue o contrato do snapshot; promover outro algoritmo não exige
+reescrever telas. Ganho sobre revisão humana ou economia financeira deve ser
+medido em operação, não inferido de AP, ROC-AUC ou um caso com score elevado.

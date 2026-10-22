@@ -6,23 +6,12 @@ import os
 from pathlib import Path
 
 import pandas as pd
-from scripts.fraud_portal import charts, data
+from scripts.fraud_portal import charts, data, theme
+from scripts.fraud_portal.performance import view as performance_view
 import streamlit as st
 
 st.set_page_config(page_title="Fraud Ops · Investigação", page_icon="🔎", layout="wide")
-st.markdown(
-    """<style>
-[data-testid="stAppViewContainer"]{background:#f5f7fa}
-[data-testid="stSidebar"]{background:#e9eff5;border-right:1px solid #d6e0ea}
-h1,h2,h3{color:#233d58;letter-spacing:-.025em}
-[data-testid="stMetric"]{background:white;border:1px solid #dbe3ec;border-radius:12px;padding:18px}
-[data-testid="stMetricLabel"]{color:#596d82}
-[data-testid="stMetricValue"]{color:#233d58;font-size:2rem}
-[data-testid="stDataFrame"]{border-radius:10px}
-.block-container{padding-top:2rem;max-width:1500px}
-</style>""",
-    unsafe_allow_html=True,
-)
+st.markdown(theme.CSS, unsafe_allow_html=True)
 
 
 def load():
@@ -43,7 +32,11 @@ def open_case(transaction):
 
 def plot(figure, key):
     st.plotly_chart(
-        figure, width="stretch", key=key, config={"displaylogo": False, "scrollZoom": False}
+        figure,
+        theme=None,
+        width="stretch",
+        key=key,
+        config={"displaylogo": False, "scrollZoom": False},
     )
 
 
@@ -72,9 +65,9 @@ def overview(value):
     ):
         column.metric(label, number, help=help_text)
     left, right = st.columns(2)
-    with left:
+    with left, st.container(border=True, key="outcomes-card"):
         plot(charts.outcomes(cases), "outcomes")
-    with right:
+    with right, st.container(border=True, key="scores-card"):
         plot(charts.scores(cases, value["alert_policy"]["score_threshold"]), "scores")
     st.subheader("Próximos casos para investigar")
     highlighted = data.select(cases, statuses=("alert",))[:3]
@@ -83,22 +76,31 @@ def overview(value):
             "Não há alertas gerados nesta janela. A fila permite consultar as demais decisões."
         )
     for column, case in zip(st.columns(max(1, len(highlighted))), highlighted):
-        with column, st.container(border=True):
+        with (
+            column,
+            st.container(border=True, key=f"priority-case-{case['request']['transaction_id']}"),
+        ):
             tid = case["request"]["transaction_id"]
-            st.markdown(f"**Transação {tid}**")
+            st.markdown(
+                f'<p class="portal-case-label">Alerta para revisão</p>'
+                f'<p class="portal-case-title">Transação {tid}</p>',
+                unsafe_allow_html=True,
+            )
             st.write(
                 f"Cliente {case['request']['customer_id']} · score {case['response']['score']:.4f}"
             )
-            st.caption(
-                "SHAP disponível"
-                if case["SHAP_explanation"]
-                else "Contexto disponível · SHAP não preparado"
+            st.markdown(
+                '<span class="portal-status">'
+                + ("SHAP disponível" if case["SHAP_explanation"] else "Contexto disponível")
+                + "</span>",
+                unsafe_allow_html=True,
             )
             st.button(
                 "Investigar",
                 key=f"highlight-{tid}",
                 on_click=open_case,
                 args=(tid,),
+                type="primary",
                 width="stretch",
             )
     st.caption(
@@ -239,6 +241,11 @@ def investigate(value):
     )
     st.caption("O feedback é posterior à decisão e não participa da explicação SHAP.")
     explanation = case["SHAP_explanation"]
+    if explanation and explanation.get("output", "raw_log_odds") != "raw_log_odds":
+        st.info(
+            "Explicação recebida em unidade ainda sem visualização compatível. O contexto do caso continua disponível."
+        )
+        explanation = None
     if explanation:
         plot(charts.waterfall(explanation), f"shap-{selected}")
         st.caption(
@@ -342,20 +349,28 @@ def main():
         st.stop()
     with st.sidebar:
         st.markdown("### FRAUD OPS")
-        st.caption("CENTRAL DE INVESTIGAÇÃO")
+        st.caption("Contexto para decidir. Evidência para investigar.")
         navigation = st.radio(
             "Navegação",
-            ["Visão geral", "Fila de investigação", "Investigar caso"],
+            ["Visão geral", "Fila de investigação", "Investigar caso", "Desempenho do modelo"],
             key="navigation",
         )
         st.divider()
+        st.markdown("**Modelo neste snapshot**")
+        st.caption(value.get("model_id", value["cases"][0]["response"]["model_id"]))
+        st.caption(
+            f"Registry v{value.get('registry_version_at_capture', '—')} · identidade na captura"
+        )
         st.markdown("**Conjunto verificado**")
         st.caption(
             f"{len(value['cases'])} decisões · {data.summary(value['cases'])['explanations']} explicações"
         )
         st.caption("Modo consulta · decisões e explicações verificadas.")
         st.caption("Operação → Grafana\n\nModelos → MLflow")
-    st.caption("INVESTIGAÇÃO ANTIFRAUDE · CONTEXTO, DECISÃO E EXPLICAÇÃO")
+    st.markdown(
+        '<p class="portal-kicker">INTELIGÊNCIA PARA INVESTIGAÇÃO DE FRAUDE</p>',
+        unsafe_allow_html=True,
+    )
     dates = sorted(c["request"]["tx_datetime"] for c in value["cases"])
     st.caption(
         f"Janela de decisões: {dates[0]} → {dates[-1]} · Dados preparados em {manifest['created_at'][:19]} UTC"
@@ -364,8 +379,10 @@ def main():
         overview(value)
     elif navigation == "Fila de investigação":
         queue(value)
-    else:
+    elif navigation == "Investigar caso":
         investigate(value)
+    else:
+        performance_view.show(value, os.environ["FRAUD_PORTAL_MANIFEST_SHA256"])
     st.divider()
     st.caption(
         "Apoio à investigação: interprete o score e suas contribuições com o contexto da transação e o feedback disponível."

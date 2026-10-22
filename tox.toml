@@ -435,4 +435,4 @@ base_python = ["python3.14"]
 package = "skip"
 set_env = { STREAMLIT_BROWSER_GATHER_USAGE_STATS = "false", DO_NOT_TRACK = "true" }
 commands_pre = [["python", "-m", "pip", "install", "--require-hashes", "--only-binary=:all:", "-r", "infra/portal/requirements-test.txt"]]
-commands = [["python", "-m", "pytest", "-q", "--confcutdir=tests/fraud_portal", "tests/fraud_portal/test_app.py", "tests/fraud_portal/test_data.py", "tests/fraud_portal/test_controller.py"]]
+commands = [["python", "-m", "pytest", "-q", "--confcutdir=tests/fraud_portal", "tests/fraud_portal/test_app.py", "tests/fraud_portal/test_data.py", "tests/fraud_portal/test_controller.py", "tests/fraud_portal/test_performance_ui.py"]]

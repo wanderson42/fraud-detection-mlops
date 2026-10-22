@@ -583,3 +583,11 @@ com contexto, feedback e waterfall SHAP. A API pontua; Grafana opera; MLflow
 mantém linhagem e governança. O portal reutiliza as decisões aceitas e distingue
 os cinco casos explicados dos demais. [Guia e comandos](docs/operations/FRAUD_PORTAL.md).
 Implementação e testes locais preparados; aceite nativo da interface pendente.
+
+
+O portal ganhou uma área de [desempenho e transparência](docs/operations/PORTAL_PERFORMANCE.md),
+com avaliação temporal, comparação de candidatos e carga da política de alertas,
+sempre vinculadas ao modelo/release do snapshot. A interface é independente do
+algoritmo; explicações são capacidades opcionais. O produto apoia priorização e
+investigação, com feedback posterior e decisões governadas. Preparação local
+concluída; aceite nativo da nova página pendente.

@@ -318,3 +318,6 @@ Próximo: operação de parada/subida, retomada após reboot e fechamento integr
 
 - [Portal de investigação](operations/FRAUD_PORTAL.md): jornada do analista,
   instalação isolada, fila, contexto e explicações Plotly, com snapshot verificado.
+
+- [Desempenho do modelo no portal](operations/PORTAL_PERFORMANCE.md): contrato
+  independente do algoritmo, métricas temporais e interpretação para investigação.

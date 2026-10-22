@@ -5,23 +5,39 @@ from collections import Counter
 import plotly.graph_objects as go
 from scripts.fraud_portal.data import feature_label, status_name
 
-NAVY = "#233D58"
-BLUE = "#3878B6"
-ORANGE = "#CB762B"
+TEXT = "#E7EEF8"
+BLUE = "#60A5FA"
+ORANGE = "#F3A64B"
 GRAY = "#8493A3"
 
 
 def styled(figure, title, height=340):
     figure.update_layout(
-        title={"text": title, "font": {"size": 17}},
-        template="plotly_white",
-        font={"family": "Arial, sans-serif", "color": NAVY, "size": 12},
+        title={"text": title, "font": {"size": 17, "color": TEXT}},
+        template="plotly_dark",
+        font={"family": "Arial, sans-serif", "color": TEXT, "size": 12},
         margin={"l": 12, "r": 24, "t": 64, "b": 40},
         height=height,
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="#142238",
+        plot_bgcolor="#142238",
+        hoverlabel={"bgcolor": "#20344F", "font_color": "#F1F5F9"},
         showlegend=False,
     )
+    figure.update_xaxes(
+        tickfont={"color": TEXT},
+        title_font={"color": TEXT},
+        gridcolor="#2A3D57",
+        zerolinecolor="#3D536E",
+        linecolor="#3D536E",
+    )
+    figure.update_yaxes(
+        tickfont={"color": TEXT},
+        title_font={"color": TEXT},
+        gridcolor="#2A3D57",
+        zerolinecolor="#3D536E",
+        linecolor="#3D536E",
+    )
+    figure.update_annotations(font_color=TEXT)
     return figure
 
 
@@ -35,6 +51,8 @@ def outcomes(cases):
             marker_color=[ORANGE if k == "alert" else BLUE for k in keys],
             text=[counts[k] for k in keys],
             textposition="outside",
+            textfont={"color": TEXT},
+            cliponaxis=False,
         )
     )
     fig.update_yaxes(title="Decisões", rangemode="tozero")
@@ -84,8 +102,8 @@ def waterfall(explanation):
             measure=["absolute", *(["relative"] * 9), "total"],
             increasing={"marker": {"color": ORANGE}},
             decreasing={"marker": {"color": BLUE}},
-            totals={"marker": {"color": NAVY}},
-            connector={"line": {"color": "#C8D1DB"}},
+            totals={"marker": {"color": TEXT}},
+            connector={"line": {"color": "#58708E"}},
             text=[f"{v:+.3f}" for v in values[:-1]] + [f"{explanation['raw_log_odds']:.3f}"],
             textposition="outside",
             customdata=[*values[:-1], explanation["raw_log_odds"]],

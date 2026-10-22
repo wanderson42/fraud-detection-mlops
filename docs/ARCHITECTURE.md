@@ -657,3 +657,12 @@ A fila inclui todas as decisões do fluxo aceito; SHAP enriquece somente os caso
 já explicados. O instante da captura e o período distinguem consulta histórica de
 operação online. [Contrato e jornada](operations/FRAUD_PORTAL.md).
 O cliente local tem ambiente hash-locked próprio; o backend continua no KinD.
+
+
+### Evidência de desempenho separada da apresentação
+
+`scripts/fraud_portal/performance` separa leitura JSON/visualização do adaptador
+MLflow/Gold e do cálculo offline. A UI não importa estimadores ou bibliotecas de
+treinamento. O produtor verifica pesos, Inputs, métricas e validação; o leitor
+recusa ligação a outro snapshot/modelo/release. Inferência, avaliação e explicação
+são capacidades independentes. [Contrato](operations/PORTAL_PERFORMANCE.md).

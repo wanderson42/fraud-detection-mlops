@@ -9,7 +9,7 @@ import subprocess
 from urllib.request import ProxyHandler, build_opener
 import venv
 
-from scripts.fraud_portal import data
+from scripts.fraud_portal import data, theme
 
 ROOT = Path(__file__).resolve().parents[2]
 ENVIRONMENT = ROOT / ".portal-venv"
@@ -34,6 +34,26 @@ def config(key):
     )
     value, manifest = data.load_bundle(expected, receipt["manifest_sha256"])
     return receipt, value, manifest
+
+
+def performance_config(key):
+    receipt, snapshot, _ = config(key)
+    path = ROOT / "data/storage/kind-platform/portal" / (identifier(key) + "-performance.json")
+    if not path.exists():
+        return None
+    from scripts.fraud_portal.performance import reader
+
+    link = json.loads(data.checked_path(path).read_bytes())
+    directory = data.checked_path(Path(link["directory"]))
+    data.require(
+        link["schema"] == "fraud_portal_performance_access_v1"
+        and directory.parent == ROOT / "data/reports/fraud-portal/performance",
+        "Configuração de desempenho divergente",
+    )
+    report, _ = reader.load(
+        directory, link["manifest_sha256"], receipt["manifest_sha256"], snapshot
+    )
+    return link, report
 
 
 def install():
@@ -63,7 +83,7 @@ def install():
 
 
 def committed():
-    paths = list((ROOT / "scripts/fraud_portal").glob("*.py"))
+    paths = list((ROOT / "scripts/fraud_portal").rglob("*.py"))
     paths += list((ROOT / "infra/portal").glob("requirements*"))
     import hashlib
 
@@ -92,6 +112,13 @@ def open_portal(key, port):
         STREAMLIT_BROWSER_GATHER_USAGE_STATS="false",
         DO_NOT_TRACK="true",
     )
+    evaluation = performance_config(key)
+    if evaluation:
+        link, _ = evaluation
+        environment.update(
+            FRAUD_PORTAL_PERFORMANCE=link["directory"],
+            FRAUD_PORTAL_PERFORMANCE_SHA256=link["manifest_sha256"],
+        )
     print(f"Portal: http://127.0.0.1:{port} — Ctrl+C encerra somente esta interface", flush=True)
     return subprocess.run(
         [
@@ -104,6 +131,8 @@ def open_portal(key, port):
             f"--server.port={port}",
             "--server.headless=true",
             "--browser.gatherUsageStats=false",
+            "--client.toolbarMode=viewer",
+            *theme.launch_flags(),
         ],
         cwd=ROOT,
         env=environment,
@@ -132,12 +161,27 @@ def smoke(key, port):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["install", "prepare", "verify", "open", "smoke"])
+    parser.add_argument(
+        "action",
+        choices=[
+            "install",
+            "prepare",
+            "verify",
+            "open",
+            "smoke",
+            "performance-prepare",
+            "performance-verify",
+        ],
+    )
     parser.add_argument("--portal-id", default="investigation-v1")
     parser.add_argument("--flow-id", default="champion-http-v1")
     parser.add_argument("--explanation-id", default="champion-shap-v1")
     parser.add_argument("--explanation-sha256")
     parser.add_argument("--no-other-writers", action="store_true")
+    parser.add_argument("--performance-id", default="validation-v1")
+    parser.add_argument("--evaluation-round", default="portfolio-v1")
+    parser.add_argument("--gold-directory", type=Path)
+    parser.add_argument("--without-explanations", action="store_true")
     parser.add_argument("--port", type=int, default=18501)
     args = parser.parse_args()
     try:
@@ -145,6 +189,10 @@ def main():
         if args.action == "install":
             result = install()
         elif args.action == "prepare":
+            data.require(
+                not args.without_explanations or not args.explanation_sha256,
+                "Não combine digest SHAP com --without-explanations",
+            )
             from scripts.fraud_portal.export import prepare
             from scripts.platform import kind_foundation as f
 
@@ -154,10 +202,36 @@ def main():
                     ROOT,
                     key,
                     identifier(args.flow_id),
-                    identifier(args.explanation_id),
-                    args.explanation_sha256,
+                    None if args.without_explanations else identifier(args.explanation_id),
+                    None if args.without_explanations else args.explanation_sha256,
                     args.no_other_writers,
                 )
+        elif args.action == "performance-prepare":
+            from scripts.fraud_portal.performance.collect import prepare
+            from scripts.platform import kind_foundation as f
+
+            committed()
+            with f.exclusive():
+                result = prepare(
+                    ROOT,
+                    key,
+                    identifier(args.performance_id),
+                    identifier(args.evaluation_round),
+                    args.no_other_writers,
+                    args.gold_directory,
+                )
+        elif args.action == "performance-verify":
+            evaluation = performance_config(key)
+            data.require(evaluation is not None, "Desempenho ainda não preparado")
+            link, report = evaluation
+            result = {
+                "status": "portal_performance_verified",
+                **link,
+                "model_sha256": report["model_sha256"],
+                "validation_rows": report["dataset"]["rows"],
+                "model_loaded": False,
+                "champion_modified": False,
+            }
         elif args.action == "open":
             raise SystemExit(open_portal(key, args.port))
         elif args.action == "smoke":

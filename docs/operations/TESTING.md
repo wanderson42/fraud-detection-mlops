@@ -1510,3 +1510,21 @@ feedback, rejeição de corrupção e saúde HTTP de um servidor real com fixtur
 O ambiente científico pode pular os testes opcionais de UI; `portal-ui` os executa.
 A inspeção visual no navegador nativo complementa AppTest; não foi declarada
 aprovada nesta preparação. Para aceite: [runbook](FRAUD_PORTAL.md).
+
+
+### Página de desempenho e contrato independente do algoritmo
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/fraud_portal tests/case_explanations tests/product_flow \
+  tests/serving_recovery tests/storage/test_managed_paths.py \
+  tests/storage/test_persistence_inventory.py tests/infra/test_platform_entrypoints.py &&
+.venv/bin/python -m tox -e portal-ui
+```
+
+O teste HTTP usa MLflow real com candidatos de fixture e liga a avaliação a uma
+regressão logística, preservando aliases. Outros testes verificam que train/test
+não são lidos pelo loader de validação, que a política conserva primeira passagem
+e orçamento, publicação idempotente, métricas corrompidas/fora de contexto e UI
+para HGB, regressão e identidade de algoritmo futuro. Os rótulos não participam
+da seleção de alertas. [Aceite nativo e comandos](PORTAL_PERFORMANCE.md).

@@ -780,3 +780,16 @@ hash S3, score/identidade HTTP e métricas/dashboards conferidos. Valores inotif
 512/524288 persistiram. Sem fit, replay, nova avaliação ou promoção histórica.
 Os pendentes operacionais das notas anteriores estão encerrados nesse escopo.
 [Runbook](../operations/KIND_OPERATIONS.md) e [guia integrado](../operations/KIND_PLATFORM.md).
+
+
+### Recorte preparado — desempenho e transparência no portal
+
+Quarta página implementada, com contrato independente do algoritmo, Inputs e
+pesos conferidos, ranking temporal, curvas, métricas da política e rastreabilidade.
+A fila pode existir sem explicador compatível. Testes e navegador locais usam
+fixtures; falta preparar e aceitar a avaliação do snapshot nativo. O produto
+prioriza investigação, com políticas e feedback; não transforma alvo binário em
+veredito automático nem afirma economia operacional sem medição.
+[Guia](../operations/PORTAL_PERFORMANCE.md). O próximo fechamento consolida o
+aceite visual/funcional e a demonstração por usuário. A promoção de sucessor com
+pesos diferentes continua dependendo de candidato qualificado.
