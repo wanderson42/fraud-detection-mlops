@@ -30,8 +30,9 @@ A [rodada operacional canônica](../operations/OPERATIONAL_ROUND.md) foi aceita 
 autor: dados recompostos, três candidatos com Inputs, HGB versão 1 em champion,
 API com os mesmos pesos e rollback verificado. O próximo recorte implementa
 [substituição recorrente](../operations/MODEL_UPDATES.md), busca opcional por
-modelo e aprovação explícita da mudança de tráfego. Preparação validada
-localmente; aceite nativo dos sucessores pendente.
+modelo e aprovação explícita da mudança de tráfego. Em 2026-10-22, as rodadas
+fixa e de busca validaram a retenção nativa do champion; ativação, rollback e
+recuperação de um sucessor com pesos diferentes no KinD continuam pendentes.
 
 O marco de infraestrutura KinD + Helm está concluído **no escopo de laboratório**:
 componentes aceitos por incrementos, parada/subida e reboot planejado aprovados,
@@ -39,17 +40,22 @@ mesmo node/PVCs e leituras funcionais conferidas. A [sequência integrada](../op
 consolida os comandos e os limites. Isso não declara migração primária, promoção
 histórica, recuperação por perda do host ou uma nova execução monolítica do fluxo.
 
-A primeira preparação da simplificação acrescenta entradas Make e um
-[guia de demonstração](../operations/PORTFOLIO_WALKTHROUGH.md), com validação local
-dos atalhos ainda pendente. Ela não declara uma nova cadeia única de eventos
-chamando a API. O próximo recorte define essa ligação e o caminho canônico
-com identidades e recuperação, antes de considerar o fechamento funcional.
+O próximo recorte é a [jornada de entrega ao usuário](../operations/PRODUCT_DELIVERY.md):
+conectar eventos e features causais à API do champion, persistir scores/decisões,
+priorizar investigação e associar feedback. O aceite deve reconciliar uma mesma
+execução e demonstrar falha/retomada sem duplicação.
 
-Agora vamos definir os fluxos suportados e simplificar a experiência de uso,
-com documentação de instalação, demonstração e retomada. Componentes antigos só
-serão removidos após revisar dependências e preservar evidências. Streamlit segue
-opcional, condicionado a uma jornada que acrescente valor à investigação.
-Terraform permanece posterior a esse fechamento.
+Em seguida, reaproveitar o diagnóstico SHAP existente para casos do champion
+atual. Grafana permanece com a observabilidade; consulta de casos e relatório
+explicativo vêm antes da decisão sobre uma interface adicional. Sem segunda
+implementação de features, inferência ou triagem.
+
+A simplificação consolidará comandos/responsabilidades, removerá componentes
+substituídos após revisar dependências e validará instalação limpa e demonstração.
+O guia principal será orientado ao produto, com uma seção própria para evidências.
+A ativação nativa de um sucessor com pesos diferentes permanece como aceite
+específico, sem tornar obrigatório buscar um vencedor artificialmente.
+Terraform vem depois desse fechamento.
 
 ## Marcos concluídos e evidência preservada
 
@@ -58,6 +64,7 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Retenção governada do champion | Aceite nativo em 2026-10-22: duas rodadas, três candidatos por rodada, Inputs/artefatos/validação conferidos, ganho insuficiente e champion versão 1 preservado. Não conclui ativação ou rollback de sucessor com pesos diferentes. [Evidência](../../references/evidence/model_updates_author_validation_2026-10-22.json) |
 | Infraestrutura do fluxo em KinD + Helm | Concluída no escopo do laboratório por aceites incrementais de fundação, tracking, datasets, Jobs, replay, serving, observabilidade e operação. Sequência consolidada; fontes históricas preservadas. Não é migração primária nem execução integral nova em produção. [Guia integrado](../operations/KIND_PLATFORM.md) |
 | Parada/subida e reboot planejado | Aceite nativo em 2026-10-21: oito workloads retomados no mesmo node/PVCs, boot_id mudou e inotify 512/524288 persistiu. Tracking/S3, serving e monitoramento iguais ao baseline. Sem recuperação por perda do host ou interrupção abrupta. [Evidência](../../references/evidence/kind_operations_author_validation_2026-10-21.json) |
 | Política de cores dos dashboards | Aceite separado em 2026-10-21: cores, mappings, thresholds e legendas conferidos via API e visualmente pelo autor; métricas e três PVCs iguais ao aceite anterior. Informações não herdam classificação arbitrária por magnitude. Sem replay ou novo resultado de qualidade. [Evidência](../../references/evidence/dashboard_color_policy_author_validation_2026-10-21.json) |
@@ -103,7 +110,7 @@ abaixo não se tornam entregas obrigatórias por aparecerem neste documento.
 
 | Ordem | Marco | Critério de conclusão |
 | --- | --- | --- |
-| 1 | Simplificação e fechamento funcional do portfolio | Definir os fluxos suportados, consolidar comandos, resolver persistência fora dos destinos gerenciados nesses fluxos e remover componentes substituídos após revisar dependências. Demonstrar instalação limpa, execução/recuperação e documentação clara, preservando evidências históricas |
+| 1 | Simplificação e fechamento funcional do portfolio | Entregar eventos → features causais → API do champion → decisões/fila → feedback com reconciliação e retomada; reaproveitar SHAP em casos do modelo ativo; consolidar comandos e remover redundâncias após revisar dependências. Demonstrar instalação limpa e jornada de investigação. [Contrato e sequência](../operations/PRODUCT_DELIVERY.md) |
 | 2 — posterior | Terraform como desfecho de infraestrutura como código | Após a simplificação, gerenciar o ambiente estabilizado com configuração declarativa, versões/lock de providers e state protegido. Reutilizar o chart Helm; demonstrar apply real no alvo escolhido, segundo plan sem mudanças e recuperação/recriação documentadas. Delimitar bootstrap do KinD e ownership dos recursos; não exigir cloud paga |
 
 A conferência visual do dashboard de features foi concluída usando o estado

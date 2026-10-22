@@ -1,7 +1,7 @@
 # Fraud Detection MLOps
 
 Rodada canônica aceita no KinD: Bronze → Jobs Silver/Gold → três candidatos com datasets registrados → HGB versão 1 em `fraud-detector@champion` → API e rollback verificados.
-[Sucessores com busca opcional e aprovação explícita de tráfego](docs/operations/MODEL_UPDATES.md): implementação preparada; aceite nativo desse incremento pendente.
+[Sucessores com busca opcional e aprovação explícita de tráfego](docs/operations/MODEL_UPDATES.md): retenção nativa de candidatos aceita nas rodadas fixa e de busca; ativação de um sucessor com pesos diferentes ainda pendente.
 [Guia da rodada operacional](docs/operations/OPERATIONAL_ROUND.md).
 
 

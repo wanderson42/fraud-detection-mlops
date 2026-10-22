@@ -2,8 +2,21 @@
 
 A rodada `portfolio-v1` foi concluída pelo autor: três modelos com Inputs nativos,
 HGB versão 1 em `fraud-detector@champion`, pesos conferidos na API e rollback na
-mesma URL. Este documento acrescenta o protocolo de sucessores. **Implementação
-preparada e testada localmente; aceite nativo da substituição no KinD pendente.**
+mesma URL. Este documento acrescenta o protocolo de sucessores. **Retenção nativa de candidatos aceita em 2026-10-22; ativação de um sucessor
+com pesos diferentes no KinD pendente.**
+
+## Como interpretar os limites numéricos
+
+**Os limites são específicos deste laboratório. Em uma operação real, seriam
+calibrados com custos de fraude, falsos positivos, capacidade de investigação,
+incerteza e estabilidade temporal/por segmentos. Ganhar 0,005 de AP, sozinho,
+não comprova significância estatística nem retorno financeiro.**
+
+O ganho exigido é absoluto (0,5 ponto percentual), não 0,5% relativo. Esses
+critérios de engenharia versionados não substituem avaliação estatística ou
+econômica. Nenhum limite é flexibilizado após observar um candidato rejeitado.
+O [contrato de entrega](PRODUCT_DELIVERY.md#interpretação-dos-limites-numéricos)
+relaciona esses critérios à operação de fraude.
 
 ## Contrato da atualização
 
@@ -183,3 +196,55 @@ make update-verify UPDATE_ID=optimized-v1
 Models/datasets anteriores não são apagados. Runs parciais e Jobs com falha são
 preservados; não são silenciosamente duplicados. Não crie IDs diferentes para
 contornar um gate ou uma falha sem antes revisar a causa.
+
+## Aceite nativo da retenção — 2026-10-22
+
+As rodadas `successor-v1` (política fixa) e `optimized-v1` (política de busca)
+terminaram em `retain_champion`. Os três candidatos de cada rodada tiveram
+Inputs nativos, bytes dos artefatos e qualidade recalculada nas mesmas 67.255
+linhas de validação, com rótulos maduros. O HGB candidato passou os mínimos
+absolutos e a não inferioridade de P@100, mas falhou no ganho mínimo de AP.
+A LR também falhou na AP mínima e na não inferioridade de P@100.
+
+O incumbent conserva AP 0,6239485132514692 e P@100 0,54: esta comparação exige
+AP ≥ 0,6289485132514692 e P@100 ≥ 0,53, além dos outros gates. Os trechos
+fornecidos não contêm as métricas individuais do candidato otimizado nem os
+recibos dos trials; não se atribui um ganho numérico ou contagem de trials
+executados a partir apenas da política configurada.
+
+`fraud-detector@champion` permaneceu na versão 1, slot blue, hash
+`6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b`.
+A verificação HTTP após a rodada fixa confirmou identidade, score de controle,
+HTTP 422 e p95 de 100,10 ms em 20 chamadas; esse valor não é medição posterior
+à rodada otimizada nem SLA de produção. A rodada otimizada informou
+`champion_modified=false`. Nenhuma das rejeições autoriza stage ou release.
+
+O [recibo do autor](../../references/evidence/model_updates_author_validation_2026-10-22.json)
+fecha a retenção nativa. A ativação de um sucessor com pesos diferentes, seu
+rollback e recuperação de falha no KinD continuam pendentes. Os testes locais
+positivos e o ensaio anterior com os mesmos pesos têm escopos próprios.
+Não é necessário treinar novamente ou modificar o gate para aplicar este fechamento.
+
+## Relação com práticas de MLOps
+
+O padrão de comparar o candidato ao modelo ativo, validar dados/modelo/API e
+controlar a implantação é descrito pelo
+[Google Cloud](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning).
+O [MLflow Registry](https://mlflow.org/docs/latest/ml/model-registry/)
+fornece versões, aliases e tags; o projeto implementa a política que mantém
+`champion` coerente com a API. A aprovação humana é uma escolha de governança
+deste laboratório, não uma exigência universal do MLflow.
+
+Os limites AP 0,5, P@100 0,45, ganho AP 0,005 e tolerância P@100 0,01 são escolhas
+versionadas do estudo de caso. O ganho de 0,005 é absoluto (0,5 ponto percentual),
+não prova de significância estatística. Em uma operação real, recomendamos
+calibrá-los com custo de fraude, falsos positivos, capacidade de investigação,
+incerteza e estabilidade temporal/por segmentos. Uma atualização por menor custo,
+latência ou obrigação regulatória pode exigir outra política, definida antes
+da comparação. Não se exige que toda nova versão melhore uma única métrica.
+
+Reutilizar a mesma validação aqui demonstra o mecanismo operacional; não
+constitui nova confirmação independente. Uma operação longitudinal deve usar
+janelas temporais autorizadas com rótulos maduros e acompanhamento após deploy.
+Blue/green e smoke HTTP verificam a transição técnica; não demonstram impacto
+antifraude online, equivalência a canary/A/B ou ausência de indisponibilidade.

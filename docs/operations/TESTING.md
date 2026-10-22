@@ -1396,3 +1396,17 @@ Regressão sem Docker: `poetry run python -m pytest -q tests/infra/test_kind_ope
 ## Entradas Make e acessos locais
 
 Os testes `tests/infra/test_platform_entrypoints.py` executam GNU Make com um Poetry gravador, verificam falhas/precondições/ordem e usam doubles dos forwards para testar ownership e limpeza por Ctrl+C. Não abrem Docker/Kubernetes. Execute `poetry run tox -e py314 -- tests/infra/test_platform_entrypoints.py` no ambiente nativo. Os 18 testes locais de preparação passaram em Python 3.14.4 usando GNU Make e bibliotecas padrão, com conferência adicional em Python 3.12.14. O acesso aos serviços reais e o perfil tox nativo permanecem pendentes para este incremento. A validação de cores, operações e serviços anteriores não é reaberta.
+
+
+## Atualização recorrente — retenção nativa aceita
+
+Em 2026-10-22, `successor-v1` e `optimized-v1` retornaram `retain_champion`.
+Inputs, artefatos e métricas recalculadas dos três candidatos por rodada foram
+conferidos em 67.255 linhas com rótulos maduros. Nenhuma mudança de champion
+foi reportada. A rodada fixa incluiu `active_identity_verified` via HTTP; a
+otimizada não forneceu uma nova medição de latência.
+[Recibo e limites](../../references/evidence/model_updates_author_validation_2026-10-22.json).
+Os 259 testes passados, 4 skipped e 42 warnings informados pelo autor verificam
+a suíte de implementação; não substituem o aceite nativo de ativação de um
+sucessor com pesos diferentes, rollback e recuperação, ainda pendente.
+Este fechamento muda somente documentação/evidência; não requer novo treino.

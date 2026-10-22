@@ -17,6 +17,24 @@ causal acelerado foram exercitados pelo autor. Tanto o replay corretivo quanto
 o novo ensaio programado passaram a verificação de features, scores e decisões.
 [Metas e prioridades](ROADMAP.md).
 
+## Produto e próximo recorte de entrega
+
+O produto ajuda uma equipe a escolher quais clientes investigar. O sistema
+transacional integra-se pela API; o analista consulta casos priorizados e os
+fatores do score; a operação acompanha saúde/qualidade no Grafana. O próximo
+recorte conectará componentes em uma execução canônica com identidade e retomada.
+[Jornada, contratos e sequência](../operations/PRODUCT_DELIVERY.md).
+
+Já existe diagnóstico SHAP do HGB. Vamos reaproveitá-lo para o champion atual e
+consulta de casos, sem atribuir explicações dos pesos antigos ao modelo ativo.
+A interface será escolhida após o contrato de consulta, sem substituir Grafana.
+
+**Os limites numéricos de promoção são específicos do laboratório. Em uma operação
+real, precisam ser calibrados com custos de fraude, falsos positivos, capacidade
+de investigação e incerteza das métricas. Ganhar 0,005 de AP, sozinho, não comprova
+significância estatística nem retorno financeiro.** A retenção do champion
+demonstra que terminar um treino não autoriza substituir o modelo.
+
 ## A decisão que apoiamos
 
 Uma equipe com capacidade limitada precisa escolher quais clientes investigar
