@@ -68,3 +68,39 @@ def test_score_distribution_is_preaggregated_for_lightweight_client_payload(bund
 
     trace = charts.scores(bundle[2]["cases"], 0.5).data[0]
     assert len(trace.x) == 20 and sum(trace.y) == 3
+
+
+def test_chart_text_axes_and_hover_use_the_same_dark_palette(bundle):
+    pytest.importorskip("plotly")
+    from scripts.fraud_portal import charts, theme
+
+    figures = [
+        charts.outcomes(bundle[2]["cases"]),
+        charts.scores(bundle[2]["cases"], 0.5),
+        charts.waterfall(bundle[2]["cases"][0]["SHAP_explanation"]),
+    ]
+    for figure in figures:
+        assert figure.layout.paper_bgcolor == theme.PALETTE["secondaryBackgroundColor"]
+        assert figure.layout.font.color == theme.PALETTE["textColor"]
+        assert figure.layout.xaxis.tickfont.color == theme.PALETTE["textColor"]
+        assert figure.layout.yaxis.tickfont.color == theme.PALETTE["textColor"]
+
+
+def test_dark_theme_text_and_directional_accents_have_readable_contrast():
+    from scripts.fraud_portal import theme
+
+    def luminance(color):
+        channels = [int(color[i : i + 2], 16) / 255 for i in (1, 3, 5)]
+        linear = [c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4 for c in channels]
+        return sum(c * weight for c, weight in zip(linear, [0.2126, 0.7152, 0.0722], strict=True))
+
+    def ratio(first, second):
+        light, dark = sorted([luminance(first), luminance(second)], reverse=True)
+        return (light + 0.05) / (dark + 0.05)
+
+    p = theme.PALETTE
+    for background in [p["backgroundColor"], p["secondaryBackgroundColor"]]:
+        assert ratio(p["textColor"], background) >= 7
+        assert ratio(p["primaryColor"], background) >= 4.5
+    assert ratio(p["sidebar.textColor"], p["sidebar.backgroundColor"]) >= 7
+    assert ratio("#F3A64B", p["secondaryBackgroundColor"]) >= 4.5

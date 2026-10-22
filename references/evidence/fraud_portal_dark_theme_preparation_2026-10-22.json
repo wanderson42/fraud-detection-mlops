@@ -1,0 +1,49 @@
+{
+  "schema": "fraud_portal_dark_theme_preparation_v1",
+  "status": "prepared_native_visual_acceptance_pending",
+  "prepared_on": "2026-10-22",
+  "scope": "coherent_dark_Streamlit_and_Plotly_theme_with_no_model_or_snapshot_change",
+  "functional_native_acceptance": {
+    "basis": "author_supplied_portal_smoke_console",
+    "status": "portal_HTTP_and_snapshot_verified",
+    "decisions": 200,
+    "customers": 199,
+    "alerts": 13,
+    "feedback": 200,
+    "explanations": 5,
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "read_only": true,
+    "champion_modified": false
+  },
+  "palette": {
+    "background": "#0B1220",
+    "surface": "#142238",
+    "text": "#E7EEF8",
+    "blue": "#60A5FA",
+    "amber": "#F3A64B"
+  },
+  "local_checks": {
+    "UI_tests_passed": 21,
+    "UI_tests_seconds": 2.84,
+    "related_regression_passed": 81,
+    "related_regression_skipped": 4,
+    "subtests_passed": 12,
+    "browser": "Chromium headless with synthetic test fixture",
+    "views_rendered": [
+      "overview",
+      "queue",
+      "case"
+    ],
+    "browser_dark_color_scheme": true,
+    "visual_review_on_native_data": false,
+    "main_text_contrast_minimum": 7,
+    "directional_accent_contrast_minimum": 4.5
+  },
+  "requires_UI_process_restart": true,
+  "requires_snapshot_recreation": false,
+  "requires_dependency_install": false,
+  "training_executed": false,
+  "SHAP_recomputed": false,
+  "champion_modified": false,
+  "runbook": "docs/operations/FRAUD_PORTAL.md"
+}

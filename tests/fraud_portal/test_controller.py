@@ -27,6 +27,11 @@ def test_launcher_uses_isolated_runtime_and_no_inherited_service_credentials(
     assert c.open_portal("test", 18501) == 0
     args, kwargs = calls[0]
     assert "--server.address=127.0.0.1" in args[0]
+    assert "--theme.base=dark" in args[0]
+    assert "--theme.textColor=#E7EEF8" in args[0]
+    assert "--theme.backgroundColor=#0B1220" in args[0]
+    assert "--theme.sidebar.textColor=#F1F5F9" in args[0]
+    assert "--client.toolbarMode=viewer" in args[0]
     assert args[0][0] == str(runtime / "bin/python")
     assert (
         "AWS_SECRET_ACCESS_KEY" not in kwargs["env"] and "POSTGRES_PASSWORD" not in kwargs["env"]
