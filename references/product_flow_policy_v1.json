@@ -1,0 +1,13 @@
+{
+  "schema": "fraud_product_flow_policy_v1",
+  "context_start": "2018-09-02T00:00:00",
+  "scoring_start": "2018-09-16T00:00:00",
+  "scored_transactions": 200,
+  "maximum_scored_with_timestamp_peers": 256,
+  "score_threshold": 0.5,
+  "daily_customer_budget": 100,
+  "threshold_scope": "explicit_HTTP_integration_threshold_not_cost_calibrated_or_old_model_threshold",
+  "selection": "first_transactions_by_clock_and_ID_including_all_timestamp_peers",
+  "feedback_delay_days": 7,
+  "purpose": "operational_reproduction_on_previously_observed_events_not_new_quality_confirmation"
+}

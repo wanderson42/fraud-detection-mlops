@@ -40,10 +40,12 @@ mesmo node/PVCs e leituras funcionais conferidas. A [sequência integrada](../op
 consolida os comandos e os limites. Isso não declara migração primária, promoção
 histórica, recuperação por perda do host ou uma nova execução monolítica do fluxo.
 
-O próximo recorte é a [jornada de entrega ao usuário](../operations/PRODUCT_DELIVERY.md):
+O próximo aceite é a [jornada de entrega ao usuário](../operations/PRODUCT_DELIVERY.md):
 conectar eventos e features causais à API do champion, persistir scores/decisões,
 priorizar investigação e associar feedback. O aceite deve reconciliar uma mesma
-execução e demonstrar falha/retomada sem duplicação.
+execução e demonstrar falha/retomada sem duplicação. O adaptador HTTP está
+preparado, com testes reais locais; pausa/retomada contra a API do KinD ainda
+aguarda execução nativa. Não há novo treino ou implantação neste recorte.
 
 Em seguida, reaproveitar o diagnóstico SHAP existente para casos do champion
 atual. Grafana permanece com a observabilidade; consulta de casos e relatório

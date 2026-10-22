@@ -5,6 +5,17 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/storage/kind-platform/product-flow",
+      "family": "causal_HTTP_champion_events_exchanges_triage_feedback_and_receipts",
+      "owner": "product_and_platform",
+      "producers": [
+        "scripts/product_flow/controller.py",
+        "scripts/product_flow/inputs.py",
+        "scripts/product_flow/ledger.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/storage/kind-platform/model-updates",
       "family": "model_update_training_comparison_approvals_transactions_and_active_identity",
       "owner": "platform_and_modeling",

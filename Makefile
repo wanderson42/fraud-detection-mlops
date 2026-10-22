@@ -197,3 +197,5 @@ hgb-optuna-verify:
 	poetry run python -m fraud_detection_mlops.modeling.experiments.hgb_optimization verify "$(STUDY_PATH)"
 
 include infra/make/updates.mk
+
+include infra/make/product.mk

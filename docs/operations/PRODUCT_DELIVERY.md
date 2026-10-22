@@ -13,6 +13,18 @@ analista; Grafana atende quem opera o serviço. A plataforma, o champion e os
 componentes verificados serão reutilizados. Este documento define o próximo
 recorte; a integração terá seu aceite registrado quando executada.
 
+## Usuários e entregas
+
+| Usuário | Entrega |
+| --- | --- |
+| Sistema transacional | API de pontuação com modelo identificado |
+| Analista de fraude | Fila priorizada, contexto da transação e explicação |
+| Equipe de operação | Grafana com saúde, erros, atrasos e qualidade |
+| Equipe de ML | Linhagem, comparação de candidatos e implantação controlada |
+
+A tabela define responsabilidades; os aceites abaixo identificam o que já foi
+executado e o que será integrado em cada recorte.
+
 ## Jornada que a entrega deve demonstrar
 
 | Passo | Comportamento do produto | Vínculo verificável |
@@ -137,3 +149,128 @@ visível. Detalhes dos aceites ficam em seção própria, evitando repetir ressa
 em toda apresentação. Concluir com instalação limpa, fluxo integrado, retomada,
 explicação de um caso e ensaio de implantação/rollback com identidades.
 Terraform sucede a estabilização dessa experiência.
+
+## Executar eventos pela API do champion
+
+A implementação deste recorte foi preparada e testada com HTTP real local.
+O aceite contra a API instalada no KinD será registrado após execução pelo autor.
+Não há novo treino, build, Helm upgrade, troca de tráfego ou mudança de alias.
+A tabela de usuários é a referência para a entrega, não declaração de que todas
+as interfaces de investigação já estejam implementadas.
+
+O cliente local usa um port-forward temporário do gateway existente no KinD.
+Reutiliza a lógica de `DurableTriageReplay.handle` para features causais, triagem
+por cliente/dia, feedback e checkpoint. Os módulos aceitos não são modificados.
+A inicialização do adaptador cria seu próprio ledger e adiciona recibos HTTP;
+o cliente não carrega pesos e não tem fallback de inferência local.
+
+A preparação lê somente os eventos de uma cópia concluída do replay existente.
+Confere a estabilidade do SQLite e dos seus sidecars e grava um novo stream
+imutável. Scores, decisões, limiar e modelo antigos não alimentam o novo fluxo.
+São preservados 14 dias de contexto desde 02/09, as primeiras 200 transações
+por relógio/ID a partir de 16/09 e seus feedbacks com atraso de sete dias. Pares
+no mesmo timestamp são incluídos; o orçamento máximo é 256 transações pontuadas.
+O contexto é processado sem chamadas de score. Este recorte verifica integração
+sobre eventos já observados, sem atribuir nova confirmação de qualidade a eles.
+
+`references/product_flow_policy_v1.json` fixa limiar 0,5 para o ensaio de
+integração e capacidade de até 100 clientes/dia. Esse limiar é explícito e não
+é o limiar calibrado dos pesos antigos nem uma recomendação financeira para o
+champion novo. A política é de primeiro cruzamento por cliente/dia, respeitando
+o orçamento; não é a seleção retrospectiva dos maiores scores do dia inteiro.
+Pode resultar em menos de 100 alertas. A consulta apresenta alertas primeiro,
+com scores decrescentes, sem modificar a política que os selecionou.
+
+### Validar e commitar antes da preparação
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/product_flow tests/model_updates tests/operational_round \
+  tests/streaming/replay/test_durable_triage_replay.py \
+  tests/streaming/decisions/test_customer_day_alert_policy.py \
+  tests/serving tests/storage/test_managed_paths.py \
+  tests/storage/test_persistence_inventory.py tests/infra/test_platform_entrypoints.py &&
+make product-validate
+```
+
+O pacote fornece os comandos de commit dos caminhos revisados. A preparação
+exige esses arquivos de código/política no HEAD. Não inclui configurações do
+editor ou stores locais de experimentação.
+
+### Preparar e executar no ambiente existente
+
+Deixe os serviços prontos e suspenda escritores do replay fonte, Registry e
+rota de serving. Não desligue a API. O lock do controlador coordena comandos
+locais; a declaração do operador cobre outros clientes.
+
+```bash
+make product-prepare PRODUCT_NO_OTHER_WRITERS=1 \
+  PRODUCT_SOURCE_STATE=data/replay/paced-native-v1 &&
+FRAUD_PRODUCT_FLOW_NO_OTHER_WRITERS=1 \
+  .venv/bin/python -m tox -e product-flow &&
+make product-cases
+```
+
+O ID padrão é `champion-http-v1`. O ensaio pausa após metade dos scores,
+retoma, conclui o feedback e reinvoca o fluxo concluído sem novas chamadas de
+score. Verifica Registry, rota, identidade HTTP e imagens antes/depois. Os
+HTTPs de readiness e smoke desses gates são separados dos contadores de score
+de transações. Não se promove um candidato para realizar este ensaio.
+
+O cliente usa timeout de 3 s por tentativa, no máximo três tentativas e pausas
+curtas para conexão/timeout/429/5xx transitórios. HTTP 422, JSON inválido e
+identidade divergente não são tratados como pontuação bem-sucedida. Cada
+resposta aceita recebe hashes da requisição/resposta e é gravada na mesma
+transação SQLite do evento, decisão, eventual alerta e checkpoint.
+
+Uma falha depois da resposta HTTP e antes do commit pode repetir a inferência
+pura. Portanto, chamadas HTTP são pelo menos uma vez; o ledger mantém uma única
+decisão por transação. Não se alega transação distribuída nem exatamente uma
+chamada à API. Não há envio externo de alertas neste adaptador; uma integração
+que envie notificações exigirá contrato de entrega/outbox próprio.
+
+### Resultado, verificação e retomada
+
+Arquivos em `data/storage/kind-platform/product-flow/<flow-id>/`:
+
+| Arquivo | Conteúdo |
+| --- | --- |
+| `input.json` e `events.sqlite` | Política, implementação, champion e snapshot dos eventos |
+| `checkpoint.sqlite` | Eventos, estado causal, requests, responses, triagem, alertas, feedback e recibos HTTP |
+| `invocation-*.json` | Progresso, novas decisões e tentativas HTTP de cada chamada |
+| `rehearsal.json` | Aceite de pausa/retomada/reinvocação, publicado somente após os gates finais |
+| `verification-*.json` / `failure-*.json` | Reconciliações posteriores ou falhas preservadas |
+
+A verificação reprocessa os eventos em memória, usando as respostas HTTP já
+gravadas, e compara requests causais, resultados de triagem e todas as tabelas.
+Ela verifica o vínculo da resposta e os digests; não substitui a resposta por
+uma inferência local. Feedback de cada caso permanece com instante de disponibilidade.
+A contagem de alertas com feedback positivo refere-se à transação disparadora;
+não é precisão consolidada por cliente, retorno financeiro ou qualidade global.
+
+Depois de falha, preserve os arquivos e retome o mesmo ID:
+
+```bash
+make product-run PRODUCT_NO_OTHER_WRITERS=1 &&
+make product-verify PRODUCT_NO_OTHER_WRITERS=1 &&
+make product-cases
+```
+
+Não repita `product-rehearse` sobre um checkpoint iniciado: use run/verify.
+O ensaio só gera `rehearsal.json` numa execução iniciada com checkpoint novo;
+a recuperação após falha tem seus recibos de invocação e verificação. Não crie
+outro ID para contornar falha de dados, identidade ou mudança de código.
+O input preparado permite retomar sem abrir novamente os originais. Se champion,
+contrato ou código mudar, o controlador recusa a execução e conserva os recibos.
+
+A consulta de casos já mostra requisição, score, motivo de triagem e feedback;
+a explicação SHAP do champion atual será ligada no próximo recorte. Grafana
+continua com os painéis existentes; exportar métricas do novo ledger também é
+uma ligação posterior e não é inferido do sucesso do HTTP.
+
+### Aceites que permanecem separados
+
+A promoção recorrente de um sucessor com pesos diferentes e seu rollback ainda
+precisam de aceite nativo no KinD quando existir candidato qualificado. A retenção
+nativa já aceita não é reaberta. Este fluxo usa o champion atual, sem flexibilizar
+gates ou alterar aliases para fabricar uma promoção.

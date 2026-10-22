@@ -1410,3 +1410,20 @@ Os 259 testes passados, 4 skipped e 42 warnings informados pelo autor verificam
 a suíte de implementação; não substituem o aceite nativo de ativação de um
 sucessor com pesos diferentes, rollback e recuperação, ainda pendente.
 Este fechamento muda somente documentação/evidência; não requer novo treino.
+
+
+## Fluxo do produto via HTTP
+
+`tests/product_flow` usa FastAPI/Uvicorn real em loopback, eventos e modelo
+sintéticos, fonte SQLite somente de leitura e o mesmo algoritmo causal/triagem.
+Cobre reconciliação, pausa/retomada, duplicatas, falhas 503/422/conexão, identidade
+incorreta, interrupção entre HTTP e commit, adulteração de requests/responses/
+triagem, ausência de carregamento de pesos no cliente e comandos GNU Make.
+A suíte local não possui daemon KinD. O teste live é skipped por padrão.
+
+A preparação exige código/política commitados e fonte concluída. Após
+`make product-prepare PRODUCT_NO_OTHER_WRITERS=1`, execute
+`FRAUD_PRODUCT_FLOW_NO_OTHER_WRITERS=1 .venv/bin/python -m tox -e product-flow`.
+O teste chama a API já instalada, pausa e retoma o ledger próprio, confere
+Registry/rota/HTTP e publica um recibo somente depois dos gates finais.
+Não modifica workloads, pesos, aliases ou o replay fonte. [Runbook](PRODUCT_DELIVERY.md#executar-eventos-pela-api-do-champion).

@@ -90,9 +90,15 @@ def test_make_release_requires_exact_digest_and_writer_declaration(dispatch):
 
 def test_current_update_keeps_original_scientific_source_unchanged(monkeypatch):
     transition = json.loads((ROOT / "references/model_update_compatibility_v1.json").read_bytes())
-    original = c.pins()
+    # This bridge authorizes only the exact first adoption, before later doc closures.
+    # Keep real current scientific pins, but reconstruct that reviewed documentary state.
+    adopted = c.pins()
+    original = dict(adopted)
     for name, hashes in transition["allowed_changes"].items():
         original[name] = hashes["before"]
+        adopted[name] = hashes["after"]
+    assert not {"README.md", "references/persistence_catalogue_v1.json"} & u.pins().keys()
+    monkeypatch.setattr(c, "pins", lambda: adopted)
     base = {"source_pins": original, "node_uid": "node", "tracking_deployment_uid": "tracking"}
     monkeypatch.setattr(u.f, "owner", lambda: {"node_uid": "node"})
     monkeypatch.setattr(u.kind_tracking, "inventory", lambda: {"deployment_uid": "tracking"})

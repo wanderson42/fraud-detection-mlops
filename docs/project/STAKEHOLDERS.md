@@ -19,10 +19,18 @@ o novo ensaio programado passaram a verificação de features, scores e decisõe
 
 ## Produto e próximo recorte de entrega
 
+| Usuário | Entrega |
+| --- | --- |
+| Sistema transacional | API de pontuação com modelo identificado |
+| Analista de fraude | Fila priorizada, contexto da transação e explicação |
+| Equipe de operação | Grafana com saúde, erros, atrasos e qualidade |
+| Equipe de ML | Linhagem, comparação de candidatos e implantação controlada |
+
+
 O produto ajuda uma equipe a escolher quais clientes investigar. O sistema
 transacional integra-se pela API; o analista consulta casos priorizados e os
-fatores do score; a operação acompanha saúde/qualidade no Grafana. O próximo
-recorte conectará componentes em uma execução canônica com identidade e retomada.
+fatores do score; a operação acompanha saúde/qualidade no Grafana. O adaptador de eventos à API do champion está preparado com testes HTTP locais;
+o aceite no KinD verificará a mesma execução, decisões persistidas e retomada.
 [Jornada, contratos e sequência](../operations/PRODUCT_DELIVERY.md).
 
 Já existe diagnóstico SHAP do HGB. Vamos reaproveitá-lo para o champion atual e

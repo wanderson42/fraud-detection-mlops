@@ -4,7 +4,7 @@ Caminho principal de execução: nova rodada com linhagem dos datasets, compara�
 [Guia da rodada operacional](operations/OPERATIONAL_ROUND.md). Rodada inicial aceita pelo autor.
 [Sucessores: comparação, busca opcional e aprovação de tráfego](operations/MODEL_UPDATES.md); retenção nativa aceita; ativação de sucessor com pesos diferentes ainda pendente.
 
-Próximo recorte: [entrega do produto, jornada do analista e explicabilidade](operations/PRODUCT_DELIVERY.md).
+[Entrega por usuário e execução eventos → HTTP → triagem](operations/PRODUCT_DELIVERY.md#executar-eventos-pela-api-do-champion): adaptador preparado; aceite KinD pendente.
 
 Histórico dos experimentos, comparação dos três baselines e Registry:
 [transferência verificada para o KinD](operations/KIND_HISTORY.md).
