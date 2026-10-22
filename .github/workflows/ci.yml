@@ -39,7 +39,7 @@ jobs:
         run: poetry install
 
       - name: Run isolated quality checks with tox
-        run: poetry run tox -e py314 -- tests --durations=25
+        run: .venv/bin/python -m tox -e py314 -- tests --durations=25
 
   serving-delivery:
     name: Build and qualify synthetic serving delivery
