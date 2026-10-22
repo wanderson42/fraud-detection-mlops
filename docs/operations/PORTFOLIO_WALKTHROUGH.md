@@ -47,6 +47,8 @@ Na raiz do repositório, com dependências e cluster já preparados:
 
 ```bash
 make help
+# Catálogo completo de provisionamento, ciência e ensaios:
+make help-all
 make platform-status
 ```
 
@@ -57,7 +59,7 @@ baseline de operação que você salvou, conforme a seção 4; não use `create`
 Abra três terminais no repositório:
 
 ```bash
-# Terminal 1: API, pelo gateway; imprime URL e verificação de identidade/score/422.
+# Terminal 1: champion ativo, pelo gateway; confere Registry, pesos e HTTP 422.
 make platform-api
 ```
 
@@ -89,10 +91,10 @@ Se um pod for substituído e o acesso cair, feche e abra novamente o comando.
 
 1. Mostre a origem/contratos e os recibos Bronze–Silver–Gold. Explique que features
    usam apenas o passado e que treino/validação seguem janelas temporais.
-2. No MLflow, mostre `fraud-temporal-baseline-v1`: Dummy, Regressão Logística e HGB,
-   com suas métricas e artefatos, após o aceite da [transferência histórica](KIND_HISTORY.md).
-   Em Models, confira `fraud-hgb-reference` e o alias `champion`. Os experimentos
-   sintéticos continuam separados e não substituem essa comparação.
+2. No MLflow, mostre a rodada `fraud-operational-portfolio-v1`: os candidatos,
+   seus Inputs de dataset, parâmetros e métricas. Em Models, confira
+   `fraud-detector` e a versão ativa em `champion`. A comparação histórica
+   importada e os experimentos sintéticos permanecem identificados à parte.
 3. Na API, mostre a release/hash e o score do smoke impresso por `platform-api`,
    incluindo rejeição HTTP 422. O serviço executa inferência; não treina a cada
    requisição. A URL também permite consultar `/ready` e `/info`.

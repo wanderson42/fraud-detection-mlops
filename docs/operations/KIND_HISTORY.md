@@ -115,36 +115,26 @@ volta, três recargas aprovadas, paridade do HGB, alias resolvendo a run esperad
 fontes/identidades do destino preservadas. Os testes locais usam MLflow HTTP com
 backend SQLite; PostgreSQL/RustFS/KinD precisam passar nos comandos acima.
 
-**O alias não troca o modelo servido.** A API instalada mantém sua release até
-um gate próprio ativar a referência histórica, testar identidade/score e provar
-rollback. Essa ativação é o próximo recorte operacional; este procedimento não
-declara migração primária de todos os dados nem fechamento funcional integral.
+**O alias histórico não troca o modelo servido.** A referência importada permanece
+rastreável. A operação atual usa o Registry `fraud-detector`, a rodada canônica e
+a política de atualização governada, conforme [operação do produto](PRODUCT_OPERATIONS.md)
+e [atualizações](MODEL_UPDATES.md). A comparação científica antiga permanece
+acessível no MLflow, sem controlar o acesso operacional ao champion atual.
 
-## Retomada quando a listagem omite o tamanho de um arquivo vazio
+## Conferência de arquivos vazios
 
 O proxy pode informar `file_size=null` para `publish.lock`, cujo tamanho no
 snapshot é zero. A conferência aceita tamanho ausente somente para esse caso:
 o download continua obrigatório, com tamanho local igual a zero e SHA-256
 idêntico. Tamanho ausente para um arquivo não vazio continua sendo recusado.
+Essa verificação e seus testes de tamanho, conteúdo e arquivos inesperados
+permanecem em `scripts/platform/history/transfer.py`.
 
-Para um plano criado antes dessa correção, preserve o original e revise apenas
-o pin da implementação conhecida. O comando recusa outras mudanças de código,
-fontes, gate ou ownership e não escreve no servidor:
-
-```bash
-poetry run python -m scripts.platform.kind_history_readback_fix \
-  --plan data/storage/kind-platform/history/plan-v1.json \
-  --output data/storage/kind-platform/history/plan-v1-readback-fix.json
-
-poetry run python -m scripts.platform.kind_history verify \
-  --plan data/storage/kind-platform/history/plan-v1-readback-fix.json
-
-poetry run python -m scripts.platform.kind_history champion \
-  --plan data/storage/kind-platform/history/plan-v1-readback-fix.json \
-  --no-other-writers
-```
-
-Use esse caminho quando a importação já terminou de publicar e falhou apenas
-na conferência de `snapshot-extras`. Não é necessário republicar o histórico.
-Uma recusa em `verify` deve ser investigada antes do registro; não apague runs,
-modelos, recibos ou planos para contornar a conferência.
+A revisão pontual do plano anterior à correção já foi aplicada. O utilitário
+`kind_history_readback_fix.py` e os quatro cenários exclusivos dessa transição
+foram retirados da árvore corrente. O código e o procedimento antigos permanecem
+no histórico Git anterior à simplificação; o recibo de preparação é preservado.
+Planos e recibos privados existentes não são reescritos nem removidos. Novas
+transferências seguem o preparo normal deste guia. Uma transferência antiga
+incompleta deve ser examinada na sua revisão de origem, sem editar pins à mão
+ou republicar runs para contornar uma divergência.

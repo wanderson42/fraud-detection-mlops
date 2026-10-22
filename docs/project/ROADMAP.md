@@ -57,6 +57,12 @@ de validação identificadas, com comparação, curvas e métricas da política.
 O portal é independente do algoritmo; explicações são capacidades opcionais.
 Esse recorte está encerrado.
 
+A [primeira simplificação do código](../operations/CODEBASE_SIMPLIFICATION.md)
+organiza o Make por finalidade, consolida o acesso ao deployment ativo e retira
+uma revisão pontual de plano histórico já aplicada. A regressão local será
+registrada com o pacote; a conferência do novo acesso no KinD cabe ao operador.
+Isso não encerra a chegada gradual nem o aceite de um sucessor com novos pesos.
+
 **Próximo recorte: [consolidação da demonstração operacional](../operations/PRODUCT_OPERATIONS.md).**
 Unificar comandos/destino ativo e demonstrar chegada gradual de eventos pela API,
 fila e métricas da mesma sessão, com pausa/retomada e atualização visível.

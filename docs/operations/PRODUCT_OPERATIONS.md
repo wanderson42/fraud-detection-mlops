@@ -47,12 +47,22 @@ iniciar dados ou administrar a infraestrutura.
 | `product-*` | Eventos causais pela API, decisões persistidas e verificação |
 | `portal-*` | Preparação e consulta de casos e avaliação pinados |
 
-Há atalhos de ensaios anteriores ao champion canônico. Por exemplo,
-`platform-api` usa o plano de entrega do serving inicial, enquanto `round-api`
-usa a rodada canônica. Eles não devem ser apresentados como equivalentes. A
-consolidação deve resolver a identidade ativa de forma única e distinguir
-operação diária, primeira instalação e ensaios de falha. Nenhum atalho será
-removido antes de revisar dependências e preservar o acesso às evidências.
+`make platform-api` lê o deployment ativo em `model-updates/current.json` e usa
+os gates compartilhados para conferir Registry, slot, imagens e identidade HTTP.
+Não escolhe o modelo por nome de algoritmo nem pelo ID da primeira rodada.
+`round-api` permanece como alias de compatibilidade para esse mesmo acesso;
+`ROUND_ID` não seleciona um deployment antigo nesse comando. O acesso ao serving
+sintético original exige `make platform-synthetic-api` explicitamente. A ausência
+ou divergência do deployment ativo interrompe o acesso, sem fallback sintético.
+
+A identidade é conferida ao abrir e fechar o acesso. Uma promoção ou manutenção
+posterior exige reabrir o comando para obter uma verificação atualizada. O acesso
+não bloqueia deploys nem modifica tráfego, replicas ou aliases.
+
+`make help` mostra os acessos e comandos cotidianos. `make help-all` mantém o
+catálogo completo de instalação, ciência e ensaios. Os requisitos de baseline e
+writers continuam obrigatórios para parada/subida. A [primeira simplificação](CODEBASE_SIMPLIFICATION.md)
+registra as remoções e as dependências que impedem apagar diretórios inteiros.
 
 ## Quem faz os dados chegarem
 
@@ -107,7 +117,8 @@ Terraform permanece posterior à consolidação funcional.
 
 ## Organização do trabalho
 
-Fechar a documentação/evidência na branch `feat/kind-helm-serving`; revisar e
-integrar o trabalho antes de iniciar a implementação da sessão operacional em
-uma branch dedicada, por exemplo `feat/fraud-operations-demo`, criada da main
-atualizada após o merge. A criação/limpeza de branches não faz parte deste pacote.
+O marco KinD/Helm e o aceite do portal foram integrados à main. A consolidação
+ocorre em `feat/fraud-operations-demo`, começando pela revisão dos comandos e
+pela retirada de uma transição de uso único já aplicada. A sessão de chegada
+gradual e a atualização coordenada de fila/métricas seguem como próximo passo;
+a reorganização dos comandos não as implementa implicitamente.

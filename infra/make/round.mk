@@ -43,6 +43,5 @@ round-verify:
 round-rollout:
 	$(POETRY) run python -m scripts.operational_round.controller rehearse --round-id "$(ROUND_ID)"
 
-## Open the canonical fraud-detector API; Ctrl+C closes only local access
-round-api:
-	$(POETRY) run python -m scripts.operational_round.controller api --round-id "$(ROUND_ID)"
+## Compatibility alias for platform-api; follows the active deployment rather than the initial round
+round-api: platform-api

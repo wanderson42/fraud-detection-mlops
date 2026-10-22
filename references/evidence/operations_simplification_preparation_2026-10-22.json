@@ -1,0 +1,69 @@
+{
+  "schema": "fraud_operations_simplification_preparation_v1",
+  "status": "locally_verified_native_access_pending",
+  "prepared_on": "2026-10-22",
+  "base_commit": "740ca24bcbd17c57465ae9f654f9dbbfefd47d30",
+  "changes": {
+    "root_Makefile_lines": {
+      "before": 207,
+      "after": 40
+    },
+    "daily_and_full_help_separated": true,
+    "all_27_original_root_targets_retained": true,
+    "active_API_reuses_existing_Registry_route_image_and_HTTP_gates": true,
+    "round_api_is_compatibility_alias": true,
+    "synthetic_API_requires_explicit_command": true,
+    "no_missing_active_fallback": true,
+    "retired_files": [
+      "scripts/platform/kind_history_readback_fix.py"
+    ],
+    "retired_helper_lines": 102,
+    "retired_transition_only_test_cases": 4,
+    "artifact_readback_and_integrity_negatives_retained": true
+  },
+  "source_pins": {
+    "comparison": "byte_identity_against_merged_main_Git_blobs",
+    "round": 167,
+    "model_updates": 187,
+    "product_flow": 193,
+    "all_unchanged": true
+  },
+  "local_validation": {
+    "python": "3.14.4",
+    "ruff_check_passed": true,
+    "ruff_format_check_passed": true,
+    "regression_passed": 186,
+    "regression_skipped": 6,
+    "warnings": 40,
+    "subtests_passed": 12,
+    "regression_seconds": 59.25,
+    "coverage": [
+      "real Make dispatch and serialization",
+      "active green/version access and missing-state rejection",
+      "identity and Registry/route failures",
+      "forward cleanup and concurrent identity changes",
+      "real MLflow HTTP historical import and artifact readback",
+      "model updates and causal HTTP ledger",
+      "serving recovery",
+      "portal and validation report",
+      "managed paths and persistence inventory"
+    ],
+    "guarded_package_application_validated": true
+  },
+  "native_access_validated": false,
+  "source_receipts_rewritten": false,
+  "data_deleted": false,
+  "cluster_modified": false,
+  "champion_modified": false,
+  "fit_executed": false,
+  "continuous_session_implemented": false,
+  "different_weights_successor_promotion_validated": false,
+  "implementation_sha256": {
+    "Makefile": "7a88d1951c845129d88ac6e71fdccc97246b3c65c3464e57d9bd9fb4174fb16e",
+    "infra/make/platform.mk": "215dd6b220b4c76901e82fd54ce7562b674417e50183bc95af6a127ed86d2213",
+    "infra/make/round.mk": "883f8dadbef54ba8b60e998342aa7788743293db5f68a621df19c5dd60534f9b",
+    "infra/make/development.mk": "155cbaf9b79045ba039d53249e1d39451c3f01887502bd384e73fd43fa01e9d2",
+    "infra/make/science.mk": "f0387e6a70565724724bd582e02a9417a7b1c72a92197584a215f76c3ab253f0",
+    "scripts/platform/local_access.py": "e98972d3c175c71818114ca923670e8825ebf8b621acf53ef65991a52aaf0fb7"
+  }
+}

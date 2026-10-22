@@ -95,9 +95,14 @@ platform-grafana:
 platform-mlflow:
 	$(POETRY) run python -m scripts.platform.local_access mlflow
 
-## Open/check the existing synthetic API through its gateway; Ctrl+C closes this forward
+## Open/check the active champion through its gateway, using Registry and deployment identity
 platform-api:
 	$(POETRY) run python -m scripts.platform.local_access api
+
+.PHONY: platform-synthetic-api
+## Open the original synthetic serving rehearsal explicitly; never substitutes the active champion
+platform-synthetic-api:
+	$(POETRY) run python -m scripts.platform.local_access synthetic-api
 
 ## Check functional readbacks and save a new baseline; requires PLATFORM_BASELINE and PLATFORM_TRACKING_REPORT
 platform-baseline:

@@ -25,6 +25,7 @@ Leia o [README do projeto](../README.md) para começar e a
 | Pergunta | Referência principal |
 | --- | --- |
 | Qual problema e quais próximos marcos? | [Contexto](project/PROBLEM_CONTEXT.md), [mural](project/ROADMAP.md), [stakeholders](project/STAKEHOLDERS.md) |
+| O que foi consolidado ou retirado do código? | [Simplificação e dependências](operations/CODEBASE_SIMPLIFICATION.md) |
 | Como mantemos a documentação? | [Política editorial](project/DOCUMENTATION_POLICY.md) |
 | Como dados e features são construídos? | [Pipeline](data/DATA_PIPELINE.md), [Silver](data/SILVER_CONTRACT.md), [Gold](data/GOLD_CONTRACT.md) |
 | O que significam os campos e os achados? | [Dicionário](data/DATA_DICTIONARY.md) e [EDA](data/EDA.md) |
