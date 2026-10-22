@@ -1,0 +1,80 @@
+{
+  "schema": "fraud_operational_round_policy_v1",
+  "scope": "laboratory_operational_reproduction",
+  "registered_model": "fraud-detector",
+  "experiment_prefix": "fraud-update",
+  "candidates": [
+    "dummy_prior",
+    "logistic_regression",
+    "hist_gradient_boosting"
+  ],
+  "eligible_candidates": [
+    "logistic_regression",
+    "hist_gradient_boosting"
+  ],
+  "selection": "highest_validation_AP_among_eligible_models_passing_all_gates_then_model_id_ascending",
+  "minimum_average_precision": 0.5,
+  "minimum_daily_customer_precision_at_100": 0.45,
+  "require_beats_dummy_AP": true,
+  "fit_split": "train",
+  "selection_split": "validation",
+  "test_evaluated": false,
+  "historical_models_used": false,
+  "thread_limit": 2,
+  "parity_atol": 1e-12,
+  "parity_rtol": 1e-12,
+  "promotion_alias": "champion",
+  "previous_alias_policy": "compare_and_set_against_round_initial_state_under_exclusive_writer_declaration",
+  "input_contracts": {
+    "handbook_source.json": "815d00ee359c3972af931768f81c28b4744a5459c60e4b4db408b4d1924de7db",
+    "silver_contract_v1.json": "a5ca3f01e7292ecbaa21cb69bb96c7cbad06e9cea065cddc4ce4414592d1f26f",
+    "gold_contract_v1.json": "b90b9be97bb2e2e6cf2b819487b2b805882c6d6f22587ff4671a01e25db54796",
+    "temporal_protocol_v1.json": "7332129121d13eac68bf2e4776abe7aacf0b24b449e60f08ef8283b56954e4d4",
+    "baseline_protocol_v1.json": "053e31caae9fe7b5752f8829e1d4213eda4e912c2f424e7185a5c724b92de23c"
+  },
+  "promotion_requires": [
+    "all_three_candidates_complete",
+    "native_training_and_validation_dataset_inputs",
+    "full_dataset_content_and_partition_hashes",
+    "full_validation_prediction_reload_parity",
+    "all_model_artifact_bytes_verified",
+    "quality_gate_passed",
+    "same_round_only"
+  ],
+  "completion_requires": [
+    "new_Bronze_Silver_Gold_Job_execution",
+    "champion_alias_readback",
+    "champion_weights_served_HTTP",
+    "HTTP_422",
+    "blue_green_switch_and_rollback"
+  ],
+  "production_promotion": false,
+  "independent_generalization_claim": false,
+  "update_protocol": "fraud_model_update_v1",
+  "minimum_absolute_AP_gain": 0.005,
+  "maximum_absolute_P100_drop": 0.01,
+  "comparison_as_of": "2018-05-20T00:00:00",
+  "maximum_HTTP_p95_ms": 500.0,
+  "http_measurements": 20,
+  "optimization": {
+    "dummy_prior": {
+      "mode": "fixed",
+      "parameters": {}
+    },
+    "logistic_regression": {
+      "mode": "fixed",
+      "parameters": {}
+    },
+    "hist_gradient_boosting": {
+      "mode": "fixed",
+      "parameters": {}
+    }
+  },
+  "inner_windows": {
+    "fit_start": "2018-04-01",
+    "fit_end_exclusive": "2018-04-15",
+    "selection_start": "2018-04-22",
+    "selection_end_exclusive": "2018-04-29"
+  },
+  "operational_reproduction_only": true
+}

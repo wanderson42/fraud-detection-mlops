@@ -1,5 +1,10 @@
 # Armazenamento, persistência e recuperação
 
+A [transferência histórica para o MLflow do KinD](KIND_HISTORY.md) consome apenas
+os bundles restaurados e verificados. Ela preserva as fontes, mapeia os novos IDs
+e lê integralmente os artefatos de volta pelo proxy HTTP. O aceite nativo do
+recorte está pendente; ele não declara migração primária de todo o projeto.
+
 Atualizado em **2026-10-19**. Esta decisão define o destino de datasets, artefatos,
 estado e métricas. Inventário e piloto limitado de upload/restauração estão implementados e testados
 com arquivos gerados e S3 simulado. O autor também validou inventário completo
@@ -1483,3 +1488,69 @@ recuperação encerrado.** Próxima prioridade: CD/rollback do serving, seguido 
 monitoramento de dados/features. Migração dos sete consumidores históricos,
 cutover, limpeza e inventário global seguem em backlog próprio.
 [Comandos, escopo e limites](TRACKING_RECOVERY.md).
+
+## MLflow no KinD — aceite nativo de 2026-10-20
+
+MLflow instalado via Helm sobre PostgreSQL/RustFS dedicados. O autor aprovou
+publicação, recarga independente HTTP, comparação dos bytes do modelo no S3 e
+recarga após recriar o pod MLflow, com erro zero e fundação preservada. O gate
+nativo passou em 21,56 s. Isso demonstra persistência e integração operacional
+com uma fixture sintética; a migração histórica e o backup/restore deste novo
+destino continuam pendentes. Próximo recorte: objetos/dados no RustFS do KinD,
+com aceites próprios. [Resultado e evidência](KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+## Bundles de datasets no RustFS do KinD
+
+[Runbook do novo destino](KIND_DATASETS.md). O transporte reutiliza os bundles
+já preparados e seus verificadores; não consulta o RustFS do Compose nem muda
+leitores para S3. A área local é `data/storage/kind-platform/datasets/`, com
+recibos e restauração separados. Aceite nativo das quatro camadas em 2026-10-20:
+489 arquivos, 493 objetos verificados e 210.997.363 bytes de payload. Reenvio
+sem novos uploads, verificadores semânticos e identidades da fundação aprovados.
+[Evidência](../../references/evidence/kind_datasets_author_validation_2026-10-20.json).
+Esse resultado não muda os leitores nem comprova recuperação após perda do PVC.
+
+## Saídas novas dos Jobs da cadeia
+
+O [gate de Jobs no KinD](KIND_PIPELINE.md#aceite-nativo--2026-10-20) foi aprovado
+pelo autor em 2026-10-20: novos bundles Silver/Gold publicados e restaurados
+independentemente no host, com 235 arquivos/237 objetos de bundles verificados
+e 65.485.309 bytes de payload. Manifestos/auditorias
+pertencem a novas execuções, preservando os bundles aceitos anteriormente.
+Envelopes de conclusão ficam em `platform-jobs/v1/<run>/<etapa>/receipt.json`;
+recibos locais e valores Helm, em `data/storage/kind-platform/pipeline/`.
+Não altera o default dos leitores nem declara backup externo do PVC.
+
+## Checkpoint do replay no KinD — aceite nativo
+
+O [ensaio de replay](KIND_REPLAY.md#aceite-nativo--2026-10-20) recuperou uma transação
+de feedback interrompida e retomou no mesmo PVC, com ledger sintético igual à
+execução contínua. O processamento foi removido; o PVC
+`fraud-replay-2de730eacb52-state` permanece retido e não foi migrado de outro
+checkpoint. Persistência após perda do cluster/host e backup desse PVC não foram
+avaliados. O estado histórico permanece em sua origem atual.
+
+### Serving no KinD — destino de laboratório aceito
+
+A entrega sintética qualificada foi importada e instalada via Helm, com troca e
+rollback nativos aprovados em 2026-10-21. Modelos são copiados por init container
+para emptyDir e montados somente leitura pela API; este recorte não cria PVC de
+modelo nem altera os PVCs da fundação/replay. A entrega original e suas evidências
+permanecem preservadas. Não muda a origem primária dos dados ou do tracking.
+[Aceite e limites](KIND_SERVING.md#aceite-nativo--2026-10-21).
+
+### Destinos da observabilidade KinD — aceite nativo
+
+Workspace privado `data/storage/kind-platform/observability`; cópia SQLite somente
+leitura do replay concluído transferida a PVC próprio de 2 GiB. Prometheus reserva
+1 GiB com retenção de 48 h/512 MB; Grafana reserva 512 MiB. Todos mantidos pelo
+Helm. Origem não é montada e não muda a fonte primária dos produtores. Persistência,
+backup/restore e recuperação por perda do host são escopos distintos.
+Origem e cópia conciliadas no gate nativo de 2026-10-21; novo pod exporter,
+mesmos três PVCs e fonte preservada. Isso não equivale a backup/restore dos
+PVCs ou recuperação por perda do host. [Runbook e evidência](KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).
+
+
+## Identidade dos volumes durante parada/subida — aceite
+
+O recorte operacional compara UIDs e specs dos PVCs e configurações, além de leituras funcionais antes/depois. Guarda baseline e eventos em `data/storage/kind-platform/operations`, sem copiar credenciais em texto. Parada/subida e reboot planejado foram aprovados em 2026-10-21, com os mesmos PVCs e leituras funcionais. Isso não conclui migração primária, inventário global, restauração de backup ou recuperação por perda do host. [Runbook](KIND_OPERATIONS.md).

@@ -1,0 +1,572 @@
+{
+  "schema": "fraud_kind_operations_author_validation_v1",
+  "status": "native_controlled_stop_start_and_planned_host_reboot_accepted",
+  "validated_on": "2026-10-21",
+  "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+  "evidence_source": "author-provided complete console output of native tox gate and subsequent manual reboot stop/start/verify commands",
+  "independent_native_engine_access": false,
+  "native_receipt_file_sha256": null,
+  "native_receipt_file_hash_scope": "Native file bytes were not supplied; terminal JSON is retained as reported, without inferring a receipt-file hash from its formatting. Baseline SHA-256 values are those reported by the native controller.",
+  "terminal_sources": [
+    {
+      "name": "Texto colado(20261021-172238).txt",
+      "sha256": "36be0b897a17ecb46631ef51fffad6bd51e5062a1b7740480c189832984b1a41"
+    },
+    {
+      "name": "Texto colado(20261021-173611).txt",
+      "sha256": "203cc193348a4e9163cb88212b7bfc72d5f56898b288f67eebcf21eafc6a0d6c"
+    }
+  ],
+  "prepared_package_sha256": "0492cd37bc4a9ed084d93bf1ba03a2ff63fc4511b35fd58b08ee7323612954e0",
+  "prepared_controller_sha256": "6711b31b7fd54d62b44843c360e7ce9ad924e75f25260a9a57073882fbd5ca53",
+  "controller_identity_scope": "Matches delivered preparation payload; original baseline source_pins not attached, so no independent attestation of the entire native checkout.",
+  "reported_unit_validation": {
+    "passed": 25,
+    "seconds": 0.09,
+    "tox_seconds": 2.48,
+    "ruff_check_and_format_passed": true
+  },
+  "reported_native_cycle_validation": {
+    "passed": 1,
+    "pytest_seconds": 252.23,
+    "tox_seconds": 264.31
+  },
+  "native_cycle": {
+    "schema": "fraud_kind_operations_rehearsal_v1",
+    "status": "success",
+    "baseline": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/baseline-6cf89fd4bfed4761acaf2d5c8f23b756.json",
+    "host_reboot_validated": false,
+    "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+    "stop": {
+      "schema": "fraud_kind_operations_event_v1",
+      "action": "stop",
+      "status": "stopped",
+      "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+      "baseline": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/baseline-6cf89fd4bfed4761acaf2d5c8f23b756.json",
+      "baseline_sha256": "31c975c51a2901866caf3e6bc71fd9b0a1093ba0bdfd0faa20f1bb9b428df805",
+      "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/stop-47a6449d1fe14af9b2b50a233a115337.json",
+      "started_timestamp": 1792603039.6975243,
+      "steps": [
+        {
+          "workload": "deployment/fraud-serving-gateway",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-serving-blue",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-observability-exporter",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-observability-grafana",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-observability-prometheus",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-tracking",
+          "replicas": 0
+        },
+        {
+          "workload": "statefulset/fraud-platform-postgres",
+          "replicas": 0
+        },
+        {
+          "workload": "statefulset/fraud-platform-rustfs",
+          "replicas": 0
+        }
+      ],
+      "host": {
+        "boot_id": "dfa7e97e-495e-49f6-bc49-f235f91db516",
+        "machine_id_sha256": "f17e9f156fb2741e4bfd91725db9c794e865cafbaa8d56a2292d5971b3e62130",
+        "inotify": {
+          "max_user_instances": 512,
+          "max_user_watches": 524288,
+          "max_queued_events": 16384
+        },
+        "runtime_inotify_sufficient": true
+      },
+      "controlled_quiescence_validated": true,
+      "owner_after": {
+        "container_id": "f4cd4b901607bdc398a3d1d034194c50e0d074fb70b738e58b8a7e27621853dd",
+        "node_uid": "41e72efd-1bae-43d5-998e-4b6a9a19f08c",
+        "docker_engine_id": "03e1b69b-38bd-4c55-80e6-90a465fa9424",
+        "running": false,
+        "paused": false,
+        "restarting": false,
+        "owner_receipt_sha256": "812480bfd64e82e63a097a193119a7e5322fdbe237c4c18c6e521ad2eb736789"
+      },
+      "other_writers_absent_operator_declared": true,
+      "finished_timestamp": 1792603175.574902
+    },
+    "start": {
+      "schema": "fraud_kind_operations_event_v1",
+      "action": "start",
+      "status": "started",
+      "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+      "baseline": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/baseline-6cf89fd4bfed4761acaf2d5c8f23b756.json",
+      "baseline_sha256": "31c975c51a2901866caf3e6bc71fd9b0a1093ba0bdfd0faa20f1bb9b428df805",
+      "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/start-4227b99859e842b3b2ba20a67ba8593d.json",
+      "started_timestamp": 1792603175.6487873,
+      "steps": [
+        {
+          "workload": "statefulset/fraud-platform-rustfs",
+          "replicas": 1
+        },
+        {
+          "workload": "statefulset/fraud-platform-postgres",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-tracking",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-serving-blue",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-serving-gateway",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-observability-exporter",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-observability-prometheus",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-observability-grafana",
+          "replicas": 1
+        }
+      ],
+      "host": {
+        "boot_id": "dfa7e97e-495e-49f6-bc49-f235f91db516",
+        "machine_id_sha256": "f17e9f156fb2741e4bfd91725db9c794e865cafbaa8d56a2292d5971b3e62130",
+        "inotify": {
+          "max_user_instances": 512,
+          "max_user_watches": 524288,
+          "max_queued_events": 16384
+        },
+        "runtime_inotify_sufficient": true
+      },
+      "owner_after": {
+        "container_id": "f4cd4b901607bdc398a3d1d034194c50e0d074fb70b738e58b8a7e27621853dd",
+        "node_uid": "41e72efd-1bae-43d5-998e-4b6a9a19f08c",
+        "docker_engine_id": "03e1b69b-38bd-4c55-80e6-90a465fa9424",
+        "running": true,
+        "paused": false,
+        "restarting": false,
+        "owner_receipt_sha256": "812480bfd64e82e63a097a193119a7e5322fdbe237c4c18c6e521ad2eb736789"
+      },
+      "original_replica_plan_restored": true,
+      "other_writers_absent_operator_declared": true,
+      "finished_timestamp": 1792603246.2834797
+    },
+    "verification": {
+      "schema": "fraud_kind_operations_event_v1",
+      "action": "verify",
+      "status": "verified",
+      "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+      "baseline": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/baseline-6cf89fd4bfed4761acaf2d5c8f23b756.json",
+      "baseline_sha256": "31c975c51a2901866caf3e6bc71fd9b0a1093ba0bdfd0faa20f1bb9b428df805",
+      "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/verify-dd2214eddc5a4bc192f9eb185b64aa7e.json",
+      "started_timestamp": 1792603246.3729436,
+      "steps": [],
+      "host": {
+        "boot_id": "dfa7e97e-495e-49f6-bc49-f235f91db516",
+        "machine_id_sha256": "f17e9f156fb2741e4bfd91725db9c794e865cafbaa8d56a2292d5971b3e62130",
+        "inotify": {
+          "max_user_instances": 512,
+          "max_user_watches": 524288,
+          "max_queued_events": 16384
+        },
+        "runtime_inotify_sufficient": true
+      },
+      "stop_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/stop-47a6449d1fe14af9b2b50a233a115337.json",
+      "start_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/start-4227b99859e842b3b2ba20a67ba8593d.json",
+      "probes": {
+        "foundation_pvcs": {
+          "postgres": {
+            "name": "fraud-platform-postgres-data",
+            "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+            "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+          },
+          "rustfs": {
+            "name": "fraud-platform-rustfs-data",
+            "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+            "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+          }
+        },
+        "tracking_deployment_uid": "cbd0b152-bc80-454f-8845-190fbc35514a",
+        "tracking_run_fingerprint": "87fb60eb745b2a37497540c985dddd042e25f72d903caf6ad4073ebe6d75a214",
+        "tracking_history_fingerprint": "9403295387405e76613b76573d9a37033a9cff737386fd1035163718e17f57c2",
+        "tracking_history_rows": 2,
+        "s3": {
+          "status": "s3_model_verified",
+          "bucket": "fraud-kind-mlflow",
+          "key": "v1/1/models/m-9dc865b0dac6450a93eadad2e17e8e73/artifacts/model.skops",
+          "model_sha256": "11ede55b832c9c808183c4f3dd38e4e4b8d45c11276d3630e1d189b9d42c7481",
+          "bytes": 20265
+        },
+        "serving_release_id": "c298299b7d3540d3968b5e715937b923",
+        "serving_model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+        "serving_http": {
+          "score": {
+            "schema_version": 1,
+            "transaction_id": 0,
+            "score": 0.03463335444035967,
+            "score_semantics": "uncalibrated_ranking",
+            "model_id": "hist_gradient_boosting",
+            "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+            "feature_contract_version": "gold_v1",
+            "serving_release_id": "c298299b7d3540d3968b5e715937b923"
+          },
+          "invalid_input_http_status": 422
+        },
+        "monitoring": {
+          "state_bytes_verified": true,
+          "summary_matches_source": true,
+          "prometheus_metrics_verified": {
+            "fraud_monitor_collector_up": 1.0,
+            "fraud_replay_events_total": 556824.0,
+            "fraud_replay_decisions_total": 143945.0,
+            "fraud_replay_alerts_total": 1453.0,
+            "fraud_replay_complete": 1.0,
+            "fraud_feature_comparison_ready": 1.0,
+            "fraud_feature_jensen_shannon{feature=\"TX_AMOUNT\"}": 0.0021550290067184723,
+            "fraud_feature_jensen_shannon{feature=\"CUSTOMER_AVG_AMOUNT_7D\"}": 0.004398245597130813,
+            "fraud_feature_jensen_shannon{feature=\"CUSTOMER_TX_COUNT_7D\"}": 0.001457152007270268,
+            "fraud_feature_jensen_shannon{feature=\"TERMINAL_KNOWN_FRAUD_RATE_7D\"}": 0.002043254733260833
+          },
+          "scrape_target_verified": true,
+          "healthy_alert_rules": 8,
+          "grafana_datasource_proxy_verified": true,
+          "dashboard_color_policy_verified": "semantic_colors_v1",
+          "provisioned_dashboard_UIDs": [
+            "fraud-feature-health",
+            "fraud-kind-overview",
+            "fraud-replay-ops",
+            "fraud-triage-quality"
+          ],
+          "visual_dashboard_review_validated": false,
+          "alert_firing_validated": false,
+          "temporary_port_forwards_removed": true
+        },
+        "monitoring_pvcs": {
+          "state": {
+            "uid": "0556675e-d90e-4acb-a9d6-ef1301b58d14",
+            "volume_name": "pvc-0556675e-d90e-4acb-a9d6-ef1301b58d14"
+          },
+          "prometheus": {
+            "uid": "6a7d90c2-de8f-4de6-9b09-ed3e853c3d83",
+            "volume_name": "pvc-6a7d90c2-de8f-4de6-9b09-ed3e853c3d83"
+          },
+          "grafana": {
+            "uid": "0004805e-7cd3-4d49-98a1-1e89cd3256d7",
+            "volume_name": "pvc-0004805e-7cd3-4d49-98a1-1e89cd3256d7"
+          }
+        },
+        "serving_inference_executed": true,
+        "tracking_model_loaded": false,
+        "fit_executed": false
+      },
+      "same_node_and_volumes": true,
+      "controlled_stop_start_validated": true,
+      "host_reboot_validated": false,
+      "inotify_persistence_after_reboot_validated": false,
+      "fit_executed": false,
+      "replay_executed": false,
+      "primary_storage_migrated": false,
+      "production_promotion": false,
+      "backup_restore_validated": false,
+      "finished_timestamp": 1792603267.1214187
+    }
+  },
+  "native_reboot": {
+    "stop": {
+      "schema": "fraud_kind_operations_event_v1",
+      "action": "stop",
+      "status": "stopped",
+      "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+      "baseline": "data/storage/kind-platform/operations/baseline-before-reboot.json",
+      "baseline_sha256": "83b9e3a0fc4ea8372c10ec65f487db5a8d23eb7fa1e94b671e8390ee3216d5f8",
+      "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/stop-34144fbd33444ae0bf74745d050a4c49.json",
+      "started_timestamp": 1792603485.1464798,
+      "steps": [
+        {
+          "workload": "deployment/fraud-serving-gateway",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-serving-blue",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-observability-exporter",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-observability-grafana",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-observability-prometheus",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-tracking",
+          "replicas": 0
+        },
+        {
+          "workload": "statefulset/fraud-platform-postgres",
+          "replicas": 0
+        },
+        {
+          "workload": "statefulset/fraud-platform-rustfs",
+          "replicas": 0
+        }
+      ],
+      "host": {
+        "boot_id": "dfa7e97e-495e-49f6-bc49-f235f91db516",
+        "machine_id_sha256": "f17e9f156fb2741e4bfd91725db9c794e865cafbaa8d56a2292d5971b3e62130",
+        "inotify": {
+          "max_user_instances": 512,
+          "max_user_watches": 524288,
+          "max_queued_events": 16384
+        },
+        "runtime_inotify_sufficient": true
+      },
+      "controlled_quiescence_validated": true,
+      "owner_after": {
+        "container_id": "f4cd4b901607bdc398a3d1d034194c50e0d074fb70b738e58b8a7e27621853dd",
+        "node_uid": "41e72efd-1bae-43d5-998e-4b6a9a19f08c",
+        "docker_engine_id": "03e1b69b-38bd-4c55-80e6-90a465fa9424",
+        "running": false,
+        "paused": false,
+        "restarting": false,
+        "owner_receipt_sha256": "812480bfd64e82e63a097a193119a7e5322fdbe237c4c18c6e521ad2eb736789"
+      },
+      "other_writers_absent_operator_declared": true,
+      "finished_timestamp": 1792603618.74795
+    },
+    "start": {
+      "schema": "fraud_kind_operations_event_v1",
+      "action": "start",
+      "status": "started",
+      "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+      "baseline": "data/storage/kind-platform/operations/baseline-before-reboot.json",
+      "baseline_sha256": "83b9e3a0fc4ea8372c10ec65f487db5a8d23eb7fa1e94b671e8390ee3216d5f8",
+      "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/start-65bae4bbcd954dba9d432c5459697305.json",
+      "started_timestamp": 1792604055.8723092,
+      "steps": [
+        {
+          "workload": "statefulset/fraud-platform-rustfs",
+          "replicas": 1
+        },
+        {
+          "workload": "statefulset/fraud-platform-postgres",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-tracking",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-serving-blue",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-serving-gateway",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-observability-exporter",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-observability-prometheus",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-observability-grafana",
+          "replicas": 1
+        }
+      ],
+      "host": {
+        "boot_id": "f04f4e68-1363-42be-9ce4-50a1339e0b56",
+        "machine_id_sha256": "f17e9f156fb2741e4bfd91725db9c794e865cafbaa8d56a2292d5971b3e62130",
+        "inotify": {
+          "max_user_instances": 512,
+          "max_user_watches": 524288,
+          "max_queued_events": 16384
+        },
+        "runtime_inotify_sufficient": true
+      },
+      "owner_after": {
+        "container_id": "f4cd4b901607bdc398a3d1d034194c50e0d074fb70b738e58b8a7e27621853dd",
+        "node_uid": "41e72efd-1bae-43d5-998e-4b6a9a19f08c",
+        "docker_engine_id": "03e1b69b-38bd-4c55-80e6-90a465fa9424",
+        "running": true,
+        "paused": false,
+        "restarting": false,
+        "owner_receipt_sha256": "812480bfd64e82e63a097a193119a7e5322fdbe237c4c18c6e521ad2eb736789"
+      },
+      "original_replica_plan_restored": true,
+      "other_writers_absent_operator_declared": true,
+      "finished_timestamp": 1792604109.5712776
+    },
+    "verification": {
+      "schema": "fraud_kind_operations_event_v1",
+      "action": "verify",
+      "status": "verified",
+      "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+      "baseline": "data/storage/kind-platform/operations/baseline-before-reboot.json",
+      "baseline_sha256": "83b9e3a0fc4ea8372c10ec65f487db5a8d23eb7fa1e94b671e8390ee3216d5f8",
+      "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/verify-dd4464dcc9c146138a0650cd6ca6618c.json",
+      "started_timestamp": 1792604109.9753587,
+      "steps": [],
+      "host": {
+        "boot_id": "f04f4e68-1363-42be-9ce4-50a1339e0b56",
+        "machine_id_sha256": "f17e9f156fb2741e4bfd91725db9c794e865cafbaa8d56a2292d5971b3e62130",
+        "inotify": {
+          "max_user_instances": 512,
+          "max_user_watches": 524288,
+          "max_queued_events": 16384
+        },
+        "runtime_inotify_sufficient": true
+      },
+      "stop_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/stop-34144fbd33444ae0bf74745d050a4c49.json",
+      "start_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/start-65bae4bbcd954dba9d432c5459697305.json",
+      "probes": {
+        "foundation_pvcs": {
+          "postgres": {
+            "name": "fraud-platform-postgres-data",
+            "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+            "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+          },
+          "rustfs": {
+            "name": "fraud-platform-rustfs-data",
+            "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+            "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+          }
+        },
+        "tracking_deployment_uid": "cbd0b152-bc80-454f-8845-190fbc35514a",
+        "tracking_run_fingerprint": "87fb60eb745b2a37497540c985dddd042e25f72d903caf6ad4073ebe6d75a214",
+        "tracking_history_fingerprint": "9403295387405e76613b76573d9a37033a9cff737386fd1035163718e17f57c2",
+        "tracking_history_rows": 2,
+        "s3": {
+          "status": "s3_model_verified",
+          "bucket": "fraud-kind-mlflow",
+          "key": "v1/1/models/m-9dc865b0dac6450a93eadad2e17e8e73/artifacts/model.skops",
+          "model_sha256": "11ede55b832c9c808183c4f3dd38e4e4b8d45c11276d3630e1d189b9d42c7481",
+          "bytes": 20265
+        },
+        "serving_release_id": "c298299b7d3540d3968b5e715937b923",
+        "serving_model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+        "serving_http": {
+          "score": {
+            "schema_version": 1,
+            "transaction_id": 0,
+            "score": 0.03463335444035967,
+            "score_semantics": "uncalibrated_ranking",
+            "model_id": "hist_gradient_boosting",
+            "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+            "feature_contract_version": "gold_v1",
+            "serving_release_id": "c298299b7d3540d3968b5e715937b923"
+          },
+          "invalid_input_http_status": 422
+        },
+        "monitoring": {
+          "state_bytes_verified": true,
+          "summary_matches_source": true,
+          "prometheus_metrics_verified": {
+            "fraud_monitor_collector_up": 1.0,
+            "fraud_replay_events_total": 556824.0,
+            "fraud_replay_decisions_total": 143945.0,
+            "fraud_replay_alerts_total": 1453.0,
+            "fraud_replay_complete": 1.0,
+            "fraud_feature_comparison_ready": 1.0,
+            "fraud_feature_jensen_shannon{feature=\"TX_AMOUNT\"}": 0.0021550290067184723,
+            "fraud_feature_jensen_shannon{feature=\"CUSTOMER_AVG_AMOUNT_7D\"}": 0.004398245597130813,
+            "fraud_feature_jensen_shannon{feature=\"CUSTOMER_TX_COUNT_7D\"}": 0.001457152007270268,
+            "fraud_feature_jensen_shannon{feature=\"TERMINAL_KNOWN_FRAUD_RATE_7D\"}": 0.002043254733260833
+          },
+          "scrape_target_verified": true,
+          "healthy_alert_rules": 8,
+          "grafana_datasource_proxy_verified": true,
+          "dashboard_color_policy_verified": "semantic_colors_v1",
+          "provisioned_dashboard_UIDs": [
+            "fraud-feature-health",
+            "fraud-kind-overview",
+            "fraud-replay-ops",
+            "fraud-triage-quality"
+          ],
+          "visual_dashboard_review_validated": false,
+          "alert_firing_validated": false,
+          "temporary_port_forwards_removed": true
+        },
+        "monitoring_pvcs": {
+          "state": {
+            "uid": "0556675e-d90e-4acb-a9d6-ef1301b58d14",
+            "volume_name": "pvc-0556675e-d90e-4acb-a9d6-ef1301b58d14"
+          },
+          "prometheus": {
+            "uid": "6a7d90c2-de8f-4de6-9b09-ed3e853c3d83",
+            "volume_name": "pvc-6a7d90c2-de8f-4de6-9b09-ed3e853c3d83"
+          },
+          "grafana": {
+            "uid": "0004805e-7cd3-4d49-98a1-1e89cd3256d7",
+            "volume_name": "pvc-0004805e-7cd3-4d49-98a1-1e89cd3256d7"
+          }
+        },
+        "serving_inference_executed": true,
+        "tracking_model_loaded": false,
+        "fit_executed": false
+      },
+      "same_node_and_volumes": true,
+      "controlled_stop_start_validated": true,
+      "host_reboot_validated": true,
+      "inotify_persistence_after_reboot_validated": true,
+      "fit_executed": false,
+      "replay_executed": false,
+      "primary_storage_migrated": false,
+      "production_promotion": false,
+      "backup_restore_validated": false,
+      "finished_timestamp": 1792604136.162902
+    }
+  },
+  "acceptance": {
+    "controlled_stop_start_validated": true,
+    "planned_host_reboot_validated": true,
+    "inotify_persistence_after_reboot_validated": true,
+    "same_container_node_engine_and_volume_identities": true,
+    "original_replica_plan_restored": true,
+    "tracking_existing_run_and_two_history_points_verified": true,
+    "tracking_model_S3_hash_verified": true,
+    "serving_synthetic_HTTP_identity_score_and_422_verified": true,
+    "monitoring_copied_state_bytes_scrape_rules_proxy_and_dashboard_policy_verified": true
+  },
+  "limits": {
+    "backup_restore_validated": false,
+    "cluster_recreation_validated": false,
+    "host_loss_recovery_validated": false,
+    "unplanned_power_loss_recovery_validated": false,
+    "all_dataset_objects_reread_in_operations_gate": false,
+    "new_model_quality_evaluated": false,
+    "tracking_model_loaded_in_operations_gate": false,
+    "fit_executed": false,
+    "replay_executed": false,
+    "primary_storage_migrated": false,
+    "production_promotion": false,
+    "new_visual_dashboard_review_validated": false,
+    "alert_firing_validated_in_operations_gate": false
+  },
+  "integrated_scope": "Incremental KinD/Helm laboratory milestone accepted together with separate earlier component evidence; not one new monolithic end-to-end run or a production cutover."
+}

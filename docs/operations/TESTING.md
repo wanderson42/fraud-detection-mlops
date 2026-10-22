@@ -1,5 +1,30 @@
 # Validação com pytest, Poetry e tox
 
+A nova rodada tem testes de política, linhagem, MLflow HTTP, recarga, Registry, API real em processo e Helm. Execute `tox -e py314 -- tests/operational_round tests/storage/test_persistence_inventory.py tests/storage/test_managed_paths.py`; a execução nativa dos Jobs/serving permanece no runbook.
+[Guia da rodada operacional](OPERATIONAL_ROUND.md).
+
+## Transferência do histórico e Registry no KinD
+
+```bash
+.venv/bin/python -m tox -e py314 -- tests/infra/test_kind_history.py
+```
+
+Os testes usam snapshots reais de fixture, SQLite e um servidor MLflow HTTP real:
+importação dos dois stores, três baselines, métricas completas, linhagem, retomada,
+recarga e recusas antes do alias. PostgreSQL/S3/KinD são conferidos na execução
+nativa de `plan`, `import`, `verify` e `champion`, conforme [KIND_HISTORY.md](KIND_HISTORY.md).
+Não confundir esses testes com uma nova validação de qualidade preditiva.
+
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](../../docs/operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
+
+
 Os checks protegem contratos e falhas usando dados controlados. Resultados locais,
 CI da revisão publicada e avaliações com os dados reais são evidências distintas.
 
@@ -1239,3 +1264,279 @@ novos alertas não foi ensaiado na bancada. A contagem recebe cor fixa neutra,
 com conferência visual após refresh ainda pendente. Segue o provisionamento
 incremental do fluxo completo em KinD + Helm.
 [Procedimento, explicação conceitual e evidência](FEATURE_MONITORING.md#aceite-nativo-mínimo--2026-10-19).
+
+### Fundação KinD/Helm — preparação de 2026-10-20
+
+Primeiro incremento do fluxo completo: cluster dedicado de um node Kubernetes
+1.35.8 fixado por digest, chart com RustFS/PostgreSQL e dois PVCs novos. Imagens
+dos serviços preservadas dos pins já utilizados. Kubeconfig, caches, credenciais
+privadas e recibos sob `data/storage/kind-platform/`; contexto explícito.
+O ensaio grava marcadores próprios SQL/S3 e exige releitura após recriar os pods
+com os mesmos PVCs. A execução nativa ainda está pendente. Não migra os dados
+históricos, não troca o tracking e não comprova backup ou perda do cluster.
+[Runbook, limites e comandos](KIND_FOUNDATION.md).
+
+### MLflow no KinD — aceite nativo de 2026-10-20
+
+O autor aprovou a regressão (135 testes, 1 live ignorado) e o gate nativo
+(1 teste em 21,56 s). Publicação e recarga independente pelo proxy, hash do modelo
+no RustFS e nova recarga após recriar o pod MLflow foram aprovados, com erro de
+score zero e identidades da fundação preservadas. O Deployment e a imagem
+permaneceram os mesmos; o pod ganhou novo UID. [Evidência e limites](KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidade
+e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
+em andamento; não houve migração histórica, refit histórico, promoção ou
+backup/restore deste novo destino.
+
+## Gate de datasets no KinD
+
+Regressão offline: `tests/infra/test_kind_datasets.py` e
+`tests/infra/test_kind_dataset_layers.py`. Usa S3 em memória, bytes opacos Bronze
+e Parquet sintético com os verificadores existentes das quatro camadas. Cobre
+reenvio, corrupção, bucket sem ownership, manifesto por último, fonte local
+ausente na restauração e limpeza das credenciais temporárias após falha.
+
+O opt-in `.venv/bin/python -m tox -e kind-datasets` usa os quatro bundles já
+preparados e a fundação existente. Publica, repete e restaura cada camada;
+o gate permanece pulado na suíte comum. Aceite nativo do autor: 1 teste passou
+em 66,78 s; tox concluiu em 81,18 s, com as quatro camadas aprovadas. A regressão
+offline de preparação teve 69 testes aprovados no ambiente do assistente; isso
+não substitui a execução nativa. [Recibos, resultado e limites](KIND_DATASETS.md#aceite-nativo--2026-10-20).
+
+## Jobs de dados no KinD
+
+`tests/infra/test_kind_pipeline_workers.py` exercita produtores/verificadores
+reais com fixtures sintéticas e S3 em memória; verifica a cadeia e recupera
+saídas após remover projetos e áreas de trabalho. O inventário congelado é
+conferido antes de desserializar pickle. `tests/infra/test_kind_pipeline.py`
+renderiza o chart com Helm real, verifica ausência de credenciais na transformação,
+imutabilidade do Job Silver no upgrade e interrupção antes de Gold em caso de falha.
+
+O opt-in `.venv/bin/python -m tox -e kind-pipeline` usa o snapshot congelado no
+RustFS do KinD, executa dois Jobs e restaura suas novas saídas. É pulado na suíte
+comum; seu aceite é separado dos testes offline e da renderização dos templates.
+Resultado nativo do autor em 2026-10-20: 1 teste passou em 63,98 s; tox concluiu
+em 80,06 s. Ambos os Jobs, ligação de bundles, restores, contagens, imagens e
+limpeza da release temporária foram aprovados. A regressão offline teve 74 testes
+aprovados no ambiente do assistente; não foi inferida como execução nativa.
+[Resultado, recursos e diagnóstico](KIND_PIPELINE.md#aceite-nativo--2026-10-20).
+
+### Gate de checkpoint do replay no KinD
+
+`tests/infra/test_kind_replay.py` executa interrupção real de processo com
+transação SQLite aberta, retomada e comparação integral com referência sintética.
+Também confere os templates Helm reais e rejeita identidades/artefatos alterados.
+`tox -e kind-replay` executa o gate opt-in no cluster existente, recria somente
+o pod do ensaio e preserva o PVC. [Procedimento](KIND_REPLAY.md).
+
+Aceite nativo do autor em 2026-10-20: 1 teste passou em 17,89 s, tox em 33,80 s.
+O pod foi recriado durante `feedback:2`, com recuperação da transação incompleta,
+mesmo PVC e igualdade de todas as tabelas. O fixture terminou com 20 eventos,
+10 scores e 6 alertas; somente quatro scores foram calculados após a retomada.
+A regressão de preparação (181 testes/4 live ignorados) pertence ao ambiente do
+assistente; não foi inferida como nova execução nativa.
+[Evidência e limites](KIND_REPLAY.md#aceite-nativo--2026-10-20).
+
+### Gate do serving no KinD
+
+`tests/infra/test_kind_serving.py` confere templates Helm reais, semântica HTTP
+com releases copiadas, identidades, rejeição de artefatos e rollback sob controle
+de Kubernetes/Docker simulado. Os testes não substituem build/import reais.
+`tox -e kind-serving` executa o gate opt-in na release própria já instalada:
+Service blue/green, EndpointSlices, falha 502 e rollback Helm para a baseline.
+[Entrada confiável, comandos e diagnóstico](KIND_SERVING.md).
+
+Aceite nativo em 2026-10-21: **1 teste em 19,48 s**, tox OK em 34,53 s.
+Seis eventos completos, candidata no EndpointSlice, zero endpoints prontos na
+falha, HTTP 502 e rollback Helm para blue aprovados. A correção de importação
+por arquivo `linux/amd64` foi exercitada nas três imagens, com arquivos temporários
+removidos. A regressão nativa anterior registrou 222 testes/4 ignorados; o conjunto
+privado após a correção registrou 228/4, sem executar Docker/KinD no assistente.
+[Recibo e limites](KIND_SERVING.md#aceite-nativo--2026-10-21). Não é necessário
+repetir o gate para aplicar somente este fechamento documental.
+
+### Observabilidade no KinD
+
+`tests/infra/test_kind_observability.py` verifica cópia SQLite consistente,
+rejeição de fonte ativa/alterada, hash/limite/atomicidade do transporte, contratos
+Helm reais, mounts somente leitura, importação por plataforma e controlador sob
+chamadas controladas. Reutiliza fixture sintética dos testes de monitoramento.
+Não acessa fontes nativas ou Docker/KinD.
+`tox -e kind-observability` é opt-in: consulta exporter/Prometheus/Grafana reais,
+verifica provisão e recria somente o exporter, preservando identidades e estado.
+[Runbook](KIND_OBSERVABILITY.md). Aceite nativo registrado abaixo.
+
+Aceite nativo de observabilidade em 2026-10-21: **1 teste em 62,64 s**, tox OK
+em 73,91 s. Bytes e summary conciliados, scrape e oito regras conferidos,
+proxy Grafana e quatro dashboards aprovados antes/depois da recriação do
+exporter, com mesmos PVCs e demais recursos preservados. O autor confirmou
+posteriormente a conferência visual; ela é separada do gate automatizado.
+Não houve novo teste de firing, backup/restore ou reboot.
+[Evidência](../../references/evidence/kind_observability_author_validation_2026-10-21.json).
+
+Refinamento visual aprovado em 2026-10-21: [política semântica de cores](DASHBOARD_COLORS.md#aceite-da-política--2026-10-21),
+com informações azuis e estados explícitos em texto/cor. Configuração verificada
+pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
+autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
+Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+O recibo atualizado identifica `dashboard_color_policy_verified=semantic_colors_v1`
+nas duas verificações. Duração do controlador: 62,36 s; tempos pytest/tox não
+foram fornecidos neste anexo. Regra de cores e apoio da legenda não alteram
+consultas, unidades ou resultados. Sem necessidade de repetir testes para
+aplicar somente este fechamento documental.
+
+
+## Gate operacional opt-in do KinD
+
+Regressão sem Docker: `poetry run python -m pytest -q tests/infra/test_kind_operations.py`. O ambiente tox `kind-operations` exige `FRAUD_KIND_NO_OTHER_WRITERS=1` e `FRAUD_KIND_TRACKING_REPORT` explícitos. Interrompe e retoma o cluster próprio; não deve entrar na CI comum. O teste live permanece skipped na suíte padrão. Reboot manual tem gate separado `verify --expect-reboot`; ambos os gates nativos foram aprovados em 2026-10-21. O ciclo teve 1 teste em 252,23 s; o reboot foi uma verificação CLI separada. Mocks não comprovam persistência nativa. [Comandos e limites](KIND_OPERATIONS.md).
+
+
+## Entradas Make e acessos locais
+
+Os testes `tests/infra/test_platform_entrypoints.py` executam GNU Make com um Poetry gravador, verificam falhas/precondições/ordem e usam doubles dos forwards para testar ownership e limpeza por Ctrl+C. Não abrem Docker/Kubernetes. Execute `poetry run tox -e py314 -- tests/infra/test_platform_entrypoints.py` no ambiente nativo. Os 18 testes locais de preparação passaram em Python 3.14.4 usando GNU Make e bibliotecas padrão, com conferência adicional em Python 3.12.14. O acesso aos serviços reais e o perfil tox nativo permanecem pendentes para este incremento. A validação de cores, operações e serviços anteriores não é reaberta.
+
+
+## Atualização recorrente — retenção nativa aceita
+
+Em 2026-10-22, `successor-v1` e `optimized-v1` retornaram `retain_champion`.
+Inputs, artefatos e métricas recalculadas dos três candidatos por rodada foram
+conferidos em 67.255 linhas com rótulos maduros. Nenhuma mudança de champion
+foi reportada. A rodada fixa incluiu `active_identity_verified` via HTTP; a
+otimizada não forneceu uma nova medição de latência.
+[Recibo e limites](../../references/evidence/model_updates_author_validation_2026-10-22.json).
+Os 259 testes passados, 4 skipped e 42 warnings informados pelo autor verificam
+a suíte de implementação; não substituem o aceite nativo de ativação de um
+sucessor com pesos diferentes, rollback e recuperação, ainda pendente.
+Este fechamento muda somente documentação/evidência; não requer novo treino.
+
+
+## Fluxo do produto via HTTP
+
+`tests/product_flow` usa FastAPI/Uvicorn real em loopback, eventos e modelo
+sintéticos, fonte SQLite somente de leitura e o mesmo algoritmo causal/triagem.
+Cobre reconciliação, pausa/retomada, duplicatas, falhas 503/422/conexão, identidade
+incorreta, interrupção entre HTTP e commit, adulteração de requests/responses/
+triagem, ausência de carregamento de pesos no cliente e comandos GNU Make.
+A suíte local não possui daemon KinD. O teste live é skipped por padrão.
+
+A preparação exige código/política commitados e fonte concluída. Após
+`make product-prepare PRODUCT_NO_OTHER_WRITERS=1`, execute
+`FRAUD_PRODUCT_FLOW_NO_OTHER_WRITERS=1 .venv/bin/python -m tox -e product-flow`.
+O teste chama a API já instalada, pausa e retoma o ledger próprio, confere
+Registry/rota/HTTP e publica um recibo somente depois dos gates finais.
+Não modifica workloads, pesos, aliases ou o replay fonte. [Runbook](PRODUCT_DELIVERY.md#executar-eventos-pela-api-do-champion).
+
+
+## Retomada idempotente da release
+
+O ensaio nativo do produto passou com 1 teste em 493,00 s; consulte a
+[evidência do autor](../../references/evidence/product_http_flow_author_validation_2026-10-22.json).
+O anexo traz a saída do teste e cinco casos, sem o rehearsal.json completo;
+não se inferem contagens totais ou métricas de qualidade a partir dessa amostra.
+
+`tests/serving_recovery` verifica release igual sem regravação, release parcial,
+interrupção da cópia e da publicação atômica, recusa de divergências/links,
+aprovação, recusa de estado de terceiros, retomada da publicação de current.json
+e leitura de recibo/ledger HTTP antigo após a transição operacional exata.
+O teste da especificação do Job usa doubles; o reinício real é validado no KinD
+por `serving-recovery-prepare`, antes de qualquer alteração do slot ativo.
+Não é necessário repetir o replay completo ou treinar outro modelo.
+[Procedimento](SERVING_RECOVERY.md).
+
+
+### Aceite nativo da manutenção do instalador — 2026-10-22
+
+O autor retomou o Job existente sem novo build, aplicou a portadora com o digest
+revisado e executou `serving-recovery-verify` e `product-cases`. Resultado:
+`serving_seed_maintenance_applied` e `serving_seed_recovery_verified`, versão 1
+no blue, mesmo hash de modelo e release, entrada inválida recusada com HTTP 422
+e cinco casos consultáveis. O smoke HTTP mediu p95 de 91,33 ms em 20 requisições;
+essa amostra funcional não constitui teste de carga nem SLA.
+
+Regressão local da correção: 361 testes aprovados, 5 ignorados e 12 subtests,
+com Ruff aprovado. O ensaio isolado valida reinício do init container no mesmo
+volume; este aceite não executou outro reboot do host. A promoção recorrente com
+pesos diferentes e rollback continua pendente de candidato qualificado.
+[Evidência do autor](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json).
+
+
+## Explicações SHAP dos casos HTTP
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/case_explanations tests/serving_recovery tests/product_flow \
+  tests/model_updates tests/operational_round tests/evaluation/test_validation_diagnostics.py \
+  tests/serving tests/storage/test_managed_paths.py \
+  tests/storage/test_persistence_inventory.py tests/infra/test_platform_entrypoints.py
+```
+
+Usa HTTP real com release sintética e SHAP real. Confere contribuições iguais ao
+diagnóstico existente, score registrado, aditividade, seleção sem rótulos, fontes
+inalteradas, integridade do relatório e digest externo. Divergência de modelo,
+score, requisição, ledger, arquivos, links ou mudança da API bloqueia publicação.
+A verificação concluída não carrega modelo. O ensaio opt-in `case-explanations`
+usa os casos persistidos do champion no KinD e não treina nem repete o replay.
+[Procedimento e entrega](CASE_EXPLANATIONS.md).
+
+
+### Aceite nativo SHAP por caso — 2026-10-22
+
+O ensaio `case-explanations` publicou cinco casos e retornou
+`case_explanations_verified` na verificação offline, sem carregar modelo.
+Pesos/release do champion foram preservados. O HTML fornecido contém 19 valores
+e contribuições por caso; as somas e a sigmoide conferem na precisão exibida.
+O console confirma o digest `1f780b2d7eb9de7a553435f3ccd69ede37eca735cbdddae6dadbb01981e0d91c`.
+O anexo não inclui os SVG/JSON/manifest, nem o resumo final de quantidade/duração
+do pytest; o aceite registra exatamente as saídas de geração/verificação fornecidas.
+[Evidência](../../references/evidence/case_explanations_author_validation_2026-10-22.json).
+
+
+### Portal de investigação — preparação
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/fraud_portal tests/case_explanations tests/product_flow \
+  tests/serving_recovery tests/storage/test_managed_paths.py \
+  tests/storage/test_persistence_inventory.py tests/infra/test_platform_entrypoints.py &&
+.venv/bin/python -m tox -e portal-ui
+```
+
+O primeiro grupo verifica exportação reconciliada com a fonte, idempotência,
+recibos, contratos e regressões existentes. Os testes de UI usam o lock separado
+com Streamlit AppTest e Plotly: navegação, filtros, paginação, caso com/sem SHAP,
+feedback, rejeição de corrupção e saúde HTTP de um servidor real com fixture.
+O ambiente científico pode pular os testes opcionais de UI; `portal-ui` os executa.
+A inspeção visual no navegador nativo complementa AppTest; não foi declarada
+aprovada nesta preparação. Para aceite: [runbook](FRAUD_PORTAL.md).
+
+
+### Página de desempenho e contrato independente do algoritmo
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/fraud_portal tests/case_explanations tests/product_flow \
+  tests/serving_recovery tests/storage/test_managed_paths.py \
+  tests/storage/test_persistence_inventory.py tests/infra/test_platform_entrypoints.py &&
+.venv/bin/python -m tox -e portal-ui
+```
+
+O teste HTTP usa MLflow real com candidatos de fixture e liga a avaliação a uma
+regressão logística, preservando aliases. Outros testes verificam que train/test
+não são lidos pelo loader de validação, que a política conserva primeira passagem
+e orçamento, publicação idempotente, métricas corrompidas/fora de contexto e UI
+para HGB, regressão e identidade de algoritmo futuro. Os rótulos não participam
+da seleção de alertas. [Aceite nativo e comandos](PORTAL_PERFORMANCE.md).
+
+
+### Aceite nativo da página de desempenho — 2026-10-22
+
+O autor executou portal-performance-prepare, portal-performance-verify e
+portal-smoke. A avaliação usou 67.255 transações; o snapshot manteve 200 decisões,
+199 clientes, 13 alertas, 200 feedbacks e cinco explicações. O verificador offline
+não carregou modelo. Hash de pesos e champion preservados; conferência visual
+explicitamente concluída pelo autor. O manifest da avaliação está registrado na
+[evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json).
+Não implica nova confirmação independente, promoção de sucessor ou chegada
+contínua de novos eventos ao portal.

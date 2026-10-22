@@ -1,0 +1,49 @@
+{
+  "schema": "fraud_portfolio_workflow_preparation_v1",
+  "status": "prepared_native_entrypoint_smoke_pending",
+  "prepared_on": "2026-10-21",
+  "scope": "thin_Make_entrypoints_scoped_foreground_access_and_honest_portfolio_walkthrough_not_new_end_to_end_streaming_HTTP_pipeline",
+  "input_Makefiles": [
+    {
+      "name": "Makefile",
+      "project": "fraud-detection-mlops",
+      "sha256": "1b089948b8bd3eaccd347e324038b591d1248fbb45d08fdcfac92b92e271c4df"
+    },
+    {
+      "name": "Makefile(1)",
+      "project": "renewable-energy-mlops",
+      "sha256": "753643491be39d698c337793099a56fffd84e3bc1abcfd35313d449e1a8d8d78"
+    }
+  ],
+  "entrypoint_source_pins": {
+    "Makefile": "68d14d363580dfd3cf9d5da74a1d2c4e1750a35377075d1e501e6608e7fba689",
+    "infra/make/platform.mk": "331873db5be4aa52f67ca10e276f9b43ca0ab2bcae2d81303a56b20618ea79bb",
+    "scripts/platform/local_access.py": "e41b410ed502c0338b610afb3f7cd178e5d3464b25a057ee85523ec2514d3d9a",
+    "tests/infra/test_platform_entrypoints.py": "8acc70175eb21317e04957aed01bb4266069d58d0136975226057aa4b96e5966"
+  },
+  "local_validation": {
+    "python": "3.14.4",
+    "additional_python": "3.12.14",
+    "ruff": "0.16.10",
+    "passed": 18,
+    "seconds": 0.512,
+    "real_GNU_Make_with_recording_Poetry_stub": true,
+    "ownership_release_check_and_owned_forward_cleanup_doubles": true,
+    "no_native_Docker_or_Kubernetes_commands_executed": true,
+    "missing_parameters_and_writer_declaration_fail_before_dispatch": true,
+    "paths_with_spaces_and_shell_punctuation_preserved_as_one_argument": true,
+    "failure_stops_next_installation_step": true,
+    "multiple_goals_with_j_serialized": true,
+    "ruff_check_and_format_passed": true
+  },
+  "existing_runtime_controllers_charts_and_receipts_rewritten": false,
+  "existing_component_acceptance_repeated": false,
+  "new_functional_connections_implemented": [],
+  "native_status_and_foreground_access_validated": false,
+  "fit_executed": false,
+  "replay_executed": false,
+  "production_promotion": false,
+  "scalability_under_load_validated": false,
+  "remaining_integration_boundary": "Native paced replay scores locally; KinD replay uses a small independent synthetic fixture; serving uses its qualified synthetic release; monitoring reads a completed replay snapshot. New Gold outputs are not automatically routed into any of these models.",
+  "runbook": "docs/operations/PORTFOLIO_WALKTHROUGH.md"
+}

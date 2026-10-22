@@ -1,0 +1,72 @@
+{
+  "schema": "fraud_kind_serving_preparation_v1",
+  "status": "prepared_native_acceptance_pending",
+  "prepared_on": "2026-10-21",
+  "scope": "externally_pinned_qualified_synthetic_runtime_Helm_Service_blue_green_and_native_rollback_not_reference_promotion",
+  "local_validation": {
+    "python": "3.14.4",
+    "ruff": "0.16.10",
+    "helm": "4.3.1",
+    "regression_passed": 222,
+    "live_skipped": 5,
+    "regression_seconds": 8.82,
+    "real_Helm_lint_and_template_executed": true,
+    "baseline_and_gateway_templates_identical_across_route_and_candidate_changes": true,
+    "real_API_TestClient_parity_and_422_executed": true,
+    "Kubernetes_and_Docker_orchestration": "controlled_in_memory_calls_not_native_cluster",
+    "externally_pinned_descriptor_before_engine_access_validated": true,
+    "wrong_runtime_and_foreign_tag_rejected": true,
+    "owned_tag_cleanup_and_preexisting_tag_preservation_validated": true,
+    "failed_candidate_gate_rolls_back_without_switching": true,
+    "effective_image_and_owner_and_restart_mismatches_rejected": true,
+    "ruff_check_and_format_passed": true,
+    "full_Poetry_sync_executed": false,
+    "Docker_images_built_or_loaded": false,
+    "Kubernetes_services_contacted": false,
+    "native_Helm_rollback_executed": false
+  },
+  "native_gate": ".venv/bin/python -m tox -e kind-serving",
+  "known_trusted_local_delivery": {
+    "directory_relative_to_repo": "data/serving/deliveries/1b85bede4ac24fc781491ef24eea0209",
+    "source_commit": "0b95136a462583441044d50de0884a558777b260",
+    "descriptor_sha256": "aa0e79886800765c516d3ed776295dc46d657a7ea50eb7c88900241d8c0ff0d7",
+    "basis": "prior author-provided qualified delivery and native consumer success in this conversation",
+    "input_bytes_available_to_assistant": false
+  },
+  "images": {
+    "runtime": "exact qualified API archive; no rebuild",
+    "carrier": "new stdlib-only pinned-Python image containing reviewed blue/green release files",
+    "gateway": "existing reviewed NGINX digest; distinct loaded local tag"
+  },
+  "routing": "stable gateway pod -> active ClusterIP Service -> selector blue/green; EndpointSlice target UIDs checked; port-forward never targets active backend Service",
+  "retention": "baseline API and gateway remain installed in lab on success; green removed by Helm rollback; temporary loopback port-forward ends; source delivery and loaded images retained",
+  "native_gate_expected_events": [
+    "baseline_routed",
+    "invalid_candidate_rejected_before_start_or_switch",
+    "candidate_direct_gates_passed",
+    "candidate_routed_on_same_url",
+    "candidate_outage_observed",
+    "baseline_restored_on_same_url"
+  ],
+  "runtime_rebuilt_by_native_gate": false,
+  "fit_executed_by_native_gate": false,
+  "synthetic_fixture_fitted_during_local_tests": true,
+  "historical_reference_accessed": false,
+  "primary_storage_migrated": false,
+  "production_promotion": false,
+  "zero_downtime_validated": false,
+  "network_policy_implemented": false,
+  "registry_published": false,
+  "source_hashes": {
+    "scripts/platform/kind_serving.py": "775c43c887cc0e69bf3a0ae26e6c385b7597bb474ac42b9b681abaddd694fc25",
+    "scripts/platform/kind_serving_delivery.py": "d88c01f938d0e60032aacc6e34217fe8372925a3cae35ca4e0e25cf4875b1ccc",
+    "scripts/platform/kind_serving_seed.py": "4ca3ec100883448a03b9fdf75f3902ea5d3a1bd6df86d6ebb2aa71587f9854dc"
+  },
+  "preserved": [
+    "accepted foundation/tracking/dataset/pipeline/replay controllers and charts",
+    "all existing scientific/replay/serving package code",
+    "qualified delivery producer and consumer code",
+    "poetry.lock",
+    "historical datasets, model, checkpoints and retained rehearsal PVC"
+  ]
+}

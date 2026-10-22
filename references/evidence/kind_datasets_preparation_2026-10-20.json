@@ -1,0 +1,48 @@
+{
+  "schema": "fraud_kind_datasets_preparation_v1",
+  "status": "prepared_native_acceptance_pending",
+  "prepared_on": "2026-10-20",
+  "scope": "prepared_dataset_bundles_kind_RustFS_publication_idempotence_independent_restore",
+  "layers": [
+    "bronze",
+    "silver",
+    "gold",
+    "development-gold"
+  ],
+  "local_validation": {
+    "python": "3.14.8",
+    "tests_passed": 69,
+    "tests_skipped": 1,
+    "test_seconds": 9.62,
+    "native_tox_executed": false,
+    "docker_or_kind_executed": false,
+    "backend": "in_memory_S3_with_real_dataset_verifiers",
+    "source_absence_in_restore_tested": true,
+    "ruff_check_passed": true,
+    "ruff_format_passed": true
+  },
+  "native_acceptance_command": ".venv/bin/python -m tox -e kind-datasets",
+  "workspace": "data/storage/kind-platform/datasets",
+  "destination": "owned_kind_RustFS_service_via_loopback_port_forward",
+  "bucket": "fraud-datasets",
+  "worker_uses_host_network": true,
+  "network_policy_isolation_validated": false,
+  "administrative_RustFS_credentials_reused": true,
+  "primary_storage_migrated": false,
+  "historical_tracking_migrated": false,
+  "project_wide_storage_inventory_complete": false,
+  "host_loss_recovery_validated": false,
+  "production_promotion": false,
+  "preserved": [
+    "accepted foundation controller and Helm charts",
+    "accepted MLflow runtime/controller/chart and source pins",
+    "existing archive producers and scientific dependency lock",
+    "historical datasets, study and tracking stores"
+  ],
+  "source_hashes": {
+    "scripts/platform/kind_datasets.py": "1d5a38fff0d7c30ff23fb4d37f7856ead309a25dbe74046bdc60f8002fe729af",
+    "scripts/platform/kind_datasets_worker.py": "503698735fc48cb04e1adc53a8a80b5841d487319cea2e9e6e260ca8be3fe2ad",
+    "infra/kind/datasets/Dockerfile": "bfc91204265557849e2792b56da1514f41f08ce982c7d4f2da2907eb02c7819c",
+    "infra/kind/datasets/Dockerfile.dockerignore": "56dc97650cf43e055943a161733e9a5bc3aef499279b6d01d01764ca334bfb03"
+  }
+}

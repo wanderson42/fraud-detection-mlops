@@ -1,0 +1,135 @@
+{
+  "schema": "fraud_kind_tracking_author_validation_v1",
+  "status": "accepted_native_synthetic_scope",
+  "validation_date_local": "2026-10-20",
+  "timezone": "America/Belem",
+  "evidence_basis": "author_supplied_terminal_outputs_and_full_receipt_reviewed_in_conversation_not_independent_native_execution",
+  "native_regression": {
+    "environment": "py314",
+    "passed": 135,
+    "skipped": 1,
+    "pytest_seconds": 14.25,
+    "tox_total_seconds": 17.41,
+    "ruff_check_passed": true,
+    "ruff_format_passed": true,
+    "formatted_files": 314,
+    "poetry_check_lock_passed": true
+  },
+  "native_live_test": {
+    "environment": "kind-tracking",
+    "passed": 1,
+    "pytest_seconds": 21.56,
+    "tox_total_seconds": 35.65
+  },
+  "native_receipt": {
+    "schema": "fraud_kind_tracking_rehearsal_v1",
+    "status": "success",
+    "scope": "synthetic_kind_MLflow_PostgreSQL_S3_proxy_and_model_reload_not_historical_migration",
+    "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/tracking/rehearsal-e835e0ee8ce34106a203594a23c4bb3a.json",
+    "phase": "complete",
+    "historical_sources_mounted": false,
+    "historical_runs_migrated": false,
+    "primary_storage_migrated": false,
+    "production_promotion": false,
+    "backup_restore_validated": false,
+    "controller_sha256": "fa674f4ad5e77e0cafb0bb225e1469501068d153864ee31f71abc9bfc34aaab7",
+    "client_sha256": "63007e160f825376af2352bac90b58e89b329dac214fb3cd4fc02ca05c1f1232",
+    "foundation_before": {
+      "pods": {
+        "postgres": {
+          "name": "fraud-platform-postgres-0",
+          "uid": "10d34cb6-6bb1-4616-b92e-1bae71c52efa",
+          "image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+          "image_id": "docker.io/library/postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-0",
+          "uid": "8e0a956a-b457-4b80-8151-0b9332eeccbd",
+          "image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+          "image_id": "docker.io/rustfs/rustfs@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c"
+        }
+      },
+      "pvcs": {
+        "postgres": {
+          "name": "fraud-platform-postgres-data",
+          "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+          "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-data",
+          "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+          "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+        }
+      }
+    },
+    "before": {
+      "pod": "fraud-tracking-7d5bbd469f-x6zvt",
+      "pod_uid": "49a77721-1cd7-474c-b25d-79615601498f",
+      "deployment_uid": "cbd0b152-bc80-454f-8845-190fbc35514a",
+      "image": "fraud-kind-tracking:19d9607c63e0426db0f5663247331022",
+      "image_id": "docker.io/library/import-2026-10-20@sha256:56180e1a6d21f976b57fc7a94a323fe4d6083f9176112e6deb34e1fc0daac6d5"
+    },
+    "s3": {
+      "status": "s3_model_verified",
+      "bucket": "fraud-kind-mlflow",
+      "key": "v1/1/models/m-9dc865b0dac6450a93eadad2e17e8e73/artifacts/model.skops",
+      "model_sha256": "11ede55b832c9c808183c4f3dd38e4e4b8d45c11276d3630e1d189b9d42c7481",
+      "bytes": 20265
+    },
+    "after": {
+      "pod": "fraud-tracking-7d5bbd469f-5qthv",
+      "pod_uid": "0d10e3f2-5d77-443c-a683-38a6cab3ae18",
+      "deployment_uid": "cbd0b152-bc80-454f-8845-190fbc35514a",
+      "image": "fraud-kind-tracking:19d9607c63e0426db0f5663247331022",
+      "image_id": "docker.io/library/import-2026-10-20@sha256:56180e1a6d21f976b57fc7a94a323fe4d6083f9176112e6deb34e1fc0daac6d5"
+    },
+    "foundation_after": {
+      "pods": {
+        "postgres": {
+          "name": "fraud-platform-postgres-0",
+          "uid": "10d34cb6-6bb1-4616-b92e-1bae71c52efa",
+          "image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+          "image_id": "docker.io/library/postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-0",
+          "uid": "8e0a956a-b457-4b80-8151-0b9332eeccbd",
+          "image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+          "image_id": "docker.io/rustfs/rustfs@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c"
+        }
+      },
+      "pvcs": {
+        "postgres": {
+          "name": "fraud-platform-postgres-data",
+          "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+          "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-data",
+          "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+          "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+        }
+      }
+    },
+    "run_id": "da62ff0d145b4304b6827eb01212ac3c",
+    "model_uri": "models:/m-9dc865b0dac6450a93eadad2e17e8e73",
+    "model_artifact_uri": "mlflow-artifacts:/1/models/m-9dc865b0dac6450a93eadad2e17e8e73/artifacts",
+    "model_sha256": "11ede55b832c9c808183c4f3dd38e4e4b8d45c11276d3630e1d189b9d42c7481",
+    "independent_http_reload_validated": true,
+    "model_reload_after_pod_recreation_validated": true,
+    "metric_history_rows": 2,
+    "max_absolute_score_error": 0.0,
+    "client_aws_and_database_environment_removed": true,
+    "client_workspaces_removed": true,
+    "synthetic_fixture_fitted": true,
+    "historical_model_refit": false,
+    "foundation_identities_preserved": true
+  },
+  "native_receipt_bytes_archived": false,
+  "receipt_sha256": null,
+  "registry_published": false,
+  "cluster_recreation_validated": false,
+  "host_loss_recovery_validated": false,
+  "project_wide_storage_inventory_complete": false,
+  "next_increment": "Objects/datasets in KinD RustFS with identity/readback gates, preserving the existing sources until destination acceptance"
+}

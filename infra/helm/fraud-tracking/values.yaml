@@ -1,0 +1,7 @@
+# Unique local tag; controller verifies the loaded image identity. No registry publication.
+image: fraud-kind-tracking:00000000000000000000000000000000
+ownerId: "00000000000000000000000000000000"
+existingSecret: fraud-kind-tracking-credentials
+resources:
+  requests: {cpu: 100m, memory: 256Mi}
+  limits: {cpu: "1", memory: 1Gi}

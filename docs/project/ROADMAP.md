@@ -1,6 +1,16 @@
 # Mural de metas — Fraud Detection MLOps
 
-Atualizado em **2026-10-19**. Backlog principal, em ordem de dependência e valor
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](../operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
+
+
+Atualizado em **2026-10-21**. Backlog principal, em ordem de dependência e valor
 para a demonstração. O [README](../../README.md) apresenta o projeto; a
 [arquitetura](../ARCHITECTURE.md) descreve os componentes e os
 [stakeholders](STAKEHOLDERS.md) interpretam os resultados.
@@ -14,6 +24,53 @@ acontece quando o processo para, os dados mudam ou um candidato é rejeitado.
 O painel torna essas evidências visíveis. Dados simulados e laboratório local
 não comprovam eficácia antifraude real nem SLA de uma instituição.
 
+## Próximo marco — simplificação e fechamento funcional
+
+A [rodada operacional canônica](../operations/OPERATIONAL_ROUND.md) foi aceita pelo
+autor: dados recompostos, três candidatos com Inputs, HGB versão 1 em champion,
+API com os mesmos pesos e rollback verificado. A implementação de
+[substituição recorrente](../operations/MODEL_UPDATES.md) inclui busca opcional por
+modelo e aprovação explícita da mudança de tráfego. Em 2026-10-22, as rodadas
+fixa e de busca validaram a retenção nativa do champion; ativação, rollback e
+recuperação de um sucessor com pesos diferentes no KinD continuam pendentes.
+
+O marco de infraestrutura KinD + Helm está concluído **no escopo de laboratório**:
+componentes aceitos por incrementos, parada/subida e reboot planejado aprovados,
+mesmo node/PVCs e leituras funcionais conferidas. A [sequência integrada](../operations/KIND_PLATFORM.md)
+consolida os comandos e os limites. Isso não declara migração primária, promoção
+histórica, recuperação por perda do host ou uma nova execução monolítica do fluxo.
+
+A [jornada de entrega ao usuário](../operations/PRODUCT_DELIVERY.md) conecta
+eventos e features causais à API do champion, persiste scores/decisões,
+prioriza investigação e associa feedback. O ensaio nativo passou em
+2026-10-22, com pausa/retomada, reconciliação e consulta de casos. A
+[manutenção idempotente da release](../operations/SERVING_RECOVERY.md) também foi
+aplicada e verificada no KinD, mantendo modelo, release e casos consultáveis.
+A [integração SHAP por caso](../operations/CASE_EXPLANATIONS.md) foi aceita pelo
+autor em 2026-10-22: cinco casos do champion, 19 contribuições por caso,
+reconstrução do score e verificação offline do relatório, preservando o modelo.
+
+O [portal de investigação](../operations/FRAUD_PORTAL.md) e sua
+[página de desempenho](../operations/PORTAL_PERFORMANCE.md) foram aceitos
+funcional e visualmente em 2026-10-22: 200 casos consultáveis e 67.255 transações
+de validação identificadas, com comparação, curvas e métricas da política.
+O portal é independente do algoritmo; explicações são capacidades opcionais.
+Esse recorte está encerrado.
+
+**Próximo recorte: [consolidação da demonstração operacional](../operations/PRODUCT_OPERATIONS.md).**
+Unificar comandos/destino ativo e demonstrar chegada gradual de eventos pela API,
+fila e métricas da mesma sessão, com pausa/retomada e atualização visível.
+O portal atual é um snapshot; o monitoramento KinD aceito usa cópia concluída.
+Não abrir novos estudos de modelo, broker, feature store ou CT para esse recorte.
+A simplificação e revisão de redundâncias fazem parte dessa consolidação.
+
+A simplificação consolidará comandos/responsabilidades, removerá componentes
+substituídos após revisar dependências e validará instalação limpa e demonstração.
+O guia principal será orientado ao produto, com uma seção própria para evidências.
+A ativação nativa de um sucessor com pesos diferentes permanece como aceite
+específico, sem tornar obrigatório buscar um vencedor artificialmente.
+Terraform vem depois desse fechamento.
+
 ## Marcos concluídos e evidência preservada
 
 Uma linha concluída encerra somente o escopo demonstrado. As extensões ainda
@@ -21,6 +78,21 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 
 | Marco | Estado e limite |
 | --- | --- |
+| Portal e transparência do modelo | Aceite nativo e visual em 2026-10-22: 200 decisões/13 alertas/cinco explicações; avaliação de 67.255 transações, comparação, curvas e recall/falsos positivos com unidade/política explícitas. Mesmo modelo, champion preservado. Consulta por snapshot; sessão contínua é próxima consolidação. [Evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json) |
+| Explicações SHAP dos casos do champion | Aceite nativo em 2026-10-22: cinco casos identificados pelos mesmos pesos/release/requests, 19 contribuições por caso, score reconstruído, HTML/SVG/JSON publicados e verificação offline sem carregar modelo. Champion preservado. [Evidência](../../references/evidence/case_explanations_author_validation_2026-10-22.json) |
+| Retomada idempotente do instalador do champion | Aceite nativo em 2026-10-22: Job com reinício no mesmo volume, manutenção aprovada da portadora, API/Registry versão 1 no blue e cinco casos consultados após a troca. Mesmo modelo e release; sem novo treino. [Evidência](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json) |
+| Eventos causais pela API do champion | Aceite do autor em 2026-10-22: teste nativo aprovado, decisões HTTP e feedback consultáveis, pausa/retomada e reinvocação conferidas pelo teste. Não altera champion nem conclui SHAP por caso. [Evidência](../../references/evidence/product_http_flow_author_validation_2026-10-22.json) |
+| Retenção governada do champion | Aceite nativo em 2026-10-22: duas rodadas, três candidatos por rodada, Inputs/artefatos/validação conferidos, ganho insuficiente e champion versão 1 preservado. Não conclui ativação ou rollback de sucessor com pesos diferentes. [Evidência](../../references/evidence/model_updates_author_validation_2026-10-22.json) |
+| Infraestrutura do fluxo em KinD + Helm | Concluída no escopo do laboratório por aceites incrementais de fundação, tracking, datasets, Jobs, replay, serving, observabilidade e operação. Sequência consolidada; fontes históricas preservadas. Não é migração primária nem execução integral nova em produção. [Guia integrado](../operations/KIND_PLATFORM.md) |
+| Parada/subida e reboot planejado | Aceite nativo em 2026-10-21: oito workloads retomados no mesmo node/PVCs, boot_id mudou e inotify 512/524288 persistiu. Tracking/S3, serving e monitoramento iguais ao baseline. Sem recuperação por perda do host ou interrupção abrupta. [Evidência](../../references/evidence/kind_operations_author_validation_2026-10-21.json) |
+| Política de cores dos dashboards | Aceite separado em 2026-10-21: cores, mappings, thresholds e legendas conferidos via API e visualmente pelo autor; métricas e três PVCs iguais ao aceite anterior. Informações não herdam classificação arbitrária por magnitude. Sem replay ou novo resultado de qualidade. [Evidência](../../references/evidence/dashboard_color_policy_author_validation_2026-10-21.json) |
+| Observabilidade no KinD | Aceite nativo e visual em 2026-10-21: cópia de replay concluído conciliada, scrape, oito regras, proxy Grafana e quatro dashboards conferidos; exporter recriado no mesmo PVC, origem e demais recursos preservados. Sem ingestão ao vivo, novo resultado de qualidade, firing ou reboot validados. [Evidência](../../references/evidence/kind_observability_author_validation_2026-10-21.json) |
+| Serving via Helm no KinD | Aceite nativo em 2026-10-21: seis eventos blue → green → blue, pacote inválido bloqueado, EndpointSlices conferidos, falha 502 e rollback Helm em 1,99 s observado. Mesma imagem qualificada/pesos sintéticos, baseline/gateway e fundação preservados. Baseline instalada, candidata removida; sem promoção histórica ou garantia de zero downtime. [Evidência](../../references/evidence/kind_serving_author_validation_2026-10-21.json) |
+| Replay sintético com checkpoint no KinD | Aceite nativo em 2026-10-20: pod recriado durante transação de feedback, rollback e retomada no mesmo PVC; todas as tabelas iguais à execução contínua, reentrega sem rescoring. 20 eventos/10 scores/6 alertas; processamento removido e PVC retido. Sem migração histórica ou recuperação por perda do host. [Evidência](../../references/evidence/kind_replay_author_validation_2026-10-20.json) |
+| Produtores Bronze → Silver → Gold em Jobs Helm | Aceite nativo em 2026-10-20: Silver 1.754.155 transações; Gold 402.877 linhas/19 features; ligação exata dos novos bundles, restores independentes, fundação preservada e Jobs removidos. Gold recalculou features, sem treino, nova avaliação ou mudança primária. [Evidência](../../references/evidence/kind_pipeline_author_validation_2026-10-20.json) |
+| Bundles dos quatro datasets no RustFS do KinD | Aceite nativo em 2026-10-20: 489 arquivos/493 objetos verificados, 210.997.363 bytes; reenvio sem novos uploads e restauração com verificadores próprios, fundação preservada. Leitores atuais mantidos; sem recuperação por perda do cluster/host. [Evidência](../../references/evidence/kind_datasets_author_validation_2026-10-20.json) |
+| MLflow na fundação KinD/Helm | Publicação e recarga independente HTTP, hash S3 e recarga após recriação do pod aprovados; erro zero, mesmo Deployment/imagem e fundação preservada. Fixture sintética; sem migração histórica ou backup/restore do novo destino. [Evidência](../../references/evidence/kind_tracking_author_validation_2026-10-20.json) |
+| Fundação PostgreSQL/RustFS no KinD | Aceite nativo em 2026-10-20: dois pods recriados, mesmos PVCs/PVs e marcadores SQL/S3 relidos; 45 testes aprovados. Sem backup/restore ou migração primária. [Evidência](../../references/evidence/kind_foundation_author_validation_2026-10-20.json) |
 | Bronze, Silver e Gold | 183 dias; 1.754.155 transações; 19 preditores causais; contratos, manifestos e verificadores |
 | Referência e experimentos | HGB congelado, três ablações e 20 trials/63 fits; nenhum candidato elegível |
 | Avaliação temporal | Maio: AP 0,640703; referência de 02–15/09: AP 0,621312; reservas consumidas |
@@ -50,15 +122,14 @@ aceite automático de outro commit, ambiente ou modelo.
 
 ## Backlog ordenado
 
-O compromisso principal fica limitado a **dois marcos**. Terraform é o
+O compromisso principal agora fica limitado a **um marco restante**. Terraform é o
 **desfecho posterior**, conforme desejo do autor. As ferramentas em análise
 abaixo não se tornam entregas obrigatórias por aparecerem neste documento.
 
 | Ordem | Marco | Critério de conclusão |
 | --- | --- | --- |
-| 1 | Infraestrutura do fluxo completo em KinD + Helm | Após o monitoramento mínimo: provisionar por incrementos dados/objetos Bronze–Silver–Gold, bancos e estado de replay, jobs, tracking, serving e observabilidade. Cluster limpo, versões/pins, mounts/PVCs adequados, probes, recursos, permissões e recuperação. Demonstrar promoção/troca/rollback do serving com uma réplica ativa e candidata durante atualização; preservar as fontes até aceitar cada destino |
-| 2 | Simplificação e fechamento funcional do portfolio | Definir os fluxos suportados, consolidar comandos, resolver persistência fora dos destinos gerenciados nesses fluxos e remover componentes substituídos após revisar dependências. Demonstrar instalação limpa, execução/recuperação e documentação clara, preservando evidências históricas |
-| 3 — posterior | Terraform como desfecho de infraestrutura como código | Após a simplificação, gerenciar o ambiente estabilizado com configuração declarativa, versões/lock de providers e state protegido. Reutilizar o chart Helm; demonstrar apply real no alvo escolhido, segundo plan sem mudanças e recuperação/recriação documentadas. Delimitar bootstrap do KinD e ownership dos recursos; não exigir cloud paga |
+| 1 | Simplificação e fechamento funcional do portfolio | Entregar eventos → features causais → API do champion → decisões/fila → feedback com reconciliação e retomada; reaproveitar SHAP em casos do modelo ativo; consolidar comandos e remover redundâncias após revisar dependências. Demonstrar instalação limpa e jornada de investigação. [Contrato e sequência](../operations/PRODUCT_DELIVERY.md) |
+| 2 — posterior | Terraform como desfecho de infraestrutura como código | Após a simplificação, gerenciar o ambiente estabilizado com configuração declarativa, versões/lock de providers e state protegido. Reutilizar o chart Helm; demonstrar apply real no alvo escolhido, segundo plan sem mudanças e recuperação/recriação documentadas. Delimitar bootstrap do KinD e ownership dos recursos; não exigir cloud paga |
 
 A conferência visual do dashboard de features foi concluída usando o estado
 nativo já aprovado, sem repetir a janela. A cor neutra da contagem é um ajuste
@@ -66,7 +137,7 @@ de apresentação posterior, sem alterar o aceite funcional. O ensaio 1× só se
 executado com pergunta, protocolo e orçamento explícitos; a ausência desse
 ensaio continuará documentada, sem bloquear o fechamento funcional.
 
-A revisão dos destinos e a limpeza pertencem ao marco 2. Não significam migrar
+A revisão dos destinos e a limpeza pertencem à simplificação. Não significam migrar
 indiscriminadamente todo SQLite ou inventariar todo o Linux. Os sete consumidores
 históricos mapeados exigem decisão explícita de suporte/preservação; não serão
 adaptados apenas para eliminar uma ferramenta do diagrama. PVCs, quando houver
@@ -78,8 +149,7 @@ A análise é planejada após validar o monitoramento e estabilizar a infraestru
 provisionada, antes de decidir
 se alguma extensão entra no escopo da simplificação. Concluir essa análise é
 registrar uma decisão fundamentada; não exige instalar todas as opções. Se uma
-extensão for aprovada, ganha recorte, orçamento e aceite próprios antes do marco
-3. Terraform permanece posterior à simplificação do conjunto então escolhido.
+extensão for aprovada, ganha recorte, orçamento e aceite próprios antes de Terraform. Terraform permanece posterior à simplificação do conjunto então escolhido.
 
 | Possibilidade | Benefício que precisa demonstrar | Decisão atual |
 | --- | --- | --- |
@@ -642,3 +712,92 @@ novos alertas, CT, migração primária ou nova confirmação de qualidade do mo
 [Evidência](../../references/evidence/feature_monitoring_author_validation_2026-10-19.json).
 Próximo: fluxo completo em KinD + Helm, seguido de simplificação; Terraform
 permanece o desfecho posterior. Feature store, broker e CT são condicionais.
+
+### Fundação do provisionamento — preparação de 2026-10-20
+
+O próximo marco permanece no backlog. O primeiro recorte prepara cluster
+`fraud-platform`, RustFS/PostgreSQL com PVCs, credenciais próprias e gate de
+releitura SQL/S3 após recriação de pods. Templates e testes são verificados em
+ambiente controlado; aceite Kubernetes real pendente. Não há migração primária
+nem adoção de volumes Compose. Dados Bronze–Silver–Gold, jobs, tracking, replay,
+serving e observabilidade terão gates de integração no mesmo fluxo.
+[Operação](../operations/KIND_FOUNDATION.md).
+
+### MLflow no KinD — aceite nativo de 2026-10-20
+
+O autor aprovou a regressão (135 testes, 1 live ignorado) e o gate nativo
+(1 teste em 21,56 s). Publicação e recarga independente pelo proxy, hash do modelo
+no RustFS e nova recarga após recriar o pod MLflow foram aprovados, com erro de
+score zero e identidades da fundação preservadas. O Deployment e a imagem
+permaneceram os mesmos; o pod ganhou novo UID. [Evidência e limites](../operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidade
+e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
+em andamento; não houve migração histórica, refit histórico, promoção ou
+backup/restore deste novo destino.
+
+### Replay no KinD — aceite nativo de 2026-10-20
+
+O gate passou: 1 teste em 17,89 s, tox em 33,80 s. O pod interrompido em
+`feedback:2` foi substituído; a transação incompleta foi revertida, o PVC/PV e
+o Deployment permaneceram os mesmos e todas as tabelas coincidiram com a
+execução sintética sem interrupção. Reentrega sem rescoring, fundação preservada,
+processamento removido e PVC retido. O recorte foi registrado como concluído;
+o fluxo completo continua no backlog pelos gates restantes de serving e
+observabilidade. [Operação e limites](../operations/KIND_REPLAY.md).
+
+### Serving no KinD — aceite nativo de 2026-10-21
+
+O autor aprovou os seis eventos do gate em 2026-10-21: baseline, bloqueio de
+pacote inválido, candidata direta, troca na mesma URL, falha HTTP 502 e retorno
+por `helm rollback`. A imagem qualificada da API foi reutilizada, sem rebuild
+do runtime ou fit; somente o carrier foi construído. Os mesmos pesos sintéticos
+produziram score `0.03463335444035967` antes/depois da troca e do rollback.
+Baseline/gateway mantiveram seus pods e a fundação permaneceu igual; candidata
+removida, baseline instalada no laboratório e port-forward temporário encerrado.
+Gate: 1 teste em 19,48 s; tox em 34,53 s. Próximo: observabilidade no KinD.
+[Operação e limites](../operations/KIND_SERVING.md#aceite-nativo--2026-10-21).
+
+### Observabilidade no KinD — aceite nativo e visual de 2026-10-21
+
+O autor aprovou o gate nativo e confirmou a conferência visual em 2026-10-21.
+A cópia somente de leitura foi conciliada com a origem: **556.824 eventos,
+143.945 decisões e 1.453 alertas**. Scrape Prometheus, oito regras saudáveis,
+proxy autenticado do Grafana e quatro dashboards provisionados foram conferidos.
+O exporter ganhou novo pod, manteve Deployment/PVC e repetiu as verificações.
+Prometheus, Grafana, fundação, tracking, serving e PVC retido do replay
+preservaram suas identidades; arquivos da origem permaneceram iguais.
+Gate: 1 teste em 62,64 s; tox em 73,91 s. Próximo: operação e fechamento
+integrado, mantendo o marco de infraestrutura aberto até o aceite desses gates.
+[Escopo e limites](../operations/KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).
+
+Refinamento visual aprovado em 2026-10-21: [política semântica de cores](../operations/DASHBOARD_COLORS.md#aceite-da-política--2026-10-21),
+com informações azuis e estados explícitos em texto/cor. Configuração verificada
+pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
+autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
+Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+
+### Fechamento operacional e integrado — 2026-10-21
+
+O gate nativo de parada/subida passou (1 teste em 252,23 s; tox 264,31 s).
+Em seguida, o reboot manual foi reconhecido por outro boot_id; o mesmo container,
+node, engine e PVCs foram preservados. Réplicas restauradas, histórico MLflow,
+hash S3, score/identidade HTTP e métricas/dashboards conferidos. Valores inotify
+512/524288 persistiram. Sem fit, replay, nova avaliação ou promoção histórica.
+Os pendentes operacionais das notas anteriores estão encerrados nesse escopo.
+[Runbook](../operations/KIND_OPERATIONS.md) e [guia integrado](../operations/KIND_PLATFORM.md).
+
+
+### Recorte concluído — desempenho e transparência no portal
+
+Quarta página implementada, com contrato independente do algoritmo, Inputs e
+pesos conferidos, ranking temporal, curvas, métricas da política e rastreabilidade.
+A fila pode existir sem explicador compatível. Testes e navegador locais usam
+fixtures; o autor aceitou a avaliação do snapshot nativo e a conferência visual
+em 2026-10-22. O produto
+prioriza investigação, com políticas e feedback; não transforma alvo binário em
+veredito automático nem afirma economia operacional sem medição.
+[Guia](../operations/PORTAL_PERFORMANCE.md). O próximo fechamento consolida o
+aceite visual/funcional e a demonstração por usuário. A promoção de sucessor com
+pesos diferentes continua dependendo de candidato qualificado.

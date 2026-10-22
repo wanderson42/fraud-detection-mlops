@@ -1,0 +1,110 @@
+{
+  "schema": "fraud_operational_round_author_validation_v1",
+  "status": "accepted_in_author_environment",
+  "validated_on": "2026-10-21",
+  "validation_mode": "author_supplied_native_console_receipts_not_remote_execution_by_assistant",
+  "source_console_sha256": {
+    "Texto colado(20261022-022922).txt": "355ed643816a1aa23c79f705b902a0fb89380cd50fbbcbc7ca9cc9f05c5cbb1d",
+    "Texto colado(20261022-023419).txt": "37763e3b3fc1e882a330eb3583455e6e277bc039fd696b8dfa2627f7bb85274f"
+  },
+  "round_id": "portfolio-v1",
+  "implementation_commit": "ff18b94713e7fe982b6ab7e1a94f7bce725e40ea",
+  "experiment_name": "fraud-operational-portfolio-v1",
+  "dataset_rows": {
+    "training": 268668,
+    "validation": 67255
+  },
+  "models": {
+    "dummy_prior": {
+      "run_id": "3d98510cdb7343a39b5b04bad376f379",
+      "model_sha256": "1a6a73b7cdefc9aa7272c85e18544f83471abbe70d17338b1d18ed3f2fd9e784",
+      "metrics": {
+        "rows": 67255.0,
+        "fraud_count": 580.0,
+        "fraud_rate": 0.008623894134265111,
+        "average_precision": 0.008623894134265111,
+        "roc_auc": 0.5,
+        "daily_customer_precision_at_100": 0.02142857142857143
+      },
+      "full_validation_reload_verified": true,
+      "max_absolute_score_error": 0.0
+    },
+    "logistic_regression": {
+      "run_id": "08fbf583f050417589ec415f193a008e",
+      "model_sha256": "5c51d1e96fcdf4886b7f495c4d925affa3dba43aa2e05befb799492364377ccd",
+      "metrics": {
+        "rows": 67255.0,
+        "fraud_count": 580.0,
+        "fraud_rate": 0.008623894134265111,
+        "average_precision": 0.4350008973626218,
+        "roc_auc": 0.8731684315322654,
+        "daily_customer_precision_at_100": 0.48000000000000004
+      },
+      "full_validation_reload_verified": true,
+      "max_absolute_score_error": 0.0
+    },
+    "hist_gradient_boosting": {
+      "run_id": "22081d16ef154b778307d5bf17420b64",
+      "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+      "metrics": {
+        "rows": 67255.0,
+        "fraud_count": 580.0,
+        "fraud_rate": 0.008623894134265111,
+        "average_precision": 0.6239485132514692,
+        "roc_auc": 0.8849532601528257,
+        "daily_customer_precision_at_100": 0.5399999999999999
+      },
+      "full_validation_reload_verified": true,
+      "max_absolute_score_error": 0.0
+    }
+  },
+  "registered_model": "fraud-detector",
+  "registry_version": "1",
+  "selected_model": "hist_gradient_boosting",
+  "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+  "http": {
+    "score": {
+      "schema_version": 1,
+      "transaction_id": 335910,
+      "score": 0.4178630794049542,
+      "score_semantics": "uncalibrated_ranking",
+      "model_id": "hist_gradient_boosting",
+      "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+      "feature_contract_version": "gold_v1",
+      "serving_release_id": "e8350e0a841f4136983e0d905068a743"
+    },
+    "invalid_input_http_status": 422
+  },
+  "rollback": {
+    "status": "rollback_verified",
+    "round_id": "portfolio-v1",
+    "events": [
+      "candidate_direct_verified",
+      "champion_blue_verified",
+      "candidate_routed_same_URL",
+      "candidate_outage_502_observed",
+      "champion_restored_same_URL"
+    ],
+    "same_weights_operational_repackage": true,
+    "rollback_observation_seconds": 1.3653367460028676,
+    "http": {
+      "score": {
+        "schema_version": 1,
+        "transaction_id": 335910,
+        "score": 0.4178630794049542,
+        "score_semantics": "uncalibrated_ranking",
+        "model_id": "hist_gradient_boosting",
+        "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+        "feature_contract_version": "gold_v1",
+        "serving_release_id": "e8350e0a841f4136983e0d905068a743"
+      },
+      "invalid_input_http_status": 422
+    },
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "zero_downtime_claim": false
+  },
+  "final_status": "canonical_round_complete",
+  "historical_models_used": false,
+  "test_evaluated": false,
+  "production_promotion": false
+}

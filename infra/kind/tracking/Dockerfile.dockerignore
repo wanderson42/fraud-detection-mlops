@@ -1,0 +1,7 @@
+**
+!infra/
+!infra/tracking/
+!infra/tracking/requirements.txt
+!scripts/
+!scripts/platform/
+!scripts/platform/kind_tracking_storage.py

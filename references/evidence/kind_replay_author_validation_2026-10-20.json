@@ -1,0 +1,422 @@
+{
+  "schema": "fraud_kind_replay_author_validation_v1",
+  "status": "author_reported_native_success",
+  "validated_on": "2026-10-20",
+  "evidence_basis": "Complete JSON and pytest/tox outcome supplied by the author in a terminal attachment; assistant did not rerun or contact the native cluster.",
+  "source_attachment": {
+    "name": "Texto colado(10).txt",
+    "sha256": "910bdaf651e741d8ab1a931c9406199a7d1cd0938f671a7c05548be2845c04c1",
+    "extracted_terminal_JSON_sha256": "bf194703c4d80de554bf511477171ea5c199bc5a36637d4f40976ba049056327"
+  },
+  "native_receipt_file_bytes_archived": false,
+  "native_receipt_file_sha256": null,
+  "native_test": {
+    "command": ".venv/bin/python -m tox -e kind-replay",
+    "tests_passed": 1,
+    "pytest_seconds": 17.89,
+    "tox_reported_elapsed_seconds": 33.8
+  },
+  "verification_of_supplied_evidence": {
+    "controller_and_worker_hashes_match_delivered_sources": true,
+    "all_image_source_hashes_match": true,
+    "new_pod_UID": true,
+    "same_PVC_PV_Deployment_identities": true,
+    "foundation_identities_preserved": true,
+    "full_ledger_digest_matches_reference": true,
+    "new_score_calls_match_uncommitted_decisions_only": true,
+    "temporary_compute_removed_PVC_retained": true,
+    "assistant_contacted_services": false
+  },
+  "interruption_scope": {
+    "event_id": "feedback:2",
+    "event_type": "feedback",
+    "committed_events": 8,
+    "committed_transactions_and_scores": 6,
+    "committed_feedback": 2,
+    "committed_alerts": 4,
+    "uncommitted_write_path": "feedback row and event row before checkpoint UPDATE and COMMIT",
+    "pod_interruption_during_transaction_score_or_alert_writes_validated": false,
+    "qualification": "The final comparison includes all tables, scores and alerts. The native interruption occurred in feedback handling, not while computing or inserting a new score/alert. It is a controlled interruption between writes and COMMIT, not host power loss."
+  },
+  "native_receipt": {
+    "schema": "fraud_kind_replay_rehearsal_v1",
+    "status": "success",
+    "run_id": "2de730eacb52459fb4e7e9c387af2d93",
+    "scope": "synthetic_inflight_SQLite_transaction_and_PVC_pod_recreation_not_native_history_migration",
+    "release": "fraud-replay-2de730eacb52",
+    "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/replay/rehearsal-2de730eacb52459fb4e7e9c387af2d93.json",
+    "controller_sha256": "7c983ee4457c559c7ceb8cd510152d2fd2d319d6d85abe9fe262d1a18573a4ac",
+    "historical_sources_mounted": false,
+    "primary_storage_migrated": false,
+    "production_promotion": false,
+    "backup_restore_validated": false,
+    "cluster_recreation_validated": false,
+    "external_alerts_published": false,
+    "retained_rehearsal_pvc": "fraud-replay-2de730eacb52-state",
+    "image_receipt": {
+      "schema": "fraud_kind_replay_image_v1",
+      "image": "fraud-kind-replay:78e80a7c5f414260bda8b24716b37624",
+      "docker_id": "sha256:ee910306ae6251ded3d97fa86aef97868bf03c5f13a9115fa68986d0558267f8",
+      "loaded_identities": [
+        "sha256:40844d915cb3e82a84f474a685f4a5507dae483a866783f039299fb4aa6a3f5c",
+        "docker.io/library/import-2026-10-20@sha256:dbeb3bef5862bd7649eecaaaa0a39c07e7f8864e6a383eb3a46b873043d1d8a3"
+      ],
+      "source_pins": {
+        "examples/serving_smoke.py": "f5e82849d8d961452178c9d41b2b49b72f63411ff3164ff88ac23c5cef007c94",
+        "fraud_detection_mlops/__init__.py": "ea70c909d7aec685ecf8ec026ebbec0fe6a4200cda39b17cf8231d6d431ede6b",
+        "fraud_detection_mlops/artifacts.py": "d3d700d345af24098b5218f54d0043c20eeeb57d0c9ded3833c5861ff96a87e3",
+        "fraud_detection_mlops/config.py": "2c020fd8f531646eda0e54781f4c86aae5a48c1380aeb5373f9aa40e19f38368",
+        "fraud_detection_mlops/data/__init__.py": "75271206f352e00c3a15b6f9bf2d059b376c79038743582ccb2e9b892b4dcc2c",
+        "fraud_detection_mlops/data/contracts/__init__.py": "6ca7f655ade6b2239f21c2e1ba1f0506283921d492d3dcf3e9b53dcb1dfc88dd",
+        "fraud_detection_mlops/data/contracts/dataset_errors.py": "3b3aeac26c0dd1e2ce0a96e90b26ad3af61f1f34484523f14be53c9186a62196",
+        "fraud_detection_mlops/data/contracts/gold_contract.py": "8e9c55ebf226c130eef41e0ac0fee32e7fc4246b4279ffb3ad02eefa5f4a5e96",
+        "fraud_detection_mlops/data/contracts/silver_contract.py": "1b2ff9725bc5b445560d25969dcb1b73c964f2ea3119eede371cbe0a07424492",
+        "fraud_detection_mlops/data/contracts/temporal_protocol.py": "613d22a0db9efa73022783bfa0149500e32bfa11408277e3dd563c1269bb2e3d",
+        "fraud_detection_mlops/data/contracts/transaction_schema.py": "096878f9d7ce106716323b067b263c8cee4f1c20e5162b07d87f0cfac21a76c3",
+        "fraud_detection_mlops/data/datasets/__init__.py": "c822646c6f63be966f5266a4cc32111bbe2f4eea010ae9cf413c8493908bfd9b",
+        "fraud_detection_mlops/data/datasets/development_scoring_dataset.py": "96ac8840bc035c7d47ca414a11e034813b96836f6f055fb94214e5e7601597f4",
+        "fraud_detection_mlops/data/datasets/gold_dataset.py": "5afa0b3196b9466965a92a262734286bac8829fb7177fb8d2d1c941a58ffd588",
+        "fraud_detection_mlops/data/datasets/native_replay_dataset.py": "f504a74998b8123bc9378b6c31c4bd6e7d9ab3ea5895b5ba2d7b1bbdf3a6b0a9",
+        "fraud_detection_mlops/data/datasets/reference_assessment_dataset.py": "717705ccf215f7e99c1a6b21f409390cc935aab57469c42a8e097b2d8f39a283",
+        "fraud_detection_mlops/data/datasets/silver_dataset.py": "820b2e7642b033797afbd19adb63873ab3eba3824c8a5a5f71b2573041b6fea9",
+        "fraud_detection_mlops/data/ingestion/__init__.py": "59cc05c00eae6c6a21c1908ab904111ce14656fc4426f21479b7d558cccd66c0",
+        "fraud_detection_mlops/data/ingestion/handbook_bronze.py": "68ca005aeb7d74a1a9e73213f68a86376c5510fa88570a526fcf30ef0afa419d",
+        "fraud_detection_mlops/data/ingestion/handbook_download.py": "513f760b9db525006b6e9e21a28493044008e4efc120ff8b2ea68ad70651558c",
+        "fraud_detection_mlops/data/ingestion/handbook_inventory.py": "bbd37146958c83d74192b0f5cb8464bd3cb6aaea73f87c743af10b006bfc6f4f",
+        "fraud_detection_mlops/data/quality/__init__.py": "2b0d64cc7e4a39942815233da63e32241d52697386bdfa4945eb83a10621c48f",
+        "fraud_detection_mlops/data/quality/training_eda.py": "a1df487c60ccc232e25ccb1322e285249a9b20059c6b48c7e3b08b7ecebdea6a",
+        "fraud_detection_mlops/data/quality/transaction_profile.py": "be0be7d5b61d402ff461a609ad66a55e4efabbc928e186c48d660301747ac1a7",
+        "fraud_detection_mlops/evaluation/__init__.py": "47b1f03910f21adac166a3026194a73d2dcb00bf56ba7f180af8fc51d4c8f42d",
+        "fraud_detection_mlops/evaluation/conditional_queue_reference.py": "03fdb036c78a804825e00bf36bfa678c59ad1ee956f773020e1b8d771bbbfb2a",
+        "fraud_detection_mlops/evaluation/paired_comparison.py": "1815aaae1e333ecfc1ad11a1787d436a0e8399e6e0d5207bac5741a0711b40b5",
+        "fraud_detection_mlops/evaluation/ranking_metrics.py": "fd8905db53aaa8623b93df0d415ae99fc03985e319936dc4aecbf6c1bdc73a9e",
+        "fraud_detection_mlops/evaluation/temporal_block_resampling.py": "acd5b1ae16f665e1b0d55e93c0cedc6f377df08a0074f4d04ac69ae468b1e47b",
+        "fraud_detection_mlops/evaluation/temporal_dependence_diagnostics.py": "d2d86dbd47b09ba1fa333ef39d5c14a780634e46ecde7d03b10f3ac1ceac30e7",
+        "fraud_detection_mlops/evaluation/temporal_reference_metrics.py": "86d4ab4714e9e132bf21f98db3d018753fe7cb001b777612575b10f0ecbe77e5",
+        "fraud_detection_mlops/evaluation/validation_diagnostics.py": "36a71bc933d9b530f36065823187b7a0bb0983e98a0fea70fbcb6c22318b217b",
+        "fraud_detection_mlops/features/__init__.py": "a9860cd2feab2deac373361e6e24fadb99173288e6fa18d5091464fcf555a873",
+        "fraud_detection_mlops/features/causal_history.py": "15f176b235151e2c54bb64ab7d7fe990b5d262fe4c3df378538ff38340fa94dc",
+        "fraud_detection_mlops/features/deterministic_causal_history.py": "00f138096252f031d08ed08bd6d3b9cfea0c098b7133d1367ba3af423fc98919",
+        "fraud_detection_mlops/features/exact_binary_mean.py": "46431274c50674bee63cce328c7bf28ad6569e9b6cabe5b41bd6aa67060ae653",
+        "fraud_detection_mlops/features/feature_schema.py": "eadd9f11e0b6dc204eaab5dc90aaf8589645062ee082f7371138a93eba12b4d7",
+        "fraud_detection_mlops/features/feature_validation.py": "654a7c60fea672c80a3a9fb3719e31013c3b3bf958ac90bc123e265bc58e4887",
+        "fraud_detection_mlops/integrations/__init__.py": "ce3845b6ce08c910f43db06d670bd395c586f26a718072b004aaf25b761abdd9",
+        "fraud_detection_mlops/integrations/mlflow_tracking.py": "641de2903345d3141b0afa8c79e24ba59360572e12247304bb67a409ec35644e",
+        "fraud_detection_mlops/integrations/serving_release_export.py": "1303df87a8c3fd438fe6182f03c8a64359d8d424c1a4ea8f8a3c90237b080138",
+        "fraud_detection_mlops/integrations/skops_persistence.py": "ad8c8d9ae68561f765d7cd868bcbca30231a96363349d9d067fc15ef85834c3c",
+        "fraud_detection_mlops/modeling/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "fraud_detection_mlops/modeling/algorithms/__init__.py": "caf16012f1205c2004beea2df33643f4859124a9fbb87c6d0255618f9bc165aa",
+        "fraud_detection_mlops/modeling/algorithms/dummy_prior.py": "cfae6e4f7f09beb73ade833a5369f670ce554d6cdf98d876f53909ff5dc55fed",
+        "fraud_detection_mlops/modeling/algorithms/hist_gradient_boosting.py": "d508bb28bd97820b37b40f069e949b4c5573942cde8ffb602a4c421f05a57e14",
+        "fraud_detection_mlops/modeling/algorithms/logistic_regression.py": "7eeac8a981232e47895ada324b5c1661c213997d845fa47bdef14e19efb33990",
+        "fraud_detection_mlops/modeling/algorithms/model_catalog.py": "21ec75d22b4d98da36b53e5a70425a7f2371268edcc8f6293d4bf1bf1fe363af",
+        "fraud_detection_mlops/modeling/contracts/__init__.py": "b37ee901eacaf2e41385edd2282bf90fa28678ca73079c0d71d583dd6e159395",
+        "fraud_detection_mlops/modeling/contracts/experiment_errors.py": "5f54d5077d1b577094385ed9c506e0b37a4dbca7b516291701536073ec809299",
+        "fraud_detection_mlops/modeling/contracts/model_interface.py": "1d86df976c44f93b3a8ed39f6a9e1c9a919148d8386e79f3f58a037c4ae29fe3",
+        "fraud_detection_mlops/modeling/contracts/prediction_schema.py": "0f0328bdcf87850df1a61144cc7391383202fb69d4006266497977344fdc4b31",
+        "fraud_detection_mlops/modeling/contracts/temporal_assessment_protocol.py": "5911e309088bf830c3b742b4199c48ec305e2989c48e1b990a07a1e2d065ef1a",
+        "fraud_detection_mlops/modeling/experiments/__init__.py": "c83e418e3aab52a0adae6af4e203597f3a91873f89a6c37d3750ec23d1ab97d0",
+        "fraud_detection_mlops/modeling/experiments/baseline_experiment.py": "63139e2ffceedf48800057bc50b355638ae434ed2b534ed3c47d999422235d73",
+        "fraud_detection_mlops/modeling/experiments/baseline_policy.py": "03433e7c937c2b2c7840e8eed3d89c86150d8558bef52069e3ed87975109838a",
+        "fraud_detection_mlops/modeling/experiments/candidate_freeze.py": "2914859e6777e1a7a66c543a139c011a406b4ebd5a6b29bd2456583e2e62ef33",
+        "fraud_detection_mlops/modeling/experiments/candidate_training.py": "e8390c9098d17e56916c47c1e212d54ff17bcff0585b94b6af1eb380934e00d5",
+        "fraud_detection_mlops/modeling/experiments/experiment_artifacts.py": "11787a87b584e15cf3137cf40913d50f514125d029999012e08ba92aad8d78ce",
+        "fraud_detection_mlops/modeling/experiments/experiment_provenance.py": "b6538698877d0545612260d49b6e08e9bc1dae4a7aeec27089862c329d573163",
+        "fraud_detection_mlops/modeling/experiments/final_holdout_evaluation.py": "12d977af36e838589b4b6738f1a5e238d58e90728f3f43d7d1a2dca0270fb171",
+        "fraud_detection_mlops/modeling/experiments/hgb_optimization.py": "9ffb8cb985de2bea7785be3d26706be5d09c0e49095239625889839f47c1d3d0",
+        "fraud_detection_mlops/modeling/experiments/reference_assessment_execution.py": "6ce4ec30b242e65ced08a46767b5439b3279985133f9426ed6a316365dc1233a",
+        "fraud_detection_mlops/modeling/experiments/reference_dependence_diagnostics.py": "ac8c1f054284ab90b3e8e7d6796768507c5440c7632f01271017dbb62c4064e8",
+        "fraud_detection_mlops/modeling/experiments/reference_temporal_assessment.py": "2abb3b4c248d8e67246292ce4adb1a188858f8e0b43c46e30747af278a34af80",
+        "fraud_detection_mlops/modeling/experiments/reference_uncertainty_analysis.py": "e40e2004dce2f943eab62d2c9108d3d34ad964098388defde5809410779b4c2c",
+        "fraud_detection_mlops/modeling/experiments/temporal_development_data.py": "047ce4f0690b43e65db0769205b78f172851ae98922ee991b61fd5de55482c75",
+        "fraud_detection_mlops/modeling/experiments/terminal_feature_ablation.py": "1d999b089fd3234cd7d2cef236cb9474d622c1998094a0645dc94087381f14af",
+        "fraud_detection_mlops/serving/__init__.py": "5c151fac3419f73a0dc13bb717231723a4f17443527b71fac1c634a0ea09bdee",
+        "fraud_detection_mlops/serving/http_service.py": "93f27d3d4c127218e6558528b16d542c1b86d4b367eee0807814f71e3d8b59fd",
+        "fraud_detection_mlops/serving/model_release.py": "3a64add1eb4cec79293246270821ef1ed4833c61b480ba69f900ba693ab5f5fc",
+        "fraud_detection_mlops/serving/request_schema.py": "70d9ad6d2c6f548b1cd37b0a832370adb6048ef7fadf04c40503f9ce053300aa",
+        "fraud_detection_mlops/storage/__init__.py": "d8185383192481502159a2437fa4d783fb3d5a27105d1ebcc500ab70c27325ec",
+        "fraud_detection_mlops/storage/managed_paths.py": "818cb971359c8fe36481268f3e0fa2fd63315f5cbd6a503e036c418813609332",
+        "fraud_detection_mlops/streaming/__init__.py": "608411fd407c1898ff3a91029317fc73e1049cb0f78f0b83bbe55cf0d3cc8df1",
+        "fraud_detection_mlops/streaming/contracts/__init__.py": "3c2da5fa3dfbe98ce3adbc2eb71b9cae6dc760c36584ad2a0b038d11a4310f9c",
+        "fraud_detection_mlops/streaming/contracts/customer_day_alerts.py": "c4123c71eac52c0470ce24eec42df85bf9bc6fac5d80c0d72ea46adecb4d5cb7",
+        "fraud_detection_mlops/streaming/contracts/native_replay_execution.py": "71011c6a127c173a4c9dfbc7508eee178f5c44a62e42cc6a309f0409b8cb13b8",
+        "fraud_detection_mlops/streaming/contracts/transaction_events.py": "47dbd7636acd20fd5cf53495e31bfef1e47cbdb28ac19164507fec88905e27a2",
+        "fraud_detection_mlops/streaming/decisions/__init__.py": "b3cf863eba2b72d5a64fa5455112c10cc12702107b21fba33d652234a52f205d",
+        "fraud_detection_mlops/streaming/decisions/customer_day_alert_policy.py": "43be868983cba1222375d01afda6fed5b70f42244e290c072d80e83a966a0dd3",
+        "fraud_detection_mlops/streaming/decisions/development_threshold_selection.py": "91d8a864c6c2275c5b59d13741f91bd51d0e7ecb98777910fc2a016433a85d45",
+        "fraud_detection_mlops/streaming/evaluation/__init__.py": "62525955ea2e258c6629a59e53322bcfd8ed6b300fc111772b74146c3e3184cb",
+        "fraud_detection_mlops/streaming/evaluation/native_triage_assessment.py": "c91bd5e0207a3ba2709d009163c3fed3d2ca57daf4abd6923a5af82e5b8f6b1c",
+        "fraud_detection_mlops/streaming/features/__init__.py": "fa7b30d1a13d5339b3ed5ffd01a2fc84dad84af6cebd49436fd56c664ad20f92",
+        "fraud_detection_mlops/streaming/features/causal_feature_state.py": "feba7c1976d40cb41f94080ea0a593ef4b8fd828651da62fdf5f6d81409ccc35",
+        "fraud_detection_mlops/streaming/features/deterministic_feature_state.py": "423c9ca124f228b035ca6f3494045f0a4c343c75ef23bce00095f98b42a35932",
+        "fraud_detection_mlops/streaming/preparation/__init__.py": "a1318a953e31488abc3e239d6504dcc5e32074f8859af2360dda727c28ee25c0",
+        "fraud_detection_mlops/streaming/preparation/development_alert_threshold.py": "6467076361ec754c847b0462568db4eb16dc97c272726a6bec0cfb03f33f1814",
+        "fraud_detection_mlops/streaming/replay/__init__.py": "ae72044ecb48945e0b27e526140208028bc8f0d7cb010564c6185a65d456c3cb",
+        "fraud_detection_mlops/streaming/replay/durable_triage_replay.py": "99b84707768a42438726419f84b8a45c28d67563109ab925528e5602f3fee94d",
+        "fraud_detection_mlops/streaming/replay/native_causal_replay.py": "c458bdf365493a8e3005dd70b301f771701c29ec5d4445748821d18b39549370",
+        "fraud_detection_mlops/streaming/replay/numerical_corrective_replay.py": "355c0f8cdb5fe348328f5488d8f568dbdf5a5ebb1252a497bba4dce0974bd460",
+        "fraud_detection_mlops/streaming/replay/synthetic_event_stream.py": "e9a1081f751cfd0071bdc81ca016d3a16898784c0122622051c257c99b93e3bb",
+        "fraud_detection_mlops/streaming/replay/temporal_replay_executor.py": "e4c7d353fe44d07e3e0f7c3f142ff4959a07eb1457c598bbca4239778f6c5c51",
+        "infra/helm/fraud-replay/Chart.yaml": "1d3c1126b80687a5941bb7963b37e6132046f1965a463326156db1f658e90670",
+        "infra/helm/fraud-replay/README.md": "3182e49a2cae882a9212513dbee7a4983f626881bbace28f8f6e022cd184d723",
+        "infra/helm/fraud-replay/templates/replay.yaml": "54344faa02c8a6f87aa86f0da4afcde7f2bd02a25383c63cf56c55c9c2b378c4",
+        "infra/helm/fraud-replay/values.schema.json": "03431ae7024387dea2ebd8d6b2746c9e093dd7818d7f54d36e4498c9642411ff",
+        "infra/helm/fraud-replay/values.yaml": "e99b8e4075817adf868aa7b8a610a437ab5dbd83a60860d536579ada935f0c8f",
+        "infra/kind/replay/Dockerfile": "e4475152046a969d14d97a94c64644a2f68153e1b423d2ce3258a1642b9a9e33",
+        "infra/kind/replay/Dockerfile.dockerignore": "c2bcbbb0f3b5a45060bffb9a1c1afad89ebd71fe010cde1e7cb8ce9758fab1b7",
+        "infra/kind/replay/README.md": "a8240889a6f42b714cd1b779dfed85e1724ea51c8f2ca123d1a8536b8430356e",
+        "infra/kind/replay/requirements.txt": "f9045b5834be3f46dde0ecc13f5987465ba5cfd91bd1ad673c8b1bdab5e85aa8",
+        "poetry.lock": "c4cdf885190ad00f35eb61c83f57d6e0a3d7cde097f956bfdf01d154c2842584",
+        "scripts/platform/kind_replay_worker.py": "a2bf76cf8b47813e6d0a05918f9c975b629e4d960168367dfd1af363cd436604"
+      },
+      "node_uid": "41e72efd-1bae-43d5-998e-4b6a9a19f08c",
+      "registry_published": false
+    },
+    "foundation_before": {
+      "pods": {
+        "postgres": {
+          "name": "fraud-platform-postgres-0",
+          "uid": "10d34cb6-6bb1-4616-b92e-1bae71c52efa",
+          "image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+          "image_id": "docker.io/library/postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-0",
+          "uid": "8e0a956a-b457-4b80-8151-0b9332eeccbd",
+          "image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+          "image_id": "docker.io/rustfs/rustfs@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c"
+        }
+      },
+      "pvcs": {
+        "postgres": {
+          "name": "fraud-platform-postgres-data",
+          "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+          "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-data",
+          "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+          "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+        }
+      }
+    },
+    "phase": "complete",
+    "before": {
+      "pvc_uid": "d68d5529-7b3d-4a08-a569-0ca8c72c9366",
+      "volume_name": "pvc-d68d5529-7b3d-4a08-a569-0ca8c72c9366",
+      "deployment_uid": "dc7c0a88-cd3b-4282-a79a-1e90a766881e"
+    },
+    "interrupted_pod": {
+      "name": "fraud-replay-2de730eacb52-7579c4db9f-rcpck",
+      "uid": "2b400e5f-4fd9-4a2e-9430-a83dce3f7e82"
+    },
+    "interruption": {
+      "before": {
+        "counts": {
+          "alert_decisions": 6,
+          "alerts": 4,
+          "decisions": 6,
+          "events": 8,
+          "feedback": 2,
+          "transactions": 6
+        },
+        "data_scope": "synthetic_fixture",
+        "event_contract_version": "transaction_feedback_v1",
+        "external_alerts_published": false,
+        "feature_columns": [
+          "TX_AMOUNT",
+          "TX_HOUR",
+          "TX_WEEKDAY",
+          "CUSTOMER_TX_COUNT_1D",
+          "CUSTOMER_AVG_AMOUNT_1D",
+          "CUSTOMER_AMOUNT_RATIO_1D",
+          "CUSTOMER_AMOUNT_RATIO_VALID_1D",
+          "CUSTOMER_TX_COUNT_7D",
+          "CUSTOMER_AVG_AMOUNT_7D",
+          "CUSTOMER_AMOUNT_RATIO_7D",
+          "CUSTOMER_AMOUNT_RATIO_VALID_7D",
+          "TERMINAL_TX_COUNT_1D",
+          "TERMINAL_KNOWN_LABEL_COUNT_1D",
+          "TERMINAL_KNOWN_FRAUD_COUNT_1D",
+          "TERMINAL_KNOWN_FRAUD_RATE_1D",
+          "TERMINAL_TX_COUNT_7D",
+          "TERMINAL_KNOWN_LABEL_COUNT_7D",
+          "TERMINAL_KNOWN_FRAUD_COUNT_7D",
+          "TERMINAL_KNOWN_FRAUD_RATE_7D"
+        ],
+        "feature_contract_version": "gold_v1",
+        "feature_environment": {
+          "numpy": "2.5.3",
+          "pandas": "3.0.6",
+          "pyarrow": "25.0.1",
+          "pydantic": "2.13.5"
+        },
+        "input_sha256": "ecae9a305413fb2fa501eca813298177b6e091ec199338a9652bc4fab40a9fac",
+        "last_event_clock": "2018-04-08T00:00:00",
+        "last_event_order": [
+          1523145600000000000,
+          1,
+          5
+        ],
+        "native_replay_evaluated": false,
+        "policy": {
+          "daily_customer_budget": 2,
+          "model_sha256": "e3518afad62ed90b9c3a0d93edf3f67b3f36dddde72168728ebdd507d4399660",
+          "schema_version": 1,
+          "score_threshold": 0.0,
+          "serving_release_id": "514d9603f0054f5a90e837622a7de15e",
+          "version": "first_crossing_customer_day_v1"
+        },
+        "policy_sha256": "f168e5a22e1e08e23e01aa8233ee936796a8fa8b236a41d7435dfd35f8922b09",
+        "production_promotion": false,
+        "python": "3.14.4",
+        "run_id": "kind-replay-2de730eacb52459fb4e7e9c387af2d93",
+        "schema_version": 2,
+        "scoring": {
+          "evidence_kind": "synthetic_smoke",
+          "feature_columns": [
+            "TX_AMOUNT",
+            "TX_HOUR",
+            "TX_WEEKDAY",
+            "CUSTOMER_TX_COUNT_1D",
+            "CUSTOMER_AVG_AMOUNT_1D",
+            "CUSTOMER_AMOUNT_RATIO_1D",
+            "CUSTOMER_AMOUNT_RATIO_VALID_1D",
+            "CUSTOMER_TX_COUNT_7D",
+            "CUSTOMER_AVG_AMOUNT_7D",
+            "CUSTOMER_AMOUNT_RATIO_7D",
+            "CUSTOMER_AMOUNT_RATIO_VALID_7D",
+            "TERMINAL_TX_COUNT_1D",
+            "TERMINAL_KNOWN_LABEL_COUNT_1D",
+            "TERMINAL_KNOWN_FRAUD_COUNT_1D",
+            "TERMINAL_KNOWN_FRAUD_RATE_1D",
+            "TERMINAL_TX_COUNT_7D",
+            "TERMINAL_KNOWN_LABEL_COUNT_7D",
+            "TERMINAL_KNOWN_FRAUD_COUNT_7D",
+            "TERMINAL_KNOWN_FRAUD_RATE_7D"
+          ],
+          "feature_contract_version": "gold_v1",
+          "model_id": "hist_gradient_boosting",
+          "model_interface_version": "model_interface_v1",
+          "model_sha256": "e3518afad62ed90b9c3a0d93edf3f67b3f36dddde72168728ebdd507d4399660",
+          "runtime_environment": {
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
+            "pyarrow": "25.0.1",
+            "python": "3.14.4",
+            "scikit-learn": "1.9.1",
+            "scipy": "1.18.1",
+            "skops": "0.16.0"
+          },
+          "score_semantics": "uncalibrated_ranking",
+          "serving_release_id": "514d9603f0054f5a90e837622a7de15e",
+          "usage_scope": "laboratory_only"
+        },
+        "scoring_window_ns": null,
+        "source_sha256": "ff994d6d9cea458c21937662cdb3071c8a9366f55bf2f1710037619afc10cba6",
+        "sqlite": "3.46.1",
+        "status": "success",
+        "version": "durable_triage_replay_v1"
+      },
+      "inflight_event_id": "feedback:2",
+      "phase": "transaction_open",
+      "reference_logical_sha256": "bc11cbc86e2a2763f3f67992714d53ec8f39cbf2d314f4d078b518363f7e9856",
+      "run_id": "2de730eacb52459fb4e7e9c387af2d93"
+    },
+    "after": {
+      "pvc_uid": "d68d5529-7b3d-4a08-a569-0ca8c72c9366",
+      "volume_name": "pvc-d68d5529-7b3d-4a08-a569-0ca8c72c9366",
+      "deployment_uid": "dc7c0a88-cd3b-4282-a79a-1e90a766881e"
+    },
+    "resumed_pod": {
+      "name": "fraud-replay-2de730eacb52-7579c4db9f-6tbrs",
+      "uid": "e4311c5c-1311-48d5-9f5e-f57817029711"
+    },
+    "worker": {
+      "accepted_after_restart": 12,
+      "all_schema_and_table_rows_equal": true,
+      "backup_restore_validated": false,
+      "cluster_recreation_validated": false,
+      "counts": {
+        "alert_decisions": 10,
+        "alerts": 6,
+        "decisions": 10,
+        "events": 20,
+        "feedback": 10,
+        "transactions": 10
+      },
+      "duplicate_redelivery_without_rescoring_validated": true,
+      "external_alerts_published": false,
+      "historical_model_refit": false,
+      "historical_sources_mounted": false,
+      "inflight_transaction_rollback_validated": true,
+      "input_deliveries": 22,
+      "input_sha256": "ecae9a305413fb2fa501eca813298177b6e091ec199338a9652bc4fab40a9fac",
+      "logical_sha256": "bc11cbc86e2a2763f3f67992714d53ec8f39cbf2d314f4d078b518363f7e9856",
+      "model_sha256": "e3518afad62ed90b9c3a0d93edf3f67b3f36dddde72168728ebdd507d4399660",
+      "primary_storage_migrated": false,
+      "production_promotion": false,
+      "release_manifest_sha256": "cbfdb8a934b7c456f40e182c7b5fe5744e62dbbb44df5d1be081ce4139965703",
+      "reused_after_restart": 10,
+      "run_id": "2de730eacb52459fb4e7e9c387af2d93",
+      "schema": "fraud_kind_replay_worker_v1",
+      "scope": "synthetic_durable_replay_inflight_SQLite_rollback_and_same_PVC_resume",
+      "score_calls_after_restart": 4,
+      "status": "success",
+      "synthetic_fixture_fitted": true,
+      "worker_sha256": "a2bf76cf8b47813e6d0a05918f9c975b629e4d960168367dfd1af363cd436604"
+    },
+    "foundation_after": {
+      "pods": {
+        "postgres": {
+          "name": "fraud-platform-postgres-0",
+          "uid": "10d34cb6-6bb1-4616-b92e-1bae71c52efa",
+          "image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+          "image_id": "docker.io/library/postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-0",
+          "uid": "8e0a956a-b457-4b80-8151-0b9332eeccbd",
+          "image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+          "image_id": "docker.io/rustfs/rustfs@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c"
+        }
+      },
+      "pvcs": {
+        "postgres": {
+          "name": "fraud-platform-postgres-data",
+          "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+          "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-data",
+          "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+          "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+        }
+      }
+    },
+    "pod_recreation_validated": true,
+    "pvc_identity_preserved": true,
+    "temporary_compute_removed": true,
+    "checkpoint_pvc_retained": true,
+    "elapsed_seconds": 17.443978988994786
+  },
+  "limits": {
+    "historical_checkpoint_migrated": false,
+    "primary_storage_migrated": false,
+    "historical_model_refit": false,
+    "synthetic_fixture_fitted_once": true,
+    "backup_restore_validated": false,
+    "cluster_or_host_loss_recovery_validated": false,
+    "external_alert_delivery_validated": false,
+    "multi_writer_or_broker_delivery_validated": false,
+    "new_model_quality_evidence": false,
+    "production_promotion": false,
+    "registry_published": false
+  },
+  "retention": {
+    "pvc": "fraud-replay-2de730eacb52-state",
+    "pvc_uid": "d68d5529-7b3d-4a08-a569-0ca8c72c9366",
+    "run_directory": "/state/run",
+    "historical_state_unchanged_by_design": true
+  }
+}

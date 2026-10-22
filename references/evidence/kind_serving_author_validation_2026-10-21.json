@@ -1,0 +1,375 @@
+{
+  "schema": "fraud_kind_serving_author_validation_v1",
+  "status": "native_accepted",
+  "validated_on": "2026-10-21",
+  "evidence_source": "author-provided complete terminal JSON and pytest/tox output; not independently executed by assistant",
+  "terminal_attachment_sha256": "839273a49fd39a64a06e2546355d002065189b8e4913b2ae5d91470a39f24992",
+  "native_receipt_file_sha256": null,
+  "native_receipt_file_hash_scope": "Original native report file bytes were not supplied; no byte hash inferred from terminal formatting.",
+  "native_tests": {
+    "passed": 1,
+    "pytest_seconds": 19.48,
+    "tox_seconds": 34.53
+  },
+  "native_report": {
+    "schema": "fraud_kind_serving_rehearsal_v1",
+    "status": "success",
+    "events": [
+      "baseline_routed",
+      "invalid_candidate_rejected_before_start_or_switch",
+      "candidate_direct_gates_passed",
+      "candidate_routed_on_same_url",
+      "candidate_outage_observed",
+      "baseline_restored_on_same_url"
+    ],
+    "scope": "qualified_synthetic_runtime_Helm_Service_blue_green_and_native_rollback_not_reference_promotion",
+    "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/serving/rehearsal-d8388dca05304ef78b108aedcd62fa94.json",
+    "controller_sha256": "775c43c887cc0e69bf3a0ae26e6c385b7597bb474ac42b9b681abaddd694fc25",
+    "source_commit": "0b95136a462583441044d50de0884a558777b260",
+    "descriptor_sha256": "aa0e79886800765c516d3ed776295dc46d657a7ea50eb7c88900241d8c0ff0d7",
+    "qualified_runtime_image_id": "sha256:bc2ba70a90de114613bd8679e79ccfbb7a17de048f72f16323ca26713e1dae8d",
+    "image_receipt": {
+      "runtime": {
+        "image": "fraud-kind-serving-runtime:4ae537bb4cb8425fb30cbc13aa830696",
+        "docker_id": "sha256:bc2ba70a90de114613bd8679e79ccfbb7a17de048f72f16323ca26713e1dae8d",
+        "loaded_identities": [
+          "sha256:9f4cf7db448445c43e83a3022591a75e290f93bc001feca424f41011c66c7351",
+          "docker.io/library/import-2026-10-21@sha256:23266922d7896798469a3d799e725c339c1398ff9e0604d2062d6220aef88198",
+          "docker.io/library/import-2026-10-21@sha256:307b1ea9efd5901e9b828f15f4546fb18c104ebac9782a45f530e9e897b940de"
+        ],
+        "platform": "linux/amd64",
+        "import_method": "platform_archive",
+        "archive_sha256": "931f10a2be5937f70a25a84f0da382d79c193b72be8736acada05acaed210c77",
+        "archive_bytes": 175019008,
+        "temporary_archive_removed": true
+      },
+      "artifacts": {
+        "image": "fraud-kind-serving-artifacts:4ae537bb4cb8425fb30cbc13aa830696",
+        "docker_id": "sha256:c2a376c92605aa7e57febc8fac42e7643925e10048dbd1cb3b98954e0cd1d47e",
+        "loaded_identities": [
+          "sha256:15765fe076eb68be8036bf99b9d8b34a8aa867326f9387ef379125fa1526c1cd",
+          "docker.io/library/import-2026-10-21@sha256:28c9a7688052e0a7dfcc3696a2fcdb3eb9cf0f6205b46cd23bd8f83244aabe0d"
+        ],
+        "platform": "linux/amd64",
+        "import_method": "platform_archive",
+        "archive_sha256": "7e35cf3e6f0f79c7c11f4582dd20b2a90cece27909f85fc4d200ea8529b85c0e",
+        "archive_bytes": 43419648,
+        "temporary_archive_removed": true
+      },
+      "gateway": {
+        "image": "fraud-kind-serving-gateway:4ae537bb4cb8425fb30cbc13aa830696",
+        "docker_id": "sha256:970364228b1e4f932abc22d321932816782cca8a20b85a77552a7cfe9acfb3b5",
+        "loaded_identities": [
+          "sha256:0d831f5435ede3eeaba5768270c9e6f542d58306f69bb61f148e5c2374b57c56",
+          "docker.io/library/import-2026-10-21@sha256:13c95ff4cd40338acafd502b51024b41a1277dc6570f1068e46d03f6b5dbdfe9"
+        ],
+        "platform": "linux/amd64",
+        "import_method": "platform_archive",
+        "archive_sha256": "8598e71cf1801dff2ec31af55f85ff79df7e5167bd1a281993b272b738659e15",
+        "archive_bytes": 29441536,
+        "temporary_archive_removed": true
+      }
+    },
+    "preparation_source_pins": {
+      "infra/helm/fraud-serving/Chart.yaml": "140cb16397e81a80429ece718de7cc5ebcc77327246e81acf1e94b21089581cf",
+      "infra/helm/fraud-serving/README.md": "47dfa1274b3eb2f4b9708f75d78a4d11bb8364477d18177736395566f926b49a",
+      "infra/helm/fraud-serving/templates/backends.yaml": "1b05b473e2afb65ef4bbeb622caf7fc5b852039786f4af8366b3822999f5fb53",
+      "infra/helm/fraud-serving/templates/gateway.yaml": "6257c0905c52a6e11e29cfe956dcb8023cd31545ef56f9460b70e5d8b90351ad",
+      "infra/helm/fraud-serving/values.schema.json": "479372f51d35b9a65115d9a03d0af32edef237cd764cc2dcda39263cf384a0ea",
+      "infra/helm/fraud-serving/values.yaml": "5418527ddd15b3d4c7f1c736372e03d81654f92b30db465fe12b32deee192767",
+      "infra/kind/serving/Dockerfile.artifacts": "3ec568ae365eedb93705c6693be66d51fd50a44e85165370c63ce28a774d5f96",
+      "infra/kind/serving/Dockerfile.artifacts.dockerignore": "6b01474c23f7f326cf61870be0bc42580a8504070e2ce5c2d8be3b738a9dc964",
+      "infra/kind/serving/README.md": "79b6bfabcd9b45591f26161a1849c6f0951d9d768da2dedcaf52c116256fa936",
+      "scripts/platform/kind_foundation.py": "956730f550bc6f89c5fe452045fcc893f956ee141a2f4ce99203bf1678e50fd0",
+      "scripts/platform/kind_serving.py": "775c43c887cc0e69bf3a0ae26e6c385b7597bb474ac42b9b681abaddd694fc25",
+      "scripts/platform/kind_serving_delivery.py": "2ad023a56fb1b6f6cfea4b2b1580a935566c820b6c3159f59de7607a134aba06",
+      "scripts/platform/kind_serving_seed.py": "4ca3ec100883448a03b9fdf75f3902ea5d3a1bd6df86d6ebb2aa71587f9854dc",
+      "scripts/platform/kind_tracking.py": "fa674f4ad5e77e0cafb0bb225e1469501068d153864ee31f71abc9bfc34aaab7",
+      "scripts/serving/blue_green_rehearsal.py": "2d06129fa4f9ea666da6b1f27030a71732969ea8c2d65b7836d6a87da6f4f39d",
+      "scripts/serving/check_docker_runtime.py": "c87f54273c351dc9470d1178b66138e250e4345c9de3e5d92c86f81cb64b2f49",
+      "scripts/serving/delivery_gate.py": "63932d800c7be06683023d9d0ecf1ff561f1934516757d374d456a4fa8c892d9"
+    },
+    "preparation_owner_id": "4ae537bb4cb8425fb30cbc13aa830696",
+    "node_uid": "41e72efd-1bae-43d5-998e-4b6a9a19f08c",
+    "gateway_requested": "nginx:1.30.6-alpine@sha256:970364228b1e4f932abc22d321932816782cca8a20b85a77552a7cfe9acfb3b5",
+    "baseline_manifest_sha256": "589fa17eb6bc469e39e2e7b6107ba60c0f02f5cbd232d051b973b1227ef5a4c1",
+    "candidate_manifest_sha256": "c9519101027e018578649d07cb9e91947531113f5625b03f64d420c66388352e",
+    "baseline_release_id": "c298299b7d3540d3968b5e715937b923",
+    "candidate_release_id": "4953dc6c2a1047cd8fc16c575d81b49b",
+    "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+    "artifact_carrier_built": true,
+    "baseline_revision": 1,
+    "before": {
+      "pods": {
+        "blue": {
+          "name": "fraud-serving-blue-7db8c474fb-mnlxc",
+          "uid": "e386ee96-93ae-460d-a26d-0711a4c92cc1",
+          "images": {
+            "release": "docker.io/library/import-2026-10-21@sha256:28c9a7688052e0a7dfcc3696a2fcdb3eb9cf0f6205b46cd23bd8f83244aabe0d",
+            "api": "docker.io/library/import-2026-10-21@sha256:23266922d7896798469a3d799e725c339c1398ff9e0604d2062d6220aef88198"
+          }
+        },
+        "gateway": {
+          "name": "fraud-serving-gateway-9cc4f667f-kjspw",
+          "uid": "a5463ee0-b65f-4517-9d11-1171bf5335ac",
+          "images": {
+            "gateway": "docker.io/library/import-2026-10-21@sha256:13c95ff4cd40338acafd502b51024b41a1277dc6570f1068e46d03f6b5dbdfe9"
+          }
+        }
+      },
+      "deployments": {
+        "blue": "4ae71c73-9fe2-4e2a-bcf5-d02e627ebb3c",
+        "gateway": "3ecd1fa2-a74f-4bd5-9443-8e0edbbb93d0"
+      },
+      "services": {
+        "fraud-serving-active": {
+          "uid": "3b855224-3b1b-4868-8ec6-ffda4474122e",
+          "cluster_ip": "10.96.148.159",
+          "selector": {
+            "app.kubernetes.io/component": "blue",
+            "app.kubernetes.io/instance": "fraud-serving"
+          }
+        },
+        "fraud-serving-gateway": {
+          "uid": "5f54e19b-5bc6-4c9a-8101-dea75a06dae5",
+          "cluster_ip": "10.96.30.132",
+          "selector": {
+            "app.kubernetes.io/component": "gateway",
+            "app.kubernetes.io/instance": "fraud-serving"
+          }
+        }
+      }
+    },
+    "foundation_before": {
+      "pods": {
+        "postgres": {
+          "name": "fraud-platform-postgres-0",
+          "uid": "10d34cb6-6bb1-4616-b92e-1bae71c52efa",
+          "image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+          "image_id": "docker.io/library/postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-0",
+          "uid": "8e0a956a-b457-4b80-8151-0b9332eeccbd",
+          "image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+          "image_id": "docker.io/rustfs/rustfs@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c"
+        }
+      },
+      "pvcs": {
+        "postgres": {
+          "name": "fraud-platform-postgres-data",
+          "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+          "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-data",
+          "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+          "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+        }
+      }
+    },
+    "runtime_rebuilt": false,
+    "fit_executed": false,
+    "historical_reference_accessed": false,
+    "production_promotion": false,
+    "permanent_production_deployment_created": false,
+    "synthetic_baseline_left_installed": true,
+    "zero_downtime_validated": false,
+    "primary_storage_migrated": false,
+    "registry_published": false,
+    "gateway_url": "http://127.0.0.1:34297",
+    "gateway_route_scope": "same ephemeral loopback URL via stable gateway pod and active ClusterIP Service",
+    "baseline_http": {
+      "score": {
+        "schema_version": 1,
+        "transaction_id": 0,
+        "score": 0.03463335444035967,
+        "score_semantics": "uncalibrated_ranking",
+        "model_id": "hist_gradient_boosting",
+        "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+        "feature_contract_version": "gold_v1",
+        "serving_release_id": "c298299b7d3540d3968b5e715937b923"
+      },
+      "invalid_input_http_status": 422
+    },
+    "candidate_direct_http": {
+      "score": {
+        "schema_version": 1,
+        "transaction_id": 0,
+        "score": 0.03463335444035967,
+        "score_semantics": "uncalibrated_ranking",
+        "model_id": "hist_gradient_boosting",
+        "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+        "feature_contract_version": "gold_v1",
+        "serving_release_id": "4953dc6c2a1047cd8fc16c575d81b49b"
+      },
+      "invalid_input_http_status": 422
+    },
+    "candidate": {
+      "pods": {
+        "blue": {
+          "name": "fraud-serving-blue-7db8c474fb-mnlxc",
+          "uid": "e386ee96-93ae-460d-a26d-0711a4c92cc1",
+          "images": {
+            "release": "docker.io/library/import-2026-10-21@sha256:28c9a7688052e0a7dfcc3696a2fcdb3eb9cf0f6205b46cd23bd8f83244aabe0d",
+            "api": "docker.io/library/import-2026-10-21@sha256:23266922d7896798469a3d799e725c339c1398ff9e0604d2062d6220aef88198"
+          }
+        },
+        "gateway": {
+          "name": "fraud-serving-gateway-9cc4f667f-kjspw",
+          "uid": "a5463ee0-b65f-4517-9d11-1171bf5335ac",
+          "images": {
+            "gateway": "docker.io/library/import-2026-10-21@sha256:13c95ff4cd40338acafd502b51024b41a1277dc6570f1068e46d03f6b5dbdfe9"
+          }
+        },
+        "green": {
+          "name": "fraud-serving-green-5998b4b9b8-w8cch",
+          "uid": "2f9c9d35-6595-42e1-8a11-a9d846316015",
+          "images": {
+            "release": "docker.io/library/import-2026-10-21@sha256:28c9a7688052e0a7dfcc3696a2fcdb3eb9cf0f6205b46cd23bd8f83244aabe0d",
+            "api": "docker.io/library/import-2026-10-21@sha256:23266922d7896798469a3d799e725c339c1398ff9e0604d2062d6220aef88198"
+          }
+        }
+      },
+      "deployments": {
+        "blue": "4ae71c73-9fe2-4e2a-bcf5-d02e627ebb3c",
+        "gateway": "3ecd1fa2-a74f-4bd5-9443-8e0edbbb93d0",
+        "green": "655a2546-9fcb-46ca-8797-3c9d3f00315e"
+      },
+      "services": {
+        "fraud-serving-active": {
+          "uid": "3b855224-3b1b-4868-8ec6-ffda4474122e",
+          "cluster_ip": "10.96.148.159",
+          "selector": {
+            "app.kubernetes.io/component": "blue",
+            "app.kubernetes.io/instance": "fraud-serving"
+          }
+        },
+        "fraud-serving-gateway": {
+          "uid": "5f54e19b-5bc6-4c9a-8101-dea75a06dae5",
+          "cluster_ip": "10.96.30.132",
+          "selector": {
+            "app.kubernetes.io/component": "gateway",
+            "app.kubernetes.io/instance": "fraud-serving"
+          }
+        }
+      }
+    },
+    "candidate_ready_endpoint_UIDs": [
+      "2f9c9d35-6595-42e1-8a11-a9d846316015"
+    ],
+    "candidate_gateway_http": {
+      "score": {
+        "schema_version": 1,
+        "transaction_id": 0,
+        "score": 0.03463335444035967,
+        "score_semantics": "uncalibrated_ranking",
+        "model_id": "hist_gradient_boosting",
+        "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+        "feature_contract_version": "gold_v1",
+        "serving_release_id": "4953dc6c2a1047cd8fc16c575d81b49b"
+      },
+      "invalid_input_http_status": 422
+    },
+    "outage_ready_endpoint_UIDs": [],
+    "observed_failure_http_status": 502,
+    "rollback_http": {
+      "score": {
+        "schema_version": 1,
+        "transaction_id": 0,
+        "score": 0.03463335444035967,
+        "score_semantics": "uncalibrated_ranking",
+        "model_id": "hist_gradient_boosting",
+        "model_sha256": "33c6fbab88b0876fef76eb754ebe7c130294e6267d736452a38851e7c4e31106",
+        "feature_contract_version": "gold_v1",
+        "serving_release_id": "c298299b7d3540d3968b5e715937b923"
+      },
+      "invalid_input_http_status": 422
+    },
+    "rollback_observation_seconds": 1.9936656479999328,
+    "after": {
+      "pods": {
+        "blue": {
+          "name": "fraud-serving-blue-7db8c474fb-mnlxc",
+          "uid": "e386ee96-93ae-460d-a26d-0711a4c92cc1",
+          "images": {
+            "release": "docker.io/library/import-2026-10-21@sha256:28c9a7688052e0a7dfcc3696a2fcdb3eb9cf0f6205b46cd23bd8f83244aabe0d",
+            "api": "docker.io/library/import-2026-10-21@sha256:23266922d7896798469a3d799e725c339c1398ff9e0604d2062d6220aef88198"
+          }
+        },
+        "gateway": {
+          "name": "fraud-serving-gateway-9cc4f667f-kjspw",
+          "uid": "a5463ee0-b65f-4517-9d11-1171bf5335ac",
+          "images": {
+            "gateway": "docker.io/library/import-2026-10-21@sha256:13c95ff4cd40338acafd502b51024b41a1277dc6570f1068e46d03f6b5dbdfe9"
+          }
+        }
+      },
+      "deployments": {
+        "blue": "4ae71c73-9fe2-4e2a-bcf5-d02e627ebb3c",
+        "gateway": "3ecd1fa2-a74f-4bd5-9443-8e0edbbb93d0"
+      },
+      "services": {
+        "fraud-serving-active": {
+          "uid": "3b855224-3b1b-4868-8ec6-ffda4474122e",
+          "cluster_ip": "10.96.148.159",
+          "selector": {
+            "app.kubernetes.io/component": "blue",
+            "app.kubernetes.io/instance": "fraud-serving"
+          }
+        },
+        "fraud-serving-gateway": {
+          "uid": "5f54e19b-5bc6-4c9a-8101-dea75a06dae5",
+          "cluster_ip": "10.96.30.132",
+          "selector": {
+            "app.kubernetes.io/component": "gateway",
+            "app.kubernetes.io/instance": "fraud-serving"
+          }
+        }
+      }
+    },
+    "rollback_verified": true,
+    "native_Helm_rollback_validated": true,
+    "original_delivery_bytes_unchanged": true,
+    "candidate_deployment_removed": true,
+    "baseline_and_gateway_pods_unchanged": true,
+    "foundation_after": {
+      "pods": {
+        "postgres": {
+          "name": "fraud-platform-postgres-0",
+          "uid": "10d34cb6-6bb1-4616-b92e-1bae71c52efa",
+          "image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+          "image_id": "docker.io/library/postgres@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-0",
+          "uid": "8e0a956a-b457-4b80-8151-0b9332eeccbd",
+          "image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+          "image_id": "docker.io/rustfs/rustfs@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c"
+        }
+      },
+      "pvcs": {
+        "postgres": {
+          "name": "fraud-platform-postgres-data",
+          "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+          "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+        },
+        "rustfs": {
+          "name": "fraud-platform-rustfs-data",
+          "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+          "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+        }
+      }
+    },
+    "events_complete": true,
+    "final_revision": 5,
+    "elapsed_seconds": 16.664243512999747
+  },
+  "limits": [
+    "synthetic release, same model weights; no historical reference promotion",
+    "controlled outage and observed rollback duration, not zero downtime or SLA",
+    "baseline and gateway remain in the laboratory; ephemeral port-forward closed",
+    "no primary storage migration, registry publication or host-loss recovery",
+    "reboot/startup operational procedure remains pending"
+  ]
+}

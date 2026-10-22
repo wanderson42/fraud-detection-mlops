@@ -1,0 +1,162 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "existingSecret",
+    "storageClass",
+    "postgres",
+    "rustfs"
+  ],
+  "properties": {
+    "existingSecret": {
+      "type": "string",
+      "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$",
+      "maxLength": 63
+    },
+    "storageClass": {
+      "type": "string",
+      "minLength": 1
+    },
+    "postgres": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image",
+        "storage",
+        "resources",
+        "database",
+        "user"
+      ],
+      "properties": {
+        "image": {
+          "type": "string",
+          "pattern": "^[a-z0-9./:_-]+@sha256:[a-f0-9]{64}$"
+        },
+        "storage": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*Gi$"
+        },
+        "resources": {
+          "type": "object",
+          "required": [
+            "requests",
+            "limits"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "requests": {
+              "type": "object",
+              "required": [
+                "cpu",
+                "memory"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "cpu": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "memory": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "limits": {
+              "type": "object",
+              "required": [
+                "cpu",
+                "memory"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "cpu": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "memory": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "database": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "user": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$"
+        }
+      }
+    },
+    "rustfs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image",
+        "storage",
+        "resources"
+      ],
+      "properties": {
+        "image": {
+          "type": "string",
+          "pattern": "^[a-z0-9./:_-]+@sha256:[a-f0-9]{64}$"
+        },
+        "storage": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*Gi$"
+        },
+        "resources": {
+          "type": "object",
+          "required": [
+            "requests",
+            "limits"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "requests": {
+              "type": "object",
+              "required": [
+                "cpu",
+                "memory"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "cpu": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "memory": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "limits": {
+              "type": "object",
+              "required": [
+                "cpu",
+                "memory"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "cpu": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "memory": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

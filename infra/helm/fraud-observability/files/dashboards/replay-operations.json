@@ -1,0 +1,1064 @@
+{
+  "uid": "fraud-replay-ops",
+  "title": "Fraud — operação local do replay",
+  "schemaVersion": 41,
+  "version": 4,
+  "editable": false,
+  "tags": [
+    "fraud",
+    "local",
+    "paced-v1"
+  ],
+  "timezone": "utc",
+  "refresh": "10s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Escopo e leitura",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 6
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Replay local com fila em processo. Velocidade > 1 significa aceleração. Latência usa relógio monotônico convertido para a época da sessão, nunca `agora − 2018`. Contexto e commits recuperados sem tempo ficam fora dos histogramas. Fonte e suporte aparecem abaixo. Não é um SLA de produção.\n\n**Cores:** azul = informação; verde = condição válida verificada; amarelo = investigar; vermelho = violação explícita; cinza = indisponível ou não aplicável. Cor não substitui o texto e o suporte da métrica."
+      }
+    },
+    {
+      "id": 2,
+      "title": "Coletor válido",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Válido (verde): snapshot coletado; Inválido (vermelho): collector sem snapshot válido. Ausência de amostra é cinza, não zero.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_monitor_collector_up",
+          "instant": true,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Inválido",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Válido",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Velocidade do replay",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 6,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_replay_speed",
+          "instant": true,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Eventos confirmados",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_replay_events_total",
+          "instant": true,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 5,
+      "title": "Throughput local observado",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 13,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(fraud_replay_events_total[1m])",
+          "instant": false,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "Emissões aguardando commit",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_replay_pending_uncommitted_events",
+          "instant": false,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "Commits sem tempo medido",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 20,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Verde: nenhum commit sem tempo medido. Amarelo: há lacunas de medição; investigar antes de interpretar latência. Não indica perda do commit.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_replay_unmeasured_committed_events",
+          "instant": true,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 8,
+      "title": "p95 acumulado: agendado até commit",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 27,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, fraud_replay_scheduled_to_commit_seconds_bucket)",
+          "instant": false,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "p95 acumulado: espera na fila",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 27,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, fraud_replay_queue_wait_seconds_bucket)",
+          "instant": false,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "title": "p95 acumulado: atraso de emissão",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 34,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, fraud_replay_emission_lateness_seconds_bucket)",
+          "instant": false,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "title": "p95 acumulado: processamento",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 34,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, fraud_replay_processing_seconds_bucket)",
+          "instant": false,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "title": "Transações com tempo medido",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 41,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_replay_scheduled_to_commit_seconds_count",
+          "instant": true,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 13,
+      "title": "Sessão em execução",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 41,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Parada (cinza) não significa falha: é esperada no replay concluído. Em execução (azul) informa o estado, sem atestar saúde.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_replay_session_running",
+          "instant": true,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem dados / sem suporte",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Parada",
+                  "color": "gray"
+                },
+                "1": {
+                  "text": "Em execução",
+                  "color": "blue"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 14,
+      "title": "Fonte do ensaio",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 48,
+        "w": 12,
+        "h": 7
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "description": "Azul: informação, sem classificação automática de bom/ruim. Nenhum limiar de aceitação é inferido do número.",
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_replay_source_info",
+          "instant": true,
+          "legendFormat": "{{__name__}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "noValue": "Sem dados / sem suporte",
+          "displayName": "${__field.labels.scope}",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "nan",
+                "result": {
+                  "text": "Sem dados / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "name"
+      }
+    }
+  ]
+}

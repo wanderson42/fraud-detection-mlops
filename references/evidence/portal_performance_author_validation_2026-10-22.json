@@ -1,0 +1,62 @@
+{
+  "schema": "fraud_portal_performance_author_validation_v1",
+  "status": "accepted_in_author_environment",
+  "validated_on": "2026-10-22",
+  "scope": "identified_validation_performance_and_read_only_investigation_portal_with_operator_visual_acceptance",
+  "implementation_commit": "f769be6",
+  "acceptance_basis": "author_supplied_native_prepare_verify_smoke_console_and_explicit_visual_confirmation",
+  "performance": {
+    "prepare_status": "portal_performance_prepared",
+    "verify_status": "portal_performance_verified",
+    "directory": "data/reports/fraud-portal/performance/validation-v1",
+    "report": "data/reports/fraud-portal/performance/validation-v1/performance.json",
+    "manifest_sha256": "6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475",
+    "portal_manifest_sha256": "ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af",
+    "validation_rows": 67255,
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "offline_verification_model_loaded": false,
+    "champion_modified": false
+  },
+  "portal": {
+    "status": "portal_HTTP_and_snapshot_verified",
+    "portal_id": "investigation-v1",
+    "decisions": 200,
+    "customers": 199,
+    "alerts": 13,
+    "feedback": 200,
+    "explanations": 5,
+    "read_only": true,
+    "champion_modified": false
+  },
+  "visual_acceptance": {
+    "operator_confirmed": true,
+    "screens": [
+      "comparison",
+      "precision_recall_and_ROC",
+      "queue_policy",
+      "traceability"
+    ],
+    "native_screenshot_of_performance_page_attached": false
+  },
+  "objective": {
+    "recall_and_false_positives_computed_not_inferred_from_AP": true,
+    "queue_policy_unit": "customer_day",
+    "threshold_matrix_unit": "transaction",
+    "threshold_budget_period_units_explicit": true,
+    "validation_distinct_from_200_case_snapshot": true,
+    "numeric_values_source": "identity_bound_native_performance.json",
+    "numeric_metric_values_transcribed_into_this_receipt": false
+  },
+  "preserved": {
+    "model_weights": true,
+    "champion_alias": true,
+    "case_snapshot": true,
+    "scientific_producers": true
+  },
+  "model_fit_executed": false,
+  "test_evaluated": false,
+  "new_independent_quality_confirmation": false,
+  "continuous_live_arrival_to_portal_validated": false,
+  "different_weights_successor_promotion_validated": false,
+  "runbook": "docs/operations/PORTAL_PERFORMANCE.md"
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ownerId",
+    "roundId",
+    "trainerImage",
+    "transportImage",
+    "datasetOwner",
+    "goldBundleId",
+    "planJSON",
+    "transportScript"
+  ],
+  "properties": {
+    "ownerId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "roundId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,39}$"
+    },
+    "trainerImage": {
+      "type": "string",
+      "pattern": "^fraud-round-trainer:[a-f0-9]{32}$"
+    },
+    "transportImage": {
+      "type": "string",
+      "pattern": "^fraud-kind-pipeline-transport:[a-f0-9]{32}$"
+    },
+    "datasetOwner": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "goldBundleId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "planJSON": {
+      "type": "string"
+    },
+    "transportScript": {
+      "type": "string"
+    }
+  }
+}

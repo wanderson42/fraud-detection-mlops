@@ -1,11 +1,55 @@
 # Síntese para stakeholders
 
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](../operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
+
+
 Atualizado em 2026-10-16, incorporando a recuperação nativa do histórico e da
 referência MLflow em cópia descartável dos restores já aprovados.
 O pipeline offline, a referência congelada, o serving de laboratório e o replay
 causal acelerado foram exercitados pelo autor. Tanto o replay corretivo quanto
 o novo ensaio programado passaram a verificação de features, scores e decisões.
 [Metas e prioridades](ROADMAP.md).
+
+## Produto e próximo recorte de entrega
+
+| Usuário | Entrega |
+| --- | --- |
+| Sistema transacional | API de pontuação com modelo identificado |
+| Analista de fraude | Fila priorizada, contexto da transação e explicação |
+| Equipe de operação | Grafana com saúde, erros, atrasos e qualidade |
+| Equipe de ML | Linhagem, comparação de candidatos e implantação controlada |
+
+
+O produto ajuda uma equipe a escolher quais clientes investigar. O sistema
+transacional integra-se pela API; o analista consulta casos priorizados e os
+fatores do score; a operação acompanha saúde/qualidade no Grafana. O fluxo de eventos pela API do champion passou no ensaio nativo de 2026-10-22,
+com decisões consultáveis, feedback e retomada. A imagem instaladora foi atualizada
+e verificada no KinD: startup repetido reutiliza a release sem reescrever os arquivos.
+Modelo, versão do champion e consulta de casos foram preservados.
+[Aceite da manutenção](../../references/evidence/serving_seed_recovery_author_validation_2026-10-22.json).
+[Evidência](../../references/evidence/product_http_flow_author_validation_2026-10-22.json) e
+[operação](../operations/SERVING_RECOVERY.md).
+[Jornada, contratos e sequência](../operations/PRODUCT_DELIVERY.md).
+
+O autor validou as explicações SHAP de cinco casos do champion: contexto,
+19 contribuições por caso, score reconstruído e vínculos com pesos/features usados.
+A verificação offline do relatório passou sem carregar o modelo e o champion foi
+preservado. [Aceite](../../references/evidence/case_explanations_author_validation_2026-10-22.json).
+[Entrega ao analista](../operations/CASE_EXPLANATIONS.md). Grafana mantém a operação;
+a investigação usa o relatório e a consulta de casos, sem outro serviço.
+
+**Os limites numéricos de promoção são específicos do laboratório. Em uma operação
+real, precisam ser calibrados com custos de fraude, falsos positivos, capacidade
+de investigação e incerteza das métricas. Ganhar 0,005 de AP, sozinho, não comprova
+significância estatística nem retorno financeiro.** A retenção do champion
+demonstra que terminar um treino não autoriza substituir o modelo.
 
 ## A decisão que apoiamos
 
@@ -640,3 +684,125 @@ baixado, teve digest conferido e seus recibos de recarga/HTTP/cleanup lidos.
 **Gate remoto encerrado.** Próximo: promoção explícita e provisionamento
 reproduzível KinD/Helm; registry e deploy permanente ainda têm critérios próprios.
 [Resultado e limites](../operations/SERVING_ROLLOUT.md#aceite-do-fluxo-no-github-actions--2026-10-19).
+
+## MLflow no KinD — aceite nativo de 2026-10-20
+
+MLflow instalado via Helm sobre PostgreSQL/RustFS dedicados. O autor aprovou
+publicação, recarga independente HTTP, comparação dos bytes do modelo no S3 e
+recarga após recriar o pod MLflow, com erro zero e fundação preservada. O gate
+nativo passou em 21,56 s. Isso demonstra persistência e integração operacional
+com uma fixture sintética; a migração histórica e o backup/restore deste novo
+destino continuam pendentes. Próximo recorte: objetos/dados no RustFS do KinD,
+com aceites próprios. [Resultado e evidência](../operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+## Transporte dos datasets no KinD aprovado
+
+O autor confirmou o ciclo das quatro camadas em 2026-10-20: 489 arquivos de
+payload e quatro manifestos recuperados com verificadores próprios; os reenvios
+não fizeram novos uploads e a fundação permaneceu com as mesmas identidades.
+O resultado preserva dados e proveniência no novo destino. Os leitores ainda
+usam seus caminhos atuais; recuperação após perda da máquina não foi avaliada.
+[Aceite e evidência](../operations/KIND_DATASETS.md#aceite-nativo--2026-10-20).
+
+## Produtores em Jobs aprovados no KinD
+
+O autor confirmou Bronze → Silver → Gold em dois Jobs Helm em 2026-10-20:
+Silver com 1.754.155 transações e Gold com 402.877 linhas/19 features. As novas
+saídas foram publicadas e recuperadas independentemente; o segundo Job usou
+exatamente o bundle produzido pelo primeiro. Fundação preservada e Jobs
+removidos após sucesso. O resultado demonstra execução e recuperação da cadeia,
+com transformação separada das credenciais. Não altera a evidência de qualidade
+do modelo nem os caminhos primários dos leitores.
+[Aceite e limites](../operations/KIND_PIPELINE.md#aceite-nativo--2026-10-20).
+
+## Retomada do replay no KinD aprovada
+
+Em 2026-10-20 o autor confirmou que o replay sintético retoma após interromper
+um pod durante uma transação de feedback: o novo pod usa o mesmo armazenamento,
+reverte o evento incompleto e preserva os resultados confirmados. A comparação
+integral resultou em 20 eventos, 10 scores e 6 alertas iguais aos da execução
+sem interrupção. Reentrega não recalculou scores. O ensaio foi encerrado e seu
+PVC ficou retido; histórico e modelo de referência permanecem preservados.
+O resultado demonstra recuperação operacional neste cenário, sem nova afirmação
+de qualidade do modelo ou proteção contra perda da máquina.
+[Aceite e evidência](../operations/KIND_REPLAY.md#aceite-nativo--2026-10-20).
+Próximo recorte: serving no KinD, com identidade da release, troca e rollback.
+
+## Serving no KinD aprovado
+
+O autor aprovou os seis eventos do gate em 2026-10-21: baseline, bloqueio de
+pacote inválido, candidata direta, troca na mesma URL, falha HTTP 502 e retorno
+por `helm rollback`. A imagem qualificada da API foi reutilizada, sem rebuild
+do runtime ou fit; somente o carrier foi construído. Os mesmos pesos sintéticos
+produziram score `0.03463335444035967` antes/depois da troca e do rollback.
+Baseline/gateway mantiveram seus pods e a fundação permaneceu igual; candidata
+removida, baseline instalada no laboratório e port-forward temporário encerrado.
+A atualização controlada agora tem evidência no Kubernetes: Service apontando
+para o pod candidato, indisponibilidade observada e recuperação da baseline na
+mesma URL do ensaio. O retorno foi observado em 1,99 s, sem constituir SLA.
+O próximo recorte integra observabilidade ao cluster. Parada/subida e retomada
+após reboot continuam pendentes; não há evidência de que reboot causou a falha
+anterior de importação. [Aceite e limites](../operations/KIND_SERVING.md#aceite-nativo--2026-10-21).
+
+## Observabilidade no KinD aprovada
+
+O autor aprovou o gate nativo e confirmou a conferência visual em 2026-10-21.
+A cópia somente de leitura foi conciliada com a origem: **556.824 eventos,
+143.945 decisões e 1.453 alertas**. Scrape Prometheus, oito regras saudáveis,
+proxy autenticado do Grafana e quatro dashboards provisionados foram conferidos.
+O exporter ganhou novo pod, manteve Deployment/PVC e repetiu as verificações.
+Prometheus, Grafana, fundação, tracking, serving e PVC retido do replay
+preservaram suas identidades; arquivos da origem permaneceram iguais.
+A coleta atual apresenta um replay concluído, sem nova ingestão ou resultado
+de qualidade do modelo. Próximo: operação de parada/subida, reboot e fechamento
+integrado. [Evidência e limites](../operations/KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).
+
+Refinamento visual aprovado em 2026-10-21: [política semântica de cores](../operations/DASHBOARD_COLORS.md#aceite-da-política--2026-10-21),
+com informações azuis e estados explícitos em texto/cor. Configuração verificada
+pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
+autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
+Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+
+## Laboratório retomado após reboot
+
+O autor demonstrou parada/subida e retomada depois de reiniciar a máquina: mesmos volumes, identidade e score da API, histórico de tracking e indicadores operacionais. O ajuste inotify persistiu. Isso encerra o marco KinD/Helm no escopo do laboratório; agora a prioridade é simplificar a reprodução e a apresentação do portfólio. Recuperação por perda do host e interrupção abrupta seguem fora desse recorte. [Runbook](../operations/KIND_OPERATIONS.md).
+
+
+## Portal orientado à investigação — preparação em 2026-10-22
+
+| Usuário | Entrega |
+| --- | --- |
+| Sistema transacional | API com score e identidade do modelo |
+| Analista | Fila priorizada, contexto, feedback e explicação SHAP ligada ao caso |
+| Gestor de risco | Indicadores da janela e cobertura das informações |
+| Operação | Grafana com saúde, erros, atrasos e qualidade de dados |
+| Equipe de ML | MLflow com linhagem, comparação e implantação governada |
+
+O portal Streamlit/Plotly reúne a jornada do analista em três telas conectadas.
+Inclui todas as decisões do fluxo HTTP aceito; somente cinco têm a explicação
+SHAP já aceita. Não transforma feedback tardio em sinal disponível na decisão.
+Implementação/testes locais preparados; aceite visual e captura nativa pendentes.
+[Guia](../operations/FRAUD_PORTAL.md).
+
+
+### Evidência do modelo e interpretação do produto
+
+A área de desempenho preparada permite ao gestor e à equipe de ML comparar
+candidatos na validação temporal, ver Precision–Recall/ROC e entender recall,
+falsos positivos e carga por cliente/dia. O analista conserva o contexto por caso.
+A UI lê evidência identificada e não depende de HGB: uma nova versão/algoritmo
+entra por outro snapshot e relatório compatível. Explicações ausentes são
+informadas; não há explicações fabricadas nem score tratado como certeza.
+[Aceite nativo e visual concluído em 2026-10-22](../operations/PORTAL_PERFORMANCE.md).
+
+
+### Aceite nativo do portal e da avaliação — 2026-10-22
+
+Prepare, verificação offline, smoke e conferência visual aceitos: 67.255 transações
+na avaliação e 200 decisões na consulta. Recall e falsos positivos são calculados,
+com limiar, orçamento, período e unidades definidos; a AP não é usada para
+inferir essas quantidades. Mesmo modelo dos casos e champion preservado.
+[Evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json).
+A próxima entrega consolida a chegada dos eventos e a fila/métricas da mesma
+sessão. [Responsabilidades de cada usuário](../operations/PRODUCT_OPERATIONS.md).

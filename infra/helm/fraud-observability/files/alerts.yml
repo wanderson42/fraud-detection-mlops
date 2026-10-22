@@ -1,0 +1,59 @@
+groups:
+  - name: fraud-replay-local
+    rules:
+      - alert: FraudExporterUnavailable
+        expr: up{job="fraud-replay"} == 0
+        for: 30s
+        labels: {severity: critical}
+        annotations:
+          summary: Exporter inacessível
+          action: Verificar processo e rede local conforme OBSERVABILITY.md.
+      - alert: FraudCollectorInvalid
+        expr: fraud_monitor_collector_up == 0
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: Snapshot ausente ou inválido
+          action: Conferir diretório, identidade e permissões; preservar os bancos.
+      - alert: FraudReplayStalled
+        expr: fraud_replay_session_running == 1 and (time() - fraud_replay_heartbeat_timestamp_seconds > 30)
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: Replay ativo sem heartbeat
+          action: Investigar escritor e recursos antes de retomar o mesmo comando.
+      - alert: FraudTimingGap
+        expr: fraud_replay_unmeasured_committed_events > 0
+        for: 10s
+        labels: {severity: warning}
+        annotations:
+          summary: Commit recuperado sem medição de latência
+          action: Preservar evidência; não usar o ensaio para aprovar latência contínua.
+      - alert: FraudScheduledLatencyHigh
+        expr: (histogram_quantile(0.95, fraud_replay_scheduled_to_commit_seconds_bucket) > 1) and (fraud_replay_speed == 1) and (fraud_replay_scheduled_to_commit_seconds_count >= 100) and (fraud_replay_unmeasured_committed_events == 0)
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: p95 acumulado acima do alvo local em ritmo 1x
+          action: Examinar atraso de emissão, espera na fila e processamento; não mudar o limiar do modelo.
+      - alert: FraudScoreDistributionChanged
+        expr: (fraud_replay_score_jensen_shannon > 0.1) and (fraud_replay_score_window_observations >= 1000)
+        for: 2m
+        labels: {severity: info}
+        annotations:
+          summary: Distribuição dos scores mudou
+          action: Investigar dados e qualidade madura; sinal descritivo não autoriza retreino ou promoção.
+      - alert: FraudFeatureRequestInvalid
+        expr: fraud_feature_schema_or_clock_invalid_rows > 0
+        for: 30s
+        labels: {severity: warning}
+        annotations:
+          summary: Features persistidas com schema ou relógio inválido
+          action: Conferir contrato, ausência e relógios do snapshot; preservar o estado. Não retreinar automaticamente.
+      - alert: FraudFeatureDistributionChanged
+        expr: (fraud_feature_jensen_shannon > 0.1) and on(job, instance) (fraud_feature_comparison_ready == 1)
+        for: 2m
+        labels: {severity: info}
+        annotations:
+          summary: Distribuição de feature mudou entre janelas operacionais
+          action: Conferir suporte, sazonalidade e baseline operacional inicial. Sinal descritivo; não implica perda de qualidade ou autorização de CT.

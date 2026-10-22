@@ -1,0 +1,53 @@
+{
+  "schema": "fraud_kind_serving_platform_import_fix_v1",
+  "status": "prepared_native_retry_pending",
+  "prepared_on": "2026-10-21",
+  "author_observed_failure": {
+    "preparation_owner_id": "f972d1a5b161401690214973ab935553",
+    "role": "gateway",
+    "image": "fraud-kind-serving-gateway:f972d1a5b161401690214973ab935553",
+    "docker_reported_image_id": "sha256:970364228b1e4f932abc22d321932816782cca8a20b85a77552a7cfe9acfb3b5",
+    "missing_content_digest": "sha256:6d0cc3ddc55dff5fceee12d47cc3fc7280b768b4a263fbfbc614bebb4615c677",
+    "operation": "kind load docker-image -> ctr images import --all-platforms",
+    "source": "author-provided terminal output in this conversation; host image store was not inspected by assistant"
+  },
+  "diagnosis": "Observed error matches the documented kind/containerd image-store export/import issue. Reboot causation is not established.",
+  "official_references": [
+    "https://kind.sigs.k8s.io/docs/user/known-issues/#unable-to-kind-load-docker-images",
+    "https://docs.docker.com/reference/cli/docker/image/save/"
+  ],
+  "change": [
+    "export each owned serving image with docker image save --platform linux/amd64",
+    "load resulting archive with kind load image-archive --name fraud-platform",
+    "keep original Docker identity and verify imported CRI tag/identity",
+    "record archive SHA-256, size and selected platform; remove owned temporary archive in all outcomes",
+    "show bounded stdout/stderr on nonzero export/import exit"
+  ],
+  "local_validation": {
+    "python": "3.14.4",
+    "ruff": "0.16.10",
+    "regression_passed": 228,
+    "live_skipped": 4,
+    "pytest_seconds": 9.03,
+    "orchestration_backend": "controlled calls for Docker and KinD; real copied releases/API TestClient and Helm rendering",
+    "new_regression_cases": 6,
+    "failed_export_import_and_identity_cleanup_checked": true,
+    "archive_and_platform_and_original_image_id_preservation_checked": true,
+    "ruff_check_and_format_passed": true,
+    "native_Docker_or_KinD_executed": false
+  },
+  "preserved": [
+    "qualified API image and trusted descriptor pins",
+    "NGINX registry digest",
+    "foundation and prior milestone controllers/charts",
+    "original delivery, failed preparation directories and user Git index"
+  ],
+  "operational_followup": "Record shutdown/startup and verified reuse of existing cluster/volumes after reboot in the operational closure. Not implemented or validated by this import fix.",
+  "source_hashes": {
+    "scripts/platform/kind_serving_delivery.py": "2ad023a56fb1b6f6cfea4b2b1580a935566c820b6c3159f59de7607a134aba06"
+  },
+  "production_promotion": false,
+  "runtime_rebuilt": false,
+  "model_refit": false,
+  "native_serving_acceptance_validated": false
+}

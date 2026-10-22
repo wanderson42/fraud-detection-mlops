@@ -1,9 +1,98 @@
 {
   "schema": "fraud_persistence_catalogue_v1",
-  "reviewed_on": "2026-10-19",
+  "reviewed_on": "2026-10-20",
   "reviewed_delivery_tree": "74a61ac6d74a092c7108fc884e18bf9891238768",
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
+    {
+      "prefix": "data/storage/kind-platform/portal",
+      "family": "private_portal_access_receipt_with_external_manifest_digest",
+      "owner": "product",
+      "producers": [
+        "scripts/fraud_portal/export.py",
+        "scripts/fraud_portal/performance/collect.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/reports/fraud-portal",
+      "family": "verified_read_only_investigation_snapshot_and_manifest",
+      "owner": "product",
+      "producers": [
+        "scripts/fraud_portal/export.py",
+        "scripts/fraud_portal/performance/collect.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/reports/case-explanations",
+      "family": "identity_bound_HTTP_case_SHAP_html_svg_json_and_manifest",
+      "owner": "product_and_modeling",
+      "producers": [
+        "scripts/case_explanations/controller.py",
+        "scripts/case_explanations/report.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/serving-maintenance",
+      "family": "same_model_seed_carrier_build_restart_probe_and_approval_receipts",
+      "owner": "platform",
+      "producers": [
+        "scripts/platform/serving_recovery.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/product-flow",
+      "family": "causal_HTTP_champion_events_exchanges_triage_feedback_and_receipts",
+      "owner": "product_and_platform",
+      "producers": [
+        "scripts/product_flow/controller.py",
+        "scripts/product_flow/inputs.py",
+        "scripts/product_flow/ledger.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/model-updates",
+      "family": "model_update_training_comparison_approvals_transactions_and_active_identity",
+      "owner": "platform_and_modeling",
+      "producers": [
+        "scripts/model_updates/controller.py",
+        "scripts/model_updates/deployment.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/rounds",
+      "family": "operational_round_policies_data_training_promotion_and_serving",
+      "owner": "platform_and_modeling",
+      "producers": [
+        "scripts/operational_round/controller.py",
+        "scripts/operational_round/serving.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/serving",
+      "family": "kind_serving_preparation_images_values_and_receipts",
+      "owner": "platform",
+      "producers": [
+        "scripts/platform/kind_serving.py",
+        "scripts/platform/kind_serving_delivery.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/replay",
+      "family": "kind_replay_images_plans_and_receipts",
+      "owner": "platform",
+      "producers": [
+        "scripts/platform/kind_replay.py"
+      ],
+      "review_required": false
+    },
     {
       "prefix": "data/raw",
       "family": "bronze",
@@ -153,6 +242,44 @@
         "tests/tracking/live/test_baseline_http.py"
       ],
       "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform",
+      "family": "kind_foundation_workspace",
+      "owner": "platform_operator",
+      "producers": [
+        "scripts/platform/kind_foundation.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/tracking",
+      "family": "kind_tracking_workspace_and_receipts",
+      "owner": "platform_operator",
+      "producers": [
+        "scripts/platform/kind_tracking.py",
+        "scripts/platform/kind_tracking_client.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/datasets",
+      "family": "kind_dataset_archives_and_receipts",
+      "owner": "platform_operator",
+      "producers": [
+        "scripts/platform/kind_datasets.py",
+        "scripts/platform/kind_datasets_worker.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/pipeline",
+      "family": "kind_pipeline_images_plans_and_receipts",
+      "owner": "platform_operator",
+      "producers": [
+        "scripts/platform/kind_pipeline.py"
+      ],
+      "review_required": false
     }
   ],
   "source_prefixes": [
@@ -267,6 +394,69 @@
       ],
       "inspection": "author_reported_native_three_models_reload_validated",
       "reason": "Author approved three linked main runs, independent reload with local models unavailable, zero error, no local tracking DB and unchanged containers; see baseline_tracking_author_validation_2026-10-17.json. This is not primary cutover, cross-store inventory, PostgreSQL restore or historical migration."
+    },
+    {
+      "id": "kind_foundation_local_pvs",
+      "source": "infra/helm/fraud-platform/values.yaml",
+      "locations": [
+        "cluster fraud-platform: local-path PVs inside Docker node, two new PVCs",
+        "namespace fraud-platform: generated credentials Secret and Helm release metadata"
+      ],
+      "inspection": "author_reported_native_pod_recreation_and_PVC_identity_validated",
+      "reason": "Markers survived pod recreation with the same PVC/PV identities. Evidence: kind_foundation_author_validation_2026-10-20.json. Cluster/host-loss recovery and primary migration remain unvalidated."
+    },
+    {
+      "id": "kind_mlflow_postgres_s3",
+      "source": "scripts/platform/kind_tracking.py",
+      "locations": [
+        "fraud-platform namespace: database/login mlflow_kind in existing PostgreSQL PVC",
+        "fraud-platform namespace: bucket fraud-kind-mlflow/v1 in existing RustFS PVC",
+        "fraud-tracking Helm release and generated tracking Secret; Deployment tmp emptyDir"
+      ],
+      "inspection": "author_reported_native_synthetic_proxy_S3_hash_and_pod_recreation_validated",
+      "reason": "Accepted 2026-10-20: independent HTTP reload, exact S3 model hash, metric probe history and reload after MLflow pod recreation; foundation identities preserved. No historical migration or backup/restore of this destination. See kind_tracking_author_validation_2026-10-20.json."
+    },
+    {
+      "id": "kind_dataset_objects",
+      "source": "scripts/platform/kind_datasets.py",
+      "locations": [
+        "fraud-platform namespace: fraud-datasets bucket in existing RustFS PVC",
+        "temporary host Docker worker with explicit loopback port-forward; source bundle read-only, download directory writable"
+      ],
+      "inspection": "author_reported_native_four_dataset_roundtrips_validated",
+      "reason": "Accepted 2026-10-20: 489 payload files plus four manifests, full readback, zero-upload republication, independent semantic restore and foundation identities preserved. Primary reader paths and cluster/host-loss recovery remain outside this gate. Evidence: kind_datasets_author_validation_2026-10-20.json."
+    },
+    {
+      "id": "kind_data_jobs",
+      "source": "scripts/platform/kind_pipeline.py",
+      "locations": [
+        "fraud-platform namespace: temporary Helm Job release with per-pod emptyDir work/tmp",
+        "existing RustFS fraud-datasets: new Silver/Gold bundles and platform-jobs/v1 completion receipts",
+        "host Docker build cache and KinD node loaded pipeline images"
+      ],
+      "inspection": "author_reported_native_two_producer_Jobs_and_independent_restores_validated",
+      "reason": "Accepted 2026-10-20: linked Bronze/Silver/Gold producer Jobs, 235 payload files and 237 bundle objects verified, independent semantic restores, foundation preserved and temporary release removed. S3 bundles, completion envelopes, node images/build cache and host receipts remain inventoried boundaries. No primary cutover or model evaluation."
+    },
+    {
+      "id": "kind_replay_retained_pvcs",
+      "inspection": "native_rehearsal_accepted_retained_PVC_not_backup_or_host_loss_recovery",
+      "source": "scripts/platform/kind_replay.py",
+      "reason": "One new synthetic checkpoint PVC per rehearsal; retained after Helm uninstall. Not historical migration, backup or host-loss protection.",
+      "locations": [
+        "fraud-platform/fraud-replay-<run>-state PVC:/state/run"
+      ]
+    },
+    {
+      "id": "kind_serving_runtime_and_emptyDir",
+      "source": "scripts/platform/kind_serving.py",
+      "locations": [
+        "fraud-platform/fraud-serving-blue",
+        "fraud-platform/fraud-serving-gateway",
+        "optional fraud-serving-green",
+        "model releases in per-pod emptyDir; authoritative carrier image and original delivery retained"
+      ],
+      "inspection": "declared_only_native_acceptance_pending",
+      "reason": "Qualified synthetic API image and copied release distribution. Baseline persists in the lab; no primary storage migration or historical model promotion."
     }
   ],
   "decisions": {
@@ -330,7 +520,7 @@
   },
   "tracking_consumers_review": {
     "schema": "fraud_tracking_consumers_review_v1",
-    "reviewed_on": "2026-10-17",
+    "reviewed_on": "2026-10-20",
     "scope": "Curated review of local/HTTP model access, indirect frozen-reference consumers, historical maintenance and independent serving runtime; source hashes checked without importing modules.",
     "consumers": [
       {
@@ -573,6 +763,186 @@
         "local_migration_blocker": false,
         "current_behavior": "Restores only a fresh private target, verifies complete API history and reloads the pinned synthetic model; no source network or historical stores.",
         "migration_gate": "Native restore acceptance; preserve scientific consumers and default routing."
+      },
+      {
+        "id": "kind_tracking_synthetic_client",
+        "source": "scripts/platform/kind_tracking_client.py",
+        "source_sha256": "63007e160f825376af2352bac90b58e89b329dac214fb3cd4fc02ca05c1f1232",
+        "functions": [
+          "execute"
+        ],
+        "kind": "service_operations",
+        "local_migration_blocker": false,
+        "current_behavior": "Cliente HTTP sintético; publica skops e recarrega em processos separados sem variáveis AWS/PG; sem consulta ao histórico local.",
+        "migration_gate": "Gate nativo PostgreSQL/S3/KinD aprovado: publicação e recarga independente, hash S3, dois pontos da métrica do probe e recarga após recriação do pod MLflow; erro zero. Não declara migração histórica ou primária; evidência kind_tracking_author_validation_2026-10-20.json."
+      },
+      {
+        "id": "scripts_operational_round_controller",
+        "source": "scripts/operational_round/controller.py",
+        "source_sha256": "5caea90b6e0c1be33072b80a1651e52fb1d41ea1b54e6021d702c2d1471f0df5",
+        "functions": [
+          "init",
+          "train",
+          "promote"
+        ],
+        "kind": "operational_round_controller",
+        "local_migration_blocker": false,
+        "current_behavior": "Nova cadeia de Jobs; datasets nativos, treino de três candidatos e promoção explícita.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+      },
+      {
+        "id": "scripts_operational_round_training",
+        "source": "scripts/operational_round/training.py",
+        "source_sha256": "180671c39b0ce3121d77410d1bfe67640df971bbaa13a045572d8ca5236ffc2c",
+        "functions": [
+          "candidates",
+          "execute"
+        ],
+        "kind": "operational_round_producer",
+        "local_migration_blocker": false,
+        "current_behavior": "Inputs obrigatórios de treino/validação, métricas vinculadas ao dataset, recarga completa; sem leitura de experimentos históricos.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+      },
+      {
+        "id": "scripts_operational_round_promotion",
+        "source": "scripts/operational_round/promotion.py",
+        "source_sha256": "fa4f053376f01e26a165ae52cfc518d4367d6f581e71e58813337850ac610de3",
+        "functions": [
+          "verify",
+          "promote"
+        ],
+        "kind": "operational_round_registry",
+        "local_migration_blocker": false,
+        "current_behavior": "Confere linhagem e bytes, recalcula qualidade em validação e registra o vencedor em fraud-detector@champion.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+      },
+      {
+        "id": "scripts_operational_round_serving",
+        "source": "scripts/operational_round/serving.py",
+        "source_sha256": "a8e21bce273770c642ff85421df49fe3be1f93dc5132fd88cf9b9ef160a0a01c",
+        "functions": [
+          "prepare",
+          "deploy",
+          "verify"
+        ],
+        "kind": "operational_round_serving",
+        "local_migration_blocker": false,
+        "current_behavior": "Constrói API atual, carrega pesos da nova versão aprovada e confere HTTP/troca/rollback.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+      },
+      {
+        "id": "scripts_platform_history_registry",
+        "source": "scripts/platform/history/registry.py",
+        "source_sha256": "3c8702d268318015bad4cfbb4aa839d9e3ca298dd89ef399c760559e536ec7f8",
+        "functions": [
+          "champion"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Registro da referência histórica aprovada; fora da nova rodada canônica.",
+        "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
+      },
+      {
+        "id": "scripts_platform_history_transfer",
+        "source": "scripts/platform/history/transfer.py",
+        "source_sha256": "c65ffcae8095042c31abdd0ee10a7d91e89e55fa9bbfab072f385f5f1da08e93",
+        "functions": [
+          "execute",
+          "verify"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Transferência arquivística e readback integral dos dois stores; fora do fluxo canônico.",
+        "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
+      },
+      {
+        "id": "scripts_platform_history_worker",
+        "source": "scripts/platform/history/worker.py",
+        "source_sha256": "1399aa2e70f475a0b0ad33f6b24af0528050bc8b35c884a3a4abfdd0a729a1d3",
+        "functions": [
+          "execute"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Cliente HTTP de manutenção histórica, sem novo treino.",
+        "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
+      },
+      {
+        "id": "recurring_controller",
+        "source": "scripts/model_updates/controller.py",
+        "source_sha256": "8507b9e1739132efdddfa1b72ac33a90dea014f998e0b0df569653a3d91cf785",
+        "functions": [
+          "init",
+          "qualify"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "recurring_deployment",
+        "source": "scripts/model_updates/deployment.py",
+        "source_sha256": "032cebb34a206782bd4a59f3f73eef2790f7c6e569fb162c10f065eb65347525",
+        "functions": [
+          "stage",
+          "release"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "recurring_registry",
+        "source": "scripts/model_updates/registry.py",
+        "source_sha256": "32bd83932d52751828e7812676b458241151da6bb5010781fe5ef38f4af9be7b",
+        "functions": [
+          "assess",
+          "register"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "recurring_search",
+        "source": "scripts/model_updates/search.py",
+        "source_sha256": "43c23d9ec3895084b025c3f316d241f59b4b9d2e2c982d940de4973c70e93c68",
+        "functions": [
+          "choose"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "recurring_training",
+        "source": "scripts/model_updates/training.py",
+        "source_sha256": "57a400ca7163aef9d36e0621e5e11bfeccdb1805e5690b706ef174481baef31e",
+        "functions": [
+          "candidates",
+          "execute"
+        ],
+        "kind": "recurring_update",
+        "local_migration_blocker": false,
+        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+      },
+      {
+        "id": "portal_validation_performance",
+        "source": "scripts/fraud_portal/performance/collect.py",
+        "source_sha256": "0502c1505d51654d7558ddf2a4c1ee46470e695460305082b16fee7a97d72b81",
+        "functions": [
+          "collect",
+          "prepare"
+        ],
+        "kind": "readonly_snapshot_evaluation",
+        "local_migration_blocker": false,
+        "current_behavior": "Leitura HTTP MLflow de Inputs, relatórios e pesos; validação identificada somente; métricas e simulação de fila offline; sem fit, escrita Registry ou mudança de tráfego.",
+        "migration_gate": "Preparação da página de desempenho; aceite nativo pendente em PORTAL_PERFORMANCE.md."
       }
     ],
     "decisions": {
@@ -610,5 +980,232 @@
     "target_resources": "temporary project/network/PostgreSQL and RustFS volumes; removed after the rehearsal",
     "primary_cutover": "deferred independently of this recovery gate",
     "validation_evidence": "references/evidence/tracking_restore_author_validation_2026-10-19.json"
+  },
+  "kind_foundation": {
+    "controller": "scripts/platform/kind_foundation.py",
+    "workspace": "data/storage/kind-platform",
+    "cluster": "fraud-platform",
+    "namespace": "fraud-platform",
+    "chart": "infra/helm/fraud-platform",
+    "native_persistence_validated": true,
+    "primary_storage_migrated": false,
+    "validation_scope": "new_SQL_S3_markers_across_pod_recreation_same_PVCs_not_cluster_or_host_loss",
+    "validation_evidence": "references/evidence/kind_foundation_author_validation_2026-10-20.json",
+    "backup_restore_validated": false
+  },
+  "kind_tracking": {
+    "controller": "scripts/platform/kind_tracking.py",
+    "workspace": "data/storage/kind-platform/tracking",
+    "chart": "infra/helm/fraud-tracking",
+    "release": "fraud-tracking",
+    "namespace": "fraud-platform",
+    "database": "mlflow_kind",
+    "bucket": "fraud-kind-mlflow",
+    "native_acceptance_validated": true,
+    "primary_storage_migrated": false,
+    "validation_evidence": "references/evidence/kind_tracking_author_validation_2026-10-20.json",
+    "validation_scope": "synthetic_proxy_S3_hash_and_model_reload_across_MLflow_pod_recreation",
+    "backup_restore_validated": false,
+    "historical_runs_migrated": false
+  },
+  "kind_datasets": {
+    "controller": "scripts/platform/kind_datasets.py",
+    "worker": "scripts/platform/kind_datasets_worker.py",
+    "workspace": "data/storage/kind-platform/datasets",
+    "bucket": "fraud-datasets",
+    "native_acceptance_validated": true,
+    "primary_storage_migrated": false,
+    "dataset_layers": [
+      "bronze",
+      "silver",
+      "gold",
+      "development-gold"
+    ],
+    "source": "existing locally prepared bundles only",
+    "runbook": "docs/operations/KIND_DATASETS.md",
+    "validation_evidence": "references/evidence/kind_datasets_author_validation_2026-10-20.json",
+    "validation_scope": "four_prepared_dataset_bundle_S3_roundtrips_and_semantic_verifiers_not_primary_reader_cutover",
+    "primary_reader_paths_changed": false
+  },
+  "kind_pipeline": {
+    "controller": "scripts/platform/kind_pipeline.py",
+    "compute_worker": "scripts/platform/kind_pipeline_compute.py",
+    "transport_worker": "scripts/platform/kind_pipeline_transport.py",
+    "chart": "infra/helm/fraud-data-jobs",
+    "workspace": "data/storage/kind-platform/pipeline",
+    "native_acceptance_validated": true,
+    "primary_storage_migrated": false,
+    "historical_sources_mounted": false,
+    "fit_executed": false,
+    "gold_features_recomputed": true,
+    "runbook": "docs/operations/KIND_PIPELINE.md",
+    "validation_evidence": "references/evidence/kind_pipeline_author_validation_2026-10-20.json",
+    "validation_scope": "two_sequential_Helm_producer_Jobs_new_S3_bundles_independent_host_restores_and_owned_cleanup",
+    "primary_reader_paths_changed": false,
+    "temporary_jobs_removed": true
+  },
+  "kind_replay": {
+    "controller": "scripts/platform/kind_replay.py",
+    "worker": "scripts/platform/kind_replay_worker.py",
+    "chart": "infra/helm/fraud-replay",
+    "workspace": "data/storage/kind-platform/replay",
+    "native_acceptance_validated": true,
+    "retained_storage": "one 1Gi PVC per synthetic rehearsal",
+    "historical_sources_mounted": false,
+    "primary_storage_migrated": false,
+    "backup_restore_validated": false,
+    "runbook": "docs/operations/KIND_REPLAY.md",
+    "validation_evidence": "references/evidence/kind_replay_author_validation_2026-10-20.json",
+    "validation_scope": "synthetic_feedback_transaction_rollback_same_PVC_pod_recreation_full_ledger_equality",
+    "retained_pvc": "fraud-replay-2de730eacb52-state",
+    "retained_pvc_uid": "d68d5529-7b3d-4a08-a569-0ca8c72c9366"
+  },
+  "kind_serving": {
+    "controller": "scripts/platform/kind_serving.py",
+    "delivery_controller": "scripts/platform/kind_serving_delivery.py",
+    "init_worker": "scripts/platform/kind_serving_seed.py",
+    "chart": "infra/helm/fraud-serving",
+    "release": "fraud-serving",
+    "workspace": "data/storage/kind-platform/serving",
+    "native_acceptance_validated": true,
+    "runtime_rebuilt": false,
+    "fit_executed": false,
+    "primary_storage_migrated": false,
+    "production_promotion": false,
+    "runbook": "docs/operations/KIND_SERVING.md",
+    "validation_evidence": "references/evidence/kind_serving_author_validation_2026-10-21.json",
+    "validation_scope": "qualified_synthetic_runtime_Helm_Service_blue_green_and_native_rollback_not_reference_promotion"
+  },
+  "kind_observability": {
+    "controller": "scripts/platform/kind_observability.py",
+    "state_worker": "scripts/platform/kind_observability_state.py",
+    "chart": "infra/helm/fraud-observability",
+    "release": "fraud-observability",
+    "workspace": "data/storage/kind-platform/observability",
+    "runbook": "docs/operations/KIND_OBSERVABILITY.md",
+    "source_scope": "copied_completed_native_replay_not_live_stream",
+    "source_mounted_in_cluster": false,
+    "state_exporter_mount_read_only": true,
+    "native_acceptance_validated": true,
+    "backup_restore_validated": false,
+    "primary_storage_migrated": false,
+    "production_promotion": false,
+    "author_visual_review_validated": true,
+    "validation_evidence": "references/evidence/kind_observability_author_validation_2026-10-21.json",
+    "exporter_pod_recreation_validated": true,
+    "validation_scope": "completed_native_replay_copy_readonly_exporter_Prometheus_Grafana_not_live_stream_or_new_model_quality",
+    "retained_pvcs": {
+      "state": {
+        "uid": "0556675e-d90e-4acb-a9d6-ef1301b58d14",
+        "volume_name": "pvc-0556675e-d90e-4acb-a9d6-ef1301b58d14"
+      },
+      "prometheus": {
+        "uid": "6a7d90c2-de8f-4de6-9b09-ed3e853c3d83",
+        "volume_name": "pvc-6a7d90c2-de8f-4de6-9b09-ed3e853c3d83"
+      },
+      "grafana": {
+        "uid": "0004805e-7cd3-4d49-98a1-1e89cd3256d7",
+        "volume_name": "pvc-0004805e-7cd3-4d49-98a1-1e89cd3256d7"
+      }
+    },
+    "host_reboot_validated": false,
+    "alert_firing_validated": false,
+    "dashboard_color_policy": {
+      "policy": "semantic_colors_v1",
+      "runbook": "docs/operations/DASHBOARD_COLORS.md",
+      "updated_native_configuration_validated": true,
+      "updated_author_visual_review_validated": true,
+      "prior_validation_evidence": "references/evidence/kind_observability_author_validation_2026-10-21.json",
+      "validation_evidence": "references/evidence/dashboard_color_policy_author_validation_2026-10-21.json",
+      "validation_scope": "completed_native_replay_copy_readonly_exporter_Prometheus_Grafana_not_live_stream_or_new_model_quality"
+    }
+  },
+  "kind_operations": {
+    "controller": "scripts/platform/kind_operations.py",
+    "workspace": "data/storage/kind-platform/operations",
+    "runbook": "docs/operations/KIND_OPERATIONS.md",
+    "baseline_private_immutable": true,
+    "secret_contents_recorded": false,
+    "native_stop_start_validated": true,
+    "host_reboot_validated": true,
+    "primary_storage_migrated": false,
+    "host_loss_recovery_validated": false,
+    "inotify_persistence_after_reboot_validated": true,
+    "planned_shutdown_required": true,
+    "validation_evidence": "references/evidence/kind_operations_author_validation_2026-10-21.json",
+    "integrated_runbook": "docs/operations/KIND_PLATFORM.md"
+  },
+  "kind_platform_milestone": {
+    "status": "accepted_incremental_laboratory_scope",
+    "validated_on": "2026-10-21",
+    "runbook": "docs/operations/KIND_PLATFORM.md",
+    "operations_evidence": "references/evidence/kind_operations_author_validation_2026-10-21.json",
+    "one_new_monolithic_end_to_end_run": false,
+    "primary_storage_migrated": false,
+    "project_wide_storage_inventory_complete": false,
+    "host_loss_recovery_validated": false
+  },
+  "operational_round": {
+    "policy": "references/operational_round_policy_v1.json",
+    "workspace": "data/storage/kind-platform/rounds/<round-id>",
+    "controller": "scripts/operational_round/controller.py",
+    "training_chart": "infra/helm/fraud-round-training",
+    "registry": "fraud-detector",
+    "initial_round": "portfolio-v1",
+    "managed_writes": [
+      "round.json",
+      "data.json",
+      "trainer-image.json",
+      "job-values.json",
+      "training-job.json",
+      "training.json",
+      "promotion.json",
+      "carrier/{blue,green}/*",
+      "runtime-build/*",
+      "serving.json",
+      "serving-values-*.json",
+      "deployment.json",
+      "rollout.json",
+      "verification-*.json",
+      "training-failure-*.json"
+    ],
+    "cloud_writes": "Novos bundles Silver/Gold em fraud-datasets; novos Inputs/runs/modelos e Registry via proxy MLflow.",
+    "retention": "Preservar Bronze e recibos; Jobs de sucesso removidos, falhas preservadas; nenhuma exclusão de histórico.",
+    "native_cycle_validated": false,
+    "historical_models_used": false,
+    "production_promotion": false
+  },
+  "model_updates": {
+    "policy": "references/model_update_policy_v1.json",
+    "workspace": "data/storage/kind-platform/model-updates",
+    "controller": "scripts/model_updates/controller.py",
+    "managed_receipts": [
+      "<update-id>/update.json",
+      "<update-id>/trainer-image.json",
+      "<update-id>/training.json",
+      "<update-id>/training-job.json",
+      "<update-id>/assessment.json",
+      "<update-id>/decision.json",
+      "<update-id>/challenger.json",
+      "<update-id>/stage.json",
+      "<update-id>/release.json",
+      "<update-id>/carrier/*",
+      "<update-id>/helm-values-*.json",
+      "<update-id>/job-values.json",
+      "<update-id>/training-failure-*.json",
+      "current.json"
+    ],
+    "registry": "fraud-detector",
+    "aliases": [
+      "champion",
+      "challenger"
+    ],
+    "training_search_modes": [
+      "fixed",
+      "grid",
+      "optuna"
+    ],
+    "native_update_validated": false,
+    "retention": "Preservar modelos e datasets; nunca reescrever recibos canônicos; journal mutável registra recuperação e eventos de release. Aprovação explícita para alterar tráfego."
   }
 }

@@ -1,0 +1,69 @@
+{
+  "schema": "fraud_serving_seed_recovery_preparation_v1",
+  "status": "prepared_native_image_restart_and_maintenance_pending",
+  "prepared_on": "2026-10-22",
+  "scope": "idempotent_exact_release_seed_atomic_resume_same_model_carrier_maintenance_and_old_receipt_compatibility",
+  "seed_sha256": "33151c4a225e62c095a8c49019f48239bfb4a980d1e71079f41a546e898bf4d1",
+  "source_transition": {
+    "schema": "fraud_serving_seed_source_transition_v1",
+    "purpose": "idempotent_same_release_init_restart_and_same_model_carrier_maintenance_only",
+    "old_receipts_rewritten": false,
+    "training_or_feature_logic_changed": false,
+    "changes": {
+      "scripts/operational_round/seed.py": {
+        "before": "a7569e30418339dbad4a4f343b1a0047e8598764bbaa5513826286a56a572e85",
+        "after": "33151c4a225e62c095a8c49019f48239bfb4a980d1e71079f41a546e898bf4d1"
+      },
+      "scripts/model_updates/controller.py": {
+        "before": "2b881e1397d7d30c708ba44d9b4fa8cc97befe35ee6cab5926924f177494940d",
+        "after": "8507b9e1739132efdddfa1b72ac33a90dea014f998e0b0df569653a3d91cf785"
+      },
+      "scripts/model_updates/deployment.py": {
+        "before": "b01d446e99fa03cfffa24ed679a33861e37a3f374382a090665686fb48b48550",
+        "after": "032cebb34a206782bd4a59f3f73eef2790f7c6e569fb162c10f065eb65347525"
+      },
+      "scripts/product_flow/controller.py": {
+        "before": "282ef5b1265eb37a6c0225a76bb46d2ce15021b7758e5383e1c8482f2cd57213",
+        "after": "024ee8eb0a2e7de9a214218737e0493a99725db09047e710d086084faceb5755"
+      },
+      "scripts/platform/source_compatibility.py": {
+        "before": null,
+        "after": "ec229e600f2b2776cf13d4dce5bb4d68f09e2390ccc74603ca1554a4e5d96a57"
+      },
+      "scripts/platform/serving_recovery.py": {
+        "before": null,
+        "after": "7719933dee4c258f3f4945f03206fb42660c83c7ceb238793d78765e3386e007"
+      }
+    }
+  },
+  "local_validation": {
+    "python": "3.14.4",
+    "GNU_Make": "4.4.1",
+    "passed": 355,
+    "skipped": 5,
+    "warnings": 43,
+    "subtests_passed": 12,
+    "seed_tests_real_filesystem": true,
+    "identical_seed_preserves_bytes_inodes_and_permissions": true,
+    "matching_partial_release_completes_without_overwriting": true,
+    "interrupted_temp_and_link_publication_recovered": true,
+    "divergent_unknown_and_symlink_content_refused_and_preserved": true,
+    "same_model_only_maintenance_guard": true,
+    "approval_and_foreign_active_state_refusal": true,
+    "interrupted_current_json_publication_recovers_with_same_approval": true,
+    "committed_exact_source_transition_required": true,
+    "scientific_or_policy_changes_not_authorized": true,
+    "completed_HTTP_receipt_and_ledger_preserved_through_transition": true,
+    "native_Job_spec_and_logs_controller_checks": "tested_with_doubles_not_native_Kubernetes",
+    "real_FastAPI_SQLite_MLflow_regression": true,
+    "ruff_check_and_format_passed": true
+  },
+  "native_seed_restart_validated": false,
+  "native_same_model_maintenance_validated": false,
+  "model_weights_changed": false,
+  "training_or_features_changed": false,
+  "registry_alias_changed": false,
+  "historical_receipts_rewritten": false,
+  "product_replay_refit_required": false,
+  "runbook": "docs/operations/SERVING_RECOVERY.md"
+}

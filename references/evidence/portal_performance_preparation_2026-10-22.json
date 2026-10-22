@@ -1,0 +1,59 @@
+{
+  "schema": "fraud_portal_performance_preparation_v1",
+  "status": "prepared_native_acceptance_pending",
+  "prepared_on": "2026-10-22",
+  "scope": "algorithm_independent_validation_evidence_and_queue_policy_metrics_bound_to_portal_snapshot",
+  "local_checks": {
+    "related_regression": {
+      "passed": 149,
+      "skipped": 7,
+      "warnings": 13,
+      "subtests": 12,
+      "seconds": 28.43
+    },
+    "isolated_UI": {
+      "passed": 29,
+      "seconds": 3.39
+    },
+    "browser_QA": {
+      "engine": "Chromium",
+      "fixture_model": "logistic_regression",
+      "views": [
+        "comparison",
+        "precision_recall_and_ROC",
+        "queue_policy"
+      ],
+      "native_data_used": false
+    },
+    "score_contracts": [
+      "one_dimensional_positive_ranking",
+      "two_column_binary_class_order_0_1"
+    ],
+    "UI_model_identity_cases": [
+      "hist_gradient_boosting",
+      "logistic_regression",
+      "new_algorithm_v2"
+    ],
+    "real_MLflow_HTTP": true,
+    "non_HGB_registry_model_collected": true,
+    "train_and_test_partition_reads_refused_by_fixture": true,
+    "original_policy_reducer_reused": true,
+    "publication_idempotent_and_offline_verified": true
+  },
+  "model_agnostic_contract": {
+    "UI_imports_estimator": false,
+    "model_names_or_metrics_embedded_in_UI": false,
+    "explanation_optional": true,
+    "current_explanation_producer": "HGB_TreeExplainer_raw_log_odds",
+    "unsupported_explanation_units": "explicit_unavailable_visualization",
+    "quality_report_schema": "fraud_portal_performance_v1"
+  },
+  "model_fit_executed_by_feature": false,
+  "features_recomputed": false,
+  "champion_modified": false,
+  "test_evaluated": false,
+  "independent_quality_confirmation": false,
+  "native_validation_report_prepared": false,
+  "native_visual_acceptance": false,
+  "runbook": "docs/operations/PORTAL_PERFORMANCE.md"
+}

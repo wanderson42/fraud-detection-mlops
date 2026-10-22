@@ -1,0 +1,7 @@
+apiVersion: v2
+name: fraud-tracking
+description: Dedicated MLflow proxy using the accepted fraud-platform foundation
+version: 0.1.0
+appVersion: "3.17.0"
+kubeVersion: ">=1.35.0-0 <1.36.0-0"
+type: application

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: fraud-data-jobs
+description: Isolated sequential data producer Jobs on the owned fraud KinD foundation
+version: 0.1.0
+type: application
+appVersion: "1"

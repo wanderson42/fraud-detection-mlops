@@ -1,0 +1,53 @@
+{
+  "schema": "fraud_kind_foundation_preparation_v1",
+  "prepared_on": "2026-10-20",
+  "source_commit": "4abee42d522f43eb46bd5ab13d0540ee6d2e8741",
+  "scope": "isolated_new_KinD_RustFS_PostgreSQL_PVC_foundation_not_historical_migration",
+  "status": "prepared_for_native_acceptance",
+  "controlled_validation": {
+    "python": "3.14.4",
+    "helm": "v4.3.1+gc0d08d0",
+    "helm_binary_download_sha256": "0403a88ae20913d11b10a2467b50087721fea7581736da6b9d3992f5357fe54b",
+    "helm_lint_strict": true,
+    "actual_helm_template_and_values_schema_tests": true,
+    "pytest_passed": 30,
+    "pytest_skipped": 0,
+    "pytest_elapsed_seconds": 0.79,
+    "test_command": "python -m pytest -q --confcutdir=tests/infra tests/infra",
+    "ruff_check_passed": true,
+    "ruff_format_passed": true,
+    "formatted_files": 300,
+    "full_scientific_suite_repeated": false
+  },
+  "author_reported_tools": {
+    "docker_client_and_server": "29.1.3",
+    "kind": "v0.34.0-alpha+aa74c7f3e55dba",
+    "kubectl": "v1.35.9",
+    "helm": "v4.3.1+gc0d08d0"
+  },
+  "node_image": "kindest/node:v1.35.8@sha256:07b2536e30b803ed61d1677a79df6115f798ce64c80f9e22f6ed45afd09323c0",
+  "native_cluster_created": false,
+  "native_storage_permissions_validated": false,
+  "native_sql_s3_persistence_validated": false,
+  "backup_restore_validated": false,
+  "cluster_recreation_validated": false,
+  "host_loss_recovery_validated": false,
+  "primary_storage_migrated": false,
+  "historical_sources_read": false,
+  "production_promotion": false,
+  "project_wide_storage_inventory_complete": false,
+  "source_sha256": {
+    "scripts/platform/kind_foundation.py": "956730f550bc6f89c5fe452045fcc893f956ee141a2f4ce99203bf1678e50fd0",
+    "infra/kind/cluster.yaml": "638ec729e578f4774c66862254f348a75f2db974fe63717e4cb294fd38820377",
+    "infra/kind/images.lock.json": "dff7a012335374c62389f80a62ffa8267dc54961d1bda170e9712961e573e29b",
+    "infra/helm/fraud-platform/values.yaml": "1f47bc8cc0ca723f81ecd66aa849f95d0c2e560ca0994319f0b94a08bd2d875b",
+    "tests/infra/test_kind_foundation.py": "ed07a6cc2efc404a24ec0c8b91328ce10d9477a867bbf5c56e41b624875d1bb5"
+  },
+  "sources": [
+    "https://github.com/kubernetes-sigs/kind/releases/tag/v0.33.0",
+    "https://kind.sigs.k8s.io/docs/user/quick-start/",
+    "https://kubernetes.io/releases/version-skew-policy/",
+    "https://helm.sh/docs/topics/version_skew/"
+  ],
+  "native_gate": "Create dedicated cluster, deploy new datastores, read SQL/S3 markers before/after recreating owned pods, require new pod UIDs and identical PVC/PV identities."
+}

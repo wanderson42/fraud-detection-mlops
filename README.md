@@ -1,5 +1,21 @@
 # Fraud Detection MLOps
 
+Rodada canônica aceita no KinD: Bronze → Jobs Silver/Gold → três candidatos com datasets registrados → HGB versão 1 em `fraud-detector@champion` → API e rollback verificados.
+[Sucessores com busca opcional e aprovação explícita de tráfego](docs/operations/MODEL_UPDATES.md): retenção nativa de candidatos aceita nas rodadas fixa e de busca; ativação de um sucessor com pesos diferentes ainda pendente.
+[Guia da rodada operacional](docs/operations/OPERATIONAL_ROUND.md).
+[Usuários e entregas do produto](docs/operations/PRODUCT_DELIVERY.md#usuários-e-entregas): sistema transacional, analista, operação e equipe de ML. O fluxo eventos → HTTP do champion → triagem passou no ensaio nativo. [Retomada idempotente do serving](docs/operations/SERVING_RECOVERY.md): manutenção aplicada e verificada no KinD, preservando o champion e a consulta de casos. [Explicações SHAP por caso](docs/operations/CASE_EXPLANATIONS.md): cinco casos do modelo ativo publicados e verificados no ensaio nativo, com 19 contribuições por caso e score reconstruído.
+
+
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](docs/operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
+
+
 Laboratório de MLOps para priorização de investigação de fraude, desenvolvido por
 Wanderson Ferreira. Usa dados simulados do Fraud Detection Handbook, histórico
 causal, feedback atrasado e evidências auditáveis. A inferência por streaming
@@ -468,3 +484,116 @@ novos alertas não foi ensaiado na bancada. A contagem recebe cor fixa neutra,
 com conferência visual após refresh ainda pendente. Segue o provisionamento
 incremental do fluxo completo em KinD + Helm.
 [Procedimento, explicação conceitual e evidência](docs/operations/FEATURE_MONITORING.md#aceite-nativo-mínimo--2026-10-19).
+
+### Fundação KinD/Helm — preparação de 2026-10-20
+
+Primeiro incremento do fluxo completo: cluster dedicado de um node Kubernetes
+1.35.8 fixado por digest, chart com RustFS/PostgreSQL e dois PVCs novos. Imagens
+dos serviços preservadas dos pins já utilizados. Kubeconfig, caches, credenciais
+privadas e recibos sob `data/storage/kind-platform/`; contexto explícito.
+O ensaio grava marcadores próprios SQL/S3 e exige releitura após recriar os pods
+com os mesmos PVCs. A execução nativa ainda está pendente. Não migra os dados
+históricos, não troca o tracking e não comprova backup ou perda do cluster.
+[Runbook, limites e comandos](docs/operations/KIND_FOUNDATION.md).
+
+### MLflow no KinD — aceite nativo de 2026-10-20
+
+O autor aprovou a regressão (135 testes, 1 live ignorado) e o gate nativo
+(1 teste em 21,56 s). Publicação e recarga independente pelo proxy, hash do modelo
+no RustFS e nova recarga após recriar o pod MLflow foram aprovados, com erro de
+score zero e identidades da fundação preservadas. O Deployment e a imagem
+permaneceram os mesmos; o pod ganhou novo UID. [Evidência e limites](docs/operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidade
+e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
+em andamento; não houve migração histórica, refit histórico, promoção ou
+backup/restore deste novo destino.
+
+## Datasets no RustFS do KinD — aceite nativo
+
+Bronze, Silver, Gold e development Gold foram publicados, reenviados sem novos
+uploads e restaurados com seus verificadores no RustFS do KinD: 489 arquivos,
+493 objetos verificados e 210.997.363 bytes de payload. Fundação preservada;
+os caminhos primários dos leitores permanecem os atuais.
+[Procedimento e limites](docs/operations/KIND_DATASETS.md).
+
+## Jobs da cadeia de dados no KinD — aceite nativo
+
+Os dois Jobs Helm executaram Bronze → Silver → Gold com entrada S3 identificada,
+novas saídas publicadas e restauração independente no host. Silver: 1.754.155
+transações; Gold: 402.877 linhas e 19 features. Fundação preservada e Jobs
+removidos após sucesso. Gold recalculou features, sem treino ou nova avaliação
+de modelos; os caminhos primários dos leitores permanecem os atuais. [Procedimento](docs/operations/KIND_PIPELINE.md).
+
+### Retomada do replay no KinD — aceite nativo
+
+Pod recriado durante a transação de feedback aberta, mesmo PVC e rollback
+aprovados. Ledger sintético final igual à execução sem interrupção: 20 eventos,
+10 scores e 6 alertas; reentrega sem rescoring. Fundação preservada, processamento
+temporário removido e PVC retido. Aceite do autor em 2026-10-20.
+[Operação e limites](docs/operations/KIND_REPLAY.md).
+
+### Serving no KinD — aceite nativo
+
+O autor aprovou os seis eventos do gate em 2026-10-21: baseline, bloqueio de
+pacote inválido, candidata direta, troca na mesma URL, falha HTTP 502 e retorno
+por `helm rollback`. A imagem qualificada da API foi reutilizada, sem rebuild
+do runtime ou fit; somente o carrier foi construído. Os mesmos pesos sintéticos
+produziram score `0.03463335444035967` antes/depois da troca e do rollback.
+Baseline/gateway mantiveram seus pods e a fundação permaneceu igual; candidata
+removida, baseline instalada no laboratório e port-forward temporário encerrado.
+Rollback observado em 1,99 s neste ensaio, sem garantia de SLA ou zero downtime.
+[Operação e evidência](docs/operations/KIND_SERVING.md#aceite-nativo--2026-10-21).
+Próximo recorte: observabilidade no KinD.
+
+### Observabilidade no KinD — aceite nativo e visual
+
+O autor aprovou o gate nativo e confirmou a conferência visual em 2026-10-21.
+A cópia somente de leitura foi conciliada com a origem: **556.824 eventos,
+143.945 decisões e 1.453 alertas**. Scrape Prometheus, oito regras saudáveis,
+proxy autenticado do Grafana e quatro dashboards provisionados foram conferidos.
+O exporter ganhou novo pod, manteve Deployment/PVC e repetiu as verificações.
+Prometheus, Grafana, fundação, tracking, serving e PVC retido do replay
+preservaram suas identidades; arquivos da origem permaneceram iguais.
+A coleta atual apresenta um replay concluído, sem nova ingestão ou resultado
+de qualidade do modelo. Próximo: operação de parada/subida, reboot e fechamento
+integrado. [Evidência e limites](docs/operations/KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).
+
+Refinamento visual aprovado em 2026-10-21: [política semântica de cores](docs/operations/DASHBOARD_COLORS.md#aceite-da-política--2026-10-21),
+com informações azuis e estados explícitos em texto/cor. Configuração verificada
+pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
+autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
+Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+
+## Operação do KinD — aceite nativo
+
+Parada/subida e reboot planejado aprovados em 2026-10-21: mesmo node, volumes e plano de réplicas; tracking/S3, identidade/score da API e monitoramento conferidos. O inotify persistiu em 512/524288. O marco KinD/Helm passa para os concluídos no escopo de laboratório. Próximo: simplificação e fechamento funcional; Terraform depois. [Operação](docs/operations/KIND_OPERATIONS.md) e [guia integrado](docs/operations/KIND_PLATFORM.md).
+
+
+## Executar e apresentar o laboratório
+
+Use `make help`, `make platform-status` e os acessos `platform-api`, `platform-mlflow` e `platform-grafana`. O [guia de execução e demonstração](docs/operations/PORTFOLIO_WALKTHROUGH.md) separa ambiente pronto, reprodução Bronze–Silver–Gold e ensaios blue/green/recuperação. O Make delega aos controladores existentes. Replay, API sintética e monitoramento da cópia concluída não passam a formar uma única nova execução de transações HTTP por esses atalhos.
+
+
+### Portal de investigação
+
+A jornada do analista reúne visão da janela, fila com filtros e caso detalhado
+com contexto, feedback e waterfall SHAP. A API pontua; Grafana opera; MLflow
+mantém linhagem e governança. O portal reutiliza as decisões aceitas e distingue
+os cinco casos explicados dos demais. [Guia e comandos](docs/operations/FRAUD_PORTAL.md).
+Implementação e testes locais preparados; aceite nativo da interface pendente.
+
+
+O portal ganhou uma área de [desempenho e transparência](docs/operations/PORTAL_PERFORMANCE.md),
+com avaliação temporal, comparação de candidatos e carga da política de alertas,
+sempre vinculadas ao modelo/release do snapshot. A interface é independente do
+algoritmo; explicações são capacidades opcionais. O produto apoia priorização e
+investigação, com feedback posterior e decisões governadas. Aceite nativo funcional e visual concluído em 2026-10-22, com 67.255 transações
+de validação e o mesmo modelo dos casos.
+
+
+[Operação do produto e próximo recorte](docs/operations/PRODUCT_OPERATIONS.md):
+responsabilidades, dados históricos como fluxo reproduzível e consolidação da
+sessão operacional. O portal atual consulta snapshots; atualização contínua da
+fila e das métricas da mesma sessão é o próximo aceite, sem novo treinamento.

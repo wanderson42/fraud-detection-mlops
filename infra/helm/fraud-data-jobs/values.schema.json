@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "runId",
+    "ownerId",
+    "existingSecret",
+    "images",
+    "jobs"
+  ],
+  "properties": {
+    "runId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "ownerId": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{32}$"
+    },
+    "existingSecret": {
+      "const": "fraud-platform-credentials"
+    },
+    "images": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "science",
+        "transport"
+      ],
+      "properties": {
+        "science": {
+          "type": "string",
+          "pattern": "^fraud-kind-pipeline-science:[a-f0-9]{32}$"
+        },
+        "transport": {
+          "type": "string",
+          "pattern": "^fraud-kind-pipeline-transport:[a-f0-9]{32}$"
+        }
+      }
+    },
+    "jobs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "stage",
+          "inputBundleId"
+        ],
+        "properties": {
+          "stage": {
+            "enum": [
+              "silver",
+              "gold"
+            ]
+          },
+          "inputBundleId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "schema": "fraud_investigation_portal_preparation_v1",
+  "status": "prepared_native_acceptance_pending",
+  "prepared_on": "2026-10-22",
+  "scope": "verified_full_HTTP_decision_snapshot_read_only_Streamlit_Plotly_investigation_portal",
+  "delivery": [
+    "overview",
+    "prioritized_filterable_queue",
+    "case_context_feedback_and_identity_bound_SHAP"
+  ],
+  "coverage": "all_scored_decisions_in_accepted_HTTP_flow_with_only_previously_explained_cases_enriched",
+  "local_checks": [
+    {
+      "scope": "related_science_and_integration_regression_before_final_UI_changes",
+      "passed": 336,
+      "skipped": 8,
+      "subtests": 12,
+      "seconds": 52.74
+    },
+    {
+      "scope": "final_export_managed_paths_inventory_and_Make_regression",
+      "passed": 80,
+      "skipped": 3,
+      "subtests": 12,
+      "seconds": 3.31
+    },
+    {
+      "scope": "isolated_Streamlit_AppTest_Plotly_filters_pagination_controller_and_real_HTTP_health",
+      "passed": 19,
+      "seconds": 2.33
+    }
+  ],
+  "native_snapshot_prepared": false,
+  "native_browser_visual_acceptance": false,
+  "visual_browser_review_in_build_environment": false,
+  "original_scientific_environment_or_lock_modified": false,
+  "frontend_deployed_in_Kubernetes": false,
+  "runtime": {
+    "streamlit": "1.66.0",
+    "plotly": "6.9.0",
+    "isolated_environment": ".portal-venv",
+    "hash_locked": true
+  },
+  "operational_contract": {
+    "loopback_only": true,
+    "read_only_snapshot": true,
+    "capture_time_visible": true,
+    "refresh_does_not_fetch_new_transactions": true,
+    "credentials_not_passed_to_UI": true,
+    "case_resolution_backend": false
+  },
+  "model_refit": false,
+  "features_recomputed": false,
+  "SHAP_recomputed": false,
+  "champion_modified": false,
+  "accepted_explanation_manifest_sha256": "1f780b2d7eb9de7a553435f3ccd69ede37eca735cbdddae6dadbb01981e0d91c",
+  "runbook": "docs/operations/FRAUD_PORTAL.md"
+}

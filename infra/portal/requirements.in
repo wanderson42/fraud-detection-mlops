@@ -1,0 +1,3 @@
+# Isolated presentation runtime; never change the accepted scientific environment.
+streamlit==1.66.0
+plotly==6.9.0

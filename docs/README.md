@@ -1,5 +1,24 @@
 # Índice da documentação
 
+Caminho principal de execução: nova rodada com linhagem dos datasets, comparação, promoção e serving.
+[Guia da rodada operacional](operations/OPERATIONAL_ROUND.md). Rodada inicial aceita pelo autor.
+[Sucessores: comparação, busca opcional e aprovação de tráfego](operations/MODEL_UPDATES.md); retenção nativa aceita; ativação de sucessor com pesos diferentes ainda pendente.
+
+[Entrega por usuário e execução eventos → HTTP → triagem](operations/PRODUCT_DELIVERY.md#executar-eventos-pela-api-do-champion): ensaio nativo aprovado em 2026-10-22. [Retomada do instalador da release](operations/SERVING_RECOVERY.md): correção preparada; aceite nativo específico pendente.
+
+Histórico dos experimentos, comparação dos três baselines e Registry:
+[transferência verificada para o KinD](operations/KIND_HISTORY.md).
+
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
+
+
 Leia o [README do projeto](../README.md) para começar e a
 [arquitetura](ARCHITECTURE.md) para localizar responsabilidades.
 
@@ -223,3 +242,85 @@ novos alertas não foi ensaiado na bancada. A contagem recebe cor fixa neutra,
 com conferência visual após refresh ainda pendente. Segue o provisionamento
 incremental do fluxo completo em KinD + Helm.
 [Procedimento, explicação conceitual e evidência](operations/FEATURE_MONITORING.md#aceite-nativo-mínimo--2026-10-19).
+
+### Fundação KinD/Helm — preparação de 2026-10-20
+
+Primeiro incremento do fluxo completo: cluster dedicado de um node Kubernetes
+1.35.8 fixado por digest, chart com RustFS/PostgreSQL e dois PVCs novos. Imagens
+dos serviços preservadas dos pins já utilizados. Kubeconfig, caches, credenciais
+privadas e recibos sob `data/storage/kind-platform/`; contexto explícito.
+O ensaio grava marcadores próprios SQL/S3 e exige releitura após recriar os pods
+com os mesmos PVCs. A execução nativa ainda está pendente. Não migra os dados
+históricos, não troca o tracking e não comprova backup ou perda do cluster.
+[Runbook, limites e comandos](operations/KIND_FOUNDATION.md).
+
+### MLflow no KinD — aceite nativo de 2026-10-20
+
+O autor aprovou a regressão (135 testes, 1 live ignorado) e o gate nativo
+(1 teste em 21,56 s). Publicação e recarga independente pelo proxy, hash do modelo
+no RustFS e nova recarga após recriar o pod MLflow foram aprovados, com erro de
+score zero e identidades da fundação preservadas. O Deployment e a imagem
+permaneceram os mesmos; o pod ganhou novo UID. [Evidência e limites](operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidade
+e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
+em andamento; não houve migração histórica, refit histórico, promoção ou
+backup/restore deste novo destino.
+
+O [transporte de bundles para o RustFS do KinD](operations/KIND_DATASETS.md#aceite-nativo--2026-10-20)
+foi aprovado pelo autor nas quatro camadas: idempotência e restauração independente,
+com os caminhos primários dos leitores preservados.
+
+A [execução Bronze → Silver → Gold em Jobs Helm](operations/KIND_PIPELINE.md#aceite-nativo--2026-10-20)
+foi aprovada pelo autor: novas saídas S3 restauradas, fundação preservada e
+Jobs temporários removidos. Caminhos primários dos leitores mantidos.
+
+- [Replay e recuperação de transação no KinD](operations/KIND_REPLAY.md):
+  rollback de transação de feedback, novo pod no mesmo PVC, ledger integral e
+  reentrega sem rescoring aprovados; PVC retido para inspeção.
+
+- [Serving via Helm no KinD](operations/KIND_SERVING.md): consumo de runtime
+  qualificado, entrega de release por init container, troca de Service e rollback
+  Helm aprovados pelo autor em 2026-10-21; baseline instalada, candidata removida,
+  fundação preservada. Próximo: observabilidade no KinD.
+
+### Observabilidade no KinD aprovada
+
+O autor aprovou o gate nativo e confirmou a conferência visual em 2026-10-21.
+A cópia somente de leitura foi conciliada com a origem: **556.824 eventos,
+143.945 decisões e 1.453 alertas**. Scrape Prometheus, oito regras saudáveis,
+proxy autenticado do Grafana e quatro dashboards provisionados foram conferidos.
+O exporter ganhou novo pod, manteve Deployment/PVC e repetiu as verificações.
+Prometheus, Grafana, fundação, tracking, serving e PVC retido do replay
+preservaram suas identidades; arquivos da origem permaneceram iguais.
+A coleta atual apresenta um replay concluído, sem nova ingestão ou resultado
+de qualidade do modelo. Próximo: operação de parada/subida, reboot e fechamento
+integrado. [Evidência e limites](operations/KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).
+
+Refinamento visual aprovado em 2026-10-21: [política semântica de cores](operations/DASHBOARD_COLORS.md#aceite-da-política--2026-10-21),
+com informações azuis e estados explícitos em texto/cor. Configuração verificada
+pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
+autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
+Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+
+## Operação diária do KinD — aprovada
+
+[Parada/subida e reboot planejado](operations/KIND_OPERATIONS.md): gate nativo e reboot planejado aprovados, com retomada pelo mesmo baseline. Consulte também o [guia integrado](operations/KIND_PLATFORM.md). Não confundir com backup/restore ou perda do host.
+
+
+## Guia para executar e apresentar
+
+[Execução e demonstração do portfólio](operations/PORTFOLIO_WALKTHROUGH.md): entradas Make para operar localhost, reproduzir os Jobs desde Bronze e escolher os ensaios. Expõe as ligações já demonstradas e as fronteiras ainda separadas.
+
+- [Explicações dos casos do champion](operations/CASE_EXPLANATIONS.md): operação, vínculo com a decisão e relatório de investigação.
+
+
+- [Portal de investigação](operations/FRAUD_PORTAL.md): jornada do analista,
+  instalação isolada, fila, contexto e explicações Plotly, com snapshot verificado.
+
+- [Desempenho do modelo no portal](operations/PORTAL_PERFORMANCE.md): contrato
+  independente do algoritmo, métricas temporais e interpretação para investigação.
+
+- [Operação do produto](operations/PRODUCT_OPERATIONS.md): estado atual,
+  responsabilidades, chegada de eventos e próxima consolidação operacional.

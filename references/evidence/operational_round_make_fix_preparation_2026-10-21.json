@@ -1,0 +1,39 @@
+{
+  "schema": "fraud_operational_round_make_fix_preparation_v1",
+  "status": "prepared_native_retest_pending",
+  "prepared_on": "2026-10-21",
+  "scope": "restore_global_Make_serialization_for_explicit_operational_goals",
+  "cause": "Prerequisites added to .NOTPARALLEL change its meaning in GNU Make 4.4; explicit command-line goals could overlap. GNU Make 4.3 did not expose this in prior validation.",
+  "change": "Remove the prerequisite-bearing declaration in infra/make/round.mk; retain the existing global prerequisite-free declaration in platform.mk.",
+  "upstream_documentation": "https://www.gnu.org/software/make/manual/html_node/Parallel-Disable.html",
+  "files_changed": [
+    "infra/make/round.mk"
+  ],
+  "tests_modified": false,
+  "local_validation": {
+    "python": "3.14.4",
+    "GNU_Make_4_3": {
+      "entrypoint_tests_passed": 20,
+      "subtests_passed": 12,
+      "seconds": 0.63
+    },
+    "GNU_Make_4_4_1": {
+      "built_from_official_GNU_release_source": true,
+      "before_fix_failure_reproduced": true,
+      "entrypoint_tests_passed": 20,
+      "subtests_passed": 12,
+      "seconds": 0.66,
+      "complete_targeted_suite_passed": 237,
+      "skipped": 4,
+      "warnings": 23,
+      "suite_seconds": 18.36
+    },
+    "existing_tests_used_unchanged": true,
+    "failure_prevents_training_dispatch": true,
+    "explicit_operational_goals_run_serially": true
+  },
+  "native_services_contacted": false,
+  "new_official_models_trained": false,
+  "new_official_champion_promoted": false,
+  "production_promotion": false
+}

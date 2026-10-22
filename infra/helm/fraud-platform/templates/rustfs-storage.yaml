@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "fraud.name" . }}-rustfs-data
+  labels:
+    {{- include "fraud.labels" . | nindent 4 }}
+    app.kubernetes.io/component: rustfs
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: {{ .Values.storageClass | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.rustfs.storage | quote }}

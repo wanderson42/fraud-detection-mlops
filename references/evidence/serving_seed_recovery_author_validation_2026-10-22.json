@@ -1,0 +1,107 @@
+{
+  "schema": "fraud_serving_seed_recovery_author_validation_v1",
+  "status": "success",
+  "validated_on": "2026-10-22",
+  "scope": "same_model_carrier_maintenance_native_init_restart_HTTP_identity_and_existing_cases_readback",
+  "acceptance_basis": "author_supplied_native_prepare_console_in_chat_and_apply_verify_cases_console_attachment",
+  "attachment": {
+    "filename": "Texto colado(20261022-140649).txt",
+    "sha256": "6a50ddb8e6f3e11be2b3359ae247756caa06f439e22e0faa49ae24813b84b58d",
+    "full_applied_receipt_supplied": false
+  },
+  "maintenance_id": "seed-restart-v1",
+  "approval_sha256": "87e33df468833c22ede18fb2899052bc2f8e7af2e2dea0c4cf4b1df6fb25ad72",
+  "carrier": {
+    "image": "fraud-kind-serving-artifacts:d9e9578a227c4930b5cdaeb4c28bde1a",
+    "CRI_identity": "sha256:e8aab2b46e158482742a83ec96248414062e54268cf4c36e1d75ad49838ff4f6",
+    "loaded_manifest_identity": "docker.io/library/import-2026-10-22@sha256:025e226d10c4e341f6d335cb7cd4c7da978df8863376a2d77c697dfbc2d21c04",
+    "seed_sha256": "33151c4a225e62c095a8c49019f48239bfb4a980d1e71079f41a546e898bf4d1",
+    "existing_build_reused_during_prepare": true
+  },
+  "native_apply": {
+    "status": "serving_seed_maintenance_applied",
+    "receipt": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/serving-maintenance/seed-restart-v1/applied.json",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "registry_version": "1",
+    "slot": "blue",
+    "native_seed_restart_verified": true,
+    "champion_modified": false
+  },
+  "native_verification": {
+    "status": "serving_seed_recovery_verified",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "HTTP": {
+      "score": {
+        "schema_version": 1,
+        "transaction_id": 335910,
+        "score": 0.4178630794049542,
+        "score_semantics": "uncalibrated_ranking",
+        "model_id": "hist_gradient_boosting",
+        "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+        "feature_contract_version": "gold_v1",
+        "serving_release_id": "e8350e0a841f4136983e0d905068a743"
+      },
+      "invalid_input_http_status": 422,
+      "p95_ms": 91.33107519992336,
+      "measurements": 20
+    },
+    "receipt": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/serving-maintenance/seed-restart-v1/applied.json",
+    "native_seed_restart_verified": true,
+    "champion_modified": false
+  },
+  "product_flow_id": "champion-http-v1",
+  "case_count_displayed": 5,
+  "cases": [
+    {
+      "transaction_id": 1610254,
+      "score": 0.9992252927052574,
+      "status": "alert",
+      "transaction_feedback": 1,
+      "SHAP_explanation": "pending_current_champion_integration"
+    },
+    {
+      "transaction_id": 1610229,
+      "score": 0.9349768537095329,
+      "status": "alert",
+      "transaction_feedback": 0,
+      "SHAP_explanation": "pending_current_champion_integration"
+    },
+    {
+      "transaction_id": 1610324,
+      "score": 0.9250591387049124,
+      "status": "alert",
+      "transaction_feedback": 0,
+      "SHAP_explanation": "pending_current_champion_integration"
+    },
+    {
+      "transaction_id": 1610316,
+      "score": 0.7340073968778428,
+      "status": "alert",
+      "transaction_feedback": 0,
+      "SHAP_explanation": "pending_current_champion_integration"
+    },
+    {
+      "transaction_id": 1610407,
+      "score": 0.7197913731380251,
+      "status": "alert",
+      "transaction_feedback": 0,
+      "SHAP_explanation": "pending_current_champion_integration"
+    }
+  ],
+  "existing_cases_read_after_maintenance": true,
+  "native_ledger_byte_hash_comparison_observed": false,
+  "model_weights_changed": false,
+  "champion_modified": false,
+  "model_training_executed": false,
+  "host_reboot_exercised_in_this_acceptance": false,
+  "different_weight_successor_promotion_validated": false,
+  "SHAP_current_champion_case_integration_validated": false,
+  "latency_scope": "20_request_local_functional_check_not_load_test_or_SLA",
+  "prior_probe_evidence": "serving_seed_probe_fix_preparation_2026-10-22.json",
+  "local_regression": {
+    "passed": 361,
+    "skipped": 5,
+    "subtests_passed": 12,
+    "ruff_passed": true
+  }
+}

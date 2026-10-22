@@ -1,0 +1,9 @@
+FROM python:3.14.4-slim@sha256:2ca02f32b4d9d893863367ce07ec1972819f476dd38d8612f2a9cb6a41cbb727
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONPATH=/app
+COPY infra/observability/storage-requirements.txt /tmp/requirements.txt
+RUN python -m pip install --no-cache-dir --require-hashes -r /tmp/requirements.txt && rm /tmp/requirements.txt
+WORKDIR /app
+COPY scripts/storage/archive.py scripts/storage/bronze_s3_worker.py scripts/storage/mlflow_inventory.py scripts/storage/mlflow_backup.py /app/scripts/storage/
+COPY scripts/platform/kind_datasets_worker.py /app/scripts/platform/kind_datasets_worker.py
+USER 65532:65532
+ENTRYPOINT ["python", "-m", "scripts.platform.kind_datasets_worker"]

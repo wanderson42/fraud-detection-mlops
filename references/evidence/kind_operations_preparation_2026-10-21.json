@@ -1,0 +1,56 @@
+{
+  "schema": "fraud_kind_operations_preparation_v1",
+  "status": "prepared_native_stop_start_and_manual_reboot_pending",
+  "prepared_on": "2026-10-21",
+  "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+  "source_pins": {
+    "infra/kind/operations/90-fraud-platform.conf": "c58059230dba811786b125f77a3bfb3c86a439deadbc951106bb8e6de750d747",
+    "scripts/platform/dashboard_colors.py": "ebc11b47abfc7beb5ac1c143a7e6f012bd0a2844ec6f9821c01f2c5cef8556f5",
+    "scripts/platform/kind_foundation.py": "956730f550bc6f89c5fe452045fcc893f956ee141a2f4ce99203bf1678e50fd0",
+    "scripts/platform/kind_observability.py": "89d9195c4151bfbfa5de6f63d8d3b010e7646708f8bdabf9987d14f0052ef093",
+    "scripts/platform/kind_observability_state.py": "6d12e078e0afceec64c435dd867a9c99214b7be957aa8a299825fd89388bc590",
+    "scripts/platform/kind_operations.py": "6711b31b7fd54d62b44843c360e7ce9ad924e75f25260a9a57073882fbd5ca53",
+    "scripts/platform/kind_serving.py": "775c43c887cc0e69bf3a0ae26e6c385b7597bb474ac42b9b681abaddd694fc25",
+    "scripts/platform/kind_serving_delivery.py": "2ad023a56fb1b6f6cfea4b2b1580a935566c820b6c3159f59de7607a134aba06",
+    "scripts/platform/kind_tracking.py": "fa674f4ad5e77e0cafb0bb225e1469501068d153864ee31f71abc9bfc34aaab7",
+    "scripts/platform/kind_tracking_storage.py": "6e79932f1b70340cb10767510e8309ea608b891685d4c03b25ccdf00f45017aa"
+  },
+  "local_validation": {
+    "python": "3.14.4",
+    "ruff": "0.16.10",
+    "helm": "4.3.1",
+    "infra_and_managed_storage_regression": {
+      "passed": 285,
+      "opt_in_skipped": 7,
+      "warnings": 1,
+      "seconds": 62.07
+    },
+    "focused_final_operational_tests": {
+      "passed": 25,
+      "opt_in_skipped": 1
+    },
+    "ruff_check_and_format_passed": true,
+    "real_existing_Helm_lint_and_render_passed": true,
+    "native_Docker_or_KinD_executed": false,
+    "guarded_package_application_verified": true
+  },
+  "operator_declaration_required": "no other writers; local stack interruption accepted by explicitly invoking the opt-in gate",
+  "automatic_host_reboot": false,
+  "native_stop_start_validated": false,
+  "host_reboot_validated": false,
+  "inotify_persistence_after_reboot_validated": false,
+  "backup_restore_validated": false,
+  "host_loss_recovery_validated": false,
+  "tracking_model_loaded": false,
+  "fit_executed": false,
+  "replay_executed": false,
+  "historical_evaluation_executed": false,
+  "primary_storage_migrated": false,
+  "production_promotion": false,
+  "runbook": "docs/operations/KIND_OPERATIONS.md",
+  "official_references": [
+    "https://docs.docker.com/reference/cli/docker/container/stop/",
+    "https://kubernetes.io/docs/reference/kubectl/generated/kubectl_scale/",
+    "https://www.freedesktop.org/software/systemd/man/latest/sysctl.d.html"
+  ]
+}

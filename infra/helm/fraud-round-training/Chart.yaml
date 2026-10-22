@@ -1,0 +1,5 @@
+apiVersion: v2
+name: fraud-round-training
+description: One new canonical round with dataset-aware model training through the MLflow proxy
+type: application
+version: 0.1.0

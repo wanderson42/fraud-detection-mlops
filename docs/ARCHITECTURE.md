@@ -1,5 +1,20 @@
 # Organização e dependências
 
+A transferência do snapshot histórico usa a API do MLflow existente no KinD.
+Um mapa liga IDs originais e novos, e o Registry vincula o HGB aprovado ao gate
+histórico. [Contrato e aceites](operations/KIND_HISTORY.md). O aceite nativo deste
+recorte está pendente; o registro não muda a release instalada no serving.
+
+<!-- kind-operations-acceptance-2026-10-21:start -->
+**Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
+Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
+persistente e leituras de tracking, serving e monitoramento conferidas.
+[Sequência integrada, aceites e limites](operations/KIND_PLATFORM.md). Próximo: simplificação
+e fechamento funcional do portfólio; Terraform permanece posterior. Notas
+datadas abaixo preservam o estado de cada incremento, sem reabrir gates aceitos.
+<!-- kind-operations-acceptance-2026-10-21:end -->
+
+
 A estrutura acompanha responsabilidades existentes. O pacote permanece na raiz
 do checkout. O serving tem runtime e recursos operacionais explícitos;
 infraestrutura entra por capacidade implementada.
@@ -537,3 +552,127 @@ novos alertas não foi ensaiado na bancada. A contagem recebe cor fixa neutra,
 com conferência visual após refresh ainda pendente. Segue o provisionamento
 incremental do fluxo completo em KinD + Helm.
 [Procedimento, explicação conceitual e evidência](operations/FEATURE_MONITORING.md#aceite-nativo-mínimo--2026-10-19).
+
+### Fundação KinD/Helm — preparação de 2026-10-20
+
+Primeiro incremento do fluxo completo: cluster dedicado de um node Kubernetes
+1.35.8 fixado por digest, chart com RustFS/PostgreSQL e dois PVCs novos. Imagens
+dos serviços preservadas dos pins já utilizados. Kubeconfig, caches, credenciais
+privadas e recibos sob `data/storage/kind-platform/`; contexto explícito.
+O ensaio grava marcadores próprios SQL/S3 e exige releitura após recriar os pods
+com os mesmos PVCs. A execução nativa ainda está pendente. Não migra os dados
+históricos, não troca o tracking e não comprova backup ou perda do cluster.
+[Runbook, limites e comandos](operations/KIND_FOUNDATION.md).
+
+### MLflow no KinD — aceite nativo de 2026-10-20
+
+O autor aprovou a regressão (135 testes, 1 live ignorado) e o gate nativo
+(1 teste em 21,56 s). Publicação e recarga independente pelo proxy, hash do modelo
+no RustFS e nova recarga após recriar o pod MLflow foram aprovados, com erro de
+score zero e identidades da fundação preservadas. O Deployment e a imagem
+permaneceram os mesmos; o pod ganhou novo UID. [Evidência e limites](operations/KIND_TRACKING.md#aceite-nativo--2026-10-20).
+
+Próximo recorte: objetos/dados no RustFS do KinD, com conferência de identidade
+e leitura, preservando as fontes até aceitar o destino. O fluxo completo segue
+em andamento; não houve migração histórica, refit histórico, promoção ou
+backup/restore deste novo destino.
+
+## Transporte dos datasets para a fundação KinD
+
+Um cliente Docker temporário usa a imagem SDK travada e um port-forward explícito
+para o RustFS instalado pelo Helm. Monta somente o bundle local para leitura e
+um novo diretório para download. O bucket `fraud-datasets` nesse endpoint tem
+marcador próprio; as cópias do Compose continuam separadas. Os verificadores
+Bronze/Silver/Gold/development são reutilizados depois do download. Não altera
+os charts aceitos, o runtime MLflow ou os caminhos primários dos produtores.
+[Aceite nativo das quatro camadas e desenho operacional](operations/KIND_DATASETS.md#aceite-nativo--2026-10-20).
+
+## Execução dos produtores em Jobs
+
+O chart separado `fraud-data-jobs` cria uma release temporária por execução.
+Silver precisa publicar e passar pelo restore independente antes de Gold ser
+acrescentado à release. Cada Job usa init containers para download e transformação,
+seguidos pelo publicador; apenas download/publicação recebem credenciais S3.
+Estado de trabalho em `emptyDir`; saídas identificadas no RustFS e restores no
+host. Não atualiza as releases da fundação ou do MLflow.
+Aceite nativo em 2026-10-20: cadeia concluída, saídas restauradas e verificadas,
+mesmas identidades da fundação e release temporária removida.
+[Desenho, evidência e limites](operations/KIND_PIPELINE.md#aceite-nativo--2026-10-20).
+
+### Estado do replay no KinD
+
+O ensaio aceito usa um Deployment Helm de réplica única e PVC exclusivo.
+A transação por evento continua no `DurableTriageReplay`. A interrupção nativa
+ocorreu no feedback `feedback:2`, antes do COMMIT; o novo pod recuperou o journal
+e retomou no mesmo PVC. Todas as tabelas ficaram iguais à execução sintética
+sem interrupção, incluindo scores/alertas; reentrega não chamou o scorer.
+Processamento temporário removido e PVC retido para inspeção. [Recorte e limites](operations/KIND_REPLAY.md).
+
+### Serving e distribuição de release no KinD
+
+Chart separado `fraud-serving`: runtime da entrega qualificada, carrier de
+releases em init container e modelo em emptyDir somente leitura para a API.
+Um gateway estável encaminha ao Service ClusterIP com seletor blue/green.
+O gate prepara uma nova identidade com os mesmos pesos, confere EndpointSlices
+e executa rollback Helm. Baseline fica instalada; candidata é removida.
+Aceite nativo em 2026-10-21: rota e EndpointSlices conferidos, falha 502 e
+rollback Helm aprovados; mesmos pods baseline/gateway e fundação preservada.
+O port-forward encerrou; os Services privados permanecem no laboratório.
+[Desenho e limites](operations/KIND_SERVING.md#aceite-nativo--2026-10-21).
+
+### Observabilidade do replay concluído no KinD
+
+O autor aprovou o gate nativo e confirmou a conferência visual em 2026-10-21.
+A cópia somente de leitura foi conciliada com a origem: **556.824 eventos,
+143.945 decisões e 1.453 alertas**. Scrape Prometheus, oito regras saudáveis,
+proxy autenticado do Grafana e quatro dashboards provisionados foram conferidos.
+O exporter ganhou novo pod, manteve Deployment/PVC e repetiu as verificações.
+Prometheus, Grafana, fundação, tracking, serving e PVC retido do replay
+preservaram suas identidades; arquivos da origem permaneceram iguais.
+A coleta atual apresenta um replay concluído, sem nova ingestão ou resultado
+de qualidade do modelo. Próximo: operação de parada/subida, reboot e fechamento
+integrado. [Evidência e limites](operations/KIND_OBSERVABILITY.md#aceite-nativo-e-visual--2026-10-21).
+
+Refinamento visual aprovado em 2026-10-21: [política semântica de cores](operations/DASHBOARD_COLORS.md#aceite-da-política--2026-10-21),
+com informações azuis e estados explícitos em texto/cor. Configuração verificada
+pela API antes/depois de recriar o exporter e conferência visual confirmada pelo
+autor. Métricas, arquivos de origem/cópia e três PVCs iguais ao aceite anterior.
+Próximo: operação de parada/subida, retomada após reboot e fechamento integrado.
+
+
+## Ciclo operacional aceito
+
+O controlador `scripts.platform.kind_operations` usa ownership offline do Docker e kubeconfig privado. Escala dependentes para zero antes das dependências, para o node exato e restaura o plano inicial no mesmo container. Baselines/recibos privados ficam em `data/storage/kind-platform/operations`; Secrets entram somente como hashes. O ensaio interrompe o laboratório, sem Helm upgrade, fit, nova publicação ou recriação de volumes. Parada/subida, reboot planejado e persistência inotify aprovados em 2026-10-21, no mesmo host/node/PVCs. A composição dos aceites não equivale a migração primária ou a novo pipeline monolítico. [Guia integrado](operations/KIND_PLATFORM.md). [Procedimento](operations/KIND_OPERATIONS.md).
+
+
+## Interface de investigação
+
+O exportador `scripts/fraud_portal/export.py` reconcilia o ledger HTTP aceito e o
+relatório SHAP verificado, confere o champion na captura e publica um snapshot.
+A aplicação Streamlit/Plotly lê esse bundle com digest pinado, sem carregar o
+modelo ou herdar credenciais AWS/DB. O fluxo de pontuação e a triagem permanecem
+nos produtores existentes. O estado de navegação vive apenas na sessão da UI.
+
+A fila inclui todas as decisões do fluxo aceito; SHAP enriquece somente os casos
+já explicados. O instante da captura e o período distinguem consulta histórica de
+operação online. [Contrato e jornada](operations/FRAUD_PORTAL.md).
+O cliente local tem ambiente hash-locked próprio; o backend continua no KinD.
+
+
+### Evidência de desempenho separada da apresentação
+
+`scripts/fraud_portal/performance` separa leitura JSON/visualização do adaptador
+MLflow/Gold e do cálculo offline. A UI não importa estimadores ou bibliotecas de
+treinamento. O produtor verifica pesos, Inputs, métricas e validação; o leitor
+recusa ligação a outro snapshot/modelo/release. Inferência, avaliação e explicação
+são capacidades independentes. [Contrato](operations/PORTAL_PERFORMANCE.md).
+
+
+### Aceite da avaliação e consolidação operacional
+
+A página de desempenho foi aceita funcional e visualmente pelo autor em
+2026-10-22, com validação completa de 67.255 transações e vínculos ao mesmo
+modelo/release da consulta de 200 casos. O portal continua lendo snapshots;
+o monitoramento KinD aceito consulta uma cópia de replay concluído. O próximo
+recorte liga a chegada gradual de eventos, a fila e a observabilidade de uma
+mesma sessão. [Responsabilidades e critério](operations/PRODUCT_OPERATIONS.md).

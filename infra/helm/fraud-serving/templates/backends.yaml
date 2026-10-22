@@ -1,0 +1,83 @@
+{{- if and (eq .Values.activeSlot "green") (not .Values.greenEnabled) }}{{ fail "Cannot route to an absent candidate" }}{{ end }}
+{{- range $slot := list "blue" "green" }}
+{{- if or (eq $slot "blue") $.Values.greenEnabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ $slot }}
+  labels: {app.kubernetes.io/instance: {{ $.Release.Name }}, app.kubernetes.io/component: {{ $slot }}, app.kubernetes.io/part-of: fraud-platform}
+  annotations: {fraud.serving/owner-id: {{ $.Values.ownerId | quote }}}
+spec:
+  replicas: {{ if eq $slot "blue" }}1{{ else }}{{ $.Values.greenReplicas }}{{ end }}
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app.kubernetes.io/instance: {{ $.Release.Name }}, app.kubernetes.io/component: {{ $slot }}}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/instance: {{ $.Release.Name }}, app.kubernetes.io/component: {{ $slot }}, app.kubernetes.io/part-of: fraud-platform}
+      annotations: {fraud.serving/owner-id: {{ $.Values.ownerId | quote }}}
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 15
+      nodeSelector: {kubernetes.io/hostname: fraud-platform-control-plane}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      initContainers:
+        - name: release
+          image: {{ $.Values.images.artifacts | quote }}
+          imagePullPolicy: Never
+          args: [{{ $slot | quote }}, --manifest-sha256, {{ index $.Values.manifests $slot | quote }}]
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 50m, memory: 64Mi}
+            limits: {cpu: '1', memory: 128Mi}
+          volumeMounts:
+            - {name: model, mountPath: /model}
+      containers:
+        - name: api
+          image: {{ $.Values.images.runtime | quote }}
+          imagePullPolicy: Never
+          env:
+            - {name: FRAUD_SERVING_RELEASE, value: /model}
+            - {name: FRAUD_SERVING_MANIFEST_SHA256, value: {{ index $.Values.manifests $slot | quote }}}
+          ports: [{name: http, containerPort: 8000}]
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 250m, memory: 256Mi}
+            limits: {cpu: '2', memory: 512Mi}
+          startupProbe:
+            httpGet: {path: /ready, port: http}
+            periodSeconds: 2
+            timeoutSeconds: 2
+            failureThreshold: 60
+          readinessProbe:
+            httpGet: {path: /ready, port: http}
+            periodSeconds: 2
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          volumeMounts:
+            - {name: model, mountPath: /model, readOnly: true}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: model
+          emptyDir: {sizeLimit: 64Mi}
+        - name: tmp
+          emptyDir: {sizeLimit: 64Mi}
+{{- end }}
+{{- end }}

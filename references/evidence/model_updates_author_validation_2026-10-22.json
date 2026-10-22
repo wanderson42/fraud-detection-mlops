@@ -1,0 +1,155 @@
+{
+  "schema": "fraud_model_updates_author_validation_v1",
+  "status": "native_rejection_accepted_successor_activation_pending",
+  "validated_on": "2026-10-22",
+  "validation_mode": "author_supplied_console_fragments_not_independent_cluster_execution",
+  "source_console_sha256": {
+    "Texto colado(20261022-032725).txt": "4240b6d18bceeb6d4a3f66273eb2cae84b9ab241aaa69aad590346a0c2caf529",
+    "Texto colado(20261022-033501).txt": "d13ffbba654a94f6e16a34fb590aba0bf644d6217c02fabcf84f134682d3a9e2"
+  },
+  "additional_evidence": "Author pasted optimized candidate verification and champion_modified=false in the conversation; no standalone full receipt supplied.",
+  "scope": "fixed_and_search_update_rejection_same_temporal_validation_not_new_blind_confirmation_or_distinct_weight_rollout",
+  "registered_model": "fraud-detector",
+  "champion": {
+    "version": "1",
+    "run_id": "22081d16ef154b778307d5bf17420b64",
+    "slot": "blue",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b"
+  },
+  "incumbent_metrics": {
+    "rows": 67255,
+    "fraud_count": 580,
+    "average_precision": 0.6239485132514692,
+    "daily_customer_precision_at_100": 0.5399999999999999
+  },
+  "rounds": {
+    "successor-v1": {
+      "decision": "retain_champion",
+      "policy_sha256": "884c87b921b62ad680e88405dd3f282576af98e82f722cff3139be8fbd4546d3",
+      "training_report_sha256": "88b73d57e0c03c573e8efa54542e879fb0fbd28127affed60ec6818ae90d6650",
+      "checks": {
+        "logistic_regression": {
+          "minimum_AP": false,
+          "minimum_P100": true,
+          "beats_dummy_AP": true,
+          "minimum_AP_gain": false,
+          "P100_noninferiority": false
+        },
+        "hist_gradient_boosting": {
+          "minimum_AP": true,
+          "minimum_P100": true,
+          "beats_dummy_AP": true,
+          "minimum_AP_gain": false,
+          "P100_noninferiority": true
+        }
+      },
+      "candidates_verified": {
+        "dummy_prior": {
+          "run_id": "93387886ec4e4e99871b4f5365b2efaa",
+          "model_sha256": "561b58d862b8d97964d10b4537f18a248e04dbe1b42bbb09b7d000f532336ed2",
+          "native_inputs_verified": true,
+          "all_artifact_bytes_verified": true,
+          "quality_recomputed_on_validation": true,
+          "parity_rows": 67255
+        },
+        "logistic_regression": {
+          "run_id": "c0f8b4ee06ff4bdb8fbee0ccbebc9d94",
+          "model_sha256": "ea12018f4dfc5e83893ca3a8c8bda85d12569de56d49a57a12379b2049f1064e",
+          "native_inputs_verified": true,
+          "all_artifact_bytes_verified": true,
+          "quality_recomputed_on_validation": true,
+          "parity_rows": 67255
+        },
+        "hist_gradient_boosting": {
+          "run_id": "5bfe61e4a20e4179bb5fec565a0a230e",
+          "model_sha256": "54896d852800a95c16ea94dbd67c1594c31b290eebbbf50934f0aa723573fdbf",
+          "native_inputs_verified": true,
+          "all_artifact_bytes_verified": true,
+          "quality_recomputed_on_validation": true,
+          "parity_rows": 67255
+        }
+      },
+      "comparison_labels_mature": true,
+      "champion_modified": false
+    },
+    "optimized-v1": {
+      "decision": "retain_champion",
+      "policy_sha256": "80591e5b857eaf3f8df63c6b8412118a5ea3ef4c5a8089a3d09970d005271e3b",
+      "training_report_sha256": "31f05d7c9dc04b163e50c500f1181ffc1c55c0fdf49d0ae7b59a35a21fcf1fcb",
+      "checks": {
+        "logistic_regression": {
+          "minimum_AP": false,
+          "minimum_P100": true,
+          "beats_dummy_AP": true,
+          "minimum_AP_gain": false,
+          "P100_noninferiority": false
+        },
+        "hist_gradient_boosting": {
+          "minimum_AP": true,
+          "minimum_P100": true,
+          "beats_dummy_AP": true,
+          "minimum_AP_gain": false,
+          "P100_noninferiority": true
+        }
+      },
+      "candidates_verified": {
+        "dummy_prior": {
+          "run_id": "bfab713f669444738ceae9cd019c898f",
+          "model_sha256": "d0a0a04efdb238d574a63cadc5abac3166ecd08e537021e8e0a08bbf9706cf42",
+          "native_inputs_verified": true,
+          "all_artifact_bytes_verified": true,
+          "quality_recomputed_on_validation": true,
+          "parity_rows": 67255
+        },
+        "logistic_regression": {
+          "run_id": "63748a7f89104a44ad3b2872187d6994",
+          "model_sha256": "34aa1f79cc5d4b1dd3ba743822ed47fa2f8f2fe9b3bc1ece55145dc8e967023c",
+          "native_inputs_verified": true,
+          "all_artifact_bytes_verified": true,
+          "quality_recomputed_on_validation": true,
+          "parity_rows": 67255
+        },
+        "hist_gradient_boosting": {
+          "run_id": "71bf066a9630446cb59b7cf5fac8bd4c",
+          "model_sha256": "b909a3880bf9c55f19ca21403a59168cb023c7cf0281d686d1f0a7f96de87f6d",
+          "native_inputs_verified": true,
+          "all_artifact_bytes_verified": true,
+          "quality_recomputed_on_validation": true,
+          "parity_rows": 67255
+        }
+      },
+      "candidate_verification_source": "author_pasted_conversation_fragment",
+      "comparison_labels_mature": true,
+      "champion_modified": false,
+      "individual_candidate_quality_values_supplied": false,
+      "trial_execution_receipts_supplied": false
+    }
+  },
+  "fixed_round_active_HTTP_verification": {
+    "status": "active_identity_verified",
+    "version": "1",
+    "slot": "blue",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "http": {
+      "score": {
+        "schema_version": 1,
+        "transaction_id": 335910,
+        "score": 0.4178630794049542,
+        "score_semantics": "uncalibrated_ranking",
+        "model_id": "hist_gradient_boosting",
+        "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+        "feature_contract_version": "gold_v1",
+        "serving_release_id": "e8350e0a841f4136983e0d905068a743"
+      },
+      "invalid_input_http_status": 422,
+      "p95_ms": 100.09597594944353,
+      "measurements": 20
+    }
+  },
+  "native_distinct_weight_successor_activation_validated": false,
+  "native_successor_rollback_and_failure_recovery_validated": false,
+  "prior_local_positive_path_tests": "references/evidence/model_updates_preparation_2026-10-21.json",
+  "production_promotion": false,
+  "automatic_continuous_training_implemented": false,
+  "gate_thresholds_modified": false
+}
