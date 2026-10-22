@@ -1,5 +1,20 @@
 # Validação com pytest, Poetry e tox
 
+A nova rodada tem testes de política, linhagem, MLflow HTTP, recarga, Registry, API real em processo e Helm. Execute `tox -e py314 -- tests/operational_round tests/storage/test_persistence_inventory.py tests/storage/test_managed_paths.py`; a execução nativa dos Jobs/serving permanece no runbook.
+[Guia da rodada operacional](OPERATIONAL_ROUND.md).
+
+## Transferência do histórico e Registry no KinD
+
+```bash
+.venv/bin/python -m tox -e py314 -- tests/infra/test_kind_history.py
+```
+
+Os testes usam snapshots reais de fixture, SQLite e um servidor MLflow HTTP real:
+importação dos dois stores, três baselines, métricas completas, linhagem, retomada,
+recarga e recusas antes do alias. PostgreSQL/S3/KinD são conferidos na execução
+nativa de `plan`, `import`, `verify` e `champion`, conforme [KIND_HISTORY.md](KIND_HISTORY.md).
+Não confundir esses testes com uma nova validação de qualidade preditiva.
+
 <!-- kind-operations-acceptance-2026-10-21:start -->
 **Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
 Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
@@ -1376,3 +1391,8 @@ aplicar somente este fechamento documental.
 ## Gate operacional opt-in do KinD
 
 Regressão sem Docker: `poetry run python -m pytest -q tests/infra/test_kind_operations.py`. O ambiente tox `kind-operations` exige `FRAUD_KIND_NO_OTHER_WRITERS=1` e `FRAUD_KIND_TRACKING_REPORT` explícitos. Interrompe e retoma o cluster próprio; não deve entrar na CI comum. O teste live permanece skipped na suíte padrão. Reboot manual tem gate separado `verify --expect-reboot`; ambos os gates nativos foram aprovados em 2026-10-21. O ciclo teve 1 teste em 252,23 s; o reboot foi uma verificação CLI separada. Mocks não comprovam persistência nativa. [Comandos e limites](KIND_OPERATIONS.md).
+
+
+## Entradas Make e acessos locais
+
+Os testes `tests/infra/test_platform_entrypoints.py` executam GNU Make com um Poetry gravador, verificam falhas/precondições/ordem e usam doubles dos forwards para testar ownership e limpeza por Ctrl+C. Não abrem Docker/Kubernetes. Execute `poetry run tox -e py314 -- tests/infra/test_platform_entrypoints.py` no ambiente nativo. Os 18 testes locais de preparação passaram em Python 3.14.4 usando GNU Make e bibliotecas padrão, com conferência adicional em Python 3.12.14. O acesso aos serviços reais e o perfil tox nativo permanecem pendentes para este incremento. A validação de cores, operações e serviços anteriores não é reaberta.

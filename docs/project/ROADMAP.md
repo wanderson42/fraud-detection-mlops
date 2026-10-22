@@ -26,11 +26,23 @@ não comprovam eficácia antifraude real nem SLA de uma instituição.
 
 ## Próximo marco — simplificação e fechamento funcional
 
+Recorte em preparação: [nova rodada operacional canônica](../operations/OPERATIONAL_ROUND.md),
+com nova execução Bronze–Silver–Gold, linhagem nativa dos datasets, três candidatos,
+seleção por critérios previamente definidos e promoção em `fraud-detector@champion`,
+seguida de serving e blue/green. O histórico anterior fica como arquivo, fora dessa
+seleção. Aceite nativo da nova rodada pendente.
+
 O marco de infraestrutura KinD + Helm está concluído **no escopo de laboratório**:
 componentes aceitos por incrementos, parada/subida e reboot planejado aprovados,
 mesmo node/PVCs e leituras funcionais conferidas. A [sequência integrada](../operations/KIND_PLATFORM.md)
 consolida os comandos e os limites. Isso não declara migração primária, promoção
 histórica, recuperação por perda do host ou uma nova execução monolítica do fluxo.
+
+A primeira preparação da simplificação acrescenta entradas Make e um
+[guia de demonstração](../operations/PORTFOLIO_WALKTHROUGH.md), com validação local
+dos atalhos ainda pendente. Ela não declara uma nova cadeia única de eventos
+chamando a API. O próximo recorte define essa ligação e o caminho canônico
+com identidades e recuperação, antes de considerar o fechamento funcional.
 
 Agora vamos definir os fluxos suportados e simplificar a experiência de uso,
 com documentação de instalação, demonstração e retomada. Componentes antigos só

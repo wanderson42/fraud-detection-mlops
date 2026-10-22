@@ -1,5 +1,11 @@
 # Índice da documentação
 
+Caminho principal de execução: nova rodada com linhagem dos datasets, comparação, promoção e serving.
+[Guia da rodada operacional](operations/OPERATIONAL_ROUND.md).
+
+Histórico dos experimentos, comparação dos três baselines e Registry:
+[transferência verificada para o KinD](operations/KIND_HISTORY.md).
+
 <!-- kind-operations-acceptance-2026-10-21:start -->
 **Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
 Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
@@ -298,3 +304,8 @@ Próximo: operação de parada/subida, retomada após reboot e fechamento integr
 ## Operação diária do KinD — aprovada
 
 [Parada/subida e reboot planejado](operations/KIND_OPERATIONS.md): gate nativo e reboot planejado aprovados, com retomada pelo mesmo baseline. Consulte também o [guia integrado](operations/KIND_PLATFORM.md). Não confundir com backup/restore ou perda do host.
+
+
+## Guia para executar e apresentar
+
+[Execução e demonstração do portfólio](operations/PORTFOLIO_WALKTHROUGH.md): entradas Make para operar localhost, reproduzir os Jobs desde Bronze e escolher os ensaios. Expõe as ligações já demonstradas e as fronteiras ainda separadas.

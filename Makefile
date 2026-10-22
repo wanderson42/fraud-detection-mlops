@@ -136,17 +136,20 @@ verify-data:
 
 .DEFAULT_GOAL := help
 
-define PRINT_HELP_PYSCRIPT
-import re, sys; \
-lines = '\n'.join([line for line in sys.stdin]); \
-matches = re.findall(r'\n## (.*)\n[\s\S]+?\n([a-zA-Z_-]+):', lines); \
-print('Available rules:\n'); \
-print('\n'.join(['{:25}{}'.format(*reversed(match)) for match in matches]))
-endef
-export PRINT_HELP_PYSCRIPT
-
+# Keep help usable before Poetry dependencies are installed. Both comment styles work.
+.PHONY: help
 help:
-	@poetry run python -c "${PRINT_HELP_PYSCRIPT}" < $(MAKEFILE_LIST)
+	@awk '\
+	/^## / { description = substr($$0, 4); next } \
+	/^[A-Za-z0-9_-]+:/ { \
+	  name = $$0; sub(/:.*/, "", name); \
+	  if ($$0 ~ /:.*## /) { description = $$0; sub(/.*## /, "", description) } \
+	  if (description != "") printf "%-32s %s\n", name, description; \
+	  description = "" \
+	}' $(MAKEFILE_LIST)
+
+include infra/make/platform.mk
+include infra/make/round.mk
 
 .PHONY: experiments experiments_verify
 experiments: ## Execute controlled ablations; requires BASELINE_PATH and committed inputs

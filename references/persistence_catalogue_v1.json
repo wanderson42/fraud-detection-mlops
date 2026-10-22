@@ -5,6 +5,16 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/storage/kind-platform/rounds",
+      "family": "operational_round_policies_data_training_promotion_and_serving",
+      "owner": "platform_and_modeling",
+      "producers": [
+        "scripts/operational_round/controller.py",
+        "scripts/operational_round/serving.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/storage/kind-platform/serving",
       "family": "kind_serving_preparation_images_values_and_receipts",
       "owner": "platform",
@@ -705,6 +715,97 @@
         "local_migration_blocker": false,
         "current_behavior": "Cliente HTTP sintético; publica skops e recarrega em processos separados sem variáveis AWS/PG; sem consulta ao histórico local.",
         "migration_gate": "Gate nativo PostgreSQL/S3/KinD aprovado: publicação e recarga independente, hash S3, dois pontos da métrica do probe e recarga após recriação do pod MLflow; erro zero. Não declara migração histórica ou primária; evidência kind_tracking_author_validation_2026-10-20.json."
+      },
+      {
+        "id": "scripts_operational_round_controller",
+        "source": "scripts/operational_round/controller.py",
+        "source_sha256": "5caea90b6e0c1be33072b80a1651e52fb1d41ea1b54e6021d702c2d1471f0df5",
+        "functions": [
+          "init",
+          "train",
+          "promote"
+        ],
+        "kind": "operational_round_controller",
+        "local_migration_blocker": false,
+        "current_behavior": "Nova cadeia de Jobs; datasets nativos, treino de três candidatos e promoção explícita.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+      },
+      {
+        "id": "scripts_operational_round_training",
+        "source": "scripts/operational_round/training.py",
+        "source_sha256": "180671c39b0ce3121d77410d1bfe67640df971bbaa13a045572d8ca5236ffc2c",
+        "functions": [
+          "candidates",
+          "execute"
+        ],
+        "kind": "operational_round_producer",
+        "local_migration_blocker": false,
+        "current_behavior": "Inputs obrigatórios de treino/validação, métricas vinculadas ao dataset, recarga completa; sem leitura de experimentos históricos.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+      },
+      {
+        "id": "scripts_operational_round_promotion",
+        "source": "scripts/operational_round/promotion.py",
+        "source_sha256": "fa4f053376f01e26a165ae52cfc518d4367d6f581e71e58813337850ac610de3",
+        "functions": [
+          "verify",
+          "promote"
+        ],
+        "kind": "operational_round_registry",
+        "local_migration_blocker": false,
+        "current_behavior": "Confere linhagem e bytes, recalcula qualidade em validação e registra o vencedor em fraud-detector@champion.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+      },
+      {
+        "id": "scripts_operational_round_serving",
+        "source": "scripts/operational_round/serving.py",
+        "source_sha256": "a8e21bce273770c642ff85421df49fe3be1f93dc5132fd88cf9b9ef160a0a01c",
+        "functions": [
+          "prepare",
+          "deploy",
+          "verify"
+        ],
+        "kind": "operational_round_serving",
+        "local_migration_blocker": false,
+        "current_behavior": "Constrói API atual, carrega pesos da nova versão aprovada e confere HTTP/troca/rollback.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+      },
+      {
+        "id": "scripts_platform_history_registry",
+        "source": "scripts/platform/history/registry.py",
+        "source_sha256": "3c8702d268318015bad4cfbb4aa839d9e3ca298dd89ef399c760559e536ec7f8",
+        "functions": [
+          "champion"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Registro da referência histórica aprovada; fora da nova rodada canônica.",
+        "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
+      },
+      {
+        "id": "scripts_platform_history_transfer",
+        "source": "scripts/platform/history/transfer.py",
+        "source_sha256": "c65ffcae8095042c31abdd0ee10a7d91e89e55fa9bbfab072f385f5f1da08e93",
+        "functions": [
+          "execute",
+          "verify"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Transferência arquivística e readback integral dos dois stores; fora do fluxo canônico.",
+        "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
+      },
+      {
+        "id": "scripts_platform_history_worker",
+        "source": "scripts/platform/history/worker.py",
+        "source_sha256": "1399aa2e70f475a0b0ad33f6b24af0528050bc8b35c884a3a4abfdd0a729a1d3",
+        "functions": [
+          "execute"
+        ],
+        "kind": "historical_maintenance",
+        "local_migration_blocker": false,
+        "current_behavior": "Cliente HTTP de manutenção histórica, sem novo treino.",
+        "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
       }
     ],
     "decisions": {
@@ -906,5 +1007,35 @@
     "primary_storage_migrated": false,
     "project_wide_storage_inventory_complete": false,
     "host_loss_recovery_validated": false
+  },
+  "operational_round": {
+    "policy": "references/operational_round_policy_v1.json",
+    "workspace": "data/storage/kind-platform/rounds/<round-id>",
+    "controller": "scripts/operational_round/controller.py",
+    "training_chart": "infra/helm/fraud-round-training",
+    "registry": "fraud-detector",
+    "initial_round": "portfolio-v1",
+    "managed_writes": [
+      "round.json",
+      "data.json",
+      "trainer-image.json",
+      "job-values.json",
+      "training-job.json",
+      "training.json",
+      "promotion.json",
+      "carrier/{blue,green}/*",
+      "runtime-build/*",
+      "serving.json",
+      "serving-values-*.json",
+      "deployment.json",
+      "rollout.json",
+      "verification-*.json",
+      "training-failure-*.json"
+    ],
+    "cloud_writes": "Novos bundles Silver/Gold em fraud-datasets; novos Inputs/runs/modelos e Registry via proxy MLflow.",
+    "retention": "Preservar Bronze e recibos; Jobs de sucesso removidos, falhas preservadas; nenhuma exclusão de histórico.",
+    "native_cycle_validated": false,
+    "historical_models_used": false,
+    "production_promotion": false
   }
 }

@@ -1,0 +1,16 @@
+**
+!infra/
+!infra/kind/
+!infra/kind/round/
+!infra/kind/round/**
+!fraud_detection_mlops/
+!fraud_detection_mlops/**
+!scripts/
+!scripts/operational_round/
+!scripts/operational_round/**
+!scripts/storage/
+!scripts/storage/**
+!references/
+!references/**
+**/__pycache__
+**/*.pyc

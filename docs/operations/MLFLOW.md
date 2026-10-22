@@ -1,5 +1,18 @@
 # MLflow e persistência dos modelos
 
+A nova rodada oficial publica treino e validação em Inputs, associa métricas ao dataset e promove o vencedor em `fraud-detector@champion`. O experimento é `fraud-operational-portfolio-v1`; aceite nativo pendente.
+[Guia da rodada operacional](OPERATIONAL_ROUND.md).
+
+## Histórico e referência no MLflow do KinD
+
+Para consultar a comparação original, ablações e busca temporal no servidor do
+laboratório, use a [transferência do histórico](KIND_HISTORY.md). O procedimento
+importa os dois stores, verifica os artefatos pela API e recarrega Dummy, Regressão
+Logística e HGB. O alias `fraud-hgb-reference@champion` depende do gate histórico
+congelado e da paridade do HGB; não exige novo treino ou avaliação do holdout.
+O aceite nativo dessa transferência está pendente. Os comandos de treinamento
+abaixo continuam destinados a novas execuções, não à reconstrução do histórico.
+
 Os novos treinamentos usam `baseline_v2`: pipelines completos em skops e publicação
 nativa no MLflow durante a mesma execução. A política científica continua em
 `baseline_protocol_v1.json`: candidatos, features, janelas e métricas não mudaram.

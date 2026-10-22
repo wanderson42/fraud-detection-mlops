@@ -1,5 +1,9 @@
 # Fraud Detection MLOps
 
+Nova rodada canônica: Bronze → Jobs Silver/Gold → três candidatos com datasets registrados → `fraud-detector@champion` → API e blue/green. A implementação está preparada; o aceite nativo da rodada está pendente.
+[Guia da rodada operacional](docs/operations/OPERATIONAL_ROUND.md).
+
+
 <!-- kind-operations-acceptance-2026-10-21:start -->
 **Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
 Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify
@@ -563,3 +567,8 @@ Próximo: operação de parada/subida, retomada após reboot e fechamento integr
 ## Operação do KinD — aceite nativo
 
 Parada/subida e reboot planejado aprovados em 2026-10-21: mesmo node, volumes e plano de réplicas; tracking/S3, identidade/score da API e monitoramento conferidos. O inotify persistiu em 512/524288. O marco KinD/Helm passa para os concluídos no escopo de laboratório. Próximo: simplificação e fechamento funcional; Terraform depois. [Operação](docs/operations/KIND_OPERATIONS.md) e [guia integrado](docs/operations/KIND_PLATFORM.md).
+
+
+## Executar e apresentar o laboratório
+
+Use `make help`, `make platform-status` e os acessos `platform-api`, `platform-mlflow` e `platform-grafana`. O [guia de execução e demonstração](docs/operations/PORTFOLIO_WALKTHROUGH.md) separa ambiente pronto, reprodução Bronze–Silver–Gold e ensaios blue/green/recuperação. O Make delega aos controladores existentes. Replay, API sintética e monitoramento da cópia concluída não passam a formar uma única nova execução de transações HTTP por esses atalhos.
