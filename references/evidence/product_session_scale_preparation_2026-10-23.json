@@ -1,0 +1,54 @@
+{
+  "schema": "fraud_product_session_scale_preparation_v1",
+  "status": "prepared_native_acceptance_pending",
+  "prepared_on": "2026-10-23",
+  "basis": "author commit 3675dc9",
+  "scope": "explicit_temporal_window_nominal_volume_SQL_paging_and_separate_phase_timings",
+  "local_checks": {
+    "real_HTTP_decisions_reconciled": 262,
+    "SQL_page_sizes": [
+      100,
+      100,
+      62
+    ],
+    "isolated_portal_UI": {
+      "passed": 32,
+      "seconds": 5.38
+    },
+    "related_regression": {
+      "passed": 127,
+      "skipped": 3,
+      "subtests": 12,
+      "seconds": 36.51
+    },
+    "full_suite": {
+      "passed": 1680,
+      "skipped": 53,
+      "warnings": 166,
+      "subtests": 12,
+      "seconds": 1116.91,
+      "note": "Full regression plus final targeted and isolated UI checks; native expanded acceptance remains pending"
+    },
+    "guarded_package": [
+      "clean_apply",
+      "idempotence",
+      "unrelated_index_and_mlruns_preserved",
+      "worktree_index_dependency_symlink_refusal",
+      "rollback_on_injected_write_failure",
+      "actual_scoped_commit",
+      "committed_bridge_accepts_exact_old_session_map"
+    ]
+  },
+  "accepted_200_session_unchanged_by_design": true,
+  "compatibility": "exact before/after session code maps in committed declaration; no old receipt rewrite",
+  "timestamp_peers": "kept together within the declared exclusive end and extra-peer budget",
+  "memory_measure_scope": "Linux Python process lifetime RSS high water mark, not API pod memory",
+  "native_2000_session_validated": false,
+  "native_visual_review_validated": false,
+  "same_session_Grafana_validated": false,
+  "unified_portal_validated": false,
+  "champion_modified": false,
+  "fit_executed": false,
+  "successor_promotion_validated": false,
+  "runbook": "docs/operations/PRODUCT_SESSION_SCALE.md"
+}

@@ -157,7 +157,9 @@ def test_view_can_follow_commits_while_producer_holds_writer_lock(prepared, serv
     assert seen == [0, 1]
 
 
-@pytest.mark.parametrize("target", ["session-prepare", "session-run", "session-feedback"])
+@pytest.mark.parametrize(
+    "target", ["session-prepare", "session-prepare-expanded", "session-run", "session-feedback"]
+)
 def test_writer_declaration_is_required_before_dispatch(dispatch, target):
     result, calls = dispatch(target, SESSION_NO_OTHER_WRITERS="0")
     assert result.returncode != 0 and not calls
@@ -177,6 +179,7 @@ def test_prepare_requires_reviewed_code_and_load_preserves_exact_session_identit
     from types import SimpleNamespace
 
     directory, value, _ = prepared
+    value["source_state"] = str(directory)
     code_root = tmp_path / "checkout"
     source = code_root / "scripts/product_session/controller.py"
     source.parent.mkdir(parents=True)

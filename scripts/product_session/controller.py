@@ -6,6 +6,7 @@ import json
 import math
 import os
 from pathlib import Path
+import resource
 import sqlite3
 import subprocess
 import time
@@ -15,7 +16,7 @@ from scripts.fraud_portal import controller as portal
 from scripts.fraud_portal import theme
 from scripts.platform import kind_foundation as f
 from scripts.product_flow import controller as flow
-from scripts.product_session import reader
+from scripts.product_session import configuration, reader
 
 from fraud_detection_mlops.data.datasets.native_replay_dataset import (
     readonly_connection,
@@ -38,7 +39,7 @@ def atomic(path, value):
         stage.unlink(missing_ok=True)
 
 
-def prepare(key, source, declared):
+def prepare(key, source, declared, *, start=None, end=None, target=None):
     flow.p.require(declared, "Declare SESSION_NO_OTHER_WRITERS=1")
     # The session is additive: accepted historical product flows stay untouched.
     for path in (f.ROOT / "scripts/product_session").glob("*.py"):
@@ -53,6 +54,37 @@ def prepare(key, source, declared):
             "Commit reviewed session implementation before prepare: " + name,
         )
     directory = folder(key)
+    if any(v is not None for v in (start, end, target)):
+        flow.p.require(
+            all(v is not None for v in (start, end, target)), "Set start, end and target together"
+        )
+        if (directory / "session.json").exists():
+            _, value = load(key)
+            window = value.get("expanded_window", {})
+            flow.p.require(
+                (window.get("start"), window.get("end_exclusive"), window.get("target_decisions"))
+                == (start, end, target),
+                "Existing session has another window; preserve it",
+            )
+            return {
+                "status": "expanded_session_already_prepared",
+                "session_id": key,
+                "session_sha256": reader.sha(directory / "session.json"),
+            }
+        return configuration.prepare(directory, key, source, start, end, target)
+    if (directory / "session.json").exists():
+        _, existing = load(key)
+        flow.p.require(
+            existing["source_state"] == str(Path(source).absolute()),
+            "Existing session uses another source",
+        )
+        return {
+            "status": "session_prepared",
+            "session_id": key,
+            "session_sha256": reader.sha(directory / "session.json"),
+            "directory": str(directory),
+            "champion_modified": False,
+        }
     flow.prepare("session-" + key, source, declared)
     config = {
         "schema": "fraud_product_session_v1",
@@ -83,13 +115,16 @@ def load(key):
     directory = folder(key)
     config = json.loads(reader.checked(directory / "session.json").read_bytes())
     flow.p.require(
-        config["schema"] == "fraud_product_session_v1"
-        and config["session_id"] == key
-        and config["code_pins"]
-        == {v.name: reader.sha(v) for v in (f.ROOT / "scripts/product_session").glob("*.py")},
-        "Session code identity changed",
+        config["schema"] in {"fraud_product_session_v1", "fraud_product_session_v2"}
+        and config["session_id"] == key,
+        "Session receipt identity changed",
     )
-    value = flow.read("session-" + key)
+    configuration.accept(config["code_pins"])
+    value = (
+        configuration.read(directory, key, config)
+        if config["schema"] == "fraud_product_session_v2"
+        else flow.read("session-" + key)
+    )
     flow.p.require(
         reader.sha(directory / "input.json") == config["input_sha256"], "Session input changed"
     )
@@ -118,6 +153,11 @@ def pump(
         stop_after is None or type(stop_after) is int and stop_after > 0, "Invalid stop count"
     )
     status = "paused"
+    begun = time.monotonic()
+    phases = {"warmup": 0.0, "arrivals": 0.0, "feedback": 0.0}
+    phase = "feedback" if feedback else "warmup"
+    phase_started = begun
+    calls_before = scorer.requests
     with job_lock(directory):
         (directory / "pause.request").unlink(missing_ok=True)
         try:
@@ -136,6 +176,17 @@ def pump(
                         status = "awaiting_feedback"
                         break
                     scored = event.event_type == "transaction" and event.event_clock_ns >= start
+                    next_phase = (
+                        "feedback"
+                        if feedback
+                        else "arrivals"
+                        if event.event_clock_ns >= start
+                        else "warmup"
+                    )
+                    if next_phase != phase:
+                        now = time.monotonic()
+                        phases[phase] += now - phase_started
+                        phase, phase_started = next_phase, now
                     if scored:
                         heartbeat(directory, "running")
                         # Interruptible pacing; never wait inside a SQLite transaction.
@@ -181,7 +232,20 @@ def pump(
             heartbeat(directory, "failed")
             raise
         heartbeat(directory, status)
-    return {"status": status, "champion_modified": False, "fit_executed": False}
+    phases[phase] += time.monotonic() - phase_started
+    result = {
+        "status": status,
+        "champion_modified": False,
+        "fit_executed": False,
+        "elapsed_seconds": time.monotonic() - begun,
+        "phase_elapsed_seconds": phases,
+        "scoring_HTTP_attempts": scorer.requests - calls_before,
+        "process_lifetime_peak_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+        "rss_scope": "Linux process lifetime high water mark, not incremental session allocation",
+        "timing_scope": "invocation wall time; arrivals include deliberate pacing and interleaved mature feedback",
+    }
+    f.private_json(directory / ("timing-" + uuid4().hex + ".json"), result)
+    return result
 
 
 def execute(key, declared, interval, feedback, stop_after):
@@ -237,6 +301,35 @@ def open_portal(key, port):
     ).returncode
 
 
+def verify(directory, value):
+    begun = time.monotonic()
+    result = flow.verify_ledger(directory, value)
+    result["verification_elapsed_seconds"] = time.monotonic() - begun
+    with closing(readonly_connection(directory / "checkpoint.sqlite")) as conn:
+        values = [
+            r[0] for r in conn.execute("SELECT elapsed_ms FROM http_exchanges ORDER BY elapsed_ms")
+        ]
+
+    def percentile(q):
+        if not values:
+            return None
+        position = (len(values) - 1) * q
+        low = int(position)
+        return values[low] + (values[min(low + 1, len(values) - 1)] - values[low]) * (
+            position - low
+        )
+
+    result["HTTP_latency_ms"] = {
+        "measurements": len(values),
+        "p50": percentile(0.5),
+        "p95": percentile(0.95),
+        "maximum": max(values) if values else None,
+        "scope": "client HTTP request including bounded retries, excludes warmup, pacing and independent verification",
+    }
+    f.private_json(directory / ("verification-timing-" + uuid4().hex + ".json"), result)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -247,12 +340,22 @@ def main():
     parser.add_argument("--no-other-writers", action="store_true")
     parser.add_argument("--interval", type=float, default=1.0)
     parser.add_argument("--stop-after", type=int)
+    parser.add_argument("--start")
+    parser.add_argument("--end")
+    parser.add_argument("--target-decisions", type=int)
     parser.add_argument("--port", type=int, default=18502)
     args = parser.parse_args()
     try:
         if args.action == "prepare":
             with f.exclusive():
-                result = prepare(args.session_id, args.source_state, args.no_other_writers)
+                result = prepare(
+                    args.session_id,
+                    args.source_state,
+                    args.no_other_writers,
+                    start=args.start,
+                    end=args.end,
+                    target=args.target_decisions,
+                )
         elif args.action == "pause":
             directory, _ = load(args.session_id)
             atomic(directory / "pause.request", {"requested_at": time.time()})
@@ -275,7 +378,7 @@ def main():
             result = (
                 reader.read(directory, reader.sha(directory / "session.json"))
                 if args.action == "status"
-                else flow.verify_ledger(directory, value)
+                else verify(directory, value)
             )
             if args.action == "status":
                 result.pop("cases")

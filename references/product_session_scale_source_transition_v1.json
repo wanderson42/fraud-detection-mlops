@@ -1,0 +1,17 @@
+{
+  "schema": "fraud_product_session_scale_source_transition_v1",
+  "scope": "exact reviewed session reader/controller scale change; old input, checkpoint and receipt bytes preserved",
+  "before": {
+    "__init__.py": "55aa061fb2b35f6e6e773c62c6302b599c89ef5dc4b6f5724d213775c3ff428b",
+    "app.py": "51ea1b6465db5bbf29fa5b4a8644e7ad5eb0a1c17ac6368e1f861bf7c281ee32",
+    "controller.py": "8ef41b4b2842242c730c3820328caf4d4c6c7e4c78e4ec6952e49e748d786589",
+    "reader.py": "7382bb59fdc1378858ef13a16aa4f56321bb33fc1a34af61bd60195b4ceef9cd"
+  },
+  "after": {
+    "__init__.py": "55aa061fb2b35f6e6e773c62c6302b599c89ef5dc4b6f5724d213775c3ff428b",
+    "configuration.py": "691a5c447c073f762899b8d0e123c5036f0189c57141a371983bd91475523462",
+    "app.py": "c01f2bebe180ee14505eaed2d8d51183a839f29f05f399f0393376fad836de03",
+    "controller.py": "adb36fd872facffed1bc6c10de1b32a99589bdf10bafccc80e7f48a075d936d8",
+    "reader.py": "9af41bf272b19fa7d1ab8c89b328332aac549c86b092a544f3906c765e1315ad"
+  }
+}

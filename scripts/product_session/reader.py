@@ -20,14 +20,25 @@ def checked(path):
     return path
 
 
-def read(folder, expected):
+def read(folder, expected, *, page=1, page_size=100, only_alerts=False):
+    if (
+        type(page) is not int
+        or page < 1
+        or type(page_size) is not int
+        or not 1 <= page_size <= 100
+        or type(only_alerts) is not bool
+    ):
+        raise ValueError("Use a positive page and 1..100 rows per page")
     folder = checked(folder)
     receipt = checked(folder / "session.json")
     if sha(receipt) != expected:
         raise ValueError("Session receipt changed")
     config = json.loads(receipt.read_bytes())
     source = checked(folder / "input.json")
-    if config["schema"] != "fraud_product_session_v1" or sha(source) != config["input_sha256"]:
+    if (
+        config["schema"] not in {"fraud_product_session_v1", "fraud_product_session_v2"}
+        or sha(source) != config["input_sha256"]
+    ):
         raise ValueError("Session source identity changed")
     value = json.loads(source.read_bytes())
     model = value["release_manifest"]
@@ -43,6 +54,12 @@ def read(folder, expected):
         "expected_decisions": value["capture"]["counts"]["decisions"],
         "expected_events": value["capture"]["counts"]["events"],
     }
+    result.update(
+        totals={"decisions": 0, "alerts": 0, "customers": 0, "feedback": 0},
+        outcomes={},
+        score_histogram=[0] * 20,
+        pagination={"page": 1, "page_size": page_size, "pages": 1, "matching_decisions": 0},
+    )
     checkpoint = checked(folder / "checkpoint.sqlite")
     if checkpoint.exists():
         uri = "file:" + quote(str(checkpoint), safe="/") + "?mode=ro"
@@ -71,14 +88,46 @@ def read(folder, expected):
                 != result["counts"]["decisions"]
             ):
                 raise ValueError("HTTP receipts and decisions differ")
+            global_row = conn.execute(
+                "SELECT count(*),count(DISTINCT json_extract(d.request,'$.customer_id')),count(f.transaction_id) FROM decisions d LEFT JOIN feedback f USING(transaction_id)"
+            ).fetchone()
+            result["totals"] = {
+                "decisions": global_row[0],
+                "customers": global_row[1],
+                "feedback": global_row[2],
+                "alerts": result["counts"]["alerts"],
+            }
+            result["outcomes"] = dict(
+                conn.execute(
+                    "SELECT json_extract(payload,'$.status'),count(*) FROM alert_decisions GROUP BY json_extract(payload,'$.status')"
+                )
+            )
+            for bucket, count in conn.execute(
+                "SELECT min(CAST(json_extract(response,'$.score')*20 AS INTEGER),19),count(*) FROM decisions GROUP BY 1"
+            ):
+                if bucket is None or not 0 <= bucket < 20:
+                    raise ValueError("Invalid score histogram")
+                result["score_histogram"][bucket] = count
+            matching = result["counts"]["alerts"] if only_alerts else result["counts"]["decisions"]
+            pages = max(1, (matching + page_size - 1) // page_size)
+            actual_page = min(page, pages)
+            result["pagination"] = {
+                "page": actual_page,
+                "page_size": page_size,
+                "pages": pages,
+                "matching_decisions": matching,
+            }
             rows = conn.execute(
                 "SELECT d.request,d.response,a.payload,f.available_ns,f.fraud_label,h.request_sha256,h.response_sha256 "
                 "FROM decisions d JOIN alert_decisions a USING(transaction_id) "
                 "JOIN http_exchanges h USING(transaction_id) LEFT JOIN feedback f USING(transaction_id) "
-                "ORDER BY d.transaction_id LIMIT 257"
+                "WHERE (?=0 OR json_extract(a.payload,'$.status')='alert') "
+                "ORDER BY CASE WHEN json_extract(a.payload,'$.status')='alert' THEN 0 ELSE 1 END, "
+                "json_extract(d.response,'$.score') DESC,d.transaction_id LIMIT ? OFFSET ?",
+                (int(only_alerts), page_size, (actual_page - 1) * page_size),
             ).fetchall()
-            if len(rows) != result["counts"]["decisions"] or len(rows) > 256:
-                raise ValueError("Incomplete or oversized session view")
+            if len(rows) != min(page_size, max(0, matching - (actual_page - 1) * page_size)):
+                raise ValueError("Incomplete session page")
             for req, res, triage, available, label, req_sha, res_sha in rows:
                 request, response = json.loads(req), json.loads(res)
 

@@ -157,8 +157,14 @@ make session-open
 ```
 
 Para outro ID no ensaio tox, informe também `FRAUD_SESSION_ID=<ID>`.
-O relatório é `native-rehearsal.json` no diretório da sessão. A conferência visual
-fica a cargo do autor. Implementação e testes locais são preparação; o aceite no
-KinD e a revisão visual permanecem pendentes até receber suas saídas. Promoção e
-rollback de sucessor com pesos diferentes continuam condicionados a candidato
-qualificado; este recorte não os executa ou conclui.
+O relatório original `native-rehearsal.json` permanece intacto no diretório da
+sessão. O autor concluiu o ensaio em 2026-10-23: um teste passou em 568,76 s,
+200 recibos HTTP/decisões, 13 alertas e zero novas chamadas na reexecução completa.
+A [evidência de aceite](../../references/evidence/product_session_author_validation_2026-10-23.json)
+registra os resultados e a revisão da captura final enviada pelo autor. Os flags
+do recibo nativo original não foram reescritos.
+
+A [ampliação de sessões](PRODUCT_SESSION_SCALE.md) acrescenta janela e volume
+explícitos, fila paginada e tempos separados. Seu aceite nativo próprio está
+pendente. Prometheus/Grafana da mesma sessão e promoção/rollback de sucessor com
+pesos diferentes continuam como aceites independentes.

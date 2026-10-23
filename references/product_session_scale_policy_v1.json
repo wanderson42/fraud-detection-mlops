@@ -1,0 +1,10 @@
+{
+  "schema": "fraud_product_session_scale_policy_v1",
+  "maximum_target_decisions": 50000,
+  "maximum_timestamp_peers": 1024,
+  "maximum_window_days": 7,
+  "context_days": 14,
+  "page_size_maximum": 100,
+  "selection": "time_then_transaction_ID_including_timestamp_peers",
+  "quality_confirmation": false
+}

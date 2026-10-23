@@ -70,7 +70,7 @@ smokes de CLI e registra as dependências dos diretórios mantidos. A simplifica
 mais ampla dos controladores com pins continua uma tarefa explícita; não é
 confundida com a entrega de novos atalhos de operação.
 
-**Recorte em andamento: sessão operacional com chegada gradual e fila corrente.**
+**Recorte em andamento: ampliação de janela/volume da sessão e paginação da fila.**
 Treinadores compartilham protocolo/requisição e as consultas CRI têm implementação
 única. README e catálogo ficam separados da identidade executável. Recibos antigos
 permanecem íntegros, com transições de hashes revisadas e commitadas; a instalação
@@ -92,7 +92,7 @@ compartilhados. A
 continua como entrega seguinte, sem encerrar a limpeza por antecipação.
 Unificar comandos/destino ativo e demonstrar chegada gradual de eventos pela API,
 fila e métricas da mesma sessão, com pausa/retomada e atualização visível.
-O portal atual é um snapshot; o monitoramento KinD aceito usa cópia concluída.
+O portal de evidências usa snapshot; a tela operacional acompanha a sessão corrente. O monitoramento KinD aceito ainda usa cópia concluída.
 Não abrir novos estudos de modelo, broker, feature store ou CT para esse recorte.
 A simplificação e revisão de redundâncias fazem parte dessa consolidação.
 
@@ -840,6 +840,10 @@ pesos diferentes continua dependendo de candidato qualificado.
 Implementação aditiva de produtor com ritmo configurável, pausa/retomada,
 checkpoint causal HTTP e página de investigação com atualização automática.
 [Guia](../operations/PRODUCT_SESSION.md). Não substitui os snapshots aceitos.
-Aceite nativo e visual pendentes. Falta integrar os indicadores da sessão ao
+Ensaio nativo de 200 decisões aceito pelo autor e captura final conferida em 2026-10-23. Falta integrar os indicadores da sessão ao
 Prometheus/Grafana; a consolidação completa de fila e observabilidade da mesma
 sessão não está concluída. O gate de promoção permanece inalterado.
+
+### Aceite de sessão e ampliação — 2026-10-23
+
+Sessão `arrival-v1` aceita: 200 decisões/recibos HTTP, 13 alertas, pausa/retomada, feedback e reconciliação; zero novas pontuações na reexecução. [Evidência](../../references/evidence/product_session_author_validation_2026-10-23.json). Preparação da ampliação com janela/volume explícitos, paginação SQL e medição de fases em [PRODUCT_SESSION_SCALE.md](../operations/PRODUCT_SESSION_SCALE.md); ensaio de 2.000 decisões pendente. Integração de monitoramento da mesma sessão e unificação do portal permanecem recortes seguintes.

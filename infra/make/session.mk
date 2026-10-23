@@ -36,3 +36,12 @@ session-verify:
 ## Open the auto-refresh read-only investigation page on loopback
 session-open:
 	$(POETRY) run python -m scripts.product_session.controller open --session-id "$(SESSION_ID)" --port "$(SESSION_PORT)"
+
+SESSION_START ?= 2018-09-16T00:00:00
+SESSION_END ?= 2018-09-17T00:00:00
+SESSION_TARGET_DECISIONS ?= 2000
+.PHONY: session-prepare-expanded
+## Prepare a NEW session with explicit time window and nominal volume; timestamp peers stay together
+session-prepare-expanded:
+	@test "$(SESSION_NO_OTHER_WRITERS)" = 1 || { echo 'Set SESSION_NO_OTHER_WRITERS=1'; exit 2; }
+	$(POETRY) run python -m scripts.product_session.controller prepare --session-id "$(SESSION_ID)" --source-state "$(SESSION_SOURCE_STATE)" --start "$(SESSION_START)" --end "$(SESSION_END)" --target-decisions "$(SESSION_TARGET_DECISIONS)" --no-other-writers

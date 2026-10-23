@@ -144,15 +144,17 @@ Terraform permanece posterior à consolidação funcional.
 
 O marco KinD/Helm e o aceite do portal foram integrados à main. A consolidação
 ocorre em `feat/fraud-operations-demo`, começando pela revisão dos comandos e
-pela retirada de uma transição de uso único já aplicada. A sessão de chegada
-gradual e a atualização coordenada de fila/métricas seguem como próximo passo;
-a reorganização dos comandos não as implementa implicitamente.
+pela retirada de uma transição de uso único já aplicada. A chegada gradual e a fila corrente foram validadas em uma sessão de 200 decisões.
+A ampliação de volume e a ligação das métricas à mesma sessão são os próximos recortes.
 
 ## Sessão de chegada gradual
 
 O primeiro recorte da sessão está preparado em [PRODUCT_SESSION.md](PRODUCT_SESSION.md):
 `session-prepare`, `session-run`, `session-pause`, `session-status`, `session-feedback`,
 `session-verify` e `session-open`. Ele liga o produtor à API e à fila corrente,
-com checkpoint próprio e atualização automática. O aceite nativo ainda depende
-do ensaio do autor. A integração Prometheus/Grafana da mesma sessão continua
+com checkpoint próprio e atualização automática. O ensaio nativo de 200 decisões foi aceito pelo autor em 2026-10-23. A integração Prometheus/Grafana da mesma sessão continua
 pendente; os dashboards existentes preservam a fonte do replay concluído.
+
+## Sessões ampliadas
+
+O ensaio de 200 decisões foi aceito pelo autor em 2026-10-23. [Sessões ampliadas](PRODUCT_SESSION_SCALE.md) permitem nova janela/volume, fila paginada e medição por fase, preservando o checkpoint anterior. A ampliação ainda requer aceite nativo; fila e métricas Prometheus/Grafana da mesma sessão continuam no próximo recorte.

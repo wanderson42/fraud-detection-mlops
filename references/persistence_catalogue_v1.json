@@ -60,7 +60,8 @@
         "scripts/product_flow/controller.py",
         "scripts/product_flow/inputs.py",
         "scripts/product_flow/ledger.py",
-        "scripts/product_session/controller.py"
+        "scripts/product_session/controller.py",
+        "scripts/product_session/configuration.py"
       ],
       "review_required": false
     },

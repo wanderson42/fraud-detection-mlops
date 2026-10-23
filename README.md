@@ -606,4 +606,6 @@ sintéticos da CI foram preservados. A checagem cotidiana é `platform-check`, c
 o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
 parada/subida nem promoção de sucessor. [Evidência](references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).
 
-A [sessão operacional](docs/operations/PRODUCT_SESSION.md) conecta chegada gradual à API e à fila de investigação atualizada automaticamente; aceite nativo em preparação.
+A [sessão operacional](docs/operations/PRODUCT_SESSION.md) conecta chegada gradual à API e à fila de investigação atualizada automaticamente; aceite nativo concluído para a sessão de 200 decisões.
+
+Sessões com [janela e volume configuráveis](docs/operations/PRODUCT_SESSION_SCALE.md) reutilizam a API e o ledger causal, com fila paginada e medição separada de contexto, chegada e verificação. O ensaio de 200 decisões foi aceito; a ampliação aguarda aceite nativo.

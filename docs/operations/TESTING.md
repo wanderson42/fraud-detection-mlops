@@ -1558,3 +1558,7 @@ identidade, leitura concorrente e feedback disponível no relógio correto.
 O ambiente opcional `product-session` exige sessão preparada nova e declaração
 de writers; executa o ensaio no champion corrente sem treino ou promoção.
 Veja [PRODUCT_SESSION.md](PRODUCT_SESSION.md) para comandos e aceite visual.
+
+## Ampliação de sessões
+
+`tests/product_session/test_scaling.py` testa captura temporal, 262 decisões HTTP reais, paginação SQL, totais globais, feedback e reconstrução independente. `portal-ui` testa navegação de páginas sem reduzir os indicadores globais. O ambiente opt-in `product-session-scale` valida uma nova sessão de 2.000 decisões e preserva os bytes da sessão de 200 já aceita. [Procedimento](PRODUCT_SESSION_SCALE.md).

@@ -335,3 +335,5 @@ o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
 parada/subida nem promoção de sucessor. [Evidência](../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).
 
 - [Sessão operacional de investigação](operations/PRODUCT_SESSION.md): chegada gradual, pausa/retomada e fila corrente.
+
+- [Sessões ampliadas](operations/PRODUCT_SESSION_SCALE.md): janela/volume, fila paginada e relatórios de tempo/memória.

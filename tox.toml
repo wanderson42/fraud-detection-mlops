@@ -436,3 +436,20 @@ commands_pre = [
 commands = [
     ["python", "-m", "pytest", "-q", "-s", "tests/product_session/live/test_current_session.py"],
 ]
+
+
+[env.product-session-scale]
+description = "Opt-in 2000-decision window, SQL paging, phase timings and preserved accepted session"
+base_python = ["python3.14"]
+package = "skip"
+allowlist_externals = ["poetry"]
+pass_env = ["FRAUD_PRODUCT_SESSION_SCALE_LIVE", "POETRY_CACHE_DIR", "DOCKER_HOST", "DOCKER_CONTEXT", "DOCKER_CONFIG", "XDG_RUNTIME_DIR", "PATH", "FRAUD_SESSION_ID", "FRAUD_SESSION_NO_OTHER_WRITERS"]
+set_env = { VIRTUAL_ENV = "{env_dir}", POETRY_VIRTUALENVS_CREATE = "false", POETRY_NO_INTERACTION = "1", MLFLOW_DISABLE_TELEMETRY = "true", MLFLOW_DISABLE_AGENT_HINT = "1", FRAUD_PRODUCT_SESSION_SCALE_LIVE = "1" }
+commands_pre = [
+    ["python", "scripts/check_test_environment.py"],
+    ["poetry", "check", "--lock"],
+    ["poetry", "sync", "--only", "main,pipeline,dev"],
+]
+commands = [
+    ["python", "-m", "pytest", "-q", "-s", "tests/product_session/live/test_expanded_session.py"],
+]

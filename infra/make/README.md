@@ -42,3 +42,5 @@ seu significado específico: verificar um ciclo controlado registrado. O baselin
 atual após a retirada sintética está identificado no guia operacional.
 
 `session.mk` separa a sessão de chegada gradual dos snapshots aceitos: preparar, executar/retomar, pausar, consultar, avançar feedback, verificar e abrir a fila corrente. Guia: `docs/operations/PRODUCT_SESSION.md`.
+
+`session-prepare-expanded` exige novo ID e declara início, fim exclusivo e volume nominal; os comandos `session-run`, `session-pause`, `session-feedback`, `session-verify` e `session-open` continuam os mesmos.
