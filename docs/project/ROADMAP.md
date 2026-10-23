@@ -70,7 +70,7 @@ smokes de CLI e registra as dependências dos diretórios mantidos. A simplifica
 mais ampla dos controladores com pins continua uma tarefa explícita; não é
 confundida com a entrega de novos atalhos de operação.
 
-**Recorte em andamento: simplificação estrutural antes da sessão contínua.**
+**Recorte em andamento: sessão operacional com chegada gradual e fila corrente.**
 Treinadores compartilham protocolo/requisição e as consultas CRI têm implementação
 única. README e catálogo ficam separados da identidade executável. Recibos antigos
 permanecem íntegros, com transições de hashes revisadas e commitadas; a instalação
@@ -834,3 +834,12 @@ veredito automático nem afirma economia operacional sem medição.
 [Guia](../operations/PORTAL_PERFORMANCE.md). O próximo fechamento consolida o
 aceite visual/funcional e a demonstração por usuário. A promoção de sucessor com
 pesos diferentes continua dependendo de candidato qualificado.
+
+### Sessão operacional — preparação em 2026-10-23
+
+Implementação aditiva de produtor com ritmo configurável, pausa/retomada,
+checkpoint causal HTTP e página de investigação com atualização automática.
+[Guia](../operations/PRODUCT_SESSION.md). Não substitui os snapshots aceitos.
+Aceite nativo e visual pendentes. Falta integrar os indicadores da sessão ao
+Prometheus/Grafana; a consolidação completa de fila e observabilidade da mesma
+sessão não está concluída. O gate de promoção permanece inalterado.

@@ -419,4 +419,20 @@ base_python = ["python3.14"]
 package = "skip"
 set_env = { STREAMLIT_BROWSER_GATHER_USAGE_STATS = "false", DO_NOT_TRACK = "true" }
 commands_pre = [["python", "-m", "pip", "install", "--require-hashes", "--only-binary=:all:", "-r", "infra/portal/requirements-test.txt"]]
-commands = [["python", "-m", "pytest", "-q", "--confcutdir=tests/fraud_portal", "tests/fraud_portal/test_app.py", "tests/fraud_portal/test_data.py", "tests/fraud_portal/test_controller.py", "tests/fraud_portal/test_performance_ui.py"]]
+commands = [["python", "-m", "pytest", "-q", "--confcutdir=tests/fraud_portal", "tests/fraud_portal/test_app.py", "tests/fraud_portal/test_data.py", "tests/fraud_portal/test_controller.py", "tests/fraud_portal/test_performance_ui.py", "tests/fraud_portal/test_session_ui.py"]]
+
+[env.product-session]
+description = "Opt-in causal transaction HTTP champion, durable triage and pause/resume reconciliation"
+base_python = ["python3.14"]
+package = "skip"
+allowlist_externals = ["poetry"]
+pass_env = ["FRAUD_PRODUCT_SESSION_LIVE", "POETRY_CACHE_DIR", "DOCKER_HOST", "DOCKER_CONTEXT", "DOCKER_CONFIG", "XDG_RUNTIME_DIR", "PATH", "FRAUD_SESSION_ID", "FRAUD_SESSION_NO_OTHER_WRITERS"]
+set_env = { VIRTUAL_ENV = "{env_dir}", POETRY_VIRTUALENVS_CREATE = "false", POETRY_NO_INTERACTION = "1", MLFLOW_DISABLE_TELEMETRY = "true", MLFLOW_DISABLE_AGENT_HINT = "1", FRAUD_PRODUCT_SESSION_LIVE = "1" }
+commands_pre = [
+    ["python", "scripts/check_test_environment.py"],
+    ["poetry", "check", "--lock"],
+    ["poetry", "sync", "--only", "main,pipeline,dev"],
+]
+commands = [
+    ["python", "-m", "pytest", "-q", "-s", "tests/product_session/live/test_current_session.py"],
+]

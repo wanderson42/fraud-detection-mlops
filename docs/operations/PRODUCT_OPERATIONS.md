@@ -147,3 +147,12 @@ ocorre em `feat/fraud-operations-demo`, começando pela revisão dos comandos e
 pela retirada de uma transição de uso único já aplicada. A sessão de chegada
 gradual e a atualização coordenada de fila/métricas seguem como próximo passo;
 a reorganização dos comandos não as implementa implicitamente.
+
+## Sessão de chegada gradual
+
+O primeiro recorte da sessão está preparado em [PRODUCT_SESSION.md](PRODUCT_SESSION.md):
+`session-prepare`, `session-run`, `session-pause`, `session-status`, `session-feedback`,
+`session-verify` e `session-open`. Ele liga o produtor à API e à fila corrente,
+com checkpoint próprio e atualização automática. O aceite nativo ainda depende
+do ensaio do autor. A integração Prometheus/Grafana da mesma sessão continua
+pendente; os dashboards existentes preservam a fonte do replay concluído.

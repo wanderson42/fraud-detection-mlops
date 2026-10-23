@@ -1549,3 +1549,12 @@ explicitamente concluída pelo autor. O manifest da avaliação está registrado
 [evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json).
 Não implica nova confirmação independente, promoção de sucessor ou chegada
 contínua de novos eventos ao portal.
+
+## Sessão operacional do produto
+
+`tests/product_session` verifica HTTP real, pausa, retomada, unicidade persistida,
+identidade, leitura concorrente e feedback disponível no relógio correto.
+`tests/fraud_portal/test_session_ui.py` integra o ambiente `portal-ui`.
+O ambiente opcional `product-session` exige sessão preparada nova e declaração
+de writers; executa o ensaio no champion corrente sem treino ou promoção.
+Veja [PRODUCT_SESSION.md](PRODUCT_SESSION.md) para comandos e aceite visual.

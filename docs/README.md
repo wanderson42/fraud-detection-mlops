@@ -333,3 +333,5 @@ ativo é `fraud-detector`; os gates HTTP compartilhados e a qualificação/consu
 sintéticos da CI foram preservados. A checagem cotidiana é `platform-check`, com
 o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
 parada/subida nem promoção de sucessor. [Evidência](../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).
+
+- [Sessão operacional de investigação](operations/PRODUCT_SESSION.md): chegada gradual, pausa/retomada e fila corrente.

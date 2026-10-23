@@ -40,3 +40,5 @@ requisitos. Não há alvo `destroy`, prune ou reboot automático.
 atuais, sem exigir ciclo de parada/subida neste boot. `platform-verify` conserva
 seu significado específico: verificar um ciclo controlado registrado. O baseline
 atual após a retirada sintética está identificado no guia operacional.
+
+`session.mk` separa a sessão de chegada gradual dos snapshots aceitos: preparar, executar/retomar, pausar, consultar, avançar feedback, verificar e abrir a fila corrente. Guia: `docs/operations/PRODUCT_SESSION.md`.

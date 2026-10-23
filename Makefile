@@ -10,6 +10,7 @@ include infra/make/platform.mk
 include infra/make/round.mk
 include infra/make/updates.mk
 include infra/make/product.mk
+include infra/make/session.mk
 include infra/make/serving-recovery.mk
 include infra/make/case-explanations.mk
 include infra/make/portal.mk
@@ -27,6 +28,7 @@ help:
 	  'Parar/subir: platform-stop | platform-start (requerem baseline salvo e declaração de writers)' \
 	  'Desenvolver: validate | portal-ui-test' \
 	  'Background:  access-up | access-status | access-logs | access-stop-all' \
+	  'Sessão:      session-prepare | session-run | session-pause | session-status | session-open' \
 	  'Catálogo:    make help-all' \
 	  'Guia:       docs/operations/PRODUCT_OPERATIONS.md'
 
