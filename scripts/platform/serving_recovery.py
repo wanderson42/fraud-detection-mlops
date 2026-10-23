@@ -17,7 +17,7 @@ from scripts.model_updates import deployment
 from scripts.operational_round import controller as original
 from scripts.operational_round import policy as p
 from scripts.platform import kind_foundation as f
-from scripts.platform import kind_tracking
+from scripts.platform import kind_tracking, source_compatibility
 
 
 def work(key):
@@ -93,9 +93,7 @@ def committed():
 
 def read(key):
     result = json.loads(f.managed_destination(work(key) / "prepared.json", "storage").read_bytes())
-    p.require(
-        result["source_pins"] == committed(), "Recovery implementation changed; preserve receipts"
-    )
+    source_compatibility.accept(result["source_pins"], committed(), f.ROOT)
     p.require(
         p.digest({k: v for k, v in result.items() if k != "approval_sha256"})
         == result["approval_sha256"],

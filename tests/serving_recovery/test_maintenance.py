@@ -1,13 +1,11 @@
 """Same-model maintenance, scoped compatibility and recoverable state publication."""
 
 import copy
-import hashlib
 import json
 import subprocess
 
 import pytest
 from scripts.platform import serving_recovery as r
-from scripts.platform import source_compatibility as compat
 
 
 def active():
@@ -125,57 +123,6 @@ def test_foreign_current_is_never_overwritten(tmp_path, monkeypatch):
     assert not (folder / "applying.json").exists()
 
 
-def test_committed_transition_accepts_exact_operational_changes_and_rejects_science(tmp_path):
-    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
-    changes = {}
-    old = {"science.py": "a" * 64}
-    new = dict(old)
-    for index, name in enumerate(sorted(compat.ALLOWED)):
-        path = tmp_path / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text("reviewed " + name)
-        before = None if name.startswith("scripts/platform/") else str(index) * 64
-        after = hashlib.sha256(path.read_bytes()).hexdigest()
-        changes[name] = {"before": before, "after": after}
-        if before is not None:
-            old[name] = before
-        new[name] = after
-    target = tmp_path / compat.TRANSITION
-    target.parent.mkdir()
-    target.write_text(
-        json.dumps({"schema": "fraud_serving_seed_source_transition_v1", "changes": changes})
-    )
-    with pytest.raises(ValueError, match="Commit"):
-        compat.accept(old, new, tmp_path)
-    subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
-    subprocess.run(
-        [
-            "git",
-            "-c",
-            "user.name=Fixture",
-            "-c",
-            "user.email=fixture@example.invalid",
-            "commit",
-            "-qm",
-            "reviewed",
-        ],
-        cwd=tmp_path,
-        check=True,
-    )
-    compat.accept(old, new, tmp_path)
-    invalid = dict(new)
-    invalid["science.py"] = "f" * 64
-    with pytest.raises(ValueError, match="Scientific"):
-        compat.accept(old, invalid, tmp_path)
-    invalid = dict(new)
-    invalid["scripts/operational_round/seed.py"] = "f" * 64
-    with pytest.raises(ValueError, match="Unreviewed"):
-        compat.accept(old, invalid, tmp_path)
-    target.write_text(target.read_text() + " ")
-    with pytest.raises(ValueError, match="Commit"):
-        compat.accept(old, new, tmp_path)
-
-
 def test_make_maintenance_requires_writer_and_exact_approval(dispatch):
     result, calls = dispatch("serving-recovery-apply")
     assert result.returncode != 0 and calls == []
@@ -199,21 +146,28 @@ def test_completed_HTTP_flow_receipt_and_ledger_survive_operational_transition(
     original_root = r.f.ROOT
     committed_root = tmp_path / "reviewed"
     committed_root.mkdir()
-    declaration = json.loads((original_root / source_compatibility.TRANSITION).read_bytes())
+    declarations = [
+        (path, json.loads((original_root / path).read_bytes()))
+        for path in (source_compatibility.TRANSITION, source_compatibility.REFACTOR_TRANSITION)
+    ]
     current_pins = flow.pins()
     saved_pins = dict(current_pins)
-    for name, hashes in declaration["changes"].items():
-        if name in saved_pins:
-            if hashes["before"] is None:
-                saved_pins.pop(name)
-            else:
-                saved_pins[name] = hashes["before"]
-        dest = committed_root / name
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(original_root / name, dest)
-    dest = committed_root / source_compatibility.TRANSITION
-    dest.parent.mkdir(exist_ok=True)
-    shutil.copyfile(original_root / source_compatibility.TRANSITION, dest)
+    # Walk both reviewed transitions backwards to reconstruct a pre-seed receipt.
+    for _, declaration in reversed(declarations):
+        for name, hashes in declaration["changes"].items():
+            if name in saved_pins or hashes["after"] is None:
+                if hashes["before"] is None:
+                    saved_pins.pop(name, None)
+                else:
+                    saved_pins[name] = hashes["before"]
+            if (original_root / name).is_file():
+                dest = committed_root / name
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(original_root / name, dest)
+    for path, _ in declarations:
+        dest = committed_root / path
+        dest.parent.mkdir(exist_ok=True)
+        shutil.copyfile(original_root / path, dest)
     subprocess.run(["git", "init", "-q", str(committed_root)], check=True)
     subprocess.run(["git", "add", "."], cwd=committed_root, check=True)
     subprocess.run(

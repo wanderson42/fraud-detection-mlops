@@ -9,8 +9,9 @@ from uuid import uuid4
 
 from mlflow import MlflowClient
 from scripts.operational_round import policy as p
-from scripts.platform import kind_datasets, kind_pipeline, kind_tracking
+from scripts.platform import kind_datasets, kind_pipeline, kind_tracking, source_compatibility
 from scripts.platform import kind_foundation as f
+from scripts.platform.container_images import inspect_image as cri
 from scripts.storage import gold_archive
 
 ROOT = f.ROOT
@@ -25,13 +26,13 @@ def work(key):
 def pins():
     names = {
         "poetry.lock",
+        "scripts/platform/container_images.py",
+        "scripts/platform/source_compatibility.py",
         "pyproject.toml",
-        "README.md",
         ".dockerignore",
         "docker/serving/Dockerfile",
         "infra/serving/images.lock.json",
         "infra/kind/serving/Dockerfile.artifacts",
-        "references/persistence_catalogue_v1.json",
         "infra/observability/storage-requirements.txt",
         "scripts/platform/kind_foundation.py",
         "scripts/platform/kind_tracking.py",
@@ -86,9 +87,9 @@ def committed():
 
 def read(key):
     value = json.loads((work(key) / "round.json").read_bytes())
+    source_compatibility.accept(value["source_pins"], pins(), ROOT)
     p.require(
-        value["source_pins"] == pins()
-        and value["policy"] == p.load()
+        value["policy"] == p.load()
         and value["node_uid"] == f.owner()["node_uid"]
         and value["tracking_deployment_uid"] == kind_tracking.inventory()["deployment_uid"],
         "Round code, policy, node or tracking ownership changed",
@@ -236,29 +237,12 @@ def image_command(args, *, timeout):
     return result
 
 
-def cri(tag):
-    return json.loads(
-        f.run(
-            [
-                "docker",
-                "exec",
-                f.CLUSTER + "-control-plane",
-                "crictl",
-                "--runtime-endpoint",
-                "unix:///run/containerd/containerd.sock",
-                "inspecti",
-                tag,
-            ]
-        ).stdout
-    )["status"]
-
-
 def trainer_image(key):
     value = json.loads((work(key) / "trainer-image.json").read_bytes())
     loaded = cri(value["image"])
+    source_compatibility.accept(value["source_pins"], pins(), ROOT)
     p.require(
-        value["source_pins"] == pins()
-        and value["node_uid"] == f.owner()["node_uid"]
+        value["node_uid"] == f.owner()["node_uid"]
         and kind_tracking.image_digest(value["identity"])
         == kind_tracking.image_digest(loaded["id"]),
         "Trainer image identity changed",

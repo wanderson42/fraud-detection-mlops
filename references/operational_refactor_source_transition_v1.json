@@ -1,0 +1,55 @@
+{
+  "schema": "fraud_operational_refactor_source_transition_v1",
+  "purpose": "shared training input/CLI and host CRI inspection with unchanged fitting, temporal comparison, feature contracts and promotion policy",
+  "documentary_paths_excluded_from_execution": [
+    "README.md",
+    "references/persistence_catalogue_v1.json"
+  ],
+  "old_receipts_rewritten": false,
+  "changes": {
+    "references/model_update_compatibility_v1.json": {
+      "before": "812d8196906322705d0770b5c596123f22051ef7a72384bda02f77e2ce53d1ae",
+      "after": null
+    },
+    "scripts/model_updates/controller.py": {
+      "before": "8507b9e1739132efdddfa1b72ac33a90dea014f998e0b0df569653a3d91cf785",
+      "after": "2e8439f2914eebfb9b4923b2b4029c8c769ae82db835bbe61ed16fd73770efc6"
+    },
+    "scripts/model_updates/training.py": {
+      "before": "57a400ca7163aef9d36e0621e5e11bfeccdb1805e5690b706ef174481baef31e",
+      "after": "223bd4a904a1e01df8162f1536a03012d0be91947ed4411532b882b83e1e09b3"
+    },
+    "scripts/operational_round/controller.py": {
+      "before": "5caea90b6e0c1be33072b80a1651e52fb1d41ea1b54e6021d702c2d1471f0df5",
+      "after": "8f6ebb3fa0e164435e4e91c30a9235e95439dfb0bcb5f3b79ebd7e5011120e5b"
+    },
+    "scripts/operational_round/training.py": {
+      "before": "180671c39b0ce3121d77410d1bfe67640df971bbaa13a045572d8ca5236ffc2c",
+      "after": "c1d92811b3d7e558487b8fbab03ed6ad1326bf3267a4a4b4626ed88258608414"
+    },
+    "scripts/platform/container_images.py": {
+      "before": null,
+      "after": "d0efb822032677c5a1eb403e45e9302789b7b063dbc6840b8bc2fe2c7d5fb2de"
+    },
+    "scripts/platform/kind_operations.py": {
+      "before": "c05a6406188bdc78c3747f5758e23d2ef4b530dca2064d3d149b5efb1a419824",
+      "after": "43d3e718ec30afc926d671caa3206c1bf5e20b78786f80006eb0420486f34f23"
+    },
+    "scripts/platform/kind_replay.py": {
+      "before": "7c983ee4457c559c7ceb8cd510152d2fd2d319d6d85abe9fe262d1a18573a4ac",
+      "after": "5845272158254c6b3cedb6af43b6765cba43ec51e850f3623811369b1d588dd9"
+    },
+    "scripts/platform/kind_serving_delivery.py": {
+      "before": "2ad023a56fb1b6f6cfea4b2b1580a935566c820b6c3159f59de7607a134aba06",
+      "after": "b052ce307ab12b49a664189c3d65168849043c8fe801812b7d3bf0dd9283dd3a"
+    },
+    "scripts/platform/serving_recovery.py": {
+      "before": "f640f8979966b1fb387030bd804bfd321d0f857c6a319ea0103b02412e15a94c",
+      "after": "7a6188f8a2b695e6d731d93db20e8327af987db2555950757207bbb2f35c2757"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "ec229e600f2b2776cf13d4dce5bb4d68f09e2390ccc74603ca1554a4e5d96a57",
+      "after": "7009cc96641afd9df3b0f3cc0f9b5d28b92ee11b89e214ac22b14a2177c9f935"
+    }
+  }
+}

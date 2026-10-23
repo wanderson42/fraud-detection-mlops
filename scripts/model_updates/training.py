@@ -1,12 +1,9 @@
 """Train repeatable candidates; optional tuning uses only inner training windows."""
 
-import argparse
-from contextlib import redirect_stdout
 from importlib.metadata import version
 import json
 import os
 from pathlib import Path
-import sys
 from tempfile import TemporaryDirectory
 
 import mlflow
@@ -15,44 +12,21 @@ from mlflow.entities import Metric
 from mlflow.models import infer_signature
 import mlflow.sklearn
 import numpy as np
-import pandas as pd
 from scripts.model_updates.policy import validate
 from scripts.model_updates.search import choose
 from scripts.operational_round import lineage
 from scripts.operational_round.policy import decide, digest, require, sha
+from scripts.operational_round.training import request_for, run_worker
 from scripts.storage import archive, gold_archive
 from threadpoolctl import threadpool_limits
 
-from fraud_detection_mlops.features.feature_schema import FEATURE_DTYPES
 from fraud_detection_mlops.integrations import mlflow_tracking as tracking
 from fraud_detection_mlops.integrations.skops_persistence import TRUSTED_TYPES
 from fraud_detection_mlops.modeling.algorithms.model_catalog import MODEL_CATALOG
 from fraud_detection_mlops.modeling.experiments.candidate_training import fit_candidate, load_split
 from fraud_detection_mlops.serving.model_release import runtime_environment
-from fraud_detection_mlops.serving.request_schema import ScoreRequest
 
 MARKER = "FRAUD_OPERATIONAL_ROUND_RESULT="
-
-
-def request_for(frame, metadata):
-    row = metadata.iloc[0]
-    features = frame.iloc[[0]].astype(FEATURE_DTYPES).iloc[0].to_dict()
-    features = {
-        k: int(v) if FEATURE_DTYPES[k].startswith("int") else float(v) for k, v in features.items()
-    }
-    stamp = pd.Timestamp(row.TX_DATETIME).isoformat()
-    return ScoreRequest.model_validate(
-        {
-            "schema_version": 1,
-            "feature_contract_version": "gold_v1",
-            "transaction_id": int(row.TRANSACTION_ID),
-            "customer_id": int(row.CUSTOMER_ID),
-            "terminal_id": int(row.TERMINAL_ID),
-            "tx_datetime": stamp,
-            "feature_as_of": stamp,
-            "features": features,
-        }
-    ).model_dump(mode="json")
 
 
 def candidates(train, validation, provenance, partitions, *, round_key, uri, policy, work):
@@ -331,29 +305,7 @@ def execute(plan, incoming, work):
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--plan", type=Path, required=True)
-    parser.add_argument("--work", type=Path, default=Path("/work"))
-    args = parser.parse_args()
-    try:
-        with redirect_stdout(sys.stderr):
-            result = execute(
-                json.loads(args.plan.read_bytes()),
-                json.loads((args.work / "input.json").read_bytes()),
-                args.work,
-            )
-        print(MARKER + json.dumps(result, allow_nan=False), flush=True)
-        if result["status"] != "qualified":
-            raise SystemExit(2)
-    except Exception as exc:  # noqa: BLE001 — bounded subprocess result without credential traceback
-        print(
-            MARKER
-            + json.dumps(
-                {"status": "failed", "error_type": type(exc).__name__, "reason": str(exc)[-2000:]}
-            ),
-            flush=True,
-        )
-        raise SystemExit(1) from None
+    run_worker(execute, __doc__, MARKER)
 
 
 if __name__ == "__main__":

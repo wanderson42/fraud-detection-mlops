@@ -14,6 +14,8 @@ from uuid import uuid4
 
 from scripts.platform import kind_foundation as f
 from scripts.platform import kind_tracking as tracking
+from scripts.platform import source_compatibility
+from scripts.platform.container_images import inspect_image as cri
 from scripts.serving import blue_green_rehearsal as rollout
 from scripts.serving import check_docker_runtime as checks
 from scripts.serving import delivery_gate as delivery
@@ -32,6 +34,8 @@ def work():
 
 def pins():
     names = {
+        "scripts/platform/container_images.py",
+        "scripts/platform/source_compatibility.py",
         "scripts/platform/kind_serving.py",
         "scripts/platform/kind_serving_delivery.py",
         "scripts/platform/kind_serving_seed.py",
@@ -46,23 +50,6 @@ def pins():
             p.relative_to(f.ROOT).as_posix() for p in (f.ROOT / folder).rglob("*") if p.is_file()
         )
     return {name: sha(f.ROOT / name) for name in sorted(names)}
-
-
-def cri(tag):
-    return json.loads(
-        f.run(
-            [
-                "docker",
-                "exec",
-                f.CLUSTER + "-control-plane",
-                "crictl",
-                "--runtime-endpoint",
-                "unix:///run/containerd/containerd.sock",
-                "inspecti",
-                tag,
-            ]
-        ).stdout
-    )["status"]
 
 
 def image_command(args, *, timeout):
@@ -324,8 +311,9 @@ def plan():
     f.require(
         value.get("schema") == "fraud_kind_serving_preparation_v1", "Invalid serving preparation"
     )
+    source_compatibility.accept(value["source_pins"], pins(), f.ROOT)
     f.require(
-        value["node_uid"] == f.owner()["node_uid"] and value["source_pins"] == pins(),
+        value["node_uid"] == f.owner()["node_uid"],
         "Serving sources or node changed; preserve preparation",
     )
     directory = f.managed_destination(Path(value["directory"]), "storage")

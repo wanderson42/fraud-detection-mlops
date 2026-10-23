@@ -71,6 +71,10 @@ mais ampla dos controladores com pins continua uma tarefa explícita; não é
 confundida com a entrega de novos atalhos de operação.
 
 **Recorte em andamento: simplificação estrutural antes da sessão contínua.**
+Treinadores compartilham protocolo/requisição e as consultas CRI têm implementação
+única. README e catálogo ficam separados da identidade executável. Recibos antigos
+permanecem íntegros, com transições de hashes revisadas e commitadas; o próximo
+passo é revisar famílias legadas e seus consumidores antes da sessão contínua.
 A consolidação do ciclo de vida agora prepara baseline v2 do champion ativo,
 reutiliza o gate da API e restaura réplicas salvas, inclusive zero no slot inativo.
 Parada/subida canônica aceita pelo autor em 2026-10-23: 1 teste em 276,71 s,
@@ -79,8 +83,9 @@ Não altera o estado da promoção recorrente de sucessor, que continua condicio
 a candidato qualificado e validação própria. [Procedimento](../operations/KIND_OPERATIONS.md).
 
 O [balanço da varredura](../operations/CODEBASE_SIMPLIFICATION.md#varredura-do-checkout)
-registra a retirada do importador e a consolidação dos testes, com as duplicações
-dos controladores e a separação de pins ainda explícitas. A
+registra a retirada do importador, a consolidação dos testes e o compartilhamento
+de entrada de treino/consulta CRI. A compatibilidade dos pins tem transição exata
+revisada; a retirada das famílias legadas ainda exige conferir seus consumidores. A
 [consolidação da demonstração operacional](../operations/PRODUCT_OPERATIONS.md)
 continua como entrega seguinte, sem encerrar a limpeza por antecipação.
 Unificar comandos/destino ativo e demonstrar chegada gradual de eventos pela API,

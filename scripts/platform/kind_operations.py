@@ -16,7 +16,7 @@ from scripts.platform import kind_observability as monitor
 from scripts.platform import kind_serving as serving
 from scripts.platform import kind_serving_delivery as delivery
 from scripts.platform import kind_tracking as tracking
-from scripts.platform import local_access
+from scripts.platform import local_access, source_compatibility
 
 NODE = f.CLUSTER + "-control-plane"
 # Dependents stop first; dependencies start first. No cluster/volume creation occurs.
@@ -402,6 +402,7 @@ def read_baseline(path):
         and value["source_pins"] == pins(),
         "Baseline schema/code identity differs; preserve receipt and prepare a new canonical baseline",
     )
+    source_compatibility.accept(value["source_pins"], pins(), f.ROOT)
     f.require(
         value["active_state_sha256"] == digest(active_state()),
         "Active serving receipt changed; prepare a new baseline without editing the old one",

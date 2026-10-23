@@ -1,4 +1,4 @@
-"""Accept one committed operational-only source transition without rewriting old receipts."""
+"""Accept bounded committed source transitions without rewriting accepted receipts."""
 
 import hashlib
 import json
@@ -16,32 +16,82 @@ ALLOWED = {
 }
 
 
+# These two files describe the project/catalogue; executable policies/contracts stay pinned.
+DOCUMENTARY = {"README.md", "references/persistence_catalogue_v1.json"}
+REFACTOR_TRANSITION = "references/operational_refactor_source_transition_v1.json"
+REFACTOR_ALLOWED = {
+    "scripts/operational_round/training.py",
+    "scripts/model_updates/training.py",
+    "scripts/operational_round/controller.py",
+    "scripts/model_updates/controller.py",
+    "scripts/platform/container_images.py",
+    "scripts/platform/kind_replay.py",
+    "scripts/platform/kind_serving_delivery.py",
+    "scripts/platform/kind_operations.py",
+    "scripts/platform/source_compatibility.py",
+    "scripts/platform/serving_recovery.py",
+    "references/model_update_compatibility_v1.json",
+}
+
+
+def _advance(saved, current, root, path, schema, allowed):
+    location = root / path
+    if not location.is_file():
+        return saved
+    data = location.read_bytes()
+    declaration = json.loads(data)
+    changes = declaration.get("changes", {})
+    if declaration.get("schema") != schema or set(changes) != allowed:
+        raise ValueError("Only the declared operational source transition is permitted")
+    needed = any(
+        name in saved or name in current
+        for name in changes
+        if saved.get(name) != current.get(name) and saved.get(name) == changes[name]["before"]
+    )
+    if not needed:
+        return saved
+    committed = subprocess.run(
+        ["git", "show", "HEAD:" + path], cwd=root, capture_output=True, check=False
+    )
+    if committed.returncode or committed.stdout != data:
+        raise ValueError(
+            "Commit the reviewed source transition before reading old receipts: " + path
+        )
+    result = dict(saved)
+    for name, hashes in changes.items():
+        if name not in result and name not in current:
+            continue
+        if result.get(name) == hashes["before"]:
+            if hashes["after"] is None:
+                result.pop(name, None)
+            else:
+                result[name] = hashes["after"]
+        elif result.get(name) not in (hashes["after"], current.get(name)):
+            raise ValueError("Unreviewed operational source transition: " + name)
+    return result
+
+
 def accept(saved, current, root):
+    """Compare execution identity; advance only exact reviewed operational changes in memory."""
+    saved = {k: v for k, v in saved.items() if k not in DOCUMENTARY}
+    current = {k: v for k, v in current.items() if k not in DOCUMENTARY}
     if saved == current:
         return
     root = Path(root)
-    data = (root / TRANSITION).read_bytes()
-    committed = subprocess.run(
-        ["git", "show", "HEAD:" + TRANSITION], cwd=root, capture_output=True, check=False
-    )
-    if committed.returncode or committed.stdout != data:
-        raise ValueError("Commit the reviewed serving seed transition before reading old receipts")
-    transition = json.loads(data)
-    if (
-        transition.get("schema") != "fraud_serving_seed_source_transition_v1"
-        or set(transition["changes"]) != ALLOWED
-    ):
-        raise ValueError("Only the declared serving seed operational transition is permitted")
     expected = dict(saved)
-    for name, hashes in transition["changes"].items():
-        if name not in saved and name not in current:
-            continue  # Product-only source is not a dependency of the model-update receipt.
-        if saved.get(name) != hashes["before"] or current.get(name) != hashes["after"]:
-            raise ValueError("Unreviewed operational source transition: " + name)
-        if hashlib.sha256((root / name).read_bytes()).hexdigest() != hashes["after"]:
-            raise ValueError("Operational transition source bytes differ: " + name)
-        expected[name] = hashes["after"]
+    for path, schema, allowed in [
+        (TRANSITION, "fraud_serving_seed_source_transition_v1", ALLOWED),
+        (REFACTOR_TRANSITION, "fraud_operational_refactor_source_transition_v1", REFACTOR_ALLOWED),
+    ]:
+        expected = _advance(expected, current, root, path, schema, allowed)
     if expected != current:
         raise ValueError(
-            "Scientific code, data contract or policy changed outside the seed transition"
+            "Scientific code, data contract or policy changed outside reviewed transitions"
         )
+    for name in saved.keys() | current.keys():
+        if (
+            saved.get(name) != current.get(name)
+            and current.get(name) is not None
+            and hashlib.sha256((root / name).read_bytes()).hexdigest() != current[name]
+        ):
+            raise ValueError("Operational transition source bytes differ: " + name)

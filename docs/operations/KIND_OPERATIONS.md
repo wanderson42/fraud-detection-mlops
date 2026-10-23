@@ -160,3 +160,21 @@ A [evidência do autor](../../references/evidence/canonical_lifecycle_author_val
 conserva a transcrição estruturada completa do ciclo e a proveniência do anexo.
 Não houve reboot neste aceite. O ciclo anterior e seu baseline continuam falhos e
 preservados; o aceite novo não reescreve aquela execução.
+
+
+### Leitura após a consolidação de fontes
+
+A refatoração de treinamento/CRI conserva a verificação do baseline canônico
+aceito. O leitor reconhece somente a transição de hashes revisada e commitada;
+modelo, ponteiro ativo, node/engine, volumes, recursos e readbacks continuam
+conferidos. Não é preciso parar o node outra vez apenas para consolidar funções.
+Depois da regressão e do commit, pode conferir por leitura:
+
+```bash
+make platform-verify PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-4fb6e8ecc8b14ad79564a84086a6c170.json
+```
+
+Esse comando não inicia/paralisa o node nem altera tráfego; realiza os probes
+existentes e grava seu recibo de verificação. Se boot, modelo ou recursos tiverem
+mudado desde o aceite, investigue a divergência em vez de alterar o baseline.
+A revisão de fontes não transforma um reboot não planejado em ciclo aceito.

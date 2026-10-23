@@ -1,0 +1,188 @@
+"""Exact committed source transitions preserve receipts and reject scientific drift."""
+
+import copy
+import hashlib
+import json
+from pathlib import Path
+import shutil
+import subprocess
+
+import pytest
+from scripts.platform import source_compatibility as compat
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_committed_transition_accepts_exact_operational_changes_and_rejects_science(tmp_path):
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    changes = {}
+    old = {"science.py": "a" * 64}
+    new = dict(old)
+    for index, name in enumerate(sorted(compat.ALLOWED)):
+        path = tmp_path / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("reviewed " + name)
+        before = None if name.startswith("scripts/platform/") else str(index) * 64
+        after = hashlib.sha256(path.read_bytes()).hexdigest()
+        changes[name] = {"before": before, "after": after}
+        if before is not None:
+            old[name] = before
+        new[name] = after
+    target = tmp_path / compat.TRANSITION
+    target.parent.mkdir()
+    target.write_text(
+        json.dumps({"schema": "fraud_serving_seed_source_transition_v1", "changes": changes})
+    )
+    with pytest.raises(ValueError, match="Commit"):
+        compat.accept(old, new, tmp_path)
+    subprocess.run(["git", "add", "."], cwd=tmp_path, check=True)
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            "user.name=Fixture",
+            "-c",
+            "user.email=fixture@example.invalid",
+            "commit",
+            "-qm",
+            "reviewed",
+        ],
+        cwd=tmp_path,
+        check=True,
+    )
+    compat.accept(old, new, tmp_path)
+    invalid = dict(new)
+    invalid["science.py"] = "f" * 64
+    with pytest.raises(ValueError, match="Scientific"):
+        compat.accept(old, invalid, tmp_path)
+    invalid = dict(new)
+    invalid["scripts/operational_round/seed.py"] = "f" * 64
+    with pytest.raises(ValueError, match="Scientific|Unreviewed"):
+        compat.accept(old, invalid, tmp_path)
+    target.write_text(target.read_text() + " ")
+    with pytest.raises(ValueError, match="Commit"):
+        compat.accept(old, new, tmp_path)
+
+
+def commit(root):
+    subprocess.run(["git", "init", "-q", str(root)], check=True)
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            "user.name=Fixture",
+            "-c",
+            "user.email=fixture@example.invalid",
+            "commit",
+            "-qm",
+            "Reviewed source transition",
+        ],
+        cwd=root,
+        check=True,
+    )
+
+
+@pytest.fixture
+def refactor(tmp_path):
+    transitions = []
+    for name in (compat.TRANSITION, compat.REFACTOR_TRANSITION):
+        src = ROOT / name
+        transitions.append(json.loads(src.read_bytes()))
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(src.read_bytes())
+    names = set().union(*(v["changes"].keys() for v in transitions))
+    for name in names:
+        if (ROOT / name).is_file():
+            target = tmp_path / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / name, target)
+    return tmp_path, transitions
+
+
+def previous(current, transitions):
+    saved = dict(current)
+    for step in reversed(transitions):
+        for name, hashes in step["changes"].items():
+            if name in saved or hashes["after"] is None:
+                if hashes["before"] is None:
+                    saved.pop(name, None)
+                else:
+                    saved[name] = hashes["before"]
+    return saved
+
+
+@pytest.mark.parametrize(
+    "scope", ["round", "updates", "product", "operations", "serving", "replay"]
+)
+@pytest.mark.parametrize("before_seed", [False, True])
+def test_current_readers_accept_exact_old_profiles_without_editing_them(
+    refactor, scope, before_seed
+):
+    from scripts.model_updates import controller as updates
+    from scripts.operational_round import controller as round_controller
+    from scripts.platform import kind_operations, kind_replay, kind_serving_delivery
+    from scripts.product_flow import controller as product
+
+    readers = {
+        "round": round_controller.pins,
+        "updates": updates.pins,
+        "product": product.pins,
+        "operations": kind_operations.pins,
+        "serving": kind_serving_delivery.pins,
+        "replay": kind_replay.pins,
+    }
+    root, transitions = refactor
+    current = readers[scope]()
+    saved = previous(current, transitions if before_seed else transitions[-1:])
+    original = copy.deepcopy(saved)
+    commit(root)
+    compat.accept(saved, current, root)
+    assert saved == original
+    bad = dict(current)
+    bad["references/gold_contract_v1.json"] = "f" * 64
+    with pytest.raises(ValueError, match="Scientific"):
+        compat.accept(saved, bad, root)
+
+
+def test_refactor_must_be_committed_and_unknown_fitter_change_remains_blocked(refactor):
+    from scripts.model_updates.controller import pins
+
+    root, transitions = refactor
+    current = pins()
+    saved = previous(current, transitions[-1:])
+    with pytest.raises(ValueError, match="Commit"):
+        compat.accept(saved, current, root)
+    commit(root)
+    name = "scripts/model_updates/training.py"
+    (root / name).write_bytes((root / name).read_bytes() + b"\n# unreviewed fitter change\n")
+    current[name] = hashlib.sha256((root / name).read_bytes()).hexdigest()
+    with pytest.raises(ValueError, match="Scientific"):
+        compat.accept(saved, current, root)
+
+
+def test_transition_cannot_add_scientific_paths_to_its_allowed_scope(refactor):
+    from scripts.model_updates.controller import pins
+
+    root, transitions = refactor
+    current = pins()
+    saved = previous(current, transitions[-1:])
+    file = root / compat.REFACTOR_TRANSITION
+    declaration = json.loads(file.read_bytes())
+    declaration["changes"]["references/model_update_policy_v1.json"] = {
+        "before": "a" * 64,
+        "after": "b" * 64,
+    }
+    file.write_text(json.dumps(declaration))
+    commit(root)
+    with pytest.raises(ValueError, match="Only the declared"):
+        compat.accept(saved, current, root)
+
+
+def test_documentary_edits_are_separate_from_execution_contracts():
+    saved = {"README.md": "a", "references/persistence_catalogue_v1.json": "b", "policy.json": "p"}
+    current = {"policy.json": "p"}
+    compat.accept(saved, current, ROOT)
+    with pytest.raises(ValueError, match="Scientific"):
+        compat.accept(saved, {"policy.json": "different"}, ROOT)

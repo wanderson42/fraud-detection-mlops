@@ -248,3 +248,20 @@ constitui nova confirmação independente. Uma operação longitudinal deve usar
 janelas temporais autorizadas com rótulos maduros e acompanhamento após deploy.
 Blue/green e smoke HTTP verificam a transição técnica; não demonstram impacto
 antifraude online, equivalência a canary/A/B ou ausência de indisponibilidade.
+
+
+## Refatorações compatíveis e recibos existentes
+
+A leitura de estados antigos conserva `source_pins` originais no recibo e verifica
+as transições operacionais explicitamente revisadas e commitadas. A consolidação
+de entrada dos treinadores/consulta CRI não modifica os critérios de seleção,
+qualificação ou aprovação do deploy. Contratos, políticas e código científico
+continuam comparados; README e catálogo não são dependências executáveis do treino.
+
+Depois de aplicar a refatoração, rode a regressão e faça o commit indicado antes
+de consultar estados antigos: a declaração não commitada é recusada. Não edite
+`round.json`, `update.json`, `input.json`, baselines ou manifests de imagem. A
+[documentação de simplificação](CODEBASE_SIMPLIFICATION.md#consolidação-de-treinamento-cri-e-identidade-de-execução)
+descreve os caminhos, a preservação dos aliases de função e os testes do protocolo.
+A declaração antiga de adoção do primeiro modelo fica como referência histórica;
+a transição executável atual é a de fontes operacionais revisadas.

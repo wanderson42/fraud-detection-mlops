@@ -193,8 +193,8 @@ simplificação deve tratar essas fronteiras; chegada contínua não substitui e
 
 ### Verificação
 
-Os pins atuais de atualização e fluxo de produto foram comparados antes/depois e
-permaneceram idênticos. A limpeza do catálogo não altera pesos, contratos de
+Na retirada do importador, os pins de atualização e fluxo de produto foram
+comparados antes/depois e permaneceram idênticos. A limpeza do catálogo não altera pesos, contratos de
 features ou política. O pacote verifica hashes de todos os arquivos retirados e
 valida cada dependência antes de escrever; edições divergentes bloqueiam o conjunto.
 A suíte completa passou: **1.630 testes, 52 skips e 12 subtests**, em 914,57 s,
@@ -211,13 +211,59 @@ Nenhum novo módulo de runtime foi adicionado. Os ensaios nativos existentes nã
 foram executados de novo apenas para retirar esse importador.
 
 
+### Consolidação de treinamento, CRI e identidade de execução
+
+Os dois treinadores compartilham `request_for` e `run_worker` na implementação
+existente de `scripts/operational_round/training.py`. Cada CLI continua com seu
+próprio `execute`, descrição e política de candidatos. Argumentos, marcador JSON,
+separação stdout/stderr e códigos de saída 0/1/2 foram preservados. Não há novo
+módulo de treinamento nem alteração no fitting, na busca opcional ou na comparação.
+
+Rodada, replay e entrega do serving usam `container_images.inspect_image`, um
+helper somente de leitura do node dedicado. Os aliases `cri`/`loaded` permanecem
+para os consumidores e os seams de teste; a consulta não muda de engine/contexto.
+As imagens existentes e os seus bytes não são reconstruídos pela refatoração.
+
+README e catálogo passam a ser metadados documentais separados da identidade de
+execução, como já ocorria na atualização de modelos. Políticas executáveis,
+contratos, código científico e lockfiles continuam pinados. A antiga declaração
+`model_update_compatibility_v1.json` fica preservada como histórico da adoção; não
+é mais uma dependência operacional de cada nova atualização.
+
+A declaração `operational_refactor_source_transition_v1.json` enumera os hashes
+exatos antes/depois dos caminhos revisados. O leitor aplica em memória a transição
+antiga do instalador e esta refatoração, sem editar qualquer JSON de recibo.
+Ela precisa estar commitada para consultar estados antigos afetados. Novas
+execuções registram os hashes atuais; um manifest de compatibilidade não troca
+os hashes de artefatos nem a identidade de uma imagem já construída.
+
+Foram conferidos seis conjuntos de pins da base após `8ad8408`: rodada, atualização,
+produto, operações, entrega do serving e replay. Testes cobrem também recibos
+anteriores à correção do instalador. Mudanças não revisadas no fitter, contrato
+Gold ou política continuam bloqueadas, assim como ampliar os caminhos autorizados.
+O teste HTTP/ledger preserva os bytes de input e checkpoint durante a leitura.
+A imagem antiga pode ser inspecionada com seu recibo original; um próximo build
+continua exigindo código atual commitado. Não se trata de aceitar qualquer hash.
+
+Os testes de compatibilidade de fontes foram reunidos em
+`tests/infra/test_source_compatibility.py`; o teste real de ledger permanece na
+manutenção e os contratos de CLI/tipos/CRI ficam em `tests/interfaces`.
+A redução de runtime nos dez arquivos envolvidos é de **32 linhas líquidas**;
+um helper compartilhado de imagens foi introduzido. O balanço considera também
+o crescimento necessário da validação de compatibilidade. Quatro cópias de
+implementações foram eliminadas nas três famílias revisadas.
+
+Validação local deste recorte: **1.668 testes, 52 skips e 12 subtests** em
+697,36 s; Ruff e formatação aprovados. Os 166 warnings são registrados pela suíte.
+Após atualizar quatro hashes no catálogo, a revisão dos 29 consumidores ficou
+sem inconsistências e 39 testes de inventário/compatibilidade passaram.
+[Evidência de preparação](../../references/evidence/operational_refactor_preparation_2026-10-23.json).
+A conferência dos recibos no KinD após este commit permanece a executar pelo autor.
+
 ### Próximo trabalho de simplificação
 
-O ciclo canônico e a correção declarativa de plugins do Grafana estão aceitos.
-Não é necessário acrescentar outro controlador operacional para prosseguir.
-A próxima intervenção continua sendo a consolidação de funções duplicadas de
-preparação de requisições/entrada de treino e consulta de imagens CRI. A revisão
-deve preservar os gates científicos e tratar mudanças de pins por transição
-revisada, sem editar recibos. Depois seguem a revisão das famílias legadas com
-consumidores identificados e a sessão operacional contínua. O aceite de um
-sucessor com pesos diferentes permanece separado e condicionado à qualificação.
+Este recorte não altera o ciclo nativo já aceito, pesos ou aliases. A próxima
+intervenção revisa consumidores restantes do serving sintético e de correções
+pontuais para retirar famílias inteiras quando a operação atual as substituir.
+A sessão operacional contínua vem depois dessa revisão. O aceite de um sucessor
+com pesos diferentes permanece separado e condicionado à qualificação.

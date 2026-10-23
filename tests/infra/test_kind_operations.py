@@ -122,7 +122,7 @@ def test_foreign_host_and_changed_controller_rejected(rig, monkeypatch):
         k.start(rig.path, True)
     rig.host["machine_id_sha256"] = "host-a"
     monkeypatch.setattr(k, "pins", lambda: {"controller": "changed"})
-    with pytest.raises(ValueError, match="code identity"):
+    with pytest.raises(ValueError, match="code identity|Scientific"):
         k.stop(rig.path, True)
     assert not rig.calls
 
