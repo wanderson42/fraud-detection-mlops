@@ -325,3 +325,11 @@ Próximo: operação de parada/subida, retomada após reboot e fechamento integr
 
 - [Operação do produto](operations/PRODUCT_OPERATIONS.md): estado atual,
   responsabilidades, chegada de eventos e próxima consolidação operacional.
+
+### Serving operacional após a simplificação
+
+A instalação sintética `fraud-serving` foi aposentada em 2026-10-23. O destino
+ativo é `fraud-detector`; os gates HTTP compartilhados e a qualificação/consumo
+sintéticos da CI foram preservados. A checagem cotidiana é `platform-check`, com
+o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
+parada/subida nem promoção de sucessor. [Evidência](../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).

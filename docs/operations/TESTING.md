@@ -1342,23 +1342,22 @@ A regressão de preparação (181 testes/4 live ignorados) pertence ao ambiente 
 assistente; não foi inferida como nova execução nativa.
 [Evidência e limites](KIND_REPLAY.md#aceite-nativo--2026-10-20).
 
-### Gate do serving no KinD
+### Serving no KinD e aposentadoria da instalação sintética
 
-`tests/infra/test_kind_serving.py` confere templates Helm reais, semântica HTTP
-com releases copiadas, identidades, rejeição de artefatos e rollback sob controle
-de Kubernetes/Docker simulado. Os testes não substituem build/import reais.
-`tox -e kind-serving` executa o gate opt-in na release própria já instalada:
-Service blue/green, EndpointSlices, falha 502 e rollback Helm para a baseline.
-[Entrada confiável, comandos e diagnóstico](KIND_SERVING.md).
+O live gate histórico da release `fraud-serving` foi aposentado após a retirada
+nativa. Seu aceite original está preservado em [KIND_SERVING.md](KIND_SERVING.md).
+Os testes exclusivos do controlador/instalador antigo foram removidos.
 
-Aceite nativo em 2026-10-21: **1 teste em 19,48 s**, tox OK em 34,53 s.
-Seis eventos completos, candidata no EndpointSlice, zero endpoints prontos na
-falha, HTTP 502 e rollback Helm para blue aprovados. A correção de importação
-por arquivo `linux/amd64` foi exercitada nas três imagens, com arquivos temporários
-removidos. A regressão nativa anterior registrou 222 testes/4 ignorados; o conjunto
-privado após a correção registrou 228/4, sem executar Docker/KinD no assistente.
-[Recibo e limites](KIND_SERVING.md#aceite-nativo--2026-10-21). Não é necessário
-repetir o gate para aplicar somente este fechamento documental.
+A segurança do chart compartilhado continua em
+`tests/operational_round/test_controller_and_templates.py`. Os gates HTTP reais,
+identidade de readiness/info/score, rejeição de input e convergência/retry ficam
+em `tests/serving/test_docker_runtime_checks.py`. Atualizações, recuperação do
+seeder, causalidade e transações de promoção conservam suas suítes próprias.
+A CI mantém `serving-delivery` e `serving-consumer`.
+
+O gate diário `platform-check` confere o estado atual e recusa divergência ou
+corrida de identidade, sem declarar um novo ciclo de parada/subida. Seus cenários
+estão em `tests/infra/test_kind_operations.py`. Não substitui `platform-verify`.
 
 ### Observabilidade no KinD
 

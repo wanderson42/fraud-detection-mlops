@@ -13,8 +13,6 @@ from uuid import UUID, uuid4
 
 from scripts.platform import kind_foundation as f
 from scripts.platform import kind_observability as monitor
-from scripts.platform import kind_serving as serving
-from scripts.platform import kind_serving_delivery as delivery
 from scripts.platform import kind_tracking as tracking
 from scripts.platform import local_access, source_compatibility
 
@@ -27,9 +25,6 @@ START_ORDER = (
     ("deployment", "fraud-observability-exporter"),
     ("deployment", "fraud-observability-prometheus"),
     ("deployment", "fraud-observability-grafana"),
-    ("deployment", "fraud-serving-blue"),
-    ("deployment", "fraud-serving-green"),
-    ("deployment", "fraud-serving-gateway"),
     ("deployment", "fraud-detector-blue"),
     ("deployment", "fraud-detector-green"),
     ("deployment", "fraud-detector-gateway"),
@@ -37,7 +32,6 @@ START_ORDER = (
 STOP_ORDER = tuple(reversed(START_ORDER))
 REQUIRED = set(STOP_ORDER) - {
     ("deployment", "fraud-detector-green"),
-    *(("deployment", "fraud-serving-" + slot) for slot in ("blue", "green", "gateway")),
 }
 MINIMUM_INOTIFY = {"max_user_instances": 512, "max_user_watches": 524288}
 SCOPE = "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery"
@@ -64,8 +58,6 @@ def pins():
         "scripts/platform/kind_foundation.py",
         "scripts/platform/kind_tracking.py",
         "scripts/platform/kind_tracking_storage.py",
-        "scripts/platform/kind_serving.py",
-        "scripts/platform/kind_serving_delivery.py",
         "scripts/platform/kind_observability.py",
         "scripts/platform/kind_observability_state.py",
         "scripts/platform/dashboard_colors.py",
@@ -210,18 +202,7 @@ def replica_plan(current, active):
         if count is None:
             continue
         expected = 0 if key == "Deployment/fraud-detector-" + inactive else 1
-        if key.startswith("Deployment/fraud-serving-"):
-            # Explicitly owned legacy rehearsal, if still installed; preserve its exact plan.
-            f.require(count in (0, 1), "Unexpected legacy replica count")
-        else:
-            f.require(count == expected, "Finish staged rollout before operations: " + key)
-    if any(key.startswith("Deployment/fraud-serving-") for key in current):
-        owned = serving.owned(delivery.plan())
-        found = {"Deployment/" + row["metadata"]["name"] for row in owned}
-        f.require(
-            found == {key for key in current if key.startswith("Deployment/fraud-serving-")},
-            "Legacy serving ownership differs",
-        )
+        f.require(count == expected, "Finish staged rollout before operations: " + key)
 
 
 def ordered(baseline, order):
@@ -612,6 +593,39 @@ def latest_stop(path):
     return max(reports, key=lambda item: item["finished_timestamp"])
 
 
+def check(path):
+    """Read the current owned topology and services; do not assert a stop/start occurred."""
+    baseline, owner = read_baseline(path)
+    checked_host()
+
+    def execute(result):
+        f.require(owner["running"], "Owned node is not running")
+        before = check_resources(baseline)
+        f.require(before == baseline["resources"], "Original replica plan differs")
+        checked = probes(baseline["tracking_report"]["record"])
+        f.require(
+            checked == baseline["probes"],
+            "Service readback/model/monitoring differs from baseline",
+        )
+        _, after_owner = read_baseline(path)
+        f.require(
+            after_owner == owner and resources() == before,
+            "Owned resources changed during readback",
+        )
+        result.update(
+            status="current_platform_readbacks_verified",
+            scope="current_owned_topology_and_functional_readbacks_not_stop_start_or_reboot_acceptance",
+            baseline_modified=False,
+            new_stop_start_executed=False,
+            functional_readbacks_verified=True,
+            model_sha256=checked.get("serving_model_sha256"),
+            fit_executed=False,
+            champion_modified=False,
+        )
+
+    return event("check", path, execute)
+
+
 def verify(path, expect_reboot=False):
     baseline, owner = read_baseline(path)
     system = checked_host()
@@ -718,7 +732,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "action",
-        choices=("host-check", "status", "prepare", "stop", "start", "verify", "rehearse"),
+        choices=(
+            "host-check",
+            "status",
+            "prepare",
+            "stop",
+            "start",
+            "check",
+            "verify",
+            "rehearse",
+        ),
     )
     parser.add_argument("--baseline", type=Path)
     parser.add_argument("--tracking-report", type=Path)
@@ -741,7 +764,9 @@ def main():
             else:
                 f.require(args.baseline is not None, "Explicit --baseline required")
                 result = (
-                    verify(args.baseline, args.expect_reboot)
+                    check(args.baseline)
+                    if args.action == "check"
+                    else verify(args.baseline, args.expect_reboot)
                     if args.action == "verify"
                     else {"stop": stop, "start": start}[args.action](
                         args.baseline, args.no_other_writers

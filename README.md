@@ -597,3 +597,11 @@ de validação e o mesmo modelo dos casos.
 responsabilidades, dados históricos como fluxo reproduzível e consolidação da
 sessão operacional. O portal atual consulta snapshots; atualização contínua da
 fila e das métricas da mesma sessão é o próximo aceite, sem novo treinamento.
+
+### Serving operacional após a simplificação
+
+A instalação sintética `fraud-serving` foi aposentada em 2026-10-23. O destino
+ativo é `fraud-detector`; os gates HTTP compartilhados e a qualificação/consumo
+sintéticos da CI foram preservados. A checagem cotidiana é `platform-check`, com
+o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
+parada/subida nem promoção de sucessor. [Evidência](references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).

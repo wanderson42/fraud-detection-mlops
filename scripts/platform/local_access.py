@@ -59,17 +59,8 @@ def connection(service):
             "Active deployment changed during access; reopen the command",
         )
         deployment.check_active(copy.deepcopy(active), policy)
-    elif service == "synthetic-api":
-        from scripts.platform import kind_serving as serving
-        from scripts.platform import kind_serving_delivery as delivery
-
-        plan = delivery.plan()
-        observed = serving.observe(plan)
-        with delivery.forward(observed["pods"]["gateway"]["name"]) as url:
-            checked = serving.wait_route(url, plan, "blue")
-            yield {"service": service, "url": url, "verification": checked}
     else:
-        raise ValueError("Only mlflow, api and synthetic-api local access are supported")
+        raise ValueError("Only mlflow and api local access are supported")
 
 
 def open_local(service):
@@ -85,7 +76,7 @@ def open_local(service):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("service", choices=("mlflow", "api", "synthetic-api"))
+    parser.add_argument("service", choices=("mlflow", "api"))
     args = parser.parse_args()
     try:
         open_local(args.service)

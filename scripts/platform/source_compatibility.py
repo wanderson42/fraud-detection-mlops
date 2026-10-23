@@ -34,6 +34,22 @@ REFACTOR_ALLOWED = {
 }
 
 
+RETIREMENT_TRANSITION = "references/synthetic_retirement_source_transition_v1.json"
+RETIREMENT_ALLOWED = {
+    "infra/helm/fraud-serving/README.md",
+    "scripts/platform/local_access.py",
+    "scripts/platform/kind_observability.py",
+    "scripts/platform/kind_operations.py",
+    "scripts/operational_round/serving.py",
+    "scripts/model_updates/deployment.py",
+    "scripts/platform/kind_serving_delivery.py",
+    "scripts/platform/kind_serving_seed.py",
+    "scripts/platform/kind_serving.py",
+    "scripts/operational_round/controller.py",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -82,6 +98,11 @@ def accept(saved, current, root):
     for path, schema, allowed in [
         (TRANSITION, "fraud_serving_seed_source_transition_v1", ALLOWED),
         (REFACTOR_TRANSITION, "fraud_operational_refactor_source_transition_v1", REFACTOR_ALLOWED),
+        (
+            RETIREMENT_TRANSITION,
+            "fraud_synthetic_retirement_source_transition_v1",
+            RETIREMENT_ALLOWED,
+        ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)
     if expected != current:

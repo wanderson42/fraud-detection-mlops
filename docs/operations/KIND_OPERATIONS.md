@@ -19,13 +19,12 @@ idêntica entre execuções. Scores, release e identidades devem permanecer igua
 | `fraud-detector-<slot ativo>` e gateway | Uma réplica |
 | Slot inativo, quando instalado | Zero; não é iniciado por uma retomada |
 | PostgreSQL, RustFS, MLflow e observabilidade | Uma réplica por controller |
-| `fraud-serving-*`, se ainda instalado | Exatamente as réplicas salvas, após conferir ownership no recibo legado |
 | Outros controllers ou Jobs ativos | Recusados; revisar antes de interromper |
 
 Uma única lista determina a subida; a parada usa a ordem inversa. Primeiro sobem
-RustFS/PostgreSQL, tracking e observabilidade; em seguida o laboratório legado,
-quando presente, e os backends/gateway canônicos. Gateways param antes de seus
-backends. O serving sintético não é fallback nem evidência da API ativa.
+RustFS/PostgreSQL, tracking e observabilidade; em seguida os backends/gateway
+canônicos. Gateways param antes de seus backends. A release sintética aposentada
+não integra mais o plano de controle.
 O slot inativo pode estar ausente; não se instala nada durante a retomada.
 
 Antes de parar, confere a identidade Registry/HTTP e revalida recursos. Cada escala
@@ -37,8 +36,9 @@ receber novos UIDs, mas controllers e volumes devem permanecer os mesmos.
 
 Baseline v1 fica preservado como evidência do laboratório anterior. A rotina atual
 exige novo baseline v2 e não converte nem edita JSON antigo. Mudança do estado ativo,
-de código pinado ou configuração exige um novo baseline validado com serviços
-prontos, nunca a alteração de um recibo anterior. Uma candidata encenada com ambos
+ou configuração exige um novo baseline validado com serviços prontos, nunca a
+alteração de um recibo anterior. Refatorações restritas de fontes podem usar as
+transições exatas revisadas, preservando os pins originais do recibo. Uma candidata encenada com ambos
 os slots vivos deve ser finalizada antes de preparar o ciclo diário.
 
 ## Preparar e verificar sem interromper
@@ -143,6 +143,9 @@ reconciliar e conferir o proxy, execute o ensaio com baseline novo. Preserve
 
 ## Aceite canônico — 2026-10-23
 
+Este ciclo registra a topologia anterior à retirada da instalação sintética.
+A operação atual usa o baseline reduzido indicado na seção seguinte.
+
 | Conferência | Resultado |
 | --- | --- |
 | Ciclo nativo | 1 teste aprovado em 276,71 s; tox em 279,39 s |
@@ -162,19 +165,27 @@ Não houve reboot neste aceite. O ciclo anterior e seu baseline continuam falhos
 preservados; o aceite novo não reescreve aquela execução.
 
 
-### Leitura após a consolidação de fontes
+### Conferência diária após a consolidação de fontes
 
-A refatoração de treinamento/CRI conserva a verificação do baseline canônico
-aceito. O leitor reconhece somente a transição de hashes revisada e commitada;
-modelo, ponteiro ativo, node/engine, volumes, recursos e readbacks continuam
-conferidos. Não é preciso parar o node outra vez apenas para consolidar funções.
-Depois da regressão e do commit, pode conferir por leitura:
+O comando de conferência atual é `platform-check`, que reutiliza os gates de
+identidade e readback sem exigir recibo de parada/subida no boot atual. O recibo
+é salvo como `operations/check-<id>.json`. Não faz fit, troca de tráfego ou alias.
+
+Após a retirada nativa da release sintética em 2026-10-23, use o novo baseline:
 
 ```bash
-make platform-verify PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-4fb6e8ecc8b14ad79564a84086a6c170.json
+make platform-check \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-synthetic-retired-66006d3ae07f4c0887a22eb044d5db67.json
 ```
 
-Esse comando não inicia/paralisa o node nem altera tráfego; realiza os probes
-existentes e grava seu recibo de verificação. Se boot, modelo ou recursos tiverem
-mudado desde o aceite, investigue a divergência em vez de alterar o baseline.
-A revisão de fontes não transforma um reboot não planejado em ciclo aceito.
+O baseline anterior descreve os recursos da topologia antiga e permanece como
+histórico. O novo baseline representa nove controladores: fundação, tracking,
+três deployments do serving canônico (blue, green e gateway) e três serviços
+de observabilidade; green tem
+zero réplicas. Não prepare outro baseline apenas para contornar uma divergência.
+
+`platform-verify` exige um ciclo de parada/subida controlado registrado no boot
+atual. `platform-reboot-verify` exige também o reboot previsto no protocolo.
+Um `platform-check` aprovado não é aceite desses ensaios e não exige repeti-los.
+Os comandos de parada/subida continuam exigindo o baseline explícito e ausência
+de outros writers. Use o baseline reduzido nas próximas operações planejadas.

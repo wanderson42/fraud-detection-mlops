@@ -1,17 +1,18 @@
-# Serving de laboratório via Helm
+# Chart compartilhado da primeira implantação canônica
 
-Chart dedicado à API já qualificada, com uma baseline blue e gateway permanentes
-no laboratório. Durante o ensaio, adiciona uma candidata green de mesma imagem e
-pesos com outra identidade de release. Um Service ClusterIP seleciona o slot
-ativo. O gateway mantém seu pod/configuração enquanto o seletor muda.
+A primeira implantação usa este chart com a release `fraud-detector`, pelos
+gates de `scripts/operational_round/serving.py`. Blue e gateway permanecem
+estáveis durante a troca do seletor; green é o slot alternativo. As atualizações
+recorrentes usam o chart `fraud-model-updates` e sua política governada.
 
-Cada backend recebe os três arquivos de release por init container e emptyDir;
-a API monta o modelo somente para leitura. A imagem auxiliar contém apenas as
-releases sintéticas e o copiador/verificador. O runtime da API é o mesmo arquivo
-de imagem qualificado, importado sem rebuild. Não usa modelo binário em ConfigMap,
-PVC compartilhado ou credenciais de armazenamento nos pods.
+Cada backend recebe três arquivos pinados via init container/emptyDir. A API
+monta o modelo somente para leitura; o carrier contém as releases e o instalador
+idempotente, sem checkout ou credenciais. Runtime, pesos e contrato são conferidos
+pelos gates antes do uso. Uma identidade de release diferente não comprova pesos
+ou qualidade diferentes.
 
-O chart fixa uma réplica por slot e permite zero para a falha controlada da green.
-Sem NodePort, LoadBalancer, ingress público, HPA ou permissões de ServiceAccount.
-O controlador verifica também os digests CRI reais e os UIDs dos endpoints.
-Use `docs/operations/KIND_SERVING.md`; valores diretos não substituem os gates.
+O chart limita réplicas, usa ClusterIP e não cria PVC, RBAC ou exposição pública.
+Seus testes de segurança e estabilidade ficam na suíte da rodada operacional.
+A antiga release sintética `fraud-serving` foi aposentada, sem remover este chart
+compartilhado. Para instalar, siga
+[OPERATIONAL_ROUND.md](../../../docs/operations/OPERATIONAL_ROUND.md).

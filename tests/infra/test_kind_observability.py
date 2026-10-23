@@ -240,9 +240,7 @@ def test_image_import_exports_only_selected_platform_and_preserves_identity(
         return SimpleNamespace(stdout="")
 
     monkeypatch.setattr(k, "command", cmd)
-    monkeypatch.setattr(
-        k.delivery, "cri", lambda _: {"id": "sha256:" + "2" * 64, "repoTags": [tag]}
-    )
+    monkeypatch.setattr(k, "cri", lambda _: {"id": "sha256:" + "2" * 64, "repoTags": [tag]})
     record = k.import_image(role, tag)
     assert record["docker_id"] == "sha256:" + "1" * 64
     assert record["platform"] == "linux/amd64" and record["temporary_archive_removed"]
@@ -595,11 +593,9 @@ def test_legacy_loaded_images_are_reused_without_receipt_rewrite(workspace, monk
     path = workspace / "images.json"
     path.write_text(json.dumps(receipt))
     before = path.read_bytes()
-    monkeypatch.setattr(
-        k.delivery, "cri", lambda tag: {"id": "sha256:" + "1" * 64, "repoTags": [tag]}
-    )
+    monkeypatch.setattr(k, "cri", lambda tag: {"id": "sha256:" + "1" * 64, "repoTags": [tag]})
     assert k.image_record() == receipt and path.read_bytes() == before
-    monkeypatch.setattr(k.delivery, "cri", lambda tag: {"id": "foreign", "repoTags": [tag]})
+    monkeypatch.setattr(k, "cri", lambda tag: {"id": "foreign", "repoTags": [tag]})
     with pytest.raises(ValueError, match="image identity differs"):
         k.image_record()
     assert path.read_bytes() == before

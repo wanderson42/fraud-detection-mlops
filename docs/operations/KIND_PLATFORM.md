@@ -50,9 +50,9 @@ Credenciais e kubeconfig ficam privados; não devem ser commitados.
    com os bundles aceitos. Execute só quando precisar produzir/verificar saídas.
 5. Replay: `scripts.platform.kind_replay validate`, `build` e ensaio sintético
    separado. O teste termina o processamento e preserva seu PVC para inspeção.
-6. Serving: `scripts.platform.kind_serving validate`, `prepare`, `up`, com a
-   entrega qualificada e os hashes esperados explícitos. Não reconstrua o runtime
-   para contornar uma divergência de identidade.
+6. Serving canônico: execute a primeira rodada rastreada e seus gates pelo
+   [fluxo Bronze → champion](OPERATIONAL_ROUND.md); `round-deploy` instala
+   `fraud-detector`. A release sintética antiga não faz parte da instalação.
 7. Observabilidade: `scripts.platform.kind_observability validate`, `init`,
    `prepare` com estado concluído e ausência de writers, `build`, `up`.
 8. Operação: prepare um baseline com recibo de tracking explícito e faça os gates
@@ -72,7 +72,6 @@ Para conferir o ambiente que já existe:
 poetry run python -m scripts.platform.kind_operations status &&
 poetry run python -m scripts.platform.kind_foundation status &&
 poetry run python -m scripts.platform.kind_tracking status &&
-poetry run python -m scripts.platform.kind_serving status &&
 poetry run python -m scripts.platform.kind_observability status
 ```
 

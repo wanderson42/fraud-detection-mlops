@@ -676,3 +676,11 @@ modelo/release da consulta de 200 casos. O portal continua lendo snapshots;
 o monitoramento KinD aceito consulta uma cópia de replay concluído. O próximo
 recorte liga a chegada gradual de eventos, a fila e a observabilidade de uma
 mesma sessão. [Responsabilidades e critério](operations/PRODUCT_OPERATIONS.md).
+
+### Serving operacional após a simplificação
+
+A instalação sintética `fraud-serving` foi aposentada em 2026-10-23. O destino
+ativo é `fraud-detector`; os gates HTTP compartilhados e a qualificação/consumo
+sintéticos da CI foram preservados. A checagem cotidiana é `platform-check`, com
+o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
+parada/subida nem promoção de sucessor. [Evidência](../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).

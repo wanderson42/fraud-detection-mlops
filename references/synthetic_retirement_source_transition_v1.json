@@ -1,0 +1,52 @@
+{
+  "schema": "fraud_synthetic_retirement_source_transition_v1",
+  "purpose": "Retire the removed native synthetic Helm installation; preserve canonical HTTP gates, CI qualification and accepted receipts",
+  "native_retirement_evidence": "references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json",
+  "old_receipts_rewritten": false,
+  "changes": {
+    "infra/helm/fraud-serving/README.md": {
+      "before": "47dfa1274b3eb2f4b9708f75d78a4d11bb8364477d18177736395566f926b49a",
+      "after": "e11eedb2395dc33211c87b704209a1c48de7b191b15ee1d118607e3560fd0780"
+    },
+    "scripts/model_updates/deployment.py": {
+      "before": "032cebb34a206782bd4a59f3f73eef2790f7c6e569fb162c10f065eb65347525",
+      "after": "b85711d1d2eabdffa3a73fbd675c88d413b8342b43c555b485d6959bcb098088"
+    },
+    "scripts/operational_round/controller.py": {
+      "before": "8f6ebb3fa0e164435e4e91c30a9235e95439dfb0bcb5f3b79ebd7e5011120e5b",
+      "after": "41746ac601256778c5ba27441e84c0673cda59e06e2e6ffeb07eb58650d3648c"
+    },
+    "scripts/operational_round/serving.py": {
+      "before": "a8e21bce273770c642ff85421df49fe3be1f93dc5132fd88cf9b9ef160a0a01c",
+      "after": "11cf2fccafe5f20caff44dbd8940626e7ad7d688a5d3f4b03e52b04d0918d7fe"
+    },
+    "scripts/platform/kind_observability.py": {
+      "before": "45642360f96a82f534978236ca7a63f234193771c54a13d0066103f44f54d45a",
+      "after": "01c3baeab16ae7155eca86c4cf651ff8479e003aa34e576af43c6948c1000c79"
+    },
+    "scripts/platform/kind_operations.py": {
+      "before": "22962a10727327366eaf1cc68f402a81a6ffb133373f7c6eb26e929e9a9b62e7",
+      "after": "21e3315198d797c5dfa4de03e55ff268e6f292cb3dc8d94beaf2d585c5e89e66"
+    },
+    "scripts/platform/kind_serving.py": {
+      "before": "775c43c887cc0e69bf3a0ae26e6c385b7597bb474ac42b9b681abaddd694fc25",
+      "after": null
+    },
+    "scripts/platform/kind_serving_delivery.py": {
+      "before": "b052ce307ab12b49a664189c3d65168849043c8fe801812b7d3bf0dd9283dd3a",
+      "after": null
+    },
+    "scripts/platform/kind_serving_seed.py": {
+      "before": "4ca3ec100883448a03b9fdf75f3902ea5d3a1bd6df86d6ebb2aa71587f9854dc",
+      "after": null
+    },
+    "scripts/platform/local_access.py": {
+      "before": "e98972d3c175c71818114ca923670e8825ebf8b621acf53ef65991a52aaf0fb7",
+      "after": "274f2301cbc9aec7af338be68dc361ce21a8d89403ec08d912fd05bf15bdcfee"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "7009cc96641afd9df3b0f3cc0f9b5d28b92ee11b89e214ac22b14a2177c9f935",
+      "after": "2c8d2db8377ef5ec63b6b3c7b8666ef0e29889ab26f52f8f38aa3ac1b15146f1"
+    }
+  }
+}

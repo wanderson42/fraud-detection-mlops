@@ -51,8 +51,8 @@ iniciar dados ou administrar a infraestrutura.
 os gates compartilhados para conferir Registry, slot, imagens e identidade HTTP.
 Não escolhe o modelo por nome de algoritmo nem pelo ID da primeira rodada.
 `round-api` permanece como alias de compatibilidade para esse mesmo acesso;
-`ROUND_ID` não seleciona um deployment antigo nesse comando. O acesso ao serving
-sintético original exige `make platform-synthetic-api` explicitamente. A ausência
+`ROUND_ID` não seleciona um deployment antigo nesse comando. A instalação sintética
+foi aposentada e seu acesso foi retirado. A ausência
 ou divergência do deployment ativo interrompe o acesso, sem fallback sintético.
 
 A identidade é conferida ao abrir e fechar o acesso. Uma promoção ou manutenção
@@ -75,11 +75,13 @@ Os comandos em primeiro plano continuam disponíveis para diagnóstico.
 
 ## Ciclo de vida do deployment ativo
 
-`platform-baseline`, `platform-stop`, `platform-start` e `platform-verify` usam o
+`platform-baseline`, `platform-check`, `platform-stop`, `platform-start` e
+`platform-verify` usam o
 champion ativo `fraud-detector`, com o mesmo gate compartilhado de `platform-api`.
 O baseline v2 registra o estado ativo e cada contagem de réplicas; retomar mantém
-zero no slot inativo. O serving sintético, se ainda instalado, é tratado como
-laboratório legado com recibo próprio, sem substituir o gate canônico.
+zero no slot inativo. A release sintética foi retirada; o plano atual tem nove
+controladores e um baseline próprio. `platform-check` confere o estado atual;
+`platform-verify` exige o ciclo controlado de parada/subida neste boot.
 
 O [guia de ciclo de vida](KIND_OPERATIONS.md) concentra preparação, parada,
 retomada, verificação e reboot. Baselines antigos são preservados e não convertidos.

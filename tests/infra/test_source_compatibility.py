@@ -86,7 +86,7 @@ def commit(root):
 @pytest.fixture
 def refactor(tmp_path):
     transitions = []
-    for name in (compat.TRANSITION, compat.REFACTOR_TRANSITION):
+    for name in (compat.TRANSITION, compat.REFACTOR_TRANSITION, compat.RETIREMENT_TRANSITION):
         src = ROOT / name
         transitions.append(json.loads(src.read_bytes()))
         target = tmp_path / name
@@ -113,16 +113,14 @@ def previous(current, transitions):
     return saved
 
 
-@pytest.mark.parametrize(
-    "scope", ["round", "updates", "product", "operations", "serving", "replay"]
-)
+@pytest.mark.parametrize("scope", ["round", "updates", "product", "operations", "replay"])
 @pytest.mark.parametrize("before_seed", [False, True])
 def test_current_readers_accept_exact_old_profiles_without_editing_them(
     refactor, scope, before_seed
 ):
     from scripts.model_updates import controller as updates
     from scripts.operational_round import controller as round_controller
-    from scripts.platform import kind_operations, kind_replay, kind_serving_delivery
+    from scripts.platform import kind_operations, kind_replay
     from scripts.product_flow import controller as product
 
     readers = {
@@ -130,7 +128,6 @@ def test_current_readers_accept_exact_old_profiles_without_editing_them(
         "updates": updates.pins,
         "product": product.pins,
         "operations": kind_operations.pins,
-        "serving": kind_serving_delivery.pins,
         "replay": kind_replay.pins,
     }
     root, transitions = refactor

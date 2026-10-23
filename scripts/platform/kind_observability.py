@@ -22,8 +22,8 @@ from uuid import uuid4
 from scripts.platform import dashboard_colors
 from scripts.platform import kind_foundation as f
 from scripts.platform import kind_observability_state as state
-from scripts.platform import kind_serving_delivery as delivery
 from scripts.platform import kind_tracking as tracking
+from scripts.platform.container_images import inspect_image as cri
 
 RELEASE = "fraud-observability"
 ANNOTATION = "fraud.observability/owner-id"
@@ -47,6 +47,7 @@ def work():
 
 def pins():
     names = {
+        "scripts/platform/container_images.py",
         "scripts/platform/dashboard_colors.py",
         LEGACY_PROFILE,
         "scripts/platform/kind_observability.py",
@@ -131,7 +132,7 @@ def import_image(role, tag):
         f.require(archive.stat().st_size > 0, "Empty image archive")
         digest, size = state.sha(archive), archive.stat().st_size
         command(["kind", "load", "image-archive", "--name", f.CLUSTER, archive])
-    loaded = delivery.cri(tag)
+    loaded = cri(tag)
     f.require(
         tag in {v.removeprefix("docker.io/library/") for v in loaded.get("repoTags", [])},
         "Imported tag differs",
@@ -259,7 +260,7 @@ def image_record():
             row["image"] == "fraud-kind-observability-" + role + ":" + value["owner_id"],
             "Image tag differs",
         )
-        loaded = delivery.cri(row["image"])
+        loaded = cri(row["image"])
         f.require(
             row["image"]
             in {v.removeprefix("docker.io/library/") for v in loaded.get("repoTags", [])}

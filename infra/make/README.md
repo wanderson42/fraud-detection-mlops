@@ -18,8 +18,8 @@ de instalar Poetry e não iniciam serviços.
 | `science.mk` | Preparação local, experimentos e protocolos científicos |
 
 `platform-api` abre o deployment ativo, validando Registry/rota/imagens/HTTP.
-`round-api` é um alias para esse acesso. `platform-synthetic-api` abre somente o
-serving sintético original, quando esse ensaio é solicitado explicitamente.
+`round-api` é um alias para esse acesso. O acesso à antiga instalação sintética
+foi retirado após sua desinstalação.
 Nenhum deles treina, muda aliases ou instala workloads. Se o modelo ativo mudar,
 reabra o acesso. Ctrl+C encerra somente o forward daquele terminal.
 
@@ -35,3 +35,8 @@ requisitos. Não há alvo `destroy`, prune ou reboot automático.
 `make access-start ACCESS_SERVICE=prometheus` abre um acesso adicional.
 `make access-stop-all` fecha somente os acessos registrados neste checkout.
 [Comandos e arquivos privados](../../docs/operations/LOCAL_ACCESS.md).
+
+`make platform-check PLATFORM_BASELINE=CAMINHO` confere a topologia e os readbacks
+atuais, sem exigir ciclo de parada/subida neste boot. `platform-verify` conserva
+seu significado específico: verificar um ciclo controlado registrado. O baseline
+atual após a retirada sintética está identificado no guia operacional.

@@ -155,22 +155,14 @@ não cria os datasets locais ausentes. Preparos específicos estão em
 
 ## 3. Entrega, monitoramento e ensaios opcionais
 
-### Instalar serving a partir de uma entrega qualificada
+### Serving canônico
 
-Para um ambiente novo, tenha a entrega completa, os hashes fornecidos pelo
-produtor e a imagem arquivada. O consumidor não refaz o treino ou o build da API.
-Use caminhos e hashes reais; os valores abaixo são apenas nomes a substituir:
-
-```bash
-make platform-serving-prepare \
-  PLATFORM_DELIVERY=data/serving/deliveries/SUA_ENTREGA \
-  PLATFORM_SOURCE_SHA=COMMIT_DO_PRODUTOR \
-  PLATFORM_DESCRIPTOR_SHA256=SHA256_DO_DESCRIPTOR
-make platform-serving-up
-```
-
-No ambiente já aceito, a preparação existe. Não a substitua para remover erros
-de identidade. Reuse a instalação e os acessos da seção 1.
+O ponto de entrada é a [rodada rastreada](OPERATIONAL_ROUND.md): dados, candidatos,
+qualificação, Registry e primeira implantação em `fraud-detector`. Atualizações
+posteriores seguem [MODEL_UPDATES.md](MODEL_UPDATES.md). No ambiente já aceito,
+use `make platform-api` ou `make access-up`; eles não refazem treino/instalação.
+A antiga release sintética foi retirada. Qualificação e consumo de imagem na CI
+continuam sendo gates independentes da promoção do modelo.
 
 ### Instalar monitoramento de replay concluído
 
@@ -194,7 +186,6 @@ artefatos é uma fronteira a resolver na simplificação do portfólio.
 
 | Comando | Efeito e custo operacional |
 | --- | --- |
-| `make platform-rollout-test` | Ensaio blue → green → blue, com candidata interrompida, falha 502 e rollback Helm. Mesmos pesos sintéticos; não testa superioridade de outro modelo |
 | `make platform-replay-test` | Novo replay sintético pequeno, fit da fixture, interrupção durante feedback e retomada no mesmo PVC novo; PVC retido como evidência |
 | `make platform-operations-test PLATFORM_TRACKING_REPORT=CAMINHO_DO_RECIBO PLATFORM_NO_OTHER_WRITERS=1` | Novo baseline, parada/subida do laboratório e leituras funcionais; indisponibilidade temporária, sem reboot automático |
 

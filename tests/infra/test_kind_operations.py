@@ -9,6 +9,8 @@ from types import SimpleNamespace
 import pytest
 from scripts.platform import kind_operations as k
 
+RESOURCE_READER = k.resources
+
 
 @pytest.fixture
 def rig(tmp_path, monkeypatch):
@@ -470,22 +472,6 @@ def test_daily_probe_reuses_gate_but_compares_stable_identity_not_latency(monkey
     assert first["slot"] == "green" and calls == ["api", "api"]
 
 
-def test_optional_legacy_plan_requires_owned_receipt_and_preserves_zero_replicas(rig, monkeypatch):
-    key = "Deployment/fraud-serving-blue"
-    rig.inventory[key] = {**rig.inventory["Deployment/fraud-detector-green"], "uid": "legacy"}
-    monkeypatch.setattr(k.delivery, "plan", lambda: {"owner_id": "legacy-owner"})
-    monkeypatch.setattr(
-        k.serving, "owned", lambda plan: [{"metadata": {"name": "fraud-serving-blue"}}]
-    )
-    path = k.prepare(Path("tracking.json"))
-    k.stop(path, True)
-    k.start(path, True)
-    assert rig.inventory[key]["replicas"] == 0
-    monkeypatch.setattr(k.serving, "owned", lambda plan: [])
-    with pytest.raises(ValueError, match="Legacy serving ownership"):
-        k.prepare(Path("tracking.json"))
-
-
 @pytest.mark.parametrize("inactive_present", [True, False])
 def test_no_requirement_to_install_inactive_slot(rig, inactive_present):
     if not inactive_present:
@@ -534,3 +520,53 @@ def test_mislabelled_canonical_controller_is_never_adopted(monkeypatch, field):
     )
     with pytest.raises(ValueError, match="refuse adoption"):
         k.resources()
+
+
+def test_retired_synthetic_workload_is_rejected_before_operational_mutations(rig, monkeypatch):
+    items = [
+        {
+            "kind": "Deployment" if kind == "deployment" else "StatefulSet",
+            "metadata": {"name": name},
+        }
+        for kind, name in k.REQUIRED
+    ]
+    items.append({"kind": "Deployment", "metadata": {"name": "fraud-serving-blue"}})
+    monkeypatch.setattr(
+        k.f, "kube", lambda *a: SimpleNamespace(stdout=json.dumps({"items": items}))
+    )
+    with pytest.raises(ValueError, match="Unexpected or missing workload"):
+        # Rig normally stubs resources(); exercise the actual resource reader here.
+        RESOURCE_READER()
+    assert not rig.calls
+
+
+def test_daily_check_accepts_current_boot_without_stop_or_start_receipts(rig):
+    original = rig.path.read_bytes()
+    rig.host["boot_id"] = "new-boot"
+    result = k.check(rig.path)
+    assert result["status"] == "current_platform_readbacks_verified"
+    assert result["new_stop_start_executed"] is False
+    assert rig.path.read_bytes() == original and rig.calls == []
+    assert not list(rig.directory.glob("stop-*.json"))
+    assert not list(rig.directory.glob("start-*.json"))
+
+
+def test_daily_check_rejects_changed_readback_without_claiming_acceptance(rig, monkeypatch):
+    monkeypatch.setattr(k, "probes", lambda record: {"different": True})
+    with pytest.raises(ValueError, match="readback/model/monitoring"):
+        k.check(rig.path)
+    saved = json.loads(next(rig.directory.glob("check-*.json")).read_bytes())
+    assert saved["status"] == "failed" and rig.calls == []
+
+
+def test_daily_check_rejects_active_pointer_race(rig, monkeypatch):
+    original_probes = k.probes
+
+    def racing(record):
+        rig.active["model_sha256"] = "changed"
+        return original_probes(record)
+
+    monkeypatch.setattr(k, "probes", racing)
+    with pytest.raises(ValueError, match="Active serving receipt changed"):
+        k.check(rig.path)
+    assert rig.calls == []

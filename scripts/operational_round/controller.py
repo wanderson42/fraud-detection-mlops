@@ -41,7 +41,6 @@ def pins():
         "scripts/platform/kind_pipeline.py",
         "scripts/platform/kind_pipeline_compute.py",
         "scripts/platform/kind_pipeline_transport.py",
-        "scripts/platform/kind_serving.py",
         "scripts/serving/delivery_gate.py",
         "scripts/serving/check_docker_runtime.py",
         "references/operational_round_policy_v1.json",

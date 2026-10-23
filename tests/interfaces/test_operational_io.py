@@ -9,7 +9,7 @@ import pytest
 from scripts.model_updates import training as update_training
 from scripts.operational_round import controller as round_controller
 from scripts.operational_round import training as round_training
-from scripts.platform import container_images, kind_replay, kind_serving_delivery
+from scripts.platform import container_images, kind_observability, kind_replay
 
 from fraud_detection_mlops.features.feature_schema import FEATURE_DTYPES
 
@@ -93,7 +93,7 @@ def test_all_lookup_aliases_use_the_same_readonly_owned_node_request(monkeypatch
     assert (
         round_controller.cri
         is kind_replay.loaded
-        is kind_serving_delivery.cri
+        is kind_observability.cri
         is container_images.inspect_image
     )
     assert round_controller.cri("locked:v1") == expected

@@ -806,3 +806,15 @@ inferir essas quantidades. Mesmo modelo dos casos e champion preservado.
 [Evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json).
 A próxima entrega consolida a chegada dos eventos e a fila/métricas da mesma
 sessão. [Responsabilidades de cada usuário](../operations/PRODUCT_OPERATIONS.md).
+
+### Consolidação da instalação ativa — 2026-10-23
+
+A instalação sintética antiga foi retirada após confirmar que o champion atende
+por `fraud-detector`. Os cinco recursos exclusivos saíram; o modelo ativo, volumes,
+histórico de experimentos, monitoramento, portal e evidência de desempenho foram
+preservados e conferidos pelo autor. O produto mantém uma única instalação ativa
+de pontuação, com as mesmas responsabilidades de sistema transacional, analista,
+operação, ML e gestão de risco. Os ensaios sintéticos da CI continuam qualificando
+a imagem sem alterar o champion. A retirada não representa uma nova promoção de
+modelo nem um novo ensaio de parada/subida.
+[Evidência](../../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).

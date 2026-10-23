@@ -15,6 +15,8 @@ from types import ModuleType, SimpleNamespace
 import unittest
 from unittest.mock import patch
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -62,7 +64,7 @@ class MakeEntrypoints(unittest.TestCase):
         self.assertNotIn("evaluate-final", result.stdout)
         result = self.run_make("help-all")
         self.assertEqual(result.returncode, 0, result.stderr)
-        for target in ("experiments", "verify-data", "platform-synthetic-api", "evaluate-final"):
+        for target in ("experiments", "verify-data", "evaluate-final"):
             self.assertIn(target, result.stdout)
         self.assertEqual(self.calls(), [])
 
@@ -96,9 +98,9 @@ class MakeEntrypoints(unittest.TestCase):
             "platform-baseline",
             "platform-stop",
             "platform-start",
+            "platform-check",
             "platform-verify",
             "platform-reboot-verify",
-            "platform-serving-prepare",
             "platform-monitoring-prepare",
             "platform-operations-test",
         ):
@@ -159,32 +161,14 @@ class MakeEntrypoints(unittest.TestCase):
             ],
         )
 
-    def test_delivery_requires_and_forwards_identity_pins(self):
-        result = self.run_make(
-            "platform-serving-prepare",
-            PLATFORM_DELIVERY="delivery dir",
-            PLATFORM_SOURCE_SHA="abc",
-            PLATFORM_DESCRIPTOR_SHA256="def",
-        )
-        self.assertEqual(result.returncode, 0)
-        self.assertEqual(
-            self.calls()[0][4:],
-            [
-                "prepare",
-                "--directory",
-                "delivery dir",
-                "--expected-source-sha",
-                "abc",
-                "--expected-descriptor-sha256",
-                "def",
-            ],
-        )
-
     def test_ordinary_access_is_separate_from_rollout(self):
         self.assertEqual(self.run_make("platform-api").returncode, 0)
         self.assertEqual(self.calls()[0][3:], ["scripts.platform.local_access", "api"])
-        self.assertEqual(self.run_make("platform-rollout-test").returncode, 0)
-        self.assertEqual(self.calls()[1][3:], ["scripts.platform.kind_serving", "rehearse"])
+        self.assertEqual(self.run_make("round-rollout").returncode, 0)
+        self.assertEqual(
+            self.calls()[1][3:],
+            ["scripts.operational_round.controller", "rehearse", "--round-id", "portfolio-v1"],
+        )
 
     def test_data_jobs_only_invoke_existing_producer_chain(self):
         self.assertEqual(self.run_make("platform-data-jobs").returncode, 0)
@@ -240,11 +224,6 @@ class LocalAccess(unittest.TestCase):
         self.tracking = SimpleNamespace(
             inventory=lambda: self.calls.append("tracking-owned"), port_forward=forward
         )
-        self.delivery = SimpleNamespace(plan=lambda: {"pinned": True}, forward=forward)
-        self.serving = SimpleNamespace(
-            observe=lambda _: {"pods": {"gateway": {"name": "owned-gateway"}}},
-            wait_route=lambda *args: {"score": 0.1, "invalid_input_http_status": 422},
-        )
         self.active = {
             "slot": "green",
             "version": "7",
@@ -274,8 +253,6 @@ class LocalAccess(unittest.TestCase):
         for name, value in (
             ("kind_foundation", self.foundation),
             ("kind_tracking", self.tracking),
-            ("kind_serving_delivery", self.delivery),
-            ("kind_serving", self.serving),
             ("serving_recovery", self.recovery),
         ):
             setattr(parent, name, value)
@@ -309,12 +286,6 @@ class LocalAccess(unittest.TestCase):
             self.assertIn(("open", ("current-gateway",)), self.calls)
         self.assertEqual(self.calls.count(("checked-active", "7", "green")), 2)
         self.assertIn("close-own-forward", self.calls)
-
-    def test_synthetic_access_requires_an_explicit_service_name(self):
-        with self.module.connection("synthetic-api") as result:
-            self.assertEqual(result["service"], "synthetic-api")
-            self.assertIn(("open", ("owned-gateway",)), self.calls)
-        self.assertEqual(self.calls[-1], "close-own-forward")
 
     def test_no_active_record_never_falls_back_to_synthetic(self):
         def absent():
@@ -406,3 +377,30 @@ class LocalAccess(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_retired_synthetic_targets_do_not_dispatch_to_missing_controllers(tmp_path):
+    for target in (
+        "platform-serving-prepare",
+        "platform-serving-up",
+        "platform-rollout-test",
+        "platform-synthetic-api",
+    ):
+        result = subprocess.run(
+            ["make", "--no-print-directory", "-n", target],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            env={**os.environ, "LC_ALL": "C", "LANG": "C"},
+            check=False,
+        )
+        assert result.returncode != 0 and "No rule to make target" in result.stderr
+    with pytest.raises(ValueError, match="Only mlflow and api"):
+        from scripts.platform import kind_foundation
+        from scripts.platform.local_access import connection
+
+        with (
+            patch.object(kind_foundation, "owner", return_value=None),
+            connection("synthetic-api"),
+        ):
+            raise AssertionError("Retired endpoint must not open")

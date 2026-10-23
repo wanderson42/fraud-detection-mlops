@@ -148,11 +148,15 @@ def test_completed_HTTP_flow_receipt_and_ledger_survive_operational_transition(
     committed_root.mkdir()
     declarations = [
         (path, json.loads((original_root / path).read_bytes()))
-        for path in (source_compatibility.TRANSITION, source_compatibility.REFACTOR_TRANSITION)
+        for path in (
+            source_compatibility.TRANSITION,
+            source_compatibility.REFACTOR_TRANSITION,
+            source_compatibility.RETIREMENT_TRANSITION,
+        )
     ]
     current_pins = flow.pins()
     saved_pins = dict(current_pins)
-    # Walk both reviewed transitions backwards to reconstruct a pre-seed receipt.
+    # Walk the reviewed transition chain backwards to reconstruct a pre-seed receipt.
     for _, declaration in reversed(declarations):
         for name, hashes in declaration["changes"].items():
             if name in saved_pins or hashes["after"] is None:

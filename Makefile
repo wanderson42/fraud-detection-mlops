@@ -23,7 +23,7 @@ help:
 	@printf '%s\n' \
 	  'Operação:    platform-status | platform-host-check' \
 	  'Acessos:     platform-api | platform-mlflow | platform-grafana | portal-open' \
-	  'Verificação: portal-verify | portal-performance-verify | product-verify' \
+	  'Verificação: platform-check | portal-verify | portal-performance-verify | product-verify' \
 	  'Parar/subir: platform-stop | platform-start (requerem baseline salvo e declaração de writers)' \
 	  'Desenvolver: validate | portal-ui-test' \
 	  'Background:  access-up | access-status | access-logs | access-stop-all' \

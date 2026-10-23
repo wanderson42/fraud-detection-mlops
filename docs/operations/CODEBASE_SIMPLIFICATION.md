@@ -260,10 +260,69 @@ sem inconsistências e 39 testes de inventário/compatibilidade passaram.
 [Evidência de preparação](../../references/evidence/operational_refactor_preparation_2026-10-23.json).
 A conferência dos recibos no KinD após este commit permanece a executar pelo autor.
 
-### Próximo trabalho de simplificação
+### Aposentadoria da instalação sintética — base após `23a15c9`
 
-Este recorte não altera o ciclo nativo já aceito, pesos ou aliases. A próxima
-intervenção revisa consumidores restantes do serving sintético e de correções
-pontuais para retirar famílias inteiras quando a operação atual as substituir.
-A sessão operacional contínua vem depois dessa revisão. O aceite de um sucessor
-com pesos diferentes permanece separado e condicionado à qualificação.
+O inventário nativo mostrou a release antiga `fraud-serving` além do serving
+corrente `fraud-detector`. O blue sintético estava sem prontidão. Uma manutenção
+externa de uso único retirou os cinco recursos exclusivos, com ownership e
+consumidores conferidos, sem adicionar outro controlador permanente ao projeto.
+O autor validou a retirada, as identidades externas e os readbacks de API,
+tracking/S3/monitoramento, portal e avaliação de 67.255 linhas. PVCs, imagens,
+histórico Helm, pesos e recibos antigos foram preservados.
+[Evidência nativa](../../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).
+
+Só depois dessa retirada foram removidos os três módulos `kind_serving*.py`,
+o teste exclusivo de 618 linhas e seu live gate. Os quatro alvos Make da
+instalação antiga e o ambiente tox `kind-serving` também saíram. O código desses
+comandos continua recuperável no Git anterior; os artefatos privados não são
+apagados nem movidos por esta limpeza.
+
+`check_api` e `wait_route` foram movidos para o serving canônico com o corpo das
+funções idêntico (AST conferida). A observabilidade usa diretamente o helper CRI.
+O chart inicial, o Dockerfile do carrier e os gates Docker da CI têm consumidores
+atuais e ficaram. Seus testes de segurança/identidade migraram para as suítes
+canônicas; os testes do controlador desinstalado não foram conservados por inércia.
+
+Balanço deste recorte: **três arquivos de runtime e dois de testes retirados**,
+nenhum módulo de runtime novo, **1.013 linhas líquidas de runtime** e **457 linhas
+líquidas de testes** removidas. A contagem inclui o novo comando diário e os testes
+preservados/estendidos; manifestos e documentos são contabilizados separadamente.
+Foram conferidos os 782 arquivos da base reconstruída dos pacotes aplicados pelo
+autor. Ciência, contratos Gold/Silver, políticas de promoção e lockfiles permanecem
+iguais. Não há imports executáveis apontando para os módulos aposentados.
+
+`platform-check` substitui a conferência manual do estado atual: verifica o mesmo
+baseline/ownership/recursos/Registry/HTTP/S3/monitoramento, grava um recibo e recusa
+corridas de identidade. Não exige parada/subida no boot atual. `platform-verify`
+continua exclusivamente dedicado ao ciclo controlado. O baseline novo da
+[operação diária](KIND_OPERATIONS.md#conferência-diária-após-a-consolidação-de-fontes)
+representa a topologia reduzida; os recibos antigos não foram reescritos.
+
+A terceira transição de fontes é restrita aos hashes revisados deste recorte,
+inclusive as remoções e o README do chart compartilhado. Os cinco perfis anteriores
+de execução passaram; contratos/políticas não revisados continuam bloqueados. A
+declaração deve ser commitada antes de ler os recibos nativos anteriores. A leitura
+de um baseline da antiga topologia ainda falha corretamente na conferência dos
+recursos que foram intencionalmente retirados: compatibilidade de fontes não muda
+a identidade física registrada.
+
+Validação local: **1.650 testes aprovados, 51 skips e 12 subtests** em 785,80 s,
+com 166 warnings; Ruff e formatação passaram. A regressão direcionada teve 427
+testes e dez skips. Os 29 consumidores de tracking seguem sem inconsistências.
+O aplicador recusa uma retirada nativa não aceita, edições/índice/symlinks estranhos,
+restaura arquivos após falha e preserva os dados privados. O helper de commit foi
+exercitado com o editor staged e MLflow local untracked; cinco perfis reais anteriores
+foram aceitos só após commitar a transição exata. O contrato alterado foi recusado.
+[Evidência de preparação](../../references/evidence/synthetic_serving_code_retirement_preparation_2026-10-23.json).
+O aceite nativo **após retirar os arquivos** depende do `platform-check` e das
+verificações do portal executados pelo autor; a retirada física anterior já está aceita.
+
+### Continuação após a retirada
+
+A próxima entrega consolida a sessão operacional contínua: produtor com ritmo,
+checkpoint, API do champion, ledger/fila, portal e métricas da mesma sessão.
+Compose de tracking/monitoramento e diagnósticos de bootstrap continuam separados
+como caminhos com função de recuperação/reprodução; a qualificação sintética da CI
+permanece ativa. Não serão apagados só para reduzir a contagem de arquivos.
+A substituição de champion com pesos diferentes continua condicionada a candidato
+qualificado e aceite próprio; não é declarada concluída pela simplificação.

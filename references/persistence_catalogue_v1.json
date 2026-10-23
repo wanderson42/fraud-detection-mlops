@@ -85,13 +85,12 @@
     },
     {
       "prefix": "data/storage/kind-platform/serving",
-      "family": "kind_serving_preparation_images_values_and_receipts",
+      "family": "retired_synthetic_serving_private_artifacts_and_receipts",
       "owner": "platform",
-      "producers": [
-        "scripts/platform/kind_serving.py",
-        "scripts/platform/kind_serving_delivery.py"
-      ],
-      "review_required": false
+      "producers": [],
+      "review_required": false,
+      "status": "retired_read_only",
+      "reason": "Native release uninstalled on 2026-10-23; retain original image/release artifacts and receipts"
     },
     {
       "prefix": "data/storage/kind-platform/replay",
@@ -289,6 +288,14 @@
         "scripts/platform/kind_pipeline.py"
       ],
       "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/synthetic-retirement",
+      "family": "synthetic_retirement_private_before_and_result_receipts",
+      "owner": "platform",
+      "producers": [],
+      "review_required": false,
+      "reason": "One-use external maintenance tool; no new repository runtime producer"
     }
   ],
   "source_prefixes": [
@@ -457,15 +464,10 @@
     },
     {
       "id": "kind_serving_runtime_and_emptyDir",
-      "source": "scripts/platform/kind_serving.py",
-      "locations": [
-        "fraud-platform/fraud-serving-blue",
-        "fraud-platform/fraud-serving-gateway",
-        "optional fraud-serving-green",
-        "model releases in per-pod emptyDir; authoritative carrier image and original delivery retained"
-      ],
-      "inspection": "declared_only_native_acceptance_pending",
-      "reason": "Qualified synthetic API image and copied release distribution. Baseline persists in the lab; no primary storage migration or historical model promotion."
+      "locations": [],
+      "inspection": "retired_native_resources_removed",
+      "reason": "Native release retired; retained artifacts remain under data/storage/kind-platform/serving",
+      "historical_source": "scripts/platform/kind_serving.py"
     }
   ],
   "decisions": {
@@ -788,7 +790,7 @@
       {
         "id": "scripts_operational_round_controller",
         "source": "scripts/operational_round/controller.py",
-        "source_sha256": "8f6ebb3fa0e164435e4e91c30a9235e95439dfb0bcb5f3b79ebd7e5011120e5b",
+        "source_sha256": "41746ac601256778c5ba27441e84c0673cda59e06e2e6ffeb07eb58650d3648c",
         "functions": [
           "init",
           "train",
@@ -828,7 +830,7 @@
       {
         "id": "scripts_operational_round_serving",
         "source": "scripts/operational_round/serving.py",
-        "source_sha256": "a8e21bce273770c642ff85421df49fe3be1f93dc5132fd88cf9b9ef160a0a01c",
+        "source_sha256": "11cf2fccafe5f20caff44dbd8940626e7ad7d688a5d3f4b03e52b04d0918d7fe",
         "functions": [
           "prepare",
           "deploy",
@@ -855,7 +857,7 @@
       {
         "id": "recurring_deployment",
         "source": "scripts/model_updates/deployment.py",
-        "source_sha256": "032cebb34a206782bd4a59f3f73eef2790f7c6e569fb162c10f065eb65347525",
+        "source_sha256": "b85711d1d2eabdffa3a73fbd675c88d413b8342b43c555b485d6959bcb098088",
         "functions": [
           "stage",
           "release"
@@ -1033,9 +1035,6 @@
     "retained_pvc_uid": "d68d5529-7b3d-4a08-a569-0ca8c72c9366"
   },
   "kind_serving": {
-    "controller": "scripts/platform/kind_serving.py",
-    "delivery_controller": "scripts/platform/kind_serving_delivery.py",
-    "init_worker": "scripts/platform/kind_serving_seed.py",
     "chart": "infra/helm/fraud-serving",
     "release": "fraud-serving",
     "workspace": "data/storage/kind-platform/serving",
@@ -1046,7 +1045,16 @@
     "production_promotion": false,
     "runbook": "docs/operations/KIND_SERVING.md",
     "validation_evidence": "references/evidence/kind_serving_author_validation_2026-10-21.json",
-    "validation_scope": "qualified_synthetic_runtime_Helm_Service_blue_green_and_native_rollback_not_reference_promotion"
+    "validation_scope": "qualified_synthetic_runtime_Helm_Service_blue_green_and_native_rollback_not_reference_promotion",
+    "historical_sources": [
+      "scripts/platform/kind_serving.py",
+      "scripts/platform/kind_serving_delivery.py",
+      "scripts/platform/kind_serving_seed.py"
+    ],
+    "status": "retired",
+    "native_retirement_validated": true,
+    "retirement_evidence": "references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json",
+    "shared_chart_retained_for": "canonical_first_champion_deployment"
   },
   "kind_observability": {
     "controller": "scripts/platform/kind_observability.py",

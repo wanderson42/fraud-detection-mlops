@@ -96,11 +96,9 @@ def running(plan, slot):
 
 
 def gate(url, plan, slot, policy):
-    from scripts.platform.kind_serving import wait_route
-
     smoke = json.loads((Path(plan["paths"][slot]) / "smoke.json").read_bytes())
     scoped = {**plan, "smoke": smoke}
-    checked = wait_route(url, scoped, slot, timeout=60)
+    checked = old.wait_route(url, scoped, slot, timeout=60)
     timings = []
     manifest = plan["releases"][slot]["manifest"]
     for _ in range(policy["http_measurements"]):
