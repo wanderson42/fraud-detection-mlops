@@ -659,9 +659,26 @@ def inventory():
         statuses = pod.get("status", {}).get("containerStatuses", [])
         f.require(
             len(statuses) == 1
-            and statuses[0].get("ready")
-            and statuses[0].get("restartCount", 0) == 0,
-            "Component unready or restarted; preserve diagnostics",
+            and statuses[0].get("ready") is True
+            and bool(statuses[0].get("state", {}).get("running"))
+            and pod.get("status", {}).get("phase") == "Running"
+            and any(
+                condition.get("type") == "Ready" and condition.get("status") == "True"
+                for condition in pod.get("status", {}).get("conditions", [])
+            ),
+            "Component is not currently ready; "
+            + json.dumps(
+                {
+                    "component": role,
+                    "pod": pod["metadata"]["name"],
+                    "phase": pod.get("status", {}).get("phase"),
+                    "containers": [
+                        {key: status.get(key) for key in ("ready", "restartCount", "state")}
+                        for status in statuses
+                    ],
+                },
+                sort_keys=True,
+            ),
         )
         cid = statuses[0]["imageID"]
         f.require(

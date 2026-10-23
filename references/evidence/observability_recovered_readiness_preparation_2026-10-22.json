@@ -1,0 +1,44 @@
+{
+  "schema": "fraud_observability_recovered_readiness_preparation_v1",
+  "status": "locally_verified_native_retry_pending",
+  "prepared_on": "2026-10-22",
+  "operator_diagnostic": "Component unready or restarted; preserve diagnostics",
+  "cause_in_code": "shared inventory required lifetime restartCount == 0, conflating recovered historical restart with current unavailability",
+  "native_restart_count_not_yet_supplied": true,
+  "new_gate": {
+    "one_owned_pod_per_role": true,
+    "ready_container_and_running_state": true,
+    "Running_pod_phase_and_Ready_condition": true,
+    "replicaset_and_deployment_ownership": true,
+    "locked_image_identity": true,
+    "Bound_owned_PVC": true,
+    "historical_restart_count_alone_does_not_block": true
+  },
+  "failure_details": [
+    "component",
+    "pod",
+    "phase",
+    "container.ready",
+    "container.restartCount",
+    "container.state"
+  ],
+  "local_validation": {
+    "python": "3.14.4",
+    "passed": 107,
+    "subtests": 12,
+    "seconds": 11.21,
+    "ruff_check_and_format": true,
+    "test_groups": [
+      "observability current readiness and recovered restart inventory",
+      "existing observability",
+      "platform entrypoints",
+      "managed paths",
+      "persistence inventory"
+    ]
+  },
+  "runtime_image_inputs_changed": false,
+  "pods_recreated": false,
+  "images_rebuilt": false,
+  "champion_modified": false,
+  "native_access_fixed_validated": false
+}
