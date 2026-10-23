@@ -87,6 +87,12 @@ manutenção, recriação de pod ou interrupção do node, feche e abra o acesso
 obter uma URL e uma verificação atualizadas. Não há reinício automático que
 esconda falhas ou use o serving sintético como fallback.
 
+`access-up` reabre API, MLflow, Grafana e portal. Prometheus, exporter e RustFS
+são acessos locais opcionais: após `access-stop-all`, podem aparecer como
+`stopped_or_stale` até executar `access-start` para cada um. Isso não significa
+que os workloads Kubernetes estejam parados. O ciclo canônico de 2026-10-23
+verificou os serviços e reabriu os quatro acessos principais.
+
 O portal continua consultando o snapshot aceito. Deixá-lo em segundo plano não
 faz chegar novas transações; a sessão operacional contínua é o próximo recorte.
 Os comandos de primeiro plano continuam disponíveis (`platform-api`,

@@ -73,7 +73,8 @@ confundida com a entrega de novos atalhos de operação.
 **Recorte em andamento: simplificação estrutural antes da sessão contínua.**
 A consolidação do ciclo de vida agora prepara baseline v2 do champion ativo,
 reutiliza o gate da API e restaura réplicas salvas, inclusive zero no slot inativo.
-Regressão local preparada; parada/subida canônica ainda requer aceite nativo.
+Parada/subida canônica aceita pelo autor em 2026-10-23: 1 teste em 276,71 s,
+mesmo node/volumes, plano de réplicas restaurado e proxy Grafana após reinício.
 Não altera o estado da promoção recorrente de sucessor, que continua condicionado
 a candidato qualificado e validação própria. [Procedimento](../operations/KIND_OPERATIONS.md).
 
@@ -108,6 +109,7 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 | Eventos causais pela API do champion | Aceite do autor em 2026-10-22: teste nativo aprovado, decisões HTTP e feedback consultáveis, pausa/retomada e reinvocação conferidas pelo teste. Não altera champion nem conclui SHAP por caso. [Evidência](../../references/evidence/product_http_flow_author_validation_2026-10-22.json) |
 | Retenção governada do champion | Aceite nativo em 2026-10-22: duas rodadas, três candidatos por rodada, Inputs/artefatos/validação conferidos, ganho insuficiente e champion versão 1 preservado. Não conclui ativação ou rollback de sucessor com pesos diferentes. [Evidência](../../references/evidence/model_updates_author_validation_2026-10-22.json) |
 | Infraestrutura do fluxo em KinD + Helm | Concluída no escopo do laboratório por aceites incrementais de fundação, tracking, datasets, Jobs, replay, serving, observabilidade e operação. Sequência consolidada; fontes históricas preservadas. Não é migração primária nem execução integral nova em produção. [Guia integrado](../operations/KIND_PLATFORM.md) |
+| Ciclo de vida do champion ativo | Aceite nativo em 2026-10-23: baseline v2, 11 controllers retomados, green em zero, mesma identidade Registry/HTTP e volumes, oito regras/quatro dashboards e proxy Grafana aprovados após reinício; quatro acessos principais reabertos. [Evidência](../../references/evidence/canonical_lifecycle_author_validation_2026-10-23.json) |
 | Parada/subida e reboot planejado | Aceite nativo em 2026-10-21: oito workloads retomados no mesmo node/PVCs, boot_id mudou e inotify 512/524288 persistiu. Tracking/S3, serving e monitoramento iguais ao baseline. Sem recuperação por perda do host ou interrupção abrupta. [Evidência](../../references/evidence/kind_operations_author_validation_2026-10-21.json) |
 | Política de cores dos dashboards | Aceite separado em 2026-10-21: cores, mappings, thresholds e legendas conferidos via API e visualmente pelo autor; métricas e três PVCs iguais ao aceite anterior. Informações não herdam classificação arbitrária por magnitude. Sem replay ou novo resultado de qualidade. [Evidência](../../references/evidence/dashboard_color_policy_author_validation_2026-10-21.json) |
 | Observabilidade no KinD | Aceite nativo e visual em 2026-10-21: cópia de replay concluído conciliada, scrape, oito regras, proxy Grafana e quatro dashboards conferidos; exporter recriado no mesmo PVC, origem e demais recursos preservados. Sem ingestão ao vivo, novo resultado de qualidade, firing ou reboot validados. [Evidência](../../references/evidence/kind_observability_author_validation_2026-10-21.json) |

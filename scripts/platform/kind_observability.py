@@ -14,7 +14,7 @@ import sys
 from tempfile import TemporaryDirectory
 from threading import Thread
 import time
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import ProxyHandler, Request, build_opener
 from uuid import uuid4
@@ -896,6 +896,15 @@ def verify_http():
             and datasource["type"] == "prometheus",
             "Grafana datasource differs",
         )
+        try:
+            health = http(grafana, "/api/datasources/uid/fraud-prometheus/health", auth=True)
+        except HTTPError as exc:
+            raise ValueError(
+                "Grafana Prometheus plugin health failed (HTTP "
+                + str(exc.code)
+                + "); inspect owned Grafana startup/plugin logs before retrying"
+            ) from exc
+        f.require(health.get("status") == "OK", "Grafana Prometheus plugin is not healthy")
         # Exercise Grafana's authenticated datasource proxy, not only its configuration.
         proxied = http(
             grafana,

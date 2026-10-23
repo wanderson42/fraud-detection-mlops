@@ -1098,24 +1098,28 @@
     "runbook": "docs/operations/KIND_OPERATIONS.md",
     "baseline_private_immutable": true,
     "secret_contents_recorded": false,
-    "native_stop_start_validated": false,
+    "native_stop_start_validated": true,
     "host_reboot_validated": false,
     "primary_storage_migrated": false,
     "host_loss_recovery_validated": false,
-    "inotify_persistence_after_reboot_validated": true,
+    "inotify_persistence_after_reboot_validated": false,
     "planned_shutdown_required": true,
-    "validation_evidence": "references/evidence/kind_operations_author_validation_2026-10-21.json",
+    "validation_evidence": "references/evidence/canonical_lifecycle_author_validation_2026-10-23.json",
     "integrated_runbook": "docs/operations/KIND_PLATFORM.md",
     "historical_acceptance": {
       "scope": "initial_synthetic_serving_laboratory",
       "native_stop_start_validated": true,
       "host_reboot_validated": true,
-      "evidence": "references/evidence/kind_operations_author_validation_2026-10-21.json"
+      "evidence": "references/evidence/kind_operations_author_validation_2026-10-21.json",
+      "inotify_persistence_after_reboot_validated": true
     },
     "baseline_schema": "fraud_kind_operations_baseline_v2",
     "serving_identity": "model-updates/current.json and shared platform-api gate",
-    "current_validation_status": "canonical_lifecycle_prepared_native_acceptance_pending",
-    "preparation_evidence": "references/evidence/canonical_lifecycle_preparation_2026-10-22.json"
+    "current_validation_status": "canonical_lifecycle_native_stop_start_accepted",
+    "preparation_evidence": "references/evidence/canonical_lifecycle_preparation_2026-10-22.json",
+    "validated_on": "2026-10-23",
+    "grafana_proxy_after_restart_validated": true,
+    "inactive_slot_zero_preserved": true
   },
   "kind_platform_milestone": {
     "status": "accepted_incremental_laboratory_scope",

@@ -121,8 +121,42 @@ comando reinicia a máquina automaticamente.
 ## Estado do aceite
 
 A parada/subida e o reboot do laboratório inicial foram aceitos em 2026-10-21 e
-continuam documentados na [evidência original](../../references/evidence/kind_operations_author_validation_2026-10-21.json). O ciclo canônico v2 tem implementação
-e testes locais; o novo aceite nativo aguarda sua execução. Não herda o aceite do
-serving sintético. O gate não comprova restauração de backup, perda do host ou
+continuam documentados na [evidência original](../../references/evidence/kind_operations_author_validation_2026-10-21.json). O ciclo canônico v2 foi aceito em 2026-10-23 pelo ensaio do autor: uma execução
+aprovada em 276,71 s, com mesmo node/volumes, réplicas salvas e proxy do Grafana
+conferidos depois da retomada. Tem evidência própria do produto ativo. O gate não comprova restauração de backup, perda do host ou
 implantação/rollback de sucessor com pesos diferentes. Esse último depende de
 candidato qualificado e da política de aprovação já estabelecida.
+
+
+### Diagnóstico de plugin do Grafana em 2026-10-23
+
+O ciclo `rehearsal-bf1ca3b552324834b5bd3ded6c860bfb` concluiu parada e retomada,
+restaurando green para zero, mas falhou no proxy Grafana com HTTP 404. Registrou
+tentativa de recuperação concluída e continua falho. O diagnóstico posterior
+mostrou datasource presente e `plugin.notRegistered`. Isso não fecha o aceite.
+
+O [guia de observabilidade](KIND_OBSERVABILITY.md#plugins-embarcados-e-retomada-do-grafana)
+explica a configuração do preinstaller e a checagem de saúde do plugin. Após
+reconciliar e conferir o proxy, execute o ensaio com baseline novo. Preserve
+`baseline-362ba798d04246399a4a2f3365da2604.json` e os recibos do ciclo anterior.
+
+
+## Aceite canônico — 2026-10-23
+
+| Conferência | Resultado |
+| --- | --- |
+| Ciclo nativo | 1 teste aprovado em 276,71 s; tox em 279,39 s |
+| Contagens restauradas | 11 controllers: dez com uma réplica, green com zero |
+| Identidade | Mesmo node/engine/volumes; plano original de réplicas restaurado |
+| API ativa | Registry versão 1, blue; score 0,4178630794049542 e entrada inválida HTTP 422 |
+| MLflow/S3 | Histórico de dois pontos e bytes do modelo de controle verificados |
+| Observabilidade | Scrape, oito regras, quatro dashboards e proxy Grafana aprovados após reinício |
+| Acessos reabertos | API, MLflow, Grafana e portal prontos |
+
+O baseline `baseline-4fb6e8ecc8b14ad79564a84086a6c170.json` está vinculado aos
+recibos de parada, retomada e verificação pelo digest
+`656d636d8fa4ff11981c75ab61d5947769410c3295e2dc3ab5a2ed7279f23f39`.
+A [evidência do autor](../../references/evidence/canonical_lifecycle_author_validation_2026-10-23.json)
+conserva a transcrição estruturada completa do ciclo e a proveniência do anexo.
+Não houve reboot neste aceite. O ciclo anterior e seu baseline continuam falhos e
+preservados; o aceite novo não reescreve aquela execução.

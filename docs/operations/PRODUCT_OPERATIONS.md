@@ -83,8 +83,8 @@ laboratório legado com recibo próprio, sem substituir o gate canônico.
 
 O [guia de ciclo de vida](KIND_OPERATIONS.md) concentra preparação, parada,
 retomada, verificação e reboot. Baselines antigos são preservados e não convertidos.
-A implementação canônica está preparada; o novo aceite nativo ainda deve ser
-executado. Antes de interromper, encerre acessos e writers; depois, reabra com
+O ciclo canônico foi aceito em 2026-10-23: mesmo node/volumes, green em zero
+e identidade Registry/HTTP e proxy Grafana conferidos após a retomada. Antes de interromper, encerre acessos e writers; depois, reabra com
 `access-up`. Isso não inicia a chegada contínua de transações.
 
 ## Quem faz os dados chegarem

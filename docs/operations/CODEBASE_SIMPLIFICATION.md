@@ -166,7 +166,9 @@ instalador idempotente, pesos ou recibos científicos. Um baseline antigo não �
 convertido; novo baseline é preparado por leitura dos serviços prontos.
 
 O novo ciclo passou em 429 testes, com 12 skips e 12 subtests, em 104,35 s;
-Ruff e formatação aprovados. O aceite nativo canônico permanece pendente.
+Ruff e formatação aprovados. O aceite nativo canônico foi concluído pelo autor
+em 2026-10-23: 1 teste em 276,71 s, 11 controllers e green mantido em zero,
+com Registry/HTTP, volumes e proxy Grafana conferidos após a retomada.
 Os aceites anteriores continuam com seu escopo original. O
 [guia operacional](KIND_OPERATIONS.md) reúne os passos e o ensaio. Ainda não é
 encerramento da simplificação ou da sessão contínua.
@@ -207,3 +209,15 @@ redução líquida de sete arquivos. O Python caiu de 358 para 350 arquivos e pe
 **1.946 linhas líquidas**, incluindo 1.360 linhas de implementação do importador.
 Nenhum novo módulo de runtime foi adicionado. Os ensaios nativos existentes não
 foram executados de novo apenas para retirar esse importador.
+
+
+### Próximo trabalho de simplificação
+
+O ciclo canônico e a correção declarativa de plugins do Grafana estão aceitos.
+Não é necessário acrescentar outro controlador operacional para prosseguir.
+A próxima intervenção continua sendo a consolidação de funções duplicadas de
+preparação de requisições/entrada de treino e consulta de imagens CRI. A revisão
+deve preservar os gates científicos e tratar mudanças de pins por transição
+revisada, sem editar recibos. Depois seguem a revisão das famílias legadas com
+consumidores identificados e a sessão operacional contínua. O aceite de um
+sucessor com pesos diferentes permanece separado e condicionado à qualificação.
