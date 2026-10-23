@@ -16,29 +16,29 @@ from scripts.platform import kind_observability as monitor
 from scripts.platform import kind_serving as serving
 from scripts.platform import kind_serving_delivery as delivery
 from scripts.platform import kind_tracking as tracking
+from scripts.platform import local_access
 
 NODE = f.CLUSTER + "-control-plane"
 # Dependents stop first; dependencies start first. No cluster/volume creation occurs.
-STOP_ORDER = (
-    ("deployment", "fraud-serving-gateway"),
-    ("deployment", "fraud-serving-blue"),
-    ("deployment", "fraud-observability-exporter"),
-    ("deployment", "fraud-observability-grafana"),
-    ("deployment", "fraud-observability-prometheus"),
-    ("deployment", "fraud-tracking"),
-    ("statefulset", "fraud-platform-postgres"),
-    ("statefulset", "fraud-platform-rustfs"),
-)
 START_ORDER = (
     ("statefulset", "fraud-platform-rustfs"),
     ("statefulset", "fraud-platform-postgres"),
     ("deployment", "fraud-tracking"),
-    ("deployment", "fraud-serving-blue"),
-    ("deployment", "fraud-serving-gateway"),
     ("deployment", "fraud-observability-exporter"),
     ("deployment", "fraud-observability-prometheus"),
     ("deployment", "fraud-observability-grafana"),
+    ("deployment", "fraud-serving-blue"),
+    ("deployment", "fraud-serving-green"),
+    ("deployment", "fraud-serving-gateway"),
+    ("deployment", "fraud-detector-blue"),
+    ("deployment", "fraud-detector-green"),
+    ("deployment", "fraud-detector-gateway"),
 )
+STOP_ORDER = tuple(reversed(START_ORDER))
+REQUIRED = set(STOP_ORDER) - {
+    ("deployment", "fraud-detector-green"),
+    *(("deployment", "fraud-serving-" + slot) for slot in ("blue", "green", "gateway")),
+}
 MINIMUM_INOTIFY = {"max_user_instances": 512, "max_user_watches": 524288}
 SCOPE = "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery"
 
@@ -71,7 +71,10 @@ def pins():
         "scripts/platform/dashboard_colors.py",
         "infra/kind/operations/90-fraud-platform.conf",
     }
-    return {name: monitor.state.sha(f.ROOT / name) for name in sorted(names)}
+    from scripts.model_updates import controller as updates
+
+    names.add("scripts/platform/local_access.py")
+    return {**updates.pins(), **{name: monitor.state.sha(f.ROOT / name) for name in sorted(names)}}
 
 
 def host():
@@ -141,12 +144,23 @@ def resources():
         if item["kind"] in {"Deployment", "StatefulSet"}
     }
     f.require(
-        actual == set(STOP_ORDER),
+        REQUIRED <= actual <= set(STOP_ORDER),
         "Unexpected or missing workload in fraud namespace; do not stop unreviewed controllers",
     )
     result = {}
+    active = active_state()
     for item in items:
         kind, name = item["kind"], item["metadata"]["name"]
+        if kind == "Deployment" and name.startswith("fraud-detector-"):
+            metadata = item["metadata"]
+            f.require(
+                metadata.get("annotations", {}).get("fraud.serving/owner-id") == active["owner_id"]
+                and metadata.get("labels", {}).get("app.kubernetes.io/instance")
+                == "fraud-detector"
+                and metadata.get("labels", {}).get("app.kubernetes.io/component")
+                == name.removeprefix("fraud-detector-"),
+                "Canonical workload ownership/labels differ; refuse adoption",
+            )
         spec = dict(item.get("spec", {}))
         replicas = spec.pop("replicas", None) if kind in {"Deployment", "StatefulSet"} else None
         content = {k: item[k] for k in ("data", "binaryData", "type", "immutable") if k in item}
@@ -160,6 +174,63 @@ def resources():
         if kind == "PersistentVolumeClaim":
             f.require(item.get("status", {}).get("phase") == "Bound", "PVC not bound: " + name)
     return result
+
+
+def active_state():
+    from scripts.platform.serving_recovery import current
+
+    return current()
+
+
+def serving_probe():
+    # Reuse the daily-access gate: Registry, route, exact images/bytes, HTTP and latency.
+    with local_access.connection("api") as checked:
+        return {
+            **{
+                key: checked[key]
+                for key in ("registry_version", "slot", "model_sha256", "serving_release_id")
+            },
+            # Latency must pass its budget on each run, but is not an equality fingerprint.
+            "score": checked["verification"]["score"],
+            "invalid_input_http_status": checked["verification"]["invalid_input_http_status"],
+        }
+
+
+def replica_plan(current, active):
+    slot = active["slot"]
+    f.require(slot in ("blue", "green"), "Unknown active serving slot")
+    inactive = "green" if slot == "blue" else "blue"
+    for component in (slot, "gateway"):
+        key = "Deployment/fraud-detector-" + component
+        f.require(
+            current.get(key, {}).get("replicas") == 1, "Active serving must have one replica"
+        )
+    for key, item in current.items():
+        count = item["replicas"]
+        if count is None:
+            continue
+        expected = 0 if key == "Deployment/fraud-detector-" + inactive else 1
+        if key.startswith("Deployment/fraud-serving-"):
+            # Explicitly owned legacy rehearsal, if still installed; preserve its exact plan.
+            f.require(count in (0, 1), "Unexpected legacy replica count")
+        else:
+            f.require(count == expected, "Finish staged rollout before operations: " + key)
+    if any(key.startswith("Deployment/fraud-serving-") for key in current):
+        owned = serving.owned(delivery.plan())
+        found = {"Deployment/" + row["metadata"]["name"] for row in owned}
+        f.require(
+            found == {key for key in current if key.startswith("Deployment/fraud-serving-")},
+            "Legacy serving ownership differs",
+        )
+
+
+def ordered(baseline, order):
+    return [
+        (kind, name, baseline["resources"][key]["replicas"])
+        for kind, name in order
+        if (key := ("Deployment" if kind == "deployment" else "StatefulSet") + "/" + name)
+        in baseline["resources"]
+    ]
 
 
 def stable(value):
@@ -248,16 +319,7 @@ def probes(record):
         "Existing metric history differs",
     )
     s3 = tracking.storage_pod("verify", record)
-    plan = delivery.plan()
-    serving_state = serving.observe(plan)
-    f.require(
-        set(serving_state["pods"]) == {"blue", "gateway"},
-        "Baseline route only; finish candidate rollout before operations",
-    )
-    current = serving.current_values()
-    f.require(current == serving.values(plan), "Serving Helm values are not the baseline")
-    with delivery.forward(serving_state["pods"]["gateway"]["name"]) as uri:
-        scored = serving.wait_route(uri, plan, "blue")
+    scored = serving_probe()
     observed = monitor.inventory()
     monitoring = monitor.verify_http()
     f.require(
@@ -271,8 +333,8 @@ def probes(record):
         "tracking_history_fingerprint": digest(canonical(history)),
         "tracking_history_rows": len(history["metrics"]),
         "s3": s3,
-        "serving_release_id": plan["releases"]["blue"]["manifest"]["serving_release_id"],
-        "serving_model_sha256": plan["releases"]["blue"]["manifest"]["model_sha256"],
+        "serving_release_id": scored["serving_release_id"],
+        "serving_model_sha256": scored["model_sha256"],
         "serving_http": scored,
         "monitoring": monitoring,
         "monitoring_pvcs": observed["pvcs"],
@@ -285,6 +347,7 @@ def probes(record):
 def prepare(report_path, output=None):
     initialize()
     system = checked_host()
+    source_pins = pins()
     owner = docker_owner()
     f.require(
         owner["running"] and not owner["paused"] and not owner["restarting"],
@@ -292,15 +355,14 @@ def prepare(report_path, output=None):
     )
     f.owner()
     no_jobs_or_bare_writers()
+    active = active_state()
     before = resources()
-    f.require(
-        all(item["replicas"] in (None, 1) for item in before.values()),
-        "Every supported controller must have one baseline replica",
-    )
+    replica_plan(before, active)
     recorded = tracking_report(report_path)
     checked = probes(recorded["record"])
     after = resources()
     f.require(before == after, "Resource/configuration identity changed during baseline reads")
+    f.require(active_state() == active, "Active serving changed during baseline reads")
     path = (
         f.managed_destination(output.absolute(), "storage")
         if output
@@ -308,17 +370,20 @@ def prepare(report_path, output=None):
     )
     f.require(path.parent == work(), "Baseline must be directly inside the operations workspace")
     value = {
-        "schema": "fraud_kind_operations_baseline_v1",
+        "schema": "fraud_kind_operations_baseline_v2",
+        "active_state_sha256": digest(active),
         "status": "prepared",
         "scope": SCOPE,
         "host": system,
         "owner": owner,
-        "source_pins": pins(),
+        "source_pins": source_pins,
         "resources": before,
         "tracking_report": recorded,
         "probes": checked,
         "prepared_timestamp": time.time(),
     }
+    f.require(not path.exists(), "Baseline already exists; preserve it and choose a new path")
+    f.require(source_pins == pins(), "Implementation changed during baseline reads")
     f.private_json(path, value)
     print("Baseline: " + str(path), flush=True)
     return path
@@ -332,10 +397,14 @@ def read_baseline(path):
     )
     value = json.loads(path.read_text())
     f.require(
-        value["schema"] == "fraud_kind_operations_baseline_v1"
+        value["schema"] == "fraud_kind_operations_baseline_v2"
         and value["status"] == "prepared"
         and value["source_pins"] == pins(),
-        "Baseline code identity differs; preserve receipt",
+        "Baseline schema/code identity differs; preserve receipt and prepare a new canonical baseline",
+    )
+    f.require(
+        value["active_state_sha256"] == digest(active_state()),
+        "Active serving receipt changed; prepare a new baseline without editing the old one",
     )
     f.require(
         value["host"]["machine_id_sha256"] == host()["machine_id_sha256"],
@@ -445,7 +514,11 @@ def stop(path, no_other_writers):
         f.owner()
         no_jobs_or_bare_writers()
         check_resources(baseline)
-        for kind, name in STOP_ORDER:
+        f.require(
+            serving_probe() == baseline["probes"]["serving_http"],
+            "Active Registry/HTTP identity differs before stop",
+        )
+        for kind, name, _saved in ordered(baseline, STOP_ORDER):
             print("Parando " + name, flush=True)
             change_replica(baseline, kind, name, 0)
             result["steps"].append({"workload": kind + "/" + name, "replicas": 0})
@@ -504,10 +577,10 @@ def start(path, no_other_writers):
         wait_api()
         check_resources(baseline)
         no_jobs_or_bare_writers()
-        for kind, name in START_ORDER:
-            print("Subindo " + name, flush=True)
-            change_replica(baseline, kind, name, 1)
-            result["steps"].append({"workload": kind + "/" + name, "replicas": 1})
+        for kind, name, saved in ordered(baseline, START_ORDER):
+            print("Restaurando " + name + " para " + str(saved), flush=True)
+            change_replica(baseline, kind, name, saved)
+            result["steps"].append({"workload": kind + "/" + name, "replicas": saved})
         current = check_resources(baseline)
         f.require(
             current == baseline["resources"],

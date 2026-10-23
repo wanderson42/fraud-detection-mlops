@@ -104,7 +104,7 @@ platform-api:
 platform-synthetic-api:
 	$(POETRY) run python -m scripts.platform.local_access synthetic-api
 
-## Check functional readbacks and save a new baseline; requires PLATFORM_BASELINE and PLATFORM_TRACKING_REPORT
+## Check active champion and functional readbacks; save a new canonical v2 baseline; requires PLATFORM_BASELINE and PLATFORM_TRACKING_REPORT
 platform-baseline:
 	@: "$${PLATFORM_BASELINE:?Set PLATFORM_BASELINE}" "$${PLATFORM_TRACKING_REPORT:?Set PLATFORM_TRACKING_REPORT}"
 	$(POETRY) run python -m scripts.platform.kind_operations prepare --baseline "$${PLATFORM_BASELINE}" --tracking-report "$${PLATFORM_TRACKING_REPORT}"
@@ -115,7 +115,7 @@ platform-stop:
 	@test "$${PLATFORM_NO_OTHER_WRITERS}" = 1 || { echo 'Set PLATFORM_NO_OTHER_WRITERS=1 after stopping writers'; exit 2; }
 	$(POETRY) run python -m scripts.platform.kind_operations stop --baseline "$${PLATFORM_BASELINE}" --no-other-writers
 
-## Start the same node and restore saved replicas; requires PLATFORM_BASELINE and PLATFORM_NO_OTHER_WRITERS=1
+## Start the same node and restore saved replicas, including inactive-slot zero; requires PLATFORM_BASELINE and PLATFORM_NO_OTHER_WRITERS=1
 platform-start:
 	@: "$${PLATFORM_BASELINE:?Set PLATFORM_BASELINE}"
 	@test "$${PLATFORM_NO_OTHER_WRITERS}" = 1 || { echo 'Set PLATFORM_NO_OTHER_WRITERS=1 after stopping writers'; exit 2; }

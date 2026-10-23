@@ -1,187 +1,128 @@
-# Parar e retomar o laboratório KinD
+# Ciclo operacional do produto no KinD
 
-**Aceite nativo em 2026-10-21:** parada/subida e reboot manual planejado aprovados,
-com o mesmo node/PVCs e persistência dos valores inotify. Não há recuperação
-por perda do host, restauração de backup ou nova avaliação do modelo neste gate.
+O ponto de entrada diário é Make. O mesmo controlador para, retoma e verifica a
+fundação PostgreSQL/RustFS, tracking, observabilidade e a API do champion atual.
+Helm continua descrevendo a instalação; o ciclo não faz upgrade, build, treino,
+promoção, alteração de rota/alias ou criação de cluster.
 
-Para o champion canônico `fraud-detector`, a [manutenção da imagem instaladora](SERVING_RECOVERY.md)
-trata startup repetido no mesmo volume, com comandos Make e sem alterar pesos/alias.
-Os baselines deste documento pertencem ao ensaio que os gerou; não representam
-automaticamente o estado de uma release posterior.
+## Baseline canônico v2
 
-O controlador usa o kubeconfig privado e o namespace `fraud-platform`. Confere o
-recibo da fundação, o ID exato do container do node, o UID Kubernetes e a identidade
-do Docker Engine. Não usa o contexto global para escolher um cluster. Não cria
-cluster, executa Helm upgrade, reconstrói imagens, apaga PVCs ou usa prune.
-Os outros clusters e a stack Compose não são alvos deste procedimento.
+O controlador lê `model-updates/current.json`, sem escolher algoritmo ou rodada.
+Confere o champion pelo mesmo gate de `platform-api`: Registry, rota, pesos e
+imagens exatos, contrato HTTP, resposta de controle e orçamento de latência.
+O baseline grava a identidade desse estado ativo e os recursos presentes.
+Latência deve passar pelo orçamento em cada gate; não precisa ser numericamente
+idêntica entre execuções. Scores, release e identidades devem permanecer iguais.
 
-## O que será interrompido
-
-A API e os dashboards deste laboratório ficam indisponíveis durante o ciclo.
-Feche sessões de port-forward (`open`) e finalize Jobs, replay, publicações,
-ensaios e outros writers antes de declarar `--no-other-writers`. O lock local
-coordena estes controladores; não bloqueia clientes externos. A declaração do
-operador é necessária e não equivale a um mecanismo de exclusão no servidor.
-
-| Parada, nesta ordem | Retomada, nesta ordem |
+| Recurso | Plano capturado e restaurado |
 | --- | --- |
-| Gateway → serving blue | RustFS → PostgreSQL |
-| Exporter → Grafana → Prometheus | MLflow → serving blue → gateway |
-| MLflow → PostgreSQL → RustFS | Exporter → Prometheus → Grafana |
+| `fraud-detector-<slot ativo>` e gateway | Uma réplica |
+| Slot inativo, quando instalado | Zero; não é iniciado por uma retomada |
+| PostgreSQL, RustFS, MLflow e observabilidade | Uma réplica por controller |
+| `fraud-serving-*`, se ainda instalado | Exatamente as réplicas salvas, após conferir ownership no recibo legado |
+| Outros controllers ou Jobs ativos | Recusados; revisar antes de interromper |
 
-Cada controller é escalado para zero, com precondições de UID, spec,
-resourceVersion e número atual de réplicas. A rotina aguarda os pods terminarem
-antes de avançar. Só então para o container exato do node. Na retomada, inicia o
-mesmo container, aguarda API/node e restaura uma réplica de cada controller.
-O chart continua sendo a origem declarativa das instalações; a escala temporária
-é uma ação operacional e o plano original é restaurado ao final.
+Uma única lista determina a subida; a parada usa a ordem inversa. Primeiro sobem
+RustFS/PostgreSQL, tracking e observabilidade; em seguida o laboratório legado,
+quando presente, e os backends/gateway canônicos. Gateways param antes de seus
+backends. O serving sintético não é fallback nem evidência da API ativa.
+O slot inativo pode estar ausente; não se instala nada durante a retomada.
 
-## 1. Pré-requisito do host
+Antes de parar, confere a identidade Registry/HTTP e revalida recursos. Cada escala
+usa UID, spec, resourceVersion e réplicas atuais como precondições. Aguarda os pods
+terminarem antes de parar o container exato do node. Na retomada restaura cada
+contagem salva, incluindo zeros. PVCs/PVs, Services, configurações e hashes dos
+Secrets são comparados; conteúdo secreto não vai para os recibos. Pods podem
+receber novos UIDs, mas controllers e volumes devem permanecer os mesmos.
+
+Baseline v1 fica preservado como evidência do laboratório anterior. A rotina atual
+exige novo baseline v2 e não converte nem edita JSON antigo. Mudança do estado ativo,
+de código pinado ou configuração exige um novo baseline validado com serviços
+prontos, nunca a alteração de um recibo anterior. Uma candidata encenada com ambos
+os slots vivos deve ser finalizada antes de preparar o ciclo diário.
+
+## Preparar e verificar sem interromper
+
+O kubeconfig privado, contexto `kind-fraud-platform` e namespace `fraud-platform`
+limitam os comandos ao cluster próprio. Não se adota outro node/container/engine.
+Os outros clusters e a stack Compose ficam fora do ciclo.
 
 ```bash
-poetry run python -m scripts.platform.kind_operations host-check
+make platform-host-check &&
+make platform-status
 ```
 
-O bootstrap deste host exigiu pelo menos `512` instâncias e `524288` watches de
-inotify. Esses valores vêm do diagnóstico observado, não de uma recomendação
-universal de dimensionamento. O controlador apenas lê os valores; não altera
-sysctl nem reinicia Docker ou a máquina.
+O host exige inotify efetivo de pelo menos 512 instâncias e 524288 watches, valores
+identificados no diagnóstico deste ambiente. Para persistir a configuração, revise
+`infra/kind/operations/90-fraud-platform.conf` e o guia de bootstrap. O controlador
+não altera sysctl ou reinicia a máquina.
 
-Para persistir o ajuste, caso ainda não esteja configurado, revise o arquivo
-versionado e aplique manualmente:
+Feche writers, Jobs, replay, publicações e ensaios de promoção. Feche também os
+acessos locais (`make access-stop-all` e port-forwards abertos em outros terminais).
+A declaração de ausência de writers é explícita: o lock local não bloqueia clientes
+externos. Um portal de snapshot aberto não escreve transações, mas os acessos
+precisarão ser reabertos depois do ciclo.
+
+Use o tracking report já aceito para conferir o marcador SQL/S3 existente. Esse
+marcador não seleciona o modelo atendido: a API é conferida pelo champion atual.
 
 ```bash
-sudo cp --no-clobber infra/kind/operations/90-fraud-platform.conf /etc/sysctl.d/90-fraud-platform.conf &&
-cmp -s infra/kind/operations/90-fraud-platform.conf /etc/sysctl.d/90-fraud-platform.conf &&
-sudo sysctl --load /etc/sysctl.d/90-fraud-platform.conf
+export PLATFORM_TRACKING_REPORT="data/storage/kind-platform/tracking/rehearsal-e835e0ee8ce34106a203594a23c4bb3a.json"
+export PLATFORM_BASELINE="data/storage/kind-platform/operations/baseline-canonical-v2.json"
+make platform-baseline
 ```
 
-Um arquivo existente diferente faz a comparação falhar: revise-o antes de alterar.
-Outros arquivos sysctl podem definir os mesmos parâmetros. A verificação depois
-do reboot comprova os valores efetivamente carregados, sem presumir qual arquivo
-venceu a precedência. [sysctl.d](https://www.freedesktop.org/software/systemd/man/latest/sysctl.d.html).
+O caminho é privado e novo; se já existir, escolha outro nome. Preparar só lê
+serviços, faz inferências de controle e grava o baseline. Não interrompe o node.
+Se houver divergência, preserve o estado e consulte `platform-status`/logs.
 
-## 2. Primeiro gate: parada/subida sem reboot
+## Parada e retomada planejadas
 
-Use o recibo de tracking já aceito, sem treinar ou publicar outro modelo:
+Com o baseline novo conferido e sem outros writers:
 
 ```bash
+make platform-stop PLATFORM_NO_OTHER_WRITERS=1 &&
+make platform-start PLATFORM_NO_OTHER_WRITERS=1 &&
+make platform-verify &&
+make access-up &&
+make access-status
+```
+
+`platform-start` também retoma uma parada parcial quando a identidade ainda bate.
+O journal registra falhas; não apaga recursos para tentar novamente. Verificação
+exige recibos de parada e retomada do mesmo baseline e os mesmos readbacks.
+Uma escala externa, sozinha, não substitui o recibo de retomada. Uma retomada após
+mudança de modelo/manutenção é recusada antes de iniciar o node; preserve recibos
+e reveja a operação, sem reescrever o ponteiro ativo.
+
+## Ensaio nativo e reboot
+
+Alternativa para criar baseline de nome único e ensaiar o ciclo completo:
+
+```bash
+make access-stop-all &&
 FRAUD_KIND_TRACKING_REPORT="data/storage/kind-platform/tracking/rehearsal-e835e0ee8ce34106a203594a23c4bb3a.json" \
 FRAUD_KIND_NO_OTHER_WRITERS=1 \
   .venv/bin/python -m tox -e kind-operations
 ```
 
-Esse comando interrompe temporariamente apenas o cluster deste projeto. O gate
-registra baseline, parada, subida e verificação em
-`data/storage/kind-platform/operations/`. Não reinicia a máquina. Sucesso nesta
-fase mantém `host_reboot_validated=false`.
+Este comando interrompe temporariamente o cluster próprio. Em falha, o ensaio
+tenta restaurar o plano salvo e continua marcado como falho. Use o baseline
+impresso para inspecionar/retomar; não crie outro para contornar divergências.
+Após sucesso, `make access-up` reabre interfaces; acessos adicionais são opcionais.
+Logs dos acessos continuam privados e fora de Git/builds.
 
-São comparados UIDs/specs de controllers, PVCs, Services, ConfigMaps e hashes de
-Secrets; réplicas voltam ao plano inicial. Pods podem receber novos UIDs.
-Credenciais não entram em texto nos relatórios. O baseline é privado e imutável,
-com hashes dos controladores e identidade do host/engine/node.
+Para reboot planejado, prepare um baseline novo, execute `platform-stop`, reinicie
+o host manualmente, restaure `PLATFORM_BASELINE` e execute `platform-start` seguido
+de `platform-reboot-verify`. Esse gate exige mudança de boot_id e parada anterior
+ao reboot. Não execute outro ensaio entre essa parada e a verificação. Nenhum
+comando reinicia a máquina automaticamente.
 
-A leitura funcional verifica o run MLflow sintético existente e seus dois pontos
-de histórico, bytes/hash do modelo S3, identidade/score/HTTP 422 do serving e a
-cópia de monitoramento, scrape, oito regras, proxy Grafana e cores dos dashboards.
-O modelo de tracking não é carregado pelo cliente; o serving executa inferência
-com a fixture sintética já qualificada. Não há fit, replay ou nova publicação.
-O worker temporário de leitura S3 e os port-forwards são removidos pelos helpers.
+## Estado do aceite
 
-## 3. Segundo gate: reboot manual planejado
-
-Execute esta fase somente depois do primeiro gate aprovado. Prepare **outro**
-baseline, com o ambiente pronto e o nome ainda inexistente:
-
-```bash
-poetry run python -m scripts.platform.kind_operations prepare \
-  --tracking-report data/storage/kind-platform/tracking/rehearsal-e835e0ee8ce34106a203594a23c4bb3a.json \
-  --baseline data/storage/kind-platform/operations/baseline-before-reboot.json &&
-poetry run python -m scripts.platform.kind_operations stop \
-  --baseline data/storage/kind-platform/operations/baseline-before-reboot.json \
-  --no-other-writers
-```
-
-Confira o relatório `status=stopped`. **Reinicie a máquina manualmente.** Não
-remova o container do node, o cluster, diretórios ou volumes. Ao voltar, abra o
-terminal no repositório e confira se Docker está ativo:
-
-```bash
-systemctl is-active docker
-```
-
-Se estiver parado, inicie-o manualmente com `sudo systemctl start docker`. Em
-seguida, retome e compare o estado:
-
-```bash
-poetry run python -m scripts.platform.kind_operations host-check &&
-poetry run python -m scripts.platform.kind_operations start \
-  --baseline data/storage/kind-platform/operations/baseline-before-reboot.json \
-  --no-other-writers &&
-poetry run python -m scripts.platform.kind_operations verify \
-  --baseline data/storage/kind-platform/operations/baseline-before-reboot.json \
-  --expect-reboot
-```
-
-O gate exige mudança real do `boot_id`, mesmo host/engine/node, parada controlada
-registrada antes do reboot, valores inotify suficientes, mesmos recursos/PVCs e
-leituras funcionais iguais. `docker restart` ou recriar um pod não satisfaz essa
-prova. Se o nome do baseline já existir, preserve-o e escolha outro nome.
-
-Para voltar a ver os dashboards, abra novos port-forwards pelos comandos
-suportados em [KIND_OBSERVABILITY.md](KIND_OBSERVABILITY.md). As URLs locais são
-temporárias; a porta anterior não é uma identidade permanente do serviço.
-
-## Falhas e limites
-
-Em caso de falha, preserve recursos e relatórios. `rehearse` tenta restaurar as
-réplicas salvas, mas continua falhando se qualquer verificação falhar. Para uma
-parada parcial ou retomada manual, use `start` com o mesmo baseline e a declaração
-de ausência de writers. Não substitua a recuperação por `create`, `up`, `helm
-uninstall`, `docker rm`, prune ou exclusão de PVCs. Se uma identidade/spec mudou,
-o controlador recusa prosseguir: investigue a divergência antes de adaptar o plano.
-
-`status` consegue reconhecer o node parado sem consultar a API Kubernetes.
-Depois de um reboot não planejado, use diagnóstico; não marque retroativamente
-uma parada como planejada. Este procedimento cobre **parada ordenada antes do
-reboot**, não recuperação de interrupção brusca de energia.
-
-A persistência dos PVCs locais depende do mesmo node/container e disco. O gate
-não relê todos os bundles Bronze/Silver/Gold, não restaura backups, não reconstrói
-o cluster e não prova recuperação por perda do host. Os aceites anteriores dos
-datasets e dos Jobs continuam separados. Os testes com mocks permanecem separados do aceite nativo. Os dois gates foram
-aprovados pelo autor e o fechamento integrado está no [guia da plataforma](KIND_PLATFORM.md).
-
-Referências: [kubectl scale e precondições](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_scale/),
-[Docker stop](https://docs.docker.com/reference/cli/docker/container/stop/).
-
-
-## Aceite nativo — 2026-10-21
-
-| Verificação | Resultado observado |
-| --- | --- |
-| Ciclo sem reboot | 1 teste aprovado em 252,23 s; tox 264,31 s |
-| Reboot real | boot_id mudou de `dfa7e97e-495e-49f6-bc49-f235f91db516` para `f04f4e68-1363-42be-9ce4-50a1339e0b56` |
-| Identidade e réplicas | Mesmo container/node/engine, controllers, configurações e PVCs; oito workloads com uma réplica novamente |
-| Inotify depois do reboot | 512 instâncias, 524288 watches; valores suficientes sem reaplicação no comando de verificação |
-| Tracking | Run existente e dois pontos históricos iguais; modelo S3 com SHA-256 preservado |
-| Serving | Release sintética `c298299b7d3540d3968b5e715937b923`; score `0.03463335444035967`; entrada inválida HTTP 422 |
-| Monitoramento | Arquivos da cópia conferidos, 556.824 eventos/143.945 decisões/1.453 alertas, oito regras saudáveis, proxy Grafana e quatro dashboards com política de cores verificados |
-
-Relatório do ciclo: `rehearsal-dd2b5c6bd7fb4ee392c121ef79441b38.json`.
-Reboot: `stop-34144fbd33444ae0bf74745d050a4c49.json`,
-`start-65bae4bbcd954dba9d432c5459697305.json` e
-`verify-dd4464dcc9c146138a0650cd6ca6618c.json`.
-Todos ficam sob `data/storage/kind-platform/operations/` no ambiente do autor.
-
-[Evidência versionada](../../references/evidence/kind_operations_author_validation_2026-10-21.json)
-transcreve os JSONs completos apresentados pelo autor e identifica os anexos por
-hash. Não houve acesso independente ao daemon nem aos bytes dos arquivos nativos;
-o hash de um anexo de terminal não é o hash do recibo original. As durações
-pertencem a esse ensaio e não são um SLA. O reboot foi um gate CLI separado,
-sem nova contagem pytest.
-
-O aceite não valida nova conferência visual, firing de alertas, recuperação de
-energia interrompida, perda do disco/host, backup/restore ou novo resultado de
-qualidade do modelo. Os aceites anteriores desses outros escopos permanecem
-separados. Não repita um reboot só para atualizar a documentação.
+A parada/subida e o reboot do laboratório inicial foram aceitos em 2026-10-21 e
+continuam documentados na [evidência original](../../references/evidence/kind_operations_author_validation_2026-10-21.json). O ciclo canônico v2 tem implementação
+e testes locais; o novo aceite nativo aguarda sua execução. Não herda o aceite do
+serving sintético. O gate não comprova restauração de backup, perda do host ou
+implantação/rollback de sucessor com pesos diferentes. Esse último depende de
+candidato qualificado e da política de aprovação já estabelecida.

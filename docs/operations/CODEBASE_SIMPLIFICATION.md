@@ -145,25 +145,31 @@ controlador ou biblioteca foi introduzido nesta limpeza.
 | Testes de erro, rollback, reinício e fraude causal | Exercitam contratos diferentes; não foram classificados como duplicados por serem numerosos |
 | Evidências datadas | Registram execuções passadas; não são tratadas como instruções de nova operação |
 
-### Prioridade operacional encontrada
+### Consolidação do ciclo de vida canônico
 
-`kind_operations.STOP_ORDER` e `START_ORDER` ainda enumeram
-`fraud-serving-blue`/`fraud-serving-gateway`. `probes()` lê
-`kind_serving_delivery.plan()`, o plano sintético inicial. O produto atual usa
-`fraud-detector` e o acesso `platform-api` já resolve o deployment ativo. São
-fronteiras diferentes; o aceite anterior do laboratório não comprova que o
-controlador de ciclo de vida já foi adaptado ao produto canônico.
+A revisão encontrou o ciclo inicial em `fraud-serving-*`. O controlador existente
+agora resolve o estado ativo `fraud-detector` e reutiliza o gate de
+`local_access.connection("api")`, em vez de manter outro teste de serving sintético
+como referência do produto. Não foi criado um segundo controlador ou serviço.
+Uma única lista de dependências produz as ordens de subida e parada.
 
-`read_baseline()` também exige identidade exata de `source_pins`, incluindo o
-controlador de observabilidade. Um baseline salvo antes de uma alteração como a
-correção de readiness terá um hash diferente. Isso exige uma transição revisada
-ou um novo baseline validado, sem editar ou substituir o recibo antigo.
+Cada controller presente tem suas réplicas capturadas e restauradas. O slot
+inativo fica em zero; staging com dois slots vivos bloqueia preparar o baseline.
+O laboratório anterior é opcional e só é incluído após conferir seu ownership;
+nenhum chart, imagem ou dado é retirado automaticamente por este ciclo.
 
-**Prioridade antes da sessão contínua:** consolidar o ciclo de vida no deployment
-canônico e validar um baseline explícito dessa operação. Só depois será possível
-retirar os controladores/charts de serving antigo que deixarem de ter consumidores.
-Este pacote não altera workloads ou baselines privados e não declara esse ponto
-resolvido. Os acessos nohup já aceitos continuam independentes da parada do node.
+O baseline v2 registra a identidade do ponteiro ativo e do código dos gates. A
+verificação é do modelo/release/Registry/HTTP atuais. A latência é validada contra
+o orçamento, sem comparar tempos exatos. Os pins de atualização e produto não
+mudam: a revisão não altera treino, feature contract, política de promoção,
+instalador idempotente, pesos ou recibos científicos. Um baseline antigo não é
+convertido; novo baseline é preparado por leitura dos serviços prontos.
+
+O novo ciclo passou em 429 testes, com 12 skips e 12 subtests, em 104,35 s;
+Ruff e formatação aprovados. O aceite nativo canônico permanece pendente.
+Os aceites anteriores continuam com seu escopo original. O
+[guia operacional](KIND_OPERATIONS.md) reúne os passos e o ensaio. Ainda não é
+encerramento da simplificação ou da sessão contínua.
 
 ### Duplicações que ainda precisam de trabalho
 

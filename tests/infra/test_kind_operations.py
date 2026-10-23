@@ -31,11 +31,13 @@ def rig(tmp_path, monkeypatch):
         "owner_receipt_sha256": "receipt-a",
     }
     inventory = {}
-    for kind, name in k.STOP_ORDER:
+    for kind, name in k.START_ORDER:
+        if name.startswith("fraud-serving-"):
+            continue
         key = ("Deployment" if kind == "deployment" else "StatefulSet") + "/" + name
         inventory[key] = {
             "uid": name,
-            "replicas": 1,
+            "replicas": 0 if name == "fraud-detector-green" else 1,
             "spec_sha256": "spec",
             "configuration_sha256": "config",
         }
@@ -45,6 +47,9 @@ def rig(tmp_path, monkeypatch):
         "spec_sha256": "volume-a",
         "configuration_sha256": "config",
     }
+    active = {"slot": "blue", "model_sha256": "weights-a"}
+    monkeypatch.setattr(k, "active_state", lambda: copy.deepcopy(active))
+    monkeypatch.setattr(k, "serving_probe", lambda: {"model_sha256": "weights-a"})
     monkeypatch.setattr(k, "host", lambda: copy.deepcopy(system))
     monkeypatch.setattr(k, "pins", lambda: {"controller": "code-a"})
     monkeypatch.setattr(k, "docker_owner", lambda: copy.deepcopy(owner))
@@ -52,7 +57,11 @@ def rig(tmp_path, monkeypatch):
     monkeypatch.setattr(k, "resources", lambda: copy.deepcopy(inventory))
     monkeypatch.setattr(k, "no_jobs_or_bare_writers", lambda: None)
     monkeypatch.setattr(k, "wait_api", lambda: None)
-    monkeypatch.setattr(k, "probes", lambda record: {"readback": "unchanged"})
+    monkeypatch.setattr(
+        k,
+        "probes",
+        lambda record: {"readback": "unchanged", "serving_http": {"model_sha256": "weights-a"}},
+    )
     monkeypatch.setattr(k, "tracking_report", lambda path: {"record": {"run_id": "run-a"}})
     calls = []
 
@@ -71,17 +80,25 @@ def rig(tmp_path, monkeypatch):
     monkeypatch.setattr(k.monitor, "command", docker)
     path = k.prepare(Path("tracking.json"))
     return SimpleNamespace(
-        path=path, directory=directory, host=system, owner=owner, inventory=inventory, calls=calls
+        path=path,
+        directory=directory,
+        host=system,
+        owner=owner,
+        inventory=inventory,
+        calls=calls,
+        active=active,
     )
 
 
 def test_controlled_cycle_orders_dependencies_and_preserves_identity(rig):
     k.stop(rig.path, True)
-    assert rig.calls[:8] == [(a, b, 0) for a, b in k.STOP_ORDER]
-    assert rig.calls[8] == ("docker", "stop", "--timeout", "120", "owned")
+    baseline = json.loads(rig.path.read_bytes())
+    stopped = [(a, b, 0) for a, b, _ in k.ordered(baseline, k.STOP_ORDER)]
+    assert rig.calls[:-1] == stopped
+    assert rig.calls[-1] == ("docker", "stop", "--timeout", "120", "owned")
     k.start(rig.path, True)
-    assert rig.calls[9] == ("docker", "start", "owned")
-    assert rig.calls[10:] == [(a, b, 1) for a, b in k.START_ORDER]
+    assert rig.calls[len(stopped) + 1] == ("docker", "start", "owned")
+    assert rig.calls[len(stopped) + 2 :] == k.ordered(baseline, k.START_ORDER)
     result = k.verify(rig.path)
     assert result["controlled_stop_start_validated"]
     assert not result["host_reboot_validated"]
@@ -145,7 +162,7 @@ def test_partial_shutdown_can_resume_saved_plan(rig):
     rig.inventory["Deployment/fraud-tracking"]["replicas"] = 0
     result = k.start(rig.path, True)
     assert result["original_replica_plan_restored"]
-    assert all(x["replicas"] in (None, 1) for x in rig.inventory.values())
+    assert rig.inventory == json.loads(rig.path.read_bytes())["resources"]
 
 
 def test_paused_node_is_not_started_or_adopted(rig):
@@ -220,7 +237,15 @@ def test_resource_inventory_requires_exact_workloads_and_hashes_secrets(monkeypa
     items = [
         {
             "kind": "Deployment" if kind == "deployment" else "StatefulSet",
-            "metadata": {"name": name, "uid": name},
+            "metadata": {
+                "name": name,
+                "uid": name,
+                "annotations": {"fraud.serving/owner-id": "owner-a"},
+                "labels": {
+                    "app.kubernetes.io/instance": "fraud-detector",
+                    "app.kubernetes.io/component": name.removeprefix("fraud-detector-"),
+                },
+            },
             "spec": {"replicas": 1},
         }
         for kind, name in k.STOP_ORDER
@@ -235,6 +260,7 @@ def test_resource_inventory_requires_exact_workloads_and_hashes_secrets(monkeypa
     monkeypatch.setattr(
         k.f, "kube", lambda *a, **kw: SimpleNamespace(stdout=json.dumps({"items": items}))
     )
+    monkeypatch.setattr(k, "active_state", lambda: {"owner_id": "owner-a"})
     result = k.resources()
     assert "private-base64-value" not in json.dumps(result)
     assert result["Secret/credential"]["configuration_sha256"] == k.digest(
@@ -304,20 +330,8 @@ def test_read_probes_use_existing_history_s3_and_http_without_fit(monkeypatch):
         "storage_pod",
         lambda action, record: calls.append(action) or {"model_sha256": "same"},
     )
-    plan = {
-        "releases": {
-            "blue": {"manifest": {"serving_release_id": "release", "model_sha256": "model"}}
-        }
-    }
-    monkeypatch.setattr(k.delivery, "plan", lambda: plan)
     monkeypatch.setattr(
-        k.serving, "observe", lambda _: {"pods": {"blue": {"name": "b"}, "gateway": {"name": "g"}}}
-    )
-    monkeypatch.setattr(k.serving, "current_values", dict)
-    monkeypatch.setattr(k.serving, "values", lambda _: {})
-    monkeypatch.setattr(k.delivery, "forward", lambda _: nullcontext("uri"))
-    monkeypatch.setattr(
-        k.serving, "wait_route", lambda *a: {"score": 0.5, "invalid_input_http_status": 422}
+        k, "serving_probe", lambda: {"serving_release_id": "release", "model_sha256": "model"}
     )
     monkeypatch.setattr(k.monitor, "inventory", lambda: {"pvcs": {"state": "same"}})
     monkeypatch.setattr(
@@ -359,8 +373,164 @@ def test_matching_start_receipt_required_after_stop(rig, monkeypatch):
     k.stop(rig.path, True)
     # An external actor restoring replicas cannot stand in for the recorded start gate.
     rig.owner["running"] = True
-    for item in rig.inventory.values():
-        if item["replicas"] is not None:
-            item["replicas"] = 1
+    rig.inventory.clear()
+    rig.inventory.update(json.loads(rig.path.read_bytes())["resources"])
     with pytest.raises(ValueError, match="No completed start"):
         k.verify(rig.path)
+
+
+@pytest.mark.parametrize("slot", ["blue", "green"])
+def test_baseline_preserves_active_slot_and_zero_inactive_replica(rig, monkeypatch, slot):
+    rig.active["slot"] = slot
+    for name in ("blue", "green"):
+        rig.inventory["Deployment/fraud-detector-" + name]["replicas"] = int(name == slot)
+    rig.path = k.prepare(Path("tracking.json"))
+    k.stop(rig.path, True)
+    k.start(rig.path, True)
+    assert rig.inventory["Deployment/fraud-detector-" + slot]["replicas"] == 1
+    assert (
+        rig.inventory["Deployment/fraud-detector-" + ("green" if slot == "blue" else "blue")][
+            "replicas"
+        ]
+        == 0
+    )
+    assert not any("fraud-serving-" in call[1] for call in rig.calls if len(call) == 3)
+
+
+def test_active_pointer_change_blocks_before_docker_start(rig):
+    k.stop(rig.path, True)
+    rig.calls.clear()
+    rig.active["model_sha256"] = "different-weights"
+    with pytest.raises(ValueError, match="Active serving receipt changed"):
+        k.start(rig.path, True)
+    assert not rig.calls
+
+
+def test_alias_or_http_change_blocks_before_scaling(rig, monkeypatch):
+    monkeypatch.setattr(k, "serving_probe", lambda: {"model_sha256": "foreign"})
+    with pytest.raises(ValueError, match="Registry/HTTP identity"):
+        k.stop(rig.path, True)
+    assert not rig.calls
+
+
+def test_staged_successor_cannot_be_captured_as_daily_baseline(rig):
+    rig.inventory["Deployment/fraud-detector-green"]["replicas"] = 1
+    with pytest.raises(ValueError, match="Finish staged rollout"):
+        k.prepare(Path("tracking.json"))
+    assert not rig.calls
+
+
+def test_old_baseline_rejected_without_rewriting_or_scaling(rig):
+    value = json.loads(rig.path.read_bytes())
+    value["schema"] = "fraud_kind_operations_baseline_v1"
+    rig.path.write_text(json.dumps(value))
+    original = rig.path.read_bytes()
+    with pytest.raises(ValueError, match="new canonical baseline"):
+        k.stop(rig.path, True)
+    assert rig.path.read_bytes() == original and not rig.calls
+
+
+def test_baseline_detects_pointer_race_and_preserves_existing_receipts(rig, monkeypatch):
+    before = rig.path.read_bytes()
+
+    def race(_):
+        rig.active["model_sha256"] = "raced"
+        return {"serving_http": {}}
+
+    monkeypatch.setattr(k, "probes", race)
+    with pytest.raises(ValueError, match="changed during baseline"):
+        k.prepare(Path("tracking.json"))
+    assert rig.path.read_bytes() == before
+
+
+def test_daily_probe_reuses_gate_but_compares_stable_identity_not_latency(monkeypatch):
+    response = {
+        "registry_version": "2",
+        "slot": "green",
+        "model_sha256": "weights",
+        "serving_release_id": "release",
+        "url": "http://127.0.0.1:1234",
+        "verification": {
+            "score": {"score": 0.7},
+            "invalid_input_http_status": 422,
+            "p95_ms": 10.0,
+        },
+    }
+    calls = []
+
+    def connection(service):
+        calls.append(service)
+        return nullcontext(response)
+
+    monkeypatch.setattr(k.local_access, "connection", connection)
+    first = k.serving_probe()
+    response["verification"]["p95_ms"] = 20.0
+    response["url"] = "http://127.0.0.1:9999"
+    assert k.serving_probe() == first
+    assert first["slot"] == "green" and calls == ["api", "api"]
+
+
+def test_optional_legacy_plan_requires_owned_receipt_and_preserves_zero_replicas(rig, monkeypatch):
+    key = "Deployment/fraud-serving-blue"
+    rig.inventory[key] = {**rig.inventory["Deployment/fraud-detector-green"], "uid": "legacy"}
+    monkeypatch.setattr(k.delivery, "plan", lambda: {"owner_id": "legacy-owner"})
+    monkeypatch.setattr(
+        k.serving, "owned", lambda plan: [{"metadata": {"name": "fraud-serving-blue"}}]
+    )
+    path = k.prepare(Path("tracking.json"))
+    k.stop(path, True)
+    k.start(path, True)
+    assert rig.inventory[key]["replicas"] == 0
+    monkeypatch.setattr(k.serving, "owned", lambda plan: [])
+    with pytest.raises(ValueError, match="Legacy serving ownership"):
+        k.prepare(Path("tracking.json"))
+
+
+@pytest.mark.parametrize("inactive_present", [True, False])
+def test_no_requirement_to_install_inactive_slot(rig, inactive_present):
+    if not inactive_present:
+        del rig.inventory["Deployment/fraud-detector-green"]
+    path = k.prepare(Path("tracking.json"))
+    k.stop(path, True)
+    k.start(path, True)
+    assert ("Deployment/fraud-detector-green" in rig.inventory) is inactive_present
+
+
+def test_existing_baseline_never_overwritten(rig):
+    before = rig.path.read_bytes()
+    with pytest.raises(ValueError, match="Baseline already exists"):
+        k.prepare(Path("tracking.json"), rig.path)
+    assert rig.path.read_bytes() == before and not rig.calls
+
+
+@pytest.mark.parametrize("field", ["owner", "instance", "component"])
+def test_mislabelled_canonical_controller_is_never_adopted(monkeypatch, field):
+    rows = []
+    for kind, name in k.REQUIRED:
+        metadata = {
+            "name": name,
+            "uid": name,
+            "annotations": {"fraud.serving/owner-id": "owner-a"},
+            "labels": {
+                "app.kubernetes.io/instance": "fraud-detector",
+                "app.kubernetes.io/component": name.removeprefix("fraud-detector-"),
+            },
+        }
+        rows.append(
+            {
+                "kind": "Deployment" if kind == "deployment" else "StatefulSet",
+                "metadata": metadata,
+                "spec": {"replicas": 1},
+            }
+        )
+    item = next(row for row in rows if row["metadata"]["name"] == "fraud-detector-blue")
+    if field == "owner":
+        item["metadata"]["annotations"]["fraud.serving/owner-id"] = "foreign"
+    else:
+        item["metadata"]["labels"]["app.kubernetes.io/" + field] = "foreign"
+    monkeypatch.setattr(k, "active_state", lambda: {"owner_id": "owner-a"})
+    monkeypatch.setattr(
+        k.f, "kube", lambda *a, **kw: SimpleNamespace(stdout=json.dumps({"items": rows}))
+    )
+    with pytest.raises(ValueError, match="refuse adoption"):
+        k.resources()

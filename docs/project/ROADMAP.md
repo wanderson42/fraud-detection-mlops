@@ -71,6 +71,12 @@ mais ampla dos controladores com pins continua uma tarefa explícita; não é
 confundida com a entrega de novos atalhos de operação.
 
 **Recorte em andamento: simplificação estrutural antes da sessão contínua.**
+A consolidação do ciclo de vida agora prepara baseline v2 do champion ativo,
+reutiliza o gate da API e restaura réplicas salvas, inclusive zero no slot inativo.
+Regressão local preparada; parada/subida canônica ainda requer aceite nativo.
+Não altera o estado da promoção recorrente de sucessor, que continua condicionado
+a candidato qualificado e validação própria. [Procedimento](../operations/KIND_OPERATIONS.md).
+
 O [balanço da varredura](../operations/CODEBASE_SIMPLIFICATION.md#varredura-do-checkout)
 registra a retirada do importador e a consolidação dos testes, com as duplicações
 dos controladores e a separação de pins ainda explícitas. A

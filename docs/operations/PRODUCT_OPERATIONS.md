@@ -73,17 +73,19 @@ lista os serviços, logs e parâmetros. Isso substitui a necessidade de deixar u
 terminal aberto por interface, sem iniciar outra cópia dos workloads do cluster.
 Os comandos em primeiro plano continuam disponíveis para diagnóstico.
 
-## Consolidação de ciclo de vida ainda necessária
+## Ciclo de vida do deployment ativo
 
-A varredura do código confirmou que `platform-start`/`platform-stop` e a geração
-de baseline ainda usam o controlador do laboratório de serving inicial
-(`fraud-serving-*`); o acesso `platform-api` já usa o produto canônico
-`fraud-detector`. A operação não deve ser apresentada como unificada antes de
-adaptar e validar esse ciclo com um baseline explícito do deployment atual.
-Uma mudança de controlador também pode invalidar os pins de um baseline antigo;
-não edite o JSON salvo para contornar a recusa. O
-[balanço da revisão](CODEBASE_SIMPLIFICATION.md#prioridade-operacional-encontrada)
-registra a prioridade. Este fechamento de limpeza não para nem reconfigura o node.
+`platform-baseline`, `platform-stop`, `platform-start` e `platform-verify` usam o
+champion ativo `fraud-detector`, com o mesmo gate compartilhado de `platform-api`.
+O baseline v2 registra o estado ativo e cada contagem de réplicas; retomar mantém
+zero no slot inativo. O serving sintético, se ainda instalado, é tratado como
+laboratório legado com recibo próprio, sem substituir o gate canônico.
+
+O [guia de ciclo de vida](KIND_OPERATIONS.md) concentra preparação, parada,
+retomada, verificação e reboot. Baselines antigos são preservados e não convertidos.
+A implementação canônica está preparada; o novo aceite nativo ainda deve ser
+executado. Antes de interromper, encerre acessos e writers; depois, reabra com
+`access-up`. Isso não inicia a chegada contínua de transações.
 
 ## Quem faz os dados chegarem
 

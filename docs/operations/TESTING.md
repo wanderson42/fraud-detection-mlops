@@ -1394,6 +1394,12 @@ aplicar somente este fechamento documental.
 
 ## Gate operacional opt-in do KinD
 
+O controlador atual usa baseline canônico v2 e o gate compartilhado de acesso à
+API ativa. Testes cobrem active blue/green, inativo zero/ausente, ownership,
+ponteiro/alias divergentes, contagens salvas, staging recusado e recibos v1
+preservados. O aceite nativo anterior abaixo corresponde ao laboratório inicial;
+o ciclo canônico deve gerar sua própria evidência.
+
 Regressão sem Docker: `poetry run python -m pytest -q tests/infra/test_kind_operations.py`. O ambiente tox `kind-operations` exige `FRAUD_KIND_NO_OTHER_WRITERS=1` e `FRAUD_KIND_TRACKING_REPORT` explícitos. Interrompe e retoma o cluster próprio; não deve entrar na CI comum. O teste live permanece skipped na suíte padrão. Reboot manual tem gate separado `verify --expect-reboot`; ambos os gates nativos foram aprovados em 2026-10-21. O ciclo teve 1 teste em 252,23 s; o reboot foi uma verificação CLI separada. Mocks não comprovam persistência nativa. [Comandos e limites](KIND_OPERATIONS.md).
 
 
