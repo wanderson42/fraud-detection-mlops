@@ -8,6 +8,7 @@ de instalar Poetry e não iniciam serviços.
 
 | Arquivo | Responsabilidade |
 | --- | --- |
+| `access.mk` | Acessos locais com nohup, logs e parada por serviço |
 | `platform.mk` | Fundação, serviços e operação do cluster |
 | `round.mk` / `updates.mk` | Primeira rodada e atualização governada |
 | `product.mk` | Eventos pela API e triagem persistida |
@@ -29,3 +30,8 @@ requisitos. Não há alvo `destroy`, prune ou reboot automático.
 
 [Operação do produto](../../docs/operations/PRODUCT_OPERATIONS.md) e
 [roteiro de apresentação](../../docs/operations/PORTFOLIO_WALKTHROUGH.md).
+
+`make access-up` abre os quatro acessos principais sem prender o terminal.
+`make access-start ACCESS_SERVICE=prometheus` abre um acesso adicional.
+`make access-stop-all` fecha somente os acessos registrados neste checkout.
+[Comandos e arquivos privados](../../docs/operations/LOCAL_ACCESS.md).

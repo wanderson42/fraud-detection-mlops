@@ -199,3 +199,6 @@ cython_debug/
 
 # Isolated analyst presentation runtime
 .portal-venv/
+
+# Private nohup access logs and process receipts (also covered by /data/)
+/data/storage/kind-platform/local-access/

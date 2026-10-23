@@ -77,3 +77,13 @@ métricas da mesma sessão. A revisão mais ampla de duplicações deve usar ess
 caminho operacional como referência e demonstrar que cada remoção deixou de ter
 consumidores. A promoção de sucessor com novos pesos continua dependente de um
 candidato que passe o gate; não é declarada concluída por esta simplificação.
+
+## Aceite nativo do primeiro recorte
+
+O autor executou 186 testes, seis skips e 12 subtests em 37,59 s. O acesso
+`platform-api` abriu o champion versão 1, slot blue, pesos
+`6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b`, release
+`e8350e0a841f4136983e0d905068a743`; HTTP 422 conferido e p95 observado de
+86,79 ms em 20 requisições. Ctrl+C foi executado.
+[Evidência nativa](../../references/evidence/operations_simplification_author_validation_2026-10-22.json).
+Esse tempo é a observação desse ensaio, não um SLA.

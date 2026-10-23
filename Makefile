@@ -13,6 +13,7 @@ include infra/make/product.mk
 include infra/make/serving-recovery.mk
 include infra/make/case-explanations.mk
 include infra/make/portal.mk
+include infra/make/access.mk
 include infra/make/development.mk
 include infra/make/science.mk
 
@@ -25,6 +26,7 @@ help:
 	  'Verificação: portal-verify | portal-performance-verify | product-verify' \
 	  'Parar/subir: platform-stop | platform-start (requerem baseline salvo e declaração de writers)' \
 	  'Desenvolver: validate | portal-ui-test' \
+	  'Background:  access-up | access-status | access-logs | access-stop-all' \
 	  'Catálogo:    make help-all' \
 	  'Guia:       docs/operations/PRODUCT_OPERATIONS.md'
 

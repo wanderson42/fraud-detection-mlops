@@ -64,6 +64,15 @@ catálogo completo de instalação, ciência e ensaios. Os requisitos de baselin
 writers continuam obrigatórios para parada/subida. A [primeira simplificação](CODEBASE_SIMPLIFICATION.md)
 registra as remoções e as dependências que impedem apagar diretórios inteiros.
 
+## Acessos em segundo plano
+
+`make access-up` abre API, MLflow, Grafana e o portal preparado com `nohup`.
+`make access-status` mostra os processos e a disponibilidade HTTP. Cada acesso
+pode ser iniciado, inspecionado e encerrado individualmente; o [guia de acessos](LOCAL_ACCESS.md)
+lista os serviços, logs e parâmetros. Isso substitui a necessidade de deixar um
+terminal aberto por interface, sem iniciar outra cópia dos workloads do cluster.
+Os comandos em primeiro plano continuam disponíveis para diagnóstico.
+
 ## Quem faz os dados chegarem
 
 Na jornada desejada, transações surgem do sistema transacional. Um produtor ou

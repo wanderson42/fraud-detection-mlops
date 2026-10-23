@@ -59,8 +59,9 @@ Esse recorte está encerrado.
 
 A [primeira simplificação do código](../operations/CODEBASE_SIMPLIFICATION.md)
 organiza o Make por finalidade, consolida o acesso ao deployment ativo e retira
-uma revisão pontual de plano histórico já aplicada. A regressão local será
-registrada com o pacote; a conferência do novo acesso no KinD cabe ao operador.
+uma revisão pontual de plano histórico já aplicada. Regressão e acesso nativo ao champion foram aprovados pelo autor em 2026-10-22.
+Os [acessos locais em segundo plano](../operations/LOCAL_ACCESS.md) acrescentam
+nohup, logs privados, identidade de processo e parada por serviço.
 Isso não encerra a chegada gradual nem o aceite de um sucessor com novos pesos.
 
 **Próximo recorte: [consolidação da demonstração operacional](../operations/PRODUCT_OPERATIONS.md).**
