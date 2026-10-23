@@ -1,0 +1,13 @@
+{
+  "schema": "fraud_operational_baseline_compatibility_fix_preparation_v1",
+  "date": "2026-10-23",
+  "reported_native_commit": "4123785",
+  "cause": "Redundant raw source_pins equality rejected the old baseline before reviewed compatibility could run",
+  "fix": "Validate schema/status, then exact committed source compatibility, then unchanged active receipt, host and node ownership checks",
+  "existing_baseline_modified": false,
+  "unknown_scientific_contract_changes_rejected": true,
+  "transition": "Existing refactor declaration updated only for the corrected kind_operations source hash; original before hashes preserved",
+  "tests": "70 passed in 1.54s: source compatibility, operations, seed recovery",
+  "native_readback_after_fix_verified": false,
+  "new_baseline_required": false
+}

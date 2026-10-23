@@ -33,7 +33,7 @@
     },
     "scripts/platform/kind_operations.py": {
       "before": "c05a6406188bdc78c3747f5758e23d2ef4b530dca2064d3d149b5efb1a419824",
-      "after": "43d3e718ec30afc926d671caa3206c1bf5e20b78786f80006eb0420486f34f23"
+      "after": "22962a10727327366eaf1cc68f402a81a6ffb133373f7c6eb26e929e9a9b62e7"
     },
     "scripts/platform/kind_replay.py": {
       "before": "7c983ee4457c559c7ceb8cd510152d2fd2d319d6d85abe9fe262d1a18573a4ac",

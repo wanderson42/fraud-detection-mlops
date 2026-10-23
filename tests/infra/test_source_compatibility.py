@@ -186,3 +186,46 @@ def test_documentary_edits_are_separate_from_execution_contracts():
     compat.accept(saved, current, ROOT)
     with pytest.raises(ValueError, match="Scientific"):
         compat.accept(saved, {"policy.json": "different"}, ROOT)
+
+
+def test_baseline_reader_reaches_committed_compatibility_and_preserves_receipt(
+    refactor, monkeypatch
+):
+    from scripts.platform import kind_operations as operations
+
+    root, transitions = refactor
+    current = operations.pins()
+    saved = previous(current, transitions[-1:])
+    owner = {
+        key: key + "-owned"
+        for key in ("container_id", "node_uid", "docker_engine_id", "owner_receipt_sha256")
+    }
+    active = {"slot": "blue", "model_sha256": "same-weights"}
+    directory = root / "operations"
+    directory.mkdir(mode=0o700)
+    path = directory / "baseline.json"
+    value = {
+        "schema": "fraud_kind_operations_baseline_v2",
+        "status": "prepared",
+        "source_pins": saved,
+        "active_state_sha256": operations.digest(active),
+        "host": {"machine_id_sha256": "same-host"},
+        "owner": owner,
+    }
+    path.write_text(json.dumps(value))
+    path.chmod(0o600)
+    original = path.read_bytes()
+    commit(root)
+    monkeypatch.setattr(operations.f, "ROOT", root)
+    monkeypatch.setattr(operations.f, "managed_destination", lambda path, kind: path)
+    monkeypatch.setattr(operations, "work", lambda: directory)
+    monkeypatch.setattr(operations, "pins", lambda: current)
+    monkeypatch.setattr(operations, "active_state", lambda: active)
+    monkeypatch.setattr(operations, "host", lambda: {"machine_id_sha256": "same-host"})
+    monkeypatch.setattr(operations, "docker_owner", lambda: owner)
+    assert operations.read_baseline(path) == (value, owner)
+    assert path.read_bytes() == original
+    current["references/gold_contract_v1.json"] = "f" * 64
+    with pytest.raises(ValueError, match="Scientific"):
+        operations.read_baseline(path)
+    assert path.read_bytes() == original

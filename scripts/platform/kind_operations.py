@@ -397,9 +397,7 @@ def read_baseline(path):
     )
     value = json.loads(path.read_text())
     f.require(
-        value["schema"] == "fraud_kind_operations_baseline_v2"
-        and value["status"] == "prepared"
-        and value["source_pins"] == pins(),
+        value["schema"] == "fraud_kind_operations_baseline_v2" and value["status"] == "prepared",
         "Baseline schema/code identity differs; preserve receipt and prepare a new canonical baseline",
     )
     source_compatibility.accept(value["source_pins"], pins(), f.ROOT)
