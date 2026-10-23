@@ -87,3 +87,117 @@ O autor executou 186 testes, seis skips e 12 subtests em 37,59 s. O acesso
 86,79 ms em 20 requisições. Ctrl+C foi executado.
 [Evidência nativa](../../references/evidence/operations_simplification_author_validation_2026-10-22.json).
 Esse tempo é a observação desse ensaio, não um SLA.
+
+## Varredura do checkout
+
+A revisão cobre **780 arquivos**, dos quais **358 Python** (67.725 linhas Python).
+Foram cruzados imports AST, referências textuais, alvos Make, configuração de CI,
+Dockerfiles/contextos, charts Helm, tox, catálogo, protocolos e células de notebooks.
+O inventário completo identifica cada arquivo, hash, tamanho em linhas e decisão:
+[evidência da revisão](../../references/evidence/repository_cleanup_review_2026-10-22.json).
+
+A base é a main `740ca24` somada aos pacotes exatos aceitos na branch local
+`feat/fraud-operations-demo` (commits `4664f6a` e `b1d11c2` informados pelo autor).
+A branch ainda não estava publicada durante a revisão. `.vscode/settings.json`,
+`mlruns/`, credenciais, logs e datasets privados não são candidatos a limpeza.
+A cobertura é estrutural em todos os arquivos; a revisão semântica aprofundada
+concentrou-se nos candidatos à remoção e nas fronteiras dos recibos. Ausência de
+um import estático, isoladamente, não foi usada como autorização para apagar CLI.
+
+| Área | Arquivos antes | Decisão |
+| --- | ---: | --- |
+| `scripts/` | 106 | Retirar importador histórico; manter operação, treinamento, transporte e recuperação usados |
+| Pacote `fraud_detection_mlops/` | 94 | Preservar contratos, ciência, features causais, inferência e persistência vinculados aos pesos |
+| `tests/` | 156 | Retirar teste exclusivo do importador e consolidar smokes de CLI; manter falhas e paridade |
+| `infra/` | 137 | Manter build/qualificação/consumo e charts com consumidores declarados; KinD não elimina o gate Docker |
+| `docs/` | 55 | Retirar procedimento corrente de reimportação; ajustar catálogo, testes e roteiro |
+| `references/` | 188 | Remover três consumidores aposentados do catálogo corrente; preservar evidências e protocolos |
+| `notebooks/` | 29 | Retirar entrada de execução do importador; manter capítulos e resultados científicos |
+| Raiz / demais entradas | 15 | Manter ferramentas, lock e CI; `make help` continua a entrada curta |
+
+### Remoções e consolidação executadas
+
+- Retirados `scripts/platform/kind_history.py`, os cinco arquivos de
+  `scripts/platform/history/` e `tests/infra/test_kind_history.py`: **sete arquivos
+  e 1.923 linhas**, sem importador externo ao conjunto no código atual.
+- Os testes `tests/data/test_entry_points.py` e
+  `tests/modeling/test_entry_points.py` foram substituídos por
+  `tests/interfaces/test_command_entrypoints.py`. Os **13 cenários** foram
+  preservados: 12 CLIs e os diretórios padrão de Bronze/Silver/Gold.
+- O catálogo corrente deixou de exigir os três consumidores do importador.
+- O guia histórico foi reduzido a um registro arquivístico com link para a revisão
+  anterior; a documentação de testes e o notebook não mandam executar código retirado.
+
+Não há remoção de runs, modelos, aliases, buckets, datasets, checkpoints ou recibos.
+A história da implementação continua no Git; o produto atual não precisa carregar
+um utilitário de migração já concluída para funcionar. Nenhum novo serviço,
+controlador ou biblioteca foi introduzido nesta limpeza.
+
+### O que permanece e por quê
+
+| Conjunto | Consumidor ou contrato identificado |
+| --- | --- |
+| `scripts/storage` | Gold e bundles usados por Jobs, rodada, atualização e recuperação; incluído nos pins da rodada |
+| `scripts/tracking` / `infra/tracking` | Captura/restore PostgreSQL-S3 e laboratório de recuperação; capacidade distinta de importar histórico |
+| `scripts/serving` / imagem Docker | A CI ainda constrói, qualifica e exporta a imagem, e outro runner consome o arquivo |
+| Bootstrap diagnostics | Diagnóstico de falha de criação do node; CLI documentado, distinto da inspeção cotidiana |
+| Replay e avaliação temporal antigos | Verificadores e paridade dos resultados aceitos; remover exigiria transição científica própria |
+| Testes de erro, rollback, reinício e fraude causal | Exercitam contratos diferentes; não foram classificados como duplicados por serem numerosos |
+| Evidências datadas | Registram execuções passadas; não são tratadas como instruções de nova operação |
+
+### Prioridade operacional encontrada
+
+`kind_operations.STOP_ORDER` e `START_ORDER` ainda enumeram
+`fraud-serving-blue`/`fraud-serving-gateway`. `probes()` lê
+`kind_serving_delivery.plan()`, o plano sintético inicial. O produto atual usa
+`fraud-detector` e o acesso `platform-api` já resolve o deployment ativo. São
+fronteiras diferentes; o aceite anterior do laboratório não comprova que o
+controlador de ciclo de vida já foi adaptado ao produto canônico.
+
+`read_baseline()` também exige identidade exata de `source_pins`, incluindo o
+controlador de observabilidade. Um baseline salvo antes de uma alteração como a
+correção de readiness terá um hash diferente. Isso exige uma transição revisada
+ou um novo baseline validado, sem editar ou substituir o recibo antigo.
+
+**Prioridade antes da sessão contínua:** consolidar o ciclo de vida no deployment
+canônico e validar um baseline explícito dessa operação. Só depois será possível
+retirar os controladores/charts de serving antigo que deixarem de ter consumidores.
+Este pacote não altera workloads ou baselines privados e não declara esse ponto
+resolvido. Os acessos nohup já aceitos continuam independentes da parada do node.
+
+### Duplicações que ainda precisam de trabalho
+
+A comparação de corpos AST encontrou poucas cópias exatas grandes; isso não
+significa que não exista sobreposição de responsabilidades. Os pontos concretos
+mais importantes são:
+
+1. `main` e `request_for` repetidos nos dois módulos de treinamento.
+2. Consulta CRI repetida entre rodada, replay KinD e entrega do serving.
+3. Pins calculados sobre diretórios inteiros: acoplam limpeza de utilitários a
+   recibos científicos aceitos. É preciso separar melhor identidade científica e
+   implementação operacional, preservando a proveniência, antes de grandes movimentos.
+
+Esses pontos **não foram declarados resolvidos**. Extrair um helper mudando hashes
+sem uma transição revisada impediria retomar operações ou mascararia mudanças de
+ciência. Métodos curtos de metadados com papéis diferentes também não justificam
+uma abstração nova apenas para reduzir algumas linhas. A próxima intervenção de
+simplificação deve tratar essas fronteiras; chegada contínua não substitui essa tarefa.
+
+### Verificação
+
+Os pins atuais de atualização e fluxo de produto foram comparados antes/depois e
+permaneceram idênticos. A limpeza do catálogo não altera pesos, contratos de
+features ou política. O pacote verifica hashes de todos os arquivos retirados e
+valida cada dependência antes de escrever; edições divergentes bloqueiam o conjunto.
+A suíte completa passou: **1.630 testes, 52 skips e 12 subtests**, em 914,57 s,
+com 166 warnings; Ruff e formatação aprovados. O inventário de consumidores
+conferiu 196 fontes e 29 consumidores declarados, com **zero inconsistências**,
+sem abrir modelos ou consultar serviços externos. A matriz comum coletou os 13
+cenários preservados. O aplicador também passou em testes de base integral,
+reaplicação, recusa de edição/symlink e rollback que restaura arquivos removidos.
+
+Balanço: **nove arquivos retirados e dois introduzidos** (teste comum e inventário),
+redução líquida de sete arquivos. O Python caiu de 358 para 350 arquivos e perdeu
+**1.946 linhas líquidas**, incluindo 1.360 linhas de implementação do importador.
+Nenhum novo módulo de runtime foi adicionado. Os ensaios nativos existentes não
+foram executados de novo apenas para retirar esse importador.

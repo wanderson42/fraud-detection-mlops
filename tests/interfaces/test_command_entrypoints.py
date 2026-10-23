@@ -1,4 +1,4 @@
-"""Data command entry points preserve their options and checkout data directories."""
+"""Data/model CLI help is side-effect free; nested defaults retain checkout paths."""
 
 import subprocess
 import sys
@@ -16,9 +16,16 @@ from fraud_detection_mlops.config import PROJECT_ROOT
         ("data.datasets.gold_dataset", ["build", "verify"]),
         ("data.quality.transaction_profile", ["--bronze-root", "--report-path"]),
         ("data.quality.training_eda", ["build", "verify"]),
+        ("modeling.experiments.baseline_experiment", ["run", "verify"]),
+        ("modeling.experiments.terminal_feature_ablation", ["run", "verify"]),
+        ("modeling.experiments.candidate_freeze", ["build", "verify"]),
+        ("modeling.experiments.final_holdout_evaluation", ["run", "verify"]),
+        ("modeling.experiments.hgb_optimization", ["prepare", "optimize", "verify"]),
+        ("integrations.mlflow_tracking", ["ui", "verify"]),
+        ("evaluation.validation_diagnostics", ["run", "verify"]),
     ],
 )
-def test_command_help_does_not_build_or_download(module, commands):
+def test_command_help_does_not_build_download_or_train(module, commands):
     result = subprocess.run(
         [sys.executable, "-m", f"fraud_detection_mlops.{module}", "--help"],
         capture_output=True,

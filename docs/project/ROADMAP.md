@@ -64,7 +64,18 @@ Os [acessos locais em segundo plano](../operations/LOCAL_ACCESS.md) acrescentam
 nohup, logs privados, identidade de processo e parada por serviço.
 Isso não encerra a chegada gradual nem o aceite de um sucessor com novos pesos.
 
-**Próximo recorte: [consolidação da demonstração operacional](../operations/PRODUCT_OPERATIONS.md).**
+A [revisão de todo o checkout](../operations/CODEBASE_SIMPLIFICATION.md#varredura-do-checkout)
+retira o importador histórico isolado e seus testes exclusivos, consolida os
+smokes de CLI e registra as dependências dos diretórios mantidos. A simplificação
+mais ampla dos controladores com pins continua uma tarefa explícita; não é
+confundida com a entrega de novos atalhos de operação.
+
+**Recorte em andamento: simplificação estrutural antes da sessão contínua.**
+O [balanço da varredura](../operations/CODEBASE_SIMPLIFICATION.md#varredura-do-checkout)
+registra a retirada do importador e a consolidação dos testes, com as duplicações
+dos controladores e a separação de pins ainda explícitas. A
+[consolidação da demonstração operacional](../operations/PRODUCT_OPERATIONS.md)
+continua como entrega seguinte, sem encerrar a limpeza por antecipação.
 Unificar comandos/destino ativo e demonstrar chegada gradual de eventos pela API,
 fila e métricas da mesma sessão, com pausa/retomada e atualização visível.
 O portal atual é um snapshot; o monitoramento KinD aceito usa cópia concluída.

@@ -3,17 +3,21 @@
 A nova rodada tem testes de política, linhagem, MLflow HTTP, recarga, Registry, API real em processo e Helm. Execute `tox -e py314 -- tests/operational_round tests/storage/test_persistence_inventory.py tests/storage/test_managed_paths.py`; a execução nativa dos Jobs/serving permanece no runbook.
 [Guia da rodada operacional](OPERATIONAL_ROUND.md).
 
-## Transferência do histórico e Registry no KinD
+## Interfaces comuns e escopo da suíte
+
+Os 12 comandos de ajuda de dados/modelagem e a verificação dos diretórios padrão
+agora estão em um único teste parametrizado:
 
 ```bash
-.venv/bin/python -m tox -e py314 -- tests/infra/test_kind_history.py
+.venv/bin/python -m tox -e py314 -- tests/interfaces/test_command_entrypoints.py
 ```
 
-Os testes usam snapshots reais de fixture, SQLite e um servidor MLflow HTTP real:
-importação dos dois stores, três baselines, métricas completas, linhagem, retomada,
-recarga e recusas antes do alias. PostgreSQL/S3/KinD são conferidos na execução
-nativa de `plan`, `import`, `verify` e `champion`, conforme [KIND_HISTORY.md](KIND_HISTORY.md).
-Não confundir esses testes com uma nova validação de qualidade preditiva.
+A matriz conserva os cenários anteriores, sem duplicar o corpo do subprocesso.
+Em seleções focadas de dados ou modelagem, acrescente `tests/interfaces` quando
+quiser incluir os smokes dos CLIs. A suíte completa continua coletando todos.
+Os testes exclusivos do importador histórico foram retirados com essa ferramenta;
+o fluxo canônico mantém seus testes de Inputs, métricas, Registry, HTTP e recovery.
+[Critérios da revisão](CODEBASE_SIMPLIFICATION.md).
 
 <!-- kind-operations-acceptance-2026-10-21:start -->
 **Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
@@ -37,7 +41,7 @@ poetry install
 make validate
 ```
 
-`make validate` executa `poetry run tox -e py314`, a mesma referência da CI.
+`make validate` executa `poetry run python -m tox -e py314`, a mesma referência da CI.
 Para desenvolvimento rápido, use `make test`. Para selecionar uma área mantendo
 os checks de lint e formatação:
 

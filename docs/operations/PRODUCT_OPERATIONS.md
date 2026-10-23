@@ -73,6 +73,18 @@ lista os serviços, logs e parâmetros. Isso substitui a necessidade de deixar u
 terminal aberto por interface, sem iniciar outra cópia dos workloads do cluster.
 Os comandos em primeiro plano continuam disponíveis para diagnóstico.
 
+## Consolidação de ciclo de vida ainda necessária
+
+A varredura do código confirmou que `platform-start`/`platform-stop` e a geração
+de baseline ainda usam o controlador do laboratório de serving inicial
+(`fraud-serving-*`); o acesso `platform-api` já usa o produto canônico
+`fraud-detector`. A operação não deve ser apresentada como unificada antes de
+adaptar e validar esse ciclo com um baseline explícito do deployment atual.
+Uma mudança de controlador também pode invalidar os pins de um baseline antigo;
+não edite o JSON salvo para contornar a recusa. O
+[balanço da revisão](CODEBASE_SIMPLIFICATION.md#prioridade-operacional-encontrada)
+registra a prioridade. Este fechamento de limpeza não para nem reconfigura o node.
+
 ## Quem faz os dados chegarem
 
 Na jornada desejada, transações surgem do sistema transacional. Um produtor ou

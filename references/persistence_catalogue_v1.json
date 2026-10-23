@@ -840,43 +840,6 @@
         "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manuten\u00e7\u00e3o hist\u00f3rica conserva evid\u00eancia anterior e n\u00e3o participa da sele\u00e7\u00e3o."
       },
       {
-        "id": "scripts_platform_history_registry",
-        "source": "scripts/platform/history/registry.py",
-        "source_sha256": "3c8702d268318015bad4cfbb4aa839d9e3ca298dd89ef399c760559e536ec7f8",
-        "functions": [
-          "champion"
-        ],
-        "kind": "historical_maintenance",
-        "local_migration_blocker": false,
-        "current_behavior": "Registro da refer\u00eancia hist\u00f3rica aprovada; fora da nova rodada can\u00f4nica.",
-        "migration_gate": "Manuten\u00e7\u00e3o arquiv\u00edstica; n\u00e3o participa da sele\u00e7\u00e3o ou promo\u00e7\u00e3o da nova rodada."
-      },
-      {
-        "id": "scripts_platform_history_transfer",
-        "source": "scripts/platform/history/transfer.py",
-        "source_sha256": "c65ffcae8095042c31abdd0ee10a7d91e89e55fa9bbfab072f385f5f1da08e93",
-        "functions": [
-          "execute",
-          "verify"
-        ],
-        "kind": "historical_maintenance",
-        "local_migration_blocker": false,
-        "current_behavior": "Transfer\u00eancia arquiv\u00edstica e readback integral dos dois stores; fora do fluxo can\u00f4nico.",
-        "migration_gate": "Manuten\u00e7\u00e3o arquiv\u00edstica; n\u00e3o participa da sele\u00e7\u00e3o ou promo\u00e7\u00e3o da nova rodada."
-      },
-      {
-        "id": "scripts_platform_history_worker",
-        "source": "scripts/platform/history/worker.py",
-        "source_sha256": "1399aa2e70f475a0b0ad33f6b24af0528050bc8b35c884a3a4abfdd0a729a1d3",
-        "functions": [
-          "execute"
-        ],
-        "kind": "historical_maintenance",
-        "local_migration_blocker": false,
-        "current_behavior": "Cliente HTTP de manuten\u00e7\u00e3o hist\u00f3rica, sem novo treino.",
-        "migration_gate": "Manuten\u00e7\u00e3o arquiv\u00edstica; n\u00e3o participa da sele\u00e7\u00e3o ou promo\u00e7\u00e3o da nova rodada."
-      },
-      {
         "id": "recurring_controller",
         "source": "scripts/model_updates/controller.py",
         "source_sha256": "8507b9e1739132efdddfa1b72ac33a90dea014f998e0b0df569653a3d91cf785",
