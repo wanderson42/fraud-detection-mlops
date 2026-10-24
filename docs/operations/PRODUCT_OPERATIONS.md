@@ -195,4 +195,16 @@ A navegação da sessão e das evidências foi consolidada no Streamlit existent
 ACCESS_SERVICE=portal` abrem a mesma aplicação em 18501. Gráficos, contexto e
 investigação usam apresentação compartilhada. O produtor, a API, o observador,
 Grafana e MLflow conservam suas responsabilidades.
-[Procedimento e aceite](UNIFIED_PORTAL.md). A revisão nativa e visual ainda será feita.
+[Procedimento e aceite](UNIFIED_PORTAL.md). O aceite nativo e visual foi concluído pelo autor em 2026-10-24.
+
+## Portal consolidado e próximo foco operacional
+
+O portal único e seu cabeçalho refinado tiveram aceite funcional/visual do autor.
+O acesso em 18501 é a entrada diária do analista. O produtor e o observador
+continuam independentes da UI; Grafana atende à operação e MLflow à equipe de ML.
+O baseline corrente foi preservado. [Aceite](../../references/evidence/unified_portal_author_validation_2026-10-24.json).
+
+O próximo foco é medir o footprint das imagens antes de alterar builds ou
+remover imagens históricas. A revisão inicial distingue runtime de API, imagens
+científicas de jobs, serviços de terceiros e ambiente local do portal.
+[Inventário e critérios](IMAGE_FOOTPRINT.md).

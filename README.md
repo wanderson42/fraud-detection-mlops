@@ -620,4 +620,10 @@ A próxima entrega reúne a sessão corrente e as evidências em um único porta
 
 O [portal unificado](docs/operations/UNIFIED_PORTAL.md) reúne a sessão corrente,
 investigação e evidências em um único Streamlit em 18501, com vínculo explícito
-de fonte, pesos e release. Implementação preparada; aceite nativo e visual pendente.
+de fonte, pesos e release. Aceite nativo e visual concluído pelo autor em 2026-10-24, incluindo o refinamento do cabeçalho.
+
+O [fechamento do portal](references/evidence/unified_portal_author_validation_2026-10-24.json)
+registra os testes e a revisão visual, preservando as fontes de sessão e avaliação.
+A [revisão de footprint das imagens](docs/operations/IMAGE_FOOTPRINT.md) distingue
+as otimizações de build existentes das medições ainda necessárias para o conjunto
+da infraestrutura.

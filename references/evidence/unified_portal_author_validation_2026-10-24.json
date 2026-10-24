@@ -2,7 +2,7 @@
   "schema": "fraud_unified_portal_author_validation_v1",
   "validated_on": "2026-10-24",
   "implementation_reference": "fraud-unified-portal.zip sha256:021df89dd0439bf44a0c8886d3fd68f16c6bcf4dd31985a69a1b5e9042528f7f",
-  "status": "functional_native_accepted_visual_review_with_cosmetic_followup",
+  "status": "native_functional_and_author_visual_accepted",
   "native_test": {
     "passed": 1,
     "pytest_seconds": 0.96,
@@ -48,8 +48,14 @@
     "reviewed_page": "Investigar caso",
     "assessment": "author confirms expected functionality; requests larger unclipped title, less top whitespace and visual polish",
     "automated_flags_rewritten": false,
-    "new_polished_header_visually_accepted": false
+    "new_polished_header_visually_accepted": true,
+    "polished_header_confirmation": {
+      "date": "2026-10-24",
+      "method": "explicit author confirmation after applying header polish",
+      "statement": "Ficou muito bom!",
+      "polish_artifact_sha256": "13f636c901084c87dd392483c4b3d77d69446c4553dff3dca60e51940142c896"
+    }
   },
-  "new_header_polish_native_acceptance": "pending author visual confirmation after applying presentation-only patch",
+  "new_header_polish_native_acceptance": "author_visual_confirmation_accepted; original automated flags preserved",
   "different_weight_successor_promotion_and_rollback_validated": false
 }

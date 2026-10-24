@@ -344,3 +344,6 @@ parada/subida nem promoção de sucessor. [Evidência](../references/evidence/sy
   mesma sessão da fila no Grafana, expiração/retomada, regressão e baseline de 2026-10-24.
 
 - [Portal único](operations/UNIFIED_PORTAL.md): sessão corrente, investigação e evidências na mesma interface, com origens identificadas.
+
+- [Footprint das imagens](operations/IMAGE_FOOTPRINT.md): revisão de builds existentes,
+  medidas históricas e inventário atual ainda necessário.

@@ -863,11 +863,24 @@ com navegação e identidade de sessão/modelo explícitas.
 Promoção recorrente com pesos diferentes e rollback continuam condicionados a
 candidato qualificado; o gate não foi afrouxado.
 
-### Portal único — implementação preparada em 2026-10-24
+### Portal único — aceite concluído em 2026-10-24
 
 Sessão corrente, fila, contexto, explicações verificadas e avaliação passam à
 mesma aplicação Streamlit. Origem e identidade acompanham cada área; nenhum
 resultado da avaliação é apresentado como qualidade da janela corrente.
 Vínculo explícito e leitura paginada preservam os recibos e o baseline atuais.
 [Guia](../operations/UNIFIED_PORTAL.md). Aceite nativo com arquivos aceitos e
-conferência visual pendentes. O gate de promoção permanece inalterado.
+conferência visual concluídos pelo autor, incluindo o cabeçalho refinado.
+[Evidência](../../references/evidence/unified_portal_author_validation_2026-10-24.json).
+O gate de promoção permanece inalterado.
+
+### Próximo recorte — footprint medido das imagens
+
+Consolidar as imagens ativas por papel, tamanho reportado por runtime e camadas
+compartilhadas/cache. A API já usa build em estágios e há imagens especializadas,
+mas não existe aceite de otimização global da infraestrutura. O inventário deve
+separar Docker do host, containerd do node KinD, workloads ativos e imagens de
+jobs/ensaios. [Avaliação de código e medição](../operations/IMAGE_FOOTPRINT.md).
+Uma alteração posterior de imagem será qualificada com os gates de sua função;
+a promoção/rollback de sucessor com novos pesos continua dependente de candidato
+qualificado, sem afrouxamento do gate.

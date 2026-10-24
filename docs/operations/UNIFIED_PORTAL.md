@@ -128,7 +128,7 @@ Nenhum dos gates cria decisões, treina ou altera o champion.
 Conferência visual: confira os totais da sessão, navegue por páginas e por
 “Visão geral”/“Desempenho do modelo”, confirme as origens apresentadas e teste a
 investigação com e sem explicação. O aceite funcional nativo deste recorte foi concluído pelo autor. O refinamento
-do cabeçalho aguarda sua conferência visual; os relatórios originais são preservados.
+do cabeçalho foi aprovado visualmente pelo autor; os relatórios originais são preservados.
 
 ## Aceite funcional e refinamento visual — 2026-10-24
 
@@ -143,5 +143,19 @@ responsivo, título com altura automática e quebra por palavras, menor recuo
 superior e identificação visual da origem. Tema escuro, cores semânticas,
 fontes de dados e navegação permanecem na aplicação existente.
 [Registro do aceite funcional](../../references/evidence/unified_portal_author_validation_2026-10-24.json).
-A confirmação visual do novo cabeçalho será feita após aplicar este ajuste;
+O autor aprovou o cabeçalho refinado em 2026-10-24 ("Ficou muito bom!");
 o campo visual automatizado do ensaio anterior continua preservado.
+
+## Fechamento do recorte
+
+Portal único aceito funcional e visualmente, com acesso canônico em 18501,
+sessão vinculada, investigação paginada e evidências com origens identificadas.
+A sessão conserva 2.001 decisões/81 alertas; o snapshot conserva 200 decisões/5
+explicações e a avaliação conserva 67.255 transações. O aceite não transforma
+esses conjuntos em uma avaliação única nem altera o champion.
+O baseline `baseline-session-monitoring-20261024.json` continua atual.
+
+A revisão de tamanho da infraestrutura está em
+[IMAGE_FOOTPRINT.md](IMAGE_FOOTPRINT.md): há medidas de enxugamento nos builds,
+mas o inventário medido das imagens ativas, camadas compartilhadas e cache
+permanece como próximo recorte. Nenhuma imagem é reconstruída neste fechamento.

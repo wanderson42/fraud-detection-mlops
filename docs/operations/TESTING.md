@@ -1602,3 +1602,15 @@ credenciais, idempotência e troca explícita sem alterar as fontes.
 O ambiente `portal-unified` é opt-in, usa os arquivos reais já aceitos em um
 Streamlit AppTest isolado e confere os hashes antes/depois. Não pontua nem treina;
 saúde HTTP e revisão visual são registradas separadamente. [Guia](UNIFIED_PORTAL.md).
+
+### Aceite do portal unificado e cabeçalho — 2026-10-24
+
+O autor forneceu `py314: OK` para o recorte (103 testes, 12 pulados, 13 warnings),
+`portal-ui: OK` (44 testes) e `portal-unified: OK` com os arquivos reais (1 teste,
+0,96 s; tox 12,69 s). A navegação AppTest e os hashes das fontes passaram; portal
+e desempenho mantiveram seus manifests. O autor confirmou o refinamento visual
+com "Ficou muito bom!". Essa confirmação é separada dos campos automatizados
+originais, que não são reescritos. [Evidência](../../references/evidence/unified_portal_author_validation_2026-10-24.json).
+
+O footprint global de Docker/KinD ainda requer medição própria; revisão de
+Dockerfiles e recibos antigos não certifica o tamanho de todas as imagens ativas.
