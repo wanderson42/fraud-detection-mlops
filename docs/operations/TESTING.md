@@ -1574,3 +1574,21 @@ extensão instalada. Confere a projeção no Prometheus e proxy do Grafana, expi
 retomada e preservação dos bytes aceitos. Não gera novas decisões nem comprova
 chegada concorrente no KinD, firing de alertas ou avaliação visual.
 [Comandos](SESSION_MONITORING.md).
+
+### Aceite do monitoramento da sessão — 2026-10-24
+
+O autor executou o ambiente `session-monitoring`: **1 teste passou em 68,39 s**,
+total tox 82,19 s. Os agregados de `arrival-2k-v1` foram conferidos no receiver,
+Prometheus e proxy do Grafana; expiração e retomada passaram. A revisão visual
+foi confirmada separadamente, preservando o campo automatizado original.
+
+A suíte geral teve **1.705 testes aprovados, 51 pulados, 165 warnings e 12
+subtestes aprovados**, em 365,26 s; `py314: OK`, total 386,24 s. Ruff e formatação
+foram aprovados (474 arquivos). As saídas são evidência fornecida pelo autor,
+não execução nativa no ambiente do assistente.
+
+O novo baseline passou na checagem de leitura atual; snapshot do portal e
+avaliação de 67.255 transações mantiveram seus manifests. O escopo não inclui
+outro stop/start ou reboot, firing de alertas, chegada concorrente no KinD ou
+promoção/rollback de sucessor com pesos diferentes.
+[Evidência](../../references/evidence/session_monitoring_author_validation_2026-10-24.json).

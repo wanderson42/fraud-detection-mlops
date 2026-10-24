@@ -335,3 +335,9 @@ novo banco, broker ou serviço de aplicação é introduzido. A leitura do check
 usa uma transação consistente; a inferência e a reconstrução causal existentes
 não são duplicadas. A separação entre imagens preserva o runtime histórico já
 aceito. A unificação das páginas de evidências e fila continua pendente.
+
+O monitoramento da mesma sessão foi aceito nativa e visualmente em 2026-10-24,
+com regressão geral aprovada (1.705 testes), baseline novo e readbacks preservados.
+O próximo recorte consolida a experiência de uso em um único portal, mantendo
+Grafana para operação e MLflow para linhagem/governança. Este fechamento altera
+somente documentação e evidência; não modifica imagens, código, pesos ou dados.

@@ -135,3 +135,13 @@ Prometheus/Grafana existentes. Sua habilitação conserva imagens/PVCs históric
 e requer novo baseline de configuração; preserve o baseline anterior como
 evidência da topologia anterior. O observador é separado do produtor e não
 controla tráfego, treino ou Registry.
+
+## Configuração de sessão aceita em 2026-10-24
+
+O monitoramento da mesma sessão passou no ensaio nativo e na conferência visual
+do autor. O novo baseline é
+`data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json`,
+SHA-256 `676e04b92c9d8e479ce598a5dd348c13b9db0755fc89bba918d415f14df0ac9d`.
+A checagem corrente e os gates do portal/desempenho passaram, sem treino ou
+alteração do champion. Os baselines anteriores permanecem históricos.
+[Registro do aceite](../../references/evidence/session_monitoring_author_validation_2026-10-24.json).

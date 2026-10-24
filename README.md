@@ -596,7 +596,7 @@ de validação e o mesmo modelo dos casos.
 [Operação do produto e próximo recorte](docs/operations/PRODUCT_OPERATIONS.md):
 responsabilidades, dados históricos como fluxo reproduzível e consolidação da
 sessão operacional. A fila atualizada foi aceita em sessões de 200 e 2.001 decisões;
-o monitoramento da mesma sessão está preparado para aceite próprio, sem novo treinamento.
+o monitoramento da mesma sessão teve aceite nativo e visual em 2026-10-24, sem novo treinamento.
 
 ### Serving operacional após a simplificação
 
@@ -612,6 +612,8 @@ Sessões com [janela e volume configuráveis](docs/operations/PRODUCT_SESSION_SC
 
 A ampliação operacional foi aceita com **2.001 decisões HTTP e 81 alertas**, com
 paginação, feedback e reconciliação causal. O [monitoramento da mesma sessão](docs/operations/SESSION_MONITORING.md)
-está preparado para ligar esses agregados ao Prometheus/Grafana existentes,
-identificando sessão, pesos e release e detectando interrupção da coleta.
-Seu aceite nativo é separado do ensaio de volume já aceito.
+liga esses agregados ao Prometheus/Grafana existentes, identificando sessão,
+pesos e release e detectando interrupção da coleta. Aceite nativo e visual
+confirmados em 2026-10-24, com novo baseline operacional e regressão geral
+aprovada (1.705 testes). [Evidência](references/evidence/session_monitoring_author_validation_2026-10-24.json).
+A próxima entrega reúne a sessão corrente e as evidências em um único portal Streamlit.

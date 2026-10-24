@@ -1,0 +1,115 @@
+{
+  "schema": "fraud_session_monitoring_author_validation_v1",
+  "validated_on": "2026-10-24",
+  "implementation_commit": "d7b7bf3",
+  "status": "accepted_by_author_native_output_and_visual_confirmation",
+  "evidence_origin": "author-provided terminal output and explicit visual confirmation; original private receipts preserved",
+  "binding": {
+    "session_id": "arrival-2k-v1",
+    "session_sha256": "f82d8fb8c2e25f533c31d03f7dc430b4a15ef2761758840506a7136de94edf3e",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+    "expected_events": 272936,
+    "expected_decisions": 2001
+  },
+  "native_result": {
+    "schema": "fraud_session_monitoring_native_v1",
+    "status": "success",
+    "active_serving_receipt_sha256": "51f50a5b3f9dfdce8c23ed2c63357ec65f7eb35455380939c9467c9a6070a7dc",
+    "counts": {
+      "events": 272936,
+      "transactions": 136468,
+      "feedback": 136468,
+      "decisions": 2001,
+      "alerts": 81,
+      "customers": 1561,
+      "decision_feedback": 2001,
+      "http_attempts": 2001
+    },
+    "HTTP_latency_ms": {
+      "p50": 21.508816000277875,
+      "p95": 110.47343199970783,
+      "maximum": 632.6367020010366
+    },
+    "same_session_Grafana_validated": true,
+    "stale_collection_and_resume_validated": true,
+    "healthy_alert_rules": 10,
+    "legacy_state_bytes_verified": true,
+    "legacy_prometheus_metrics_verified": true,
+    "grafana_datasource_proxy_verified": true,
+    "dashboard_color_policy_verified": "semantic_colors_v1",
+    "temporary_port_forwards_removed": true,
+    "accepted_source_bytes_unchanged": {
+      "session.json": "f82d8fb8c2e25f533c31d03f7dc430b4a15ef2761758840506a7136de94edf3e",
+      "input.json": "10f5a1aa1dc92003645b9a34cf23e6ce0875415a5a5f64554793cfbd3cf0ae60",
+      "checkpoint.sqlite": "bee291fd343c6f6c9af9487d33b23093ff703e1cab3dadc19450b53967bae17b",
+      "native-scale-rehearsal.json": "5fd87cee105c9c06f60bc6a4854551fb72ca34caf1210135d0a4104d9e14f45d"
+    },
+    "live_arrivals_native_validated": false,
+    "visual_review_validated": false,
+    "alert_firing_validated": false,
+    "fit_executed": false,
+    "champion_modified": false
+  },
+  "native_test": {
+    "passed": 1,
+    "pytest_seconds": 68.39,
+    "tox_status": "session-monitoring: OK",
+    "tox_total_seconds": 82.19
+  },
+  "author_visual_confirmation": {
+    "confirmed": true,
+    "date": "2026-10-24",
+    "method": "explicit author confirmation after viewing the Grafana session dashboard with observer running",
+    "session_dashboard_uid": "fraud-product-session",
+    "author_statement": "conferi visualmente! tudo dentro do esperado!",
+    "automated_visual_flag_rewritten": false,
+    "screenshot_or_new_browser_run_claimed": false
+  },
+  "general_regression": {
+    "environment": "py314",
+    "python": "3.14.4",
+    "ruff_check_passed": true,
+    "ruff_format_passed": true,
+    "formatted_files": 474,
+    "passed": 1705,
+    "skipped": 51,
+    "warnings": 165,
+    "subtests_passed": 12,
+    "pytest_seconds": 365.26,
+    "tox_status": "py314: OK",
+    "tox_total_seconds": 386.24,
+    "warnings_suppressed_or_fixed_by_this_closure": false
+  },
+  "operational_baseline": {
+    "path": "data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json",
+    "sha256": "676e04b92c9d8e479ce598a5dd348c13b9db0755fc89bba918d415f14df0ac9d",
+    "check_report": "data/storage/kind-platform/operations/check-bb97d5a8b98347c6b577059b82914a20.json",
+    "status": "current_platform_readbacks_verified",
+    "functional_readbacks_verified": true,
+    "baseline_modified": false,
+    "new_stop_start_executed": false
+  },
+  "preserved_portal": {
+    "portal_id": "investigation-v1",
+    "manifest_sha256": "ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af",
+    "decisions": 200,
+    "customers": 199,
+    "alerts": 13,
+    "feedback": 200,
+    "explanations": 5
+  },
+  "preserved_performance": {
+    "manifest_sha256": "6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475",
+    "validation_rows": 67255,
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "model_loaded_by_verify": false,
+    "champion_modified": false
+  },
+  "acceptance_scope": "projection of the completed accepted session through existing Prometheus/Grafana, collection expiry/recovery, visual confirmation and current configuration baseline",
+  "new_stop_start_or_reboot_validated": false,
+  "new_independent_quality_confirmation": false,
+  "different_weight_successor_promotion_and_rollback_validated": false,
+  "portal_unification_complete": false,
+  "next_slice": "single Streamlit portal integrating current session and verified evidence; retain source, model and release identity"
+}

@@ -840,21 +840,25 @@ pesos diferentes continua dependendo de candidato qualificado.
 Implementação aditiva de produtor com ritmo configurável, pausa/retomada,
 checkpoint causal HTTP e página de investigação com atualização automática.
 [Guia](../operations/PRODUCT_SESSION.md). Não substitui os snapshots aceitos.
-Ensaio nativo de 200 decisões aceito pelo autor e captura final conferida em 2026-10-23. Falta integrar os indicadores da sessão ao
-Prometheus/Grafana; a consolidação completa de fila e observabilidade da mesma
-sessão não está concluída. O gate de promoção permanece inalterado.
+Ensaio nativo de 200 decisões aceito pelo autor e captura final conferida em 2026-10-23. Os indicadores da sessão foram integrados ao
+Prometheus/Grafana, com aceite nativo e visual em 2026-10-24. A unificação das
+páginas de sessão e evidências em um portal continua no recorte seguinte. O gate de promoção permanece inalterado.
 
 ### Aceite de sessão e ampliação — 2026-10-23
 
-Sessão `arrival-v1` aceita: 200 decisões/recibos HTTP, 13 alertas, pausa/retomada, feedback e reconciliação; zero novas pontuações na reexecução. [Evidência](../../references/evidence/product_session_author_validation_2026-10-23.json). Preparação da ampliação com janela/volume explícitos, paginação SQL e medição de fases em [PRODUCT_SESSION_SCALE.md](../operations/PRODUCT_SESSION_SCALE.md); ensaio ampliado aceito pelo autor com 2.001 decisões, 81 alertas, 1.561 clientes e zero novas chamadas na reutilização. [Evidência](../../references/evidence/product_session_scale_author_validation_2026-10-23.json). Monitoramento da mesma sessão preparado em [SESSION_MONITORING.md](../operations/SESSION_MONITORING.md), com aceite nativo pendente; unificação do portal permanece no recorte seguinte.
+Sessão `arrival-v1` aceita: 200 decisões/recibos HTTP, 13 alertas, pausa/retomada, feedback e reconciliação; zero novas pontuações na reexecução. [Evidência](../../references/evidence/product_session_author_validation_2026-10-23.json). Preparação da ampliação com janela/volume explícitos, paginação SQL e medição de fases em [PRODUCT_SESSION_SCALE.md](../operations/PRODUCT_SESSION_SCALE.md); ensaio ampliado aceito pelo autor com 2.001 decisões, 81 alertas, 1.561 clientes e zero novas chamadas na reutilização. [Evidência](../../references/evidence/product_session_scale_author_validation_2026-10-23.json). Monitoramento da mesma sessão aceito em [SESSION_MONITORING.md](../operations/SESSION_MONITORING.md), com confirmação nativa e visual em 2026-10-24; unificação do portal permanece no recorte seguinte.
 
-### Monitoramento da sessão — preparação em 2026-10-23
+### Monitoramento da sessão — aceite em 2026-10-24
 
 A mesma sessão da fila alimenta uma projeção de agregados no exporter existente,
 com jobs Prometheus distintos, dashboard próprio e expiração explícita da fonte.
-O aceite nativo verificará o vínculo com `arrival-2k-v1`, a expiração e a retomada,
-sem novo scoring ou alteração do champion. A chegada concorrente está coberta
-por testes de checkpoint/HTTP; não é declarada aceita no KinD por esse ensaio de
-uma sessão já concluída. Após a instalação, emitir novo baseline de configuração.
+O aceite nativo conferiu o vínculo com `arrival-2k-v1`, a expiração e a retomada,
+sem novo scoring ou alteração do champion. O autor confirmou a revisão visual;
+a suíte geral passou com 1.705 testes e 12 subtestes. O baseline da configuração
+nova foi emitido e passou no `platform-check`, com portal e desempenho intactos.
+[Evidência](../../references/evidence/session_monitoring_author_validation_2026-10-24.json).
+A chegada concorrente permanece fora do escopo desse ensaio de sessão concluída.
+Próximo recorte: unificar fila corrente e evidências no mesmo portal Streamlit,
+com navegação e identidade de sessão/modelo explícitas.
 Promoção recorrente com pesos diferentes e rollback continuam condicionados a
 candidato qualificado; o gate não foi afrouxado.

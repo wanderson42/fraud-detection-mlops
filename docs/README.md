@@ -339,3 +339,6 @@ parada/subida nem promoção de sucessor. [Evidência](../references/evidence/sy
 - [Sessões ampliadas](operations/PRODUCT_SESSION_SCALE.md): janela/volume, fila paginada e relatórios de tempo/memória.
 
 - [Monitoramento da mesma sessão](operations/SESSION_MONITORING.md): vínculo com a fila, frescor da coleta e recuperação no Prometheus/Grafana.
+
+- [Aceite nativo e visual do monitoramento da sessão](../references/evidence/session_monitoring_author_validation_2026-10-24.json):
+  mesma sessão da fila no Grafana, expiração/retomada, regressão e baseline de 2026-10-24.

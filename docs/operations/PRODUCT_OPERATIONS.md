@@ -145,19 +145,19 @@ Terraform permanece posterior à consolidação funcional.
 O marco KinD/Helm e o aceite do portal foram integrados à main. A consolidação
 ocorre em `feat/fraud-operations-demo`, começando pela revisão dos comandos e
 pela retirada de uma transição de uso único já aplicada. A chegada gradual e a fila corrente foram validadas em uma sessão de 200 decisões.
-A ampliação foi aceita com 2.001 decisões. A ligação das métricas à mesma sessão está preparada para aceite nativo.
+A ampliação foi aceita com 2.001 decisões. A ligação das métricas à mesma sessão foi aceita nativa e visualmente em 2026-10-24.
 
 ## Sessão de chegada gradual
 
 O primeiro recorte da sessão está preparado em [PRODUCT_SESSION.md](PRODUCT_SESSION.md):
 `session-prepare`, `session-run`, `session-pause`, `session-status`, `session-feedback`,
 `session-verify` e `session-open`. Ele liga o produtor à API e à fila corrente,
-com checkpoint próprio e atualização automática. O ensaio nativo de 200 decisões foi aceito pelo autor em 2026-10-23. A integração Prometheus/Grafana da mesma sessão continua
-pendente; os dashboards existentes preservam a fonte do replay concluído.
+com checkpoint próprio e atualização automática. O ensaio nativo de 200 decisões foi aceito pelo autor em 2026-10-23. A integração Prometheus/Grafana da mesma sessão teve aceite nativo e visual
+em 2026-10-24; os quatro dashboards anteriores preservam a fonte do replay concluído.
 
 ## Sessões ampliadas
 
-O ensaio de 200 decisões foi aceito pelo autor em 2026-10-23. [Sessões ampliadas](PRODUCT_SESSION_SCALE.md) permitem nova janela/volume, fila paginada e medição por fase, preservando o checkpoint anterior. A ampliação foi aceita com 2.001 decisões. [Monitoramento da mesma sessão](SESSION_MONITORING.md) possui procedimento de instalação, coleta e recuperação; seu aceite nativo ainda está pendente.
+O ensaio de 200 decisões foi aceito pelo autor em 2026-10-23. [Sessões ampliadas](PRODUCT_SESSION_SCALE.md) permitem nova janela/volume, fila paginada e medição por fase, preservando o checkpoint anterior. A ampliação foi aceita com 2.001 decisões. [Monitoramento da mesma sessão](SESSION_MONITORING.md) possui procedimento de instalação, coleta e recuperação; seu aceite nativo e visual foi confirmado em 2026-10-24.
 
 ## Fila e observabilidade com a mesma identidade
 
@@ -172,3 +172,18 @@ O observador não inicia dados, treina, pontua ou altera a fila. A fonte perde
 validade após 30 s sem publicação. Uma sessão concluída pode ser observada
 novamente; isso atualiza a leitura, não cria novos eventos.
 [Procedimento principal desta integração](SESSION_MONITORING.md).
+
+## Configuração operacional aceita
+
+O baseline atual é
+`data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json`,
+SHA-256 `676e04b92c9d8e479ce598a5dd348c13b9db0755fc89bba918d415f14df0ac9d`.
+`platform-check`, `portal-verify` e `portal-performance-verify` passaram.
+O observador continua necessário para manter a coleta da sessão atualizada.
+Este fechamento documental não altera configuração nem pede outro baseline.
+
+A próxima entrega é **um único portal Streamlit** com navegação entre sessão
+corrente, investigação e evidências verificadas. A sessão exibida e as métricas
+avaliadas terão suas origens identificadas: os 200 casos do snapshot e a validação
+de 67.255 transações não serão apresentados como a janela corrente de 2.001 decisões.
+Grafana mantém a função operacional; MLflow mantém linhagem e governança.

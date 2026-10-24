@@ -7,7 +7,8 @@ continua recebendo os casos pelo produtor, sem solicitar novas transações.
 
 O ensaio ampliado `arrival-2k-v1` já foi aceito: 2.001 decisões, 81 alertas,
 1.561 clientes, 2.001 recibos HTTP e feedback das decisões. Seu recibo permanece
-intacto. A integração deste documento tem aceite nativo próprio, ainda pendente.
+intacto. A integração teve aceite nativo e visual confirmado pelo autor em 2026-10-24.
+[Evidência de monitoramento](../../references/evidence/session_monitoring_author_validation_2026-10-24.json).
 [Evidência da ampliação](../../references/evidence/product_session_scale_author_validation_2026-10-23.json).
 
 ## Componentes e origem
@@ -148,7 +149,21 @@ qualidade continua na área de desempenho do portal, vinculada ao modelo avaliad
 A extensão altera o template do exporter, a configuração Prometheus/Grafana e
 acrescenta Secret/ConfigMap. **O baseline anterior representa a topologia anterior**;
 não edite seu hash e não force sua igualdade com a configuração nova.
-Depois do aceite nativo, gere um baseline novo:
+O autor emitiu e conferiu o baseline atual em 2026-10-24:
+
+- Caminho: `data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json`.
+- SHA-256: `676e04b92c9d8e479ce598a5dd348c13b9db0755fc89bba918d415f14df0ac9d`.
+- Resultado: `current_platform_readbacks_verified`; portal e desempenho preservados.
+
+Para checagem cotidiana, use o baseline já existente:
+
+```bash
+make platform-check \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json
+```
+
+Não reemita nem sobrescreva esse arquivo. Em outra instalação, ou após uma nova
+alteração de configuração, gere outro baseline com caminho distinto:
 
 ```bash
 PLATFORM_BASELINE="data/storage/kind-platform/operations/baseline-session-monitoring-$(date -u +%Y%m%dT%H%M%SZ).json" \
@@ -178,3 +193,23 @@ A próxima execução do produtor alimentará a mesma fila/checkpoint observados
 A vinculação altera configuração e pede outro baseline. A promoção de sucessor
 com pesos diferentes e seu rollback continuam sujeitos a candidato qualificado
 e ao aceite nativo correspondente; este recorte não altera essa política.
+
+## Aceite de 2026-10-24
+
+O ensaio nativo passou: 1 teste em 68,39 s; ambiente `session-monitoring` aprovado
+em 82,19 s. Conferiu a mesma sessão de 2.001 decisões, 81 alertas, 1.561 clientes,
+feedback das decisões, p50/p95/máximo HTTP, expiração e retomada da coleta.
+Estado histórico, dez regras saudáveis, proxy Grafana, bytes aceitos e champion
+foram preservados. O autor confirmou a revisão visual com o observador ativo.
+Essa confirmação é registrada separadamente: `visual_review_validated: false`
+no relatório automatizado original não é reescrito.
+
+A regressão geral passou: **1.705 testes, 51 pulados e 12 subtestes**, em 365,26 s;
+`py314: OK`, total 386,24 s. Os 165 warnings reportados continuam registrados e
+não são tratados como correções deste fechamento.
+
+O baseline novo e os gates do portal/desempenho passaram. Isso registra a
+configuração corrente, sem ampliar o aceite para outro stop/start, reboot,
+chegada concorrente no KinD ou firing de alertas. A promoção de sucessor com
+pesos diferentes continua dependente de candidato qualificado. O próximo recorte
+é reunir a fila corrente e as evidências em um único portal Streamlit.
