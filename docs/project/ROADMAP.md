@@ -862,3 +862,12 @@ Próximo recorte: unificar fila corrente e evidências no mesmo portal Streamlit
 com navegação e identidade de sessão/modelo explícitas.
 Promoção recorrente com pesos diferentes e rollback continuam condicionados a
 candidato qualificado; o gate não foi afrouxado.
+
+### Portal único — implementação preparada em 2026-10-24
+
+Sessão corrente, fila, contexto, explicações verificadas e avaliação passam à
+mesma aplicação Streamlit. Origem e identidade acompanham cada área; nenhum
+resultado da avaliação é apresentado como qualidade da janela corrente.
+Vínculo explícito e leitura paginada preservam os recibos e o baseline atuais.
+[Guia](../operations/UNIFIED_PORTAL.md). Aceite nativo com arquivos aceitos e
+conferência visual pendentes. O gate de promoção permanece inalterado.

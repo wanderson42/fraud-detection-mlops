@@ -617,3 +617,7 @@ pesos e release e detectando interrupção da coleta. Aceite nativo e visual
 confirmados em 2026-10-24, com novo baseline operacional e regressão geral
 aprovada (1.705 testes). [Evidência](references/evidence/session_monitoring_author_validation_2026-10-24.json).
 A próxima entrega reúne a sessão corrente e as evidências em um único portal Streamlit.
+
+O [portal unificado](docs/operations/UNIFIED_PORTAL.md) reúne a sessão corrente,
+investigação e evidências em um único Streamlit em 18501, com vínculo explícito
+de fonte, pesos e release. Implementação preparada; aceite nativo e visual pendente.

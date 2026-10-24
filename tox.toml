@@ -419,7 +419,7 @@ base_python = ["python3.14"]
 package = "skip"
 set_env = { STREAMLIT_BROWSER_GATHER_USAGE_STATS = "false", DO_NOT_TRACK = "true" }
 commands_pre = [["python", "-m", "pip", "install", "--require-hashes", "--only-binary=:all:", "-r", "infra/portal/requirements-test.txt"]]
-commands = [["python", "-m", "pytest", "-q", "--confcutdir=tests/fraud_portal", "tests/fraud_portal/test_app.py", "tests/fraud_portal/test_data.py", "tests/fraud_portal/test_controller.py", "tests/fraud_portal/test_performance_ui.py", "tests/fraud_portal/test_session_ui.py"]]
+commands = [["python", "-m", "pytest", "-q", "--confcutdir=tests/fraud_portal", "tests/fraud_portal/test_app.py", "tests/fraud_portal/test_data.py", "tests/fraud_portal/test_controller.py", "tests/fraud_portal/test_performance_ui.py", "tests/fraud_portal/test_session_ui.py", "tests/fraud_portal/test_unified_portal.py", "tests/fraud_portal/test_session_link.py"]]
 
 [env.product-session]
 description = "Opt-in causal transaction HTTP champion, durable triage and pause/resume reconciliation"
@@ -469,3 +469,12 @@ commands_pre = [
 commands = [
     ["python", "-m", "pytest", "-q", "-s", "tests/session_monitoring/live/test_current_monitoring.py"],
 ]
+
+[env.portal-unified]
+description = "Opt-in actual accepted session and evidence through the single isolated Streamlit app"
+base_python = ["python3.14"]
+package = "skip"
+pass_env = ["FRAUD_PORTAL_ID"]
+set_env = { STREAMLIT_BROWSER_GATHER_USAGE_STATS = "false", DO_NOT_TRACK = "true", FRAUD_PORTAL_UNIFIED_LIVE = "1" }
+commands_pre = [["python", "-m", "pip", "install", "--require-hashes", "--only-binary=:all:", "-r", "infra/portal/requirements-test.txt"]]
+commands = [["python", "-m", "pytest", "-q", "-s", "--confcutdir=tests/fraud_portal", "tests/fraud_portal/live/test_unified_native.py"]]

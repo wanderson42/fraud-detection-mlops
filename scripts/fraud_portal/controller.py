@@ -9,7 +9,7 @@ import subprocess
 from urllib.request import ProxyHandler, build_opener
 import venv
 
-from scripts.fraud_portal import data, theme
+from scripts.fraud_portal import data, session_link, theme
 
 ROOT = Path(__file__).resolve().parents[2]
 ENVIRONMENT = ROOT / ".portal-venv"
@@ -54,6 +54,67 @@ def performance_config(key):
         directory, link["manifest_sha256"], receipt["manifest_sha256"], snapshot
     )
     return link, report
+
+
+def session_config(key):
+    path = session_link.path_for(ROOT, key)
+    if not path.exists():
+        return None
+    return session_link.load(path, data.sha(path), root=ROOT)
+
+
+def link_session(key, session_id, previous_sha=None):
+    from scripts.platform import kind_foundation as f
+    from scripts.product_session import controller as sessions
+    from scripts.product_session import reader
+
+    committed()
+    config(key)
+    directory, _ = sessions.load(session_id)
+    prepared = json.loads((directory / "session.json").read_bytes())
+    value = reader.read(directory, data.sha(directory / "session.json"), page_size=25)
+    link = {
+        "schema": "fraud_portal_session_access_v1",
+        "portal_id": key,
+        "session_id": session_id,
+        "directory": str(directory),
+        "session_sha256": data.sha(directory / "session.json"),
+        "input_sha256": prepared["input_sha256"],
+        "model_sha256": value["model_sha256"],
+        "serving_release_id": value["serving_release_id"],
+    }
+    path = session_link.path_for(ROOT, key)
+    if path.exists():
+        old = session_config(key)
+        if old == link:
+            return {"status": "portal_session_already_linked", **link}
+        data.require(
+            previous_sha == old["session_sha256"],
+            "Informe o SHA da sessão anterior para trocar o vínculo",
+        )
+        archive = path.with_name(key + "-session-" + old["session_sha256"] + ".json")
+        if not archive.exists():
+            f.private_json(archive, old)
+    else:
+        data.require(previous_sha is None, "Não existe vínculo anterior para substituir")
+    # Atomic pointer only; no writes to session, snapshot, performance or Registry.
+    sessions.atomic(path, link)
+    return {"status": "portal_session_linked", **link}
+
+
+def verify_session(key):
+    link = session_config(key)
+    data.require(link is not None, "Execute make portal-session-link primeiro")
+    path = session_link.path_for(ROOT, key)
+    value = session_link.page(path, data.sha(path), root=ROOT, page_size=25)
+    return {
+        "status": "portal_session_readonly_verified",
+        **link,
+        "counts": value["counts"],
+        "totals": value["totals"],
+        "model_loaded": False,
+        "champion_modified": False,
+    }
 
 
 def install():
@@ -112,6 +173,12 @@ def open_portal(key, port):
         STREAMLIT_BROWSER_GATHER_USAGE_STATS="false",
         DO_NOT_TRACK="true",
     )
+    session_path = session_link.path_for(ROOT, key)
+    if session_path.exists():
+        environment.update(
+            FRAUD_PORTAL_SESSION_LINK=str(session_path),
+            FRAUD_PORTAL_SESSION_LINK_SHA256=data.sha(session_path),
+        )
     evaluation = performance_config(key)
     if evaluation:
         link, _ = evaluation
@@ -171,8 +238,13 @@ def main():
             "smoke",
             "performance-prepare",
             "performance-verify",
+            "session-link",
+            "session-verify",
+            "session-smoke",
         ],
     )
+    parser.add_argument("--session-id", default="arrival-2k-v1")
+    parser.add_argument("--previous-session-sha256")
     parser.add_argument("--portal-id", default="investigation-v1")
     parser.add_argument("--flow-id", default="champion-http-v1")
     parser.add_argument("--explanation-id", default="champion-shap-v1")
@@ -231,6 +303,19 @@ def main():
                 "validation_rows": report["dataset"]["rows"],
                 "model_loaded": False,
                 "champion_modified": False,
+            }
+        elif args.action == "session-link":
+            from scripts.platform import kind_foundation as f
+
+            with f.exclusive():
+                result = link_session(key, args.session_id, args.previous_session_sha256)
+        elif args.action == "session-verify":
+            result = verify_session(key)
+        elif args.action == "session-smoke":
+            result = {
+                "HTTP_health": smoke(key, args.port),
+                "session": verify_session(key),
+                "UI_browser_review_validated": False,
             }
         elif args.action == "open":
             raise SystemExit(open_portal(key, args.port))

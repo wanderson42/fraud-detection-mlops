@@ -24,9 +24,10 @@
     },
     {
       "prefix": "data/storage/kind-platform/portal",
-      "family": "private_portal_access_receipt_with_external_manifest_digest",
+      "family": "private_portal_access_session_binding_and_performance_receipts",
       "owner": "product",
       "producers": [
+        "scripts/fraud_portal/controller.py",
         "scripts/fraud_portal/export.py",
         "scripts/fraud_portal/performance/collect.py"
       ],

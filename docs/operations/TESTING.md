@@ -1592,3 +1592,13 @@ avaliação de 67.255 transações mantiveram seus manifests. O escopo não incl
 outro stop/start ou reboot, firing de alertas, chegada concorrente no KinD ou
 promoção/rollback de sucessor com pesos diferentes.
 [Evidência](../../references/evidence/session_monitoring_author_validation_2026-10-24.json).
+
+## Portal único com sessão vinculada
+
+`test_unified_portal.py` exercita a mesma aplicação com sessão, investigação e
+evidências, falhas independentes, limites de página e identidade exata para SHAP.
+`test_session_link.py` e `test_session_link_host.py` conferem ponteiro, paths,
+credenciais, idempotência e troca explícita sem alterar as fontes.
+O ambiente `portal-unified` é opt-in, usa os arquivos reais já aceitos em um
+Streamlit AppTest isolado e confere os hashes antes/depois. Não pontua nem treina;
+saúde HTTP e revisão visual são registradas separadamente. [Guia](UNIFIED_PORTAL.md).

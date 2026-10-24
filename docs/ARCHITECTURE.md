@@ -694,3 +694,11 @@ explícito identifica sessão, recibo, pesos e release. O receiver é volátil e
 vence a fonte após 30 s; nenhuma transação, feature ou rótulo entra no Prometheus.
 Os jobs e painéis históricos mantêm sua origem.
 [Instalação e operação](operations/SESSION_MONITORING.md).
+
+## Interface única do analista
+
+O Streamlit existente recebe um vínculo privado, com digest externo, para a
+sessão atual. Usa o leitor causal aceito e uma apresentação compartilhada de
+investigação. Snapshot e avaliação continuam com manifests próprios. A UI
+permanece isolada do runtime científico; não carrega modelos, publica feedback
+ou comanda ingestão/promoção. [Operação](operations/UNIFIED_PORTAL.md).

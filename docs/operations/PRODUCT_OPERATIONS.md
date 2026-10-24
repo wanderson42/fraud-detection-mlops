@@ -187,3 +187,12 @@ corrente, investigação e evidências verificadas. A sessão exibida e as métr
 avaliadas terão suas origens identificadas: os 200 casos do snapshot e a validação
 de 67.255 transações não serão apresentados como a janela corrente de 2.001 decisões.
 Grafana mantém a função operacional; MLflow mantém linhagem e governança.
+
+## Portal único — preparação em 2026-10-24
+
+A navegação da sessão e das evidências foi consolidada no Streamlit existente.
+`portal-session-link` vincula a sessão; `portal-open` e `access-start
+ACCESS_SERVICE=portal` abrem a mesma aplicação em 18501. Gráficos, contexto e
+investigação usam apresentação compartilhada. O produtor, a API, o observador,
+Grafana e MLflow conservam suas responsabilidades.
+[Procedimento e aceite](UNIFIED_PORTAL.md). A revisão nativa e visual ainda será feita.

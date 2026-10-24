@@ -342,3 +342,5 @@ parada/subida nem promoção de sucessor. [Evidência](../references/evidence/sy
 
 - [Aceite nativo e visual do monitoramento da sessão](../references/evidence/session_monitoring_author_validation_2026-10-24.json):
   mesma sessão da fila no Grafana, expiração/retomada, regressão e baseline de 2026-10-24.
+
+- [Portal único](operations/UNIFIED_PORTAL.md): sessão corrente, investigação e evidências na mesma interface, com origens identificadas.

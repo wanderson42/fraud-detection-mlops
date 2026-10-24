@@ -1,12 +1,11 @@
 """Analyst product surface: overview, prioritized queue, and identity-bound investigation."""
 
-import json
 import math
 import os
 from pathlib import Path
 
 import pandas as pd
-from scripts.fraud_portal import charts, data, theme
+from scripts.fraud_portal import case_view, charts, data, session_view, theme
 from scripts.fraud_portal.performance import view as performance_view
 import streamlit as st
 
@@ -199,190 +198,67 @@ def queue(value):
 
 
 def investigate(value):
-    cases = value["cases"]
-    st.title("Investigar caso")
-    ids = [c["request"]["transaction_id"] for c in data.select(cases)]
-    current = st.session_state.get("investigated_id", ids[0])
-    selected = st.selectbox(
-        "Transação", ids, index=ids.index(current) if current in ids else 0, key="detail-selection"
-    )
-    case = next(c for c in cases if c["request"]["transaction_id"] == selected)
-    request, response, triage = case["request"], case["response"], case["triage"]
-    st.caption(
-        f"Cliente {request['customer_id']} · Terminal {request['terminal_id']} · {request['tx_datetime']}"
-    )
-    a, b, c = st.columns(3)
-    a.metric(
-        "Score de priorização",
-        f"{response['score']:.6f}",
-        help="Ranking não calibrado: este número não é probabilidade de fraude.",
-    )
-    b.metric("Encaminhamento", data.status_name(triage["status"]))
-    c.metric(
-        "Valor da transação",
-        f"{request['features']['TX_AMOUNT']:.2f}",
-        help="Unidade do dataset; moeda não informada.",
-    )
-    st.write(
-        f"Limiar registrado: **{value['alert_policy']['score_threshold']:.2f}** · "
-        f"Orçamento diário: **{value['alert_policy']['daily_customer_budget']} clientes** · "
-        f"Utilização registrada nesta decisão: **{triage.get('daily_budget_used', '—')}**"
-    )
-    feedback = case["transaction_feedback"]
-    st.info(
-        "Feedback posterior: "
-        + (
-            "ainda não disponível"
-            if feedback is None
-            else "fraude indicada na transação"
-            if feedback
-            else "transação sem fraude no feedback"
-        )
-    )
-    st.caption("O feedback é posterior à decisão e não participa da explicação SHAP.")
-    explanation = case["SHAP_explanation"]
-    if explanation and explanation.get("output", "raw_log_odds") != "raw_log_odds":
-        st.info(
-            "Explicação recebida em unidade ainda sem visualização compatível. O contexto do caso continua disponível."
-        )
-        explanation = None
-    if explanation:
-        plot(charts.waterfall(explanation), f"shap-{selected}")
-        st.caption(
-            "Laranja aumenta a margem; azul diminui. Contribuições em log-odds, não em pontos percentuais. O gráfico agrega as features restantes sem perder a soma."
-        )
-        st.write(
-            f"**Reconstrução:** base {explanation['base_log_odds']:.6f} + contribuições = "
-            f"{explanation['raw_log_odds']:.6f} log-odds → score {explanation['reconstructed_score']:.6f}."
-        )
-    else:
-        st.info(
-            "A explicação SHAP ainda não foi preparada para esta transação. O contexto e a decisão estão disponíveis; nenhuma contribuição foi estimada pela interface."
-        )
-    with st.expander("Contexto histórico e decisões relacionadas", expanded=False):
-        features = request["features"]
-        metrics = st.columns(3)
-        metrics[0].metric("Transações do cliente · 7 dias", features["CUSTOMER_TX_COUNT_7D"])
-        metrics[1].metric(
-            "Valor médio do cliente · 7 dias", f"{features['CUSTOMER_AVG_AMOUNT_7D']:.2f}"
-        )
-        ratio = (
-            f"{features['CUSTOMER_AMOUNT_RATIO_7D']:.2f}×"
-            if features["CUSTOMER_AMOUNT_RATIO_VALID_7D"]
-            else "Sem histórico válido"
-        )
-        metrics[2].metric("Valor / média histórica", ratio)
-        st.caption(
-            "Sinais registrados na requisição original, disponíveis no instante da decisão."
-        )
-        for field, title in [("customer_id", "Mesmo cliente"), ("terminal_id", "Mesmo terminal")]:
-            related = [
-                c
-                for c in cases
-                if c["request"][field] == request[field]
-                and c["request"]["transaction_id"] != selected
-            ]
-            st.markdown(f"**{title} · {len(related)} outras decisões na janela**")
-            if related:
-                st.dataframe(
-                    pd.DataFrame(
-                        [
-                            {
-                                "Transação": c["request"]["transaction_id"],
-                                "Instante": c["request"]["tx_datetime"],
-                                "Score": c["response"]["score"],
-                                "Encaminhamento": data.status_name(c["triage"]["status"]),
-                            }
-                            for c in related
-                        ]
-                    ),
-                    hide_index=True,
-                    width="stretch",
-                )
-            else:
-                st.caption("Não há outras decisões relacionadas nesta janela.")
-    with st.expander("Features efetivamente enviadas ao modelo", expanded=False):
-        st.dataframe(
-            pd.DataFrame(
-                [
-                    {
-                        "Feature": data.feature_label(name),
-                        "Identificador": name,
-                        "Valor enviado": float(v),
-                        **(
-                            {"SHAP (log-odds)": explanation["contributions"][name]}
-                            if explanation
-                            else {}
-                        ),
-                    }
-                    for name, v in request["features"].items()
-                ]
-            ),
-            hide_index=True,
-            width="stretch",
-        )
-    with st.expander("Identidade e rastreabilidade"):
-        st.write("Modelo", response["model_id"])
-        st.code(response["model_sha256"], language=None)
-        st.write("Release", response["serving_release_id"])
-        st.write("Contrato de features", response["feature_contract_version"])
-        st.write("Features válidas no instante", request["feature_as_of"])
-        if case["feedback_available_ns"] is not None:
-            st.write(
-                "Feedback disponível a partir de", str(pd.Timestamp(case["feedback_available_ns"]))
-            )
-    st.download_button(
-        "Exportar este caso (JSON)",
-        json.dumps(case, ensure_ascii=False, indent=2),
-        file_name=f"caso-{selected}.json",
-        mime="application/json",
-    )
+    case_view.show(value)
 
 
 def main():
+    snapshot_error = None
     try:
         value, manifest = load()
     except (data.PortalError, OSError, KeyError, ValueError) as exc:
-        st.title("Portal de investigação")
-        st.error("Não foi possível abrir um conjunto de decisões verificado.")
-        st.caption(str(exc))
-        st.stop()
+        value, manifest, snapshot_error = None, None, str(exc)
+    configured = bool(os.environ.get("FRAUD_PORTAL_SESSION_LINK"))
+    pages = ["Visão geral", "Fila de investigação", "Investigar caso", "Desempenho do modelo"]
+    if configured:
+        pages.insert(0, "Sessão atual")
     with st.sidebar:
         st.markdown("### FRAUD OPS")
         st.caption("Contexto para decidir. Evidência para investigar.")
-        navigation = st.radio(
-            "Navegação",
-            ["Visão geral", "Fila de investigação", "Investigar caso", "Desempenho do modelo"],
-            key="navigation",
-        )
+        navigation = st.radio("Navegação", pages, key="navigation")
         st.divider()
-        st.markdown("**Modelo neste snapshot**")
-        st.caption(value.get("model_id", value["cases"][0]["response"]["model_id"]))
-        st.caption(
-            f"Registry v{value.get('registry_version_at_capture', '—')} · identidade na captura"
-        )
-        st.markdown("**Conjunto verificado**")
-        st.caption(
-            f"{len(value['cases'])} decisões · {data.summary(value['cases'])['explanations']} explicações"
-        )
-        st.caption("Modo consulta · decisões e explicações verificadas.")
+        if configured:
+            st.markdown("**Sessão atual**")
+            st.caption("Atualização automática · fonte identificada no painel")
+        st.markdown("**Evidências verificadas**")
+        if value:
+            st.caption(value.get("model_id", value["cases"][0]["response"]["model_id"]))
+            st.caption(
+                f"Registry v{value.get('registry_version_at_capture', '—')} · identidade na captura"
+            )
+            st.caption(
+                f"{len(value['cases'])} decisões · {data.summary(value['cases'])['explanations']} explicações"
+            )
+        else:
+            st.caption("Conjunto de evidências indisponível")
+        st.caption("Modo consulta · sem ingestão ou alteração de decisões.")
         st.caption("Operação → Grafana\n\nModelos → MLflow")
     st.markdown(
         '<p class="portal-kicker">INTELIGÊNCIA PARA INVESTIGAÇÃO DE FRAUDE</p>',
         unsafe_allow_html=True,
     )
-    dates = sorted(c["request"]["tx_datetime"] for c in value["cases"])
-    st.caption(
-        f"Janela de decisões: {dates[0]} → {dates[-1]} · Dados preparados em {manifest['created_at'][:19]} UTC"
-    )
-    if navigation == "Visão geral":
-        overview(value)
-    elif navigation == "Fila de investigação":
-        queue(value)
-    elif navigation == "Investigar caso":
-        investigate(value)
+    if navigation == "Sessão atual":
+        session_view.show(value)
+    elif value is None:
+        st.title("Portal de investigação")
+        st.error("Não foi possível abrir um conjunto de decisões verificado.")
+        st.caption(snapshot_error)
     else:
-        performance_view.show(value, os.environ["FRAUD_PORTAL_MANIFEST_SHA256"])
+        dates = sorted(c["request"]["tx_datetime"] for c in value["cases"])
+        st.caption(
+            f"Fonte: evidências verificadas · {len(value['cases'])} decisões · janela {dates[0]} → {dates[-1]} · preparado em {manifest['created_at'][:19]} UTC"
+        )
+        if configured:
+            st.caption(
+                "Esta página preserva o conjunto verificado; não representa a sessão corrente."
+            )
+        if navigation == "Visão geral":
+            overview(value)
+        elif navigation == "Fila de investigação":
+            queue(value)
+        elif navigation == "Investigar caso":
+            investigate(value)
+        else:
+            performance_view.show(value, os.environ["FRAUD_PORTAL_MANIFEST_SHA256"])
     st.divider()
     st.caption(
         "Apoio à investigação: interprete o score e suas contribuições com o contexto da transação e o feedback disponível."
