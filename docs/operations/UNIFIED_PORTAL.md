@@ -127,5 +127,21 @@ Nenhum dos gates cria decisões, treina ou altera o champion.
 
 Conferência visual: confira os totais da sessão, navegue por páginas e por
 “Visão geral”/“Desempenho do modelo”, confirme as origens apresentadas e teste a
-investigação com e sem explicação. O aceite nativo e visual deste recorte está
-pendente; os aceites anteriores permanecem registrados com seu escopo original.
+investigação com e sem explicação. O aceite funcional nativo deste recorte foi concluído pelo autor. O refinamento
+do cabeçalho aguarda sua conferência visual; os relatórios originais são preservados.
+
+## Aceite funcional e refinamento visual — 2026-10-24
+
+O autor conferiu o portal com suas fontes reais: o ambiente `portal-unified`
+passou (1 teste em 0,96 s; tox 12,69 s), com navegação entre sessão e evidências
+e hashes preservados. Os testes direcionados tiveram 103 aprovados e 12 pulados;
+o ambiente isolado de UI teve 44 aprovados. A captura enviada mostra a
+investigação com contexto, score e explicação verificada.
+
+O refinamento solicitado concentra-se na apresentação: cabeçalho maior e
+responsivo, título com altura automática e quebra por palavras, menor recuo
+superior e identificação visual da origem. Tema escuro, cores semânticas,
+fontes de dados e navegação permanecem na aplicação existente.
+[Registro do aceite funcional](../../references/evidence/unified_portal_author_validation_2026-10-24.json).
+A confirmação visual do novo cabeçalho será feita após aplicar este ajuste;
+o campo visual automatizado do ensaio anterior continua preservado.

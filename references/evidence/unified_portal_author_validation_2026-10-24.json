@@ -1,0 +1,55 @@
+{
+  "schema": "fraud_unified_portal_author_validation_v1",
+  "validated_on": "2026-10-24",
+  "implementation_reference": "fraud-unified-portal.zip sha256:021df89dd0439bf44a0c8886d3fd68f16c6bcf4dd31985a69a1b5e9042528f7f",
+  "status": "functional_native_accepted_visual_review_with_cosmetic_followup",
+  "native_test": {
+    "passed": 1,
+    "pytest_seconds": 0.96,
+    "tox_status": "portal-unified: OK",
+    "tox_total_seconds": 12.69,
+    "isolated_Streamlit_AppTest_navigation_validated": true,
+    "session_id": "arrival-2k-v1",
+    "session_sha256": "f82d8fb8c2e25f533c31d03f7dc430b4a15ef2761758840506a7136de94edf3e",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+    "session_totals": {
+      "decisions": 2001,
+      "customers": 1561,
+      "feedback": 2001,
+      "alerts": 81
+    },
+    "evidence_decisions": 200,
+    "validation_rows": 67255,
+    "portal_manifest_sha256": "ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af",
+    "performance_manifest_sha256": "6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475",
+    "source_files_unchanged": true,
+    "browser_visual_review_validated_in_original_receipt": false,
+    "live_arrivals_validated": false,
+    "model_loaded": false,
+    "champion_modified": false
+  },
+  "author_tests": {
+    "scope": "tests/fraud_portal tests/product_session tests/session_monitoring tests/product_flow",
+    "passed": 103,
+    "skipped": 12,
+    "warnings": 13,
+    "pytest_seconds": 21.4,
+    "tox_status": "py314: OK",
+    "tox_total_seconds": 24.79,
+    "isolated_UI_passed": 44,
+    "isolated_UI_pytest_seconds": 3.16,
+    "isolated_UI_tox_total_seconds": 3.94,
+    "ruff_passed": true,
+    "formatted_files": 482
+  },
+  "author_visual_review": {
+    "provided_screenshot": "screencapture-127-0-0-1-18501-2026-10-24-13_27_40.png",
+    "reviewed_page": "Investigar caso",
+    "assessment": "author confirms expected functionality; requests larger unclipped title, less top whitespace and visual polish",
+    "automated_flags_rewritten": false,
+    "new_polished_header_visually_accepted": false
+  },
+  "new_header_polish_native_acceptance": "pending author visual confirmation after applying presentation-only patch",
+  "different_weight_successor_promotion_and_rollback_validated": false
+}

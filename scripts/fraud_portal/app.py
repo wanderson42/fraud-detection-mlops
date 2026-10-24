@@ -233,7 +233,9 @@ def main():
         st.caption("Modo consulta · sem ingestão ou alteração de decisões.")
         st.caption("Operação → Grafana\n\nModelos → MLflow")
     st.markdown(
-        '<p class="portal-kicker">INTELIGÊNCIA PARA INVESTIGAÇÃO DE FRAUDE</p>',
+        theme.header(
+            "Sessão vinculada" if navigation == "Sessão atual" else "Evidências verificadas"
+        ),
         unsafe_allow_html=True,
     )
     if navigation == "Sessão atual":
