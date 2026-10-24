@@ -595,8 +595,8 @@ de validação e o mesmo modelo dos casos.
 
 [Operação do produto e próximo recorte](docs/operations/PRODUCT_OPERATIONS.md):
 responsabilidades, dados históricos como fluxo reproduzível e consolidação da
-sessão operacional. O portal atual consulta snapshots; atualização contínua da
-fila e das métricas da mesma sessão é o próximo aceite, sem novo treinamento.
+sessão operacional. A fila atualizada foi aceita em sessões de 200 e 2.001 decisões;
+o monitoramento da mesma sessão está preparado para aceite próprio, sem novo treinamento.
 
 ### Serving operacional após a simplificação
 
@@ -608,4 +608,10 @@ parada/subida nem promoção de sucessor. [Evidência](references/evidence/synth
 
 A [sessão operacional](docs/operations/PRODUCT_SESSION.md) conecta chegada gradual à API e à fila de investigação atualizada automaticamente; aceite nativo concluído para a sessão de 200 decisões.
 
-Sessões com [janela e volume configuráveis](docs/operations/PRODUCT_SESSION_SCALE.md) reutilizam a API e o ledger causal, com fila paginada e medição separada de contexto, chegada e verificação. O ensaio de 200 decisões foi aceito; a ampliação aguarda aceite nativo.
+Sessões com [janela e volume configuráveis](docs/operations/PRODUCT_SESSION_SCALE.md) reutilizam a API e o ledger causal, com fila paginada e medição separada de contexto, chegada e verificação. Os ensaios de 200 e 2.001 decisões foram aceitos pelo autor.
+
+A ampliação operacional foi aceita com **2.001 decisões HTTP e 81 alertas**, com
+paginação, feedback e reconciliação causal. O [monitoramento da mesma sessão](docs/operations/SESSION_MONITORING.md)
+está preparado para ligar esses agregados ao Prometheus/Grafana existentes,
+identificando sessão, pesos e release e detectando interrupção da coleta.
+Seu aceite nativo é separado do ensaio de volume já aceito.

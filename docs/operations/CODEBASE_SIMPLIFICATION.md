@@ -326,3 +326,12 @@ como caminhos com função de recuperação/reprodução; a qualificação sint�
 permanece ativa. Não serão apagados só para reduzir a contagem de arquivos.
 A substituição de champion com pesos diferentes continua condicionada a candidato
 qualificado e aceite próprio; não é declarada concluída pela simplificação.
+
+## Instrumentação compartilhada da sessão
+
+A extensão de sessão reutiliza os Deployments/Services/PVCs da observabilidade.
+Um container stdlib adicional no pod exporter recebe somente agregados; nenhum
+novo banco, broker ou serviço de aplicação é introduzido. A leitura do checkpoint
+usa uma transação consistente; a inferência e a reconstrução causal existentes
+não são duplicadas. A separação entre imagens preserva o runtime histórico já
+aceito. A unificação das páginas de evidências e fila continua pendente.

@@ -1,0 +1,19 @@
+{
+  "schema": "fraud_session_monitoring_preparation_v1",
+  "prepared_on": "2026-10-23",
+  "base_author_commit": "88ff7c4",
+  "status": "prepared_native_acceptance_pending",
+  "source": "same bound product-session checkpoint, read-only consistent SQLite transaction",
+  "deployment": "optional stdlib receiver sidecar in existing fraud-observability exporter Deployment; existing Prometheus and Grafana",
+  "privacy": "only bounded aggregates and session/model/release identity; no case IDs, requests, features or labels",
+  "source_ttl_seconds": 30,
+  "native_completed_session_projection_pending": true,
+  "native_live_arrivals_validated": false,
+  "native_alert_firing_validated": false,
+  "visual_review_validated": false,
+  "portal_unification_pending": true,
+  "new_operational_baseline_required_after_installation": true,
+  "fit_executed": false,
+  "champion_modified": false,
+  "different_weight_successor_promotion_and_rollback_validated": false
+}

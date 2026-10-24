@@ -1562,3 +1562,15 @@ Veja [PRODUCT_SESSION.md](PRODUCT_SESSION.md) para comandos e aceite visual.
 ## Ampliação de sessões
 
 `tests/product_session/test_scaling.py` testa captura temporal, 262 decisões HTTP reais, paginação SQL, totais globais, feedback e reconstrução independente. `portal-ui` testa navegação de páginas sem reduzir os indicadores globais. O ambiente opt-in `product-session-scale` valida uma nova sessão de 2.000 decisões e preserva os bytes da sessão de 200 já aceita. [Procedimento](PRODUCT_SESSION_SCALE.md).
+
+## Monitoramento da sessão identificada
+
+`tests/session_monitoring` exercita HTTP real com autenticação, corpo limitado,
+expiração, retomada, identidade incorreta, regressão de watermark/contagens,
+coleta de checkpoints causais HTTP antes/depois de pausa e feedback, renderização
+Helm com/sem extensão e retomada após falha parcial de instalação.
+`tox -e session-monitoring` é opt-in e exige a sessão ampliada concluída e a
+extensão instalada. Confere a projeção no Prometheus e proxy do Grafana, expiração,
+retomada e preservação dos bytes aceitos. Não gera novas decisões nem comprova
+chegada concorrente no KinD, firing de alertas ou avaliação visual.
+[Comandos](SESSION_MONITORING.md).

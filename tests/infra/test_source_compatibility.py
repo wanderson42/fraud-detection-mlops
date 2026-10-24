@@ -86,7 +86,12 @@ def commit(root):
 @pytest.fixture
 def refactor(tmp_path):
     transitions = []
-    for name in (compat.TRANSITION, compat.REFACTOR_TRANSITION, compat.RETIREMENT_TRANSITION):
+    for name in (
+        compat.TRANSITION,
+        compat.REFACTOR_TRANSITION,
+        compat.RETIREMENT_TRANSITION,
+        compat.MONITORING_TRANSITION,
+    ):
         src = ROOT / name
         transitions.append(json.loads(src.read_bytes()))
         target = tmp_path / name

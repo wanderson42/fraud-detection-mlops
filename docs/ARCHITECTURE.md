@@ -684,3 +684,13 @@ ativo é `fraud-detector`; os gates HTTP compartilhados e a qualificação/consu
 sintéticos da CI foram preservados. A checagem cotidiana é `platform-check`, com
 o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
 parada/subida nem promoção de sucessor. [Evidência](../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).
+
+## Projeção operacional da sessão
+
+O observador lê somente agregados em uma transação do mesmo checkpoint que
+alimenta a fila. A projeção autenticada entra em um container stdlib no exporter
+da release existente, coletado pelo job `fraud-product-session`. Um vínculo
+explícito identifica sessão, recibo, pesos e release. O receiver é volátil e
+vence a fonte após 30 s; nenhuma transação, feature ou rótulo entra no Prometheus.
+Os jobs e painéis históricos mantêm sua origem.
+[Instalação e operação](operations/SESSION_MONITORING.md).

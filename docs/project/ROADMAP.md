@@ -846,4 +846,15 @@ sessão não está concluída. O gate de promoção permanece inalterado.
 
 ### Aceite de sessão e ampliação — 2026-10-23
 
-Sessão `arrival-v1` aceita: 200 decisões/recibos HTTP, 13 alertas, pausa/retomada, feedback e reconciliação; zero novas pontuações na reexecução. [Evidência](../../references/evidence/product_session_author_validation_2026-10-23.json). Preparação da ampliação com janela/volume explícitos, paginação SQL e medição de fases em [PRODUCT_SESSION_SCALE.md](../operations/PRODUCT_SESSION_SCALE.md); ensaio de 2.000 decisões pendente. Integração de monitoramento da mesma sessão e unificação do portal permanecem recortes seguintes.
+Sessão `arrival-v1` aceita: 200 decisões/recibos HTTP, 13 alertas, pausa/retomada, feedback e reconciliação; zero novas pontuações na reexecução. [Evidência](../../references/evidence/product_session_author_validation_2026-10-23.json). Preparação da ampliação com janela/volume explícitos, paginação SQL e medição de fases em [PRODUCT_SESSION_SCALE.md](../operations/PRODUCT_SESSION_SCALE.md); ensaio ampliado aceito pelo autor com 2.001 decisões, 81 alertas, 1.561 clientes e zero novas chamadas na reutilização. [Evidência](../../references/evidence/product_session_scale_author_validation_2026-10-23.json). Monitoramento da mesma sessão preparado em [SESSION_MONITORING.md](../operations/SESSION_MONITORING.md), com aceite nativo pendente; unificação do portal permanece no recorte seguinte.
+
+### Monitoramento da sessão — preparação em 2026-10-23
+
+A mesma sessão da fila alimenta uma projeção de agregados no exporter existente,
+com jobs Prometheus distintos, dashboard próprio e expiração explícita da fonte.
+O aceite nativo verificará o vínculo com `arrival-2k-v1`, a expiração e a retomada,
+sem novo scoring ou alteração do champion. A chegada concorrente está coberta
+por testes de checkpoint/HTTP; não é declarada aceita no KinD por esse ensaio de
+uma sessão já concluída. Após a instalação, emitir novo baseline de configuração.
+Promoção recorrente com pesos diferentes e rollback continuam condicionados a
+candidato qualificado; o gate não foi afrouxado.

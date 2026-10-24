@@ -353,12 +353,26 @@ def owned(item):
     return item
 
 
+def session_telemetry():
+    # Optional projection does not change any accepted historical exporter image bytes.
+    path = work() / "session-monitoring/enabled.json"
+    if not path.exists():
+        return None
+    from scripts.session_monitoring.controller import settings
+
+    return settings()
+
+
 def values(ready):
-    return {
+    result = {
         "ownerId": credentials()["owner_id"],
         "stateReady": ready,
         "images": {role: row["image"] for role, row in image_record()["images"].items()},
     }
+    telemetry = session_telemetry()
+    if telemetry:
+        result["sessionTelemetry"] = telemetry
+    return result
 
 
 def install(ready):
@@ -658,8 +672,26 @@ def inventory():
             "ReplicaSet ownership differs",
         )
         statuses = pod.get("status", {}).get("containerStatuses", [])
+        telemetry = session_telemetry() if role == "exporter" else None
+        if telemetry:
+            from scripts.session_monitoring.controller import image_record as session_image
+
+            image = session_image()
+            sidecars = [s for s in statuses if s.get("name") == "session-exporter"]
+            containers = [
+                c for c in pod["spec"]["containers"] if c.get("name") == "session-exporter"
+            ]
+            f.require(
+                len(sidecars) == len(containers) == 1
+                and containers[0]["image"] == telemetry["image"]
+                and sidecars[0].get("ready") is True
+                and bool(sidecars[0].get("state", {}).get("running"))
+                and tracking.image_digest(sidecars[0]["imageID"])
+                in {tracking.image_digest(v) for v in image["loaded_identities"]},
+                "Session telemetry image/readiness differs",
+            )
         f.require(
-            len(statuses) == 1
+            len(statuses) == (2 if telemetry else 1)
             and statuses[0].get("ready") is True
             and bool(statuses[0].get("state", {}).get("running"))
             and pod.get("status", {}).get("phase") == "Running"
@@ -706,10 +738,16 @@ def inventory():
 
 
 @contextmanager
-def forward(role, port=None):
+def forward(role, port=None, *, target_port=None):
     f.require(role in ROLES, "Unknown forwarding role")
     pod = inventory()["pods"][role]["pod"]
     target = PORTS[role]
+    if target_port is not None:
+        f.require(
+            role == "exporter" and target_port == 19102 and session_telemetry(),
+            "Unknown optional forwarding target",
+        )
+        target = target_port
     local = "" if port is None else str(port)
     args = kube_args(
         "port-forward", "--address", "127.0.0.1", "pod/" + pod, local + ":" + str(target)
@@ -848,15 +886,25 @@ def verify_http():
                     raise
                 time.sleep(2)
         targets = http(prometheus, "/api/v1/targets")["data"]["activeTargets"]
+        telemetry = session_telemetry()
+        expected_targets = {"fraud-replay": "http://" + RELEASE + "-exporter:19100/metrics"}
+        if telemetry:
+            expected_targets["fraud-product-session"] = (
+                "http://" + RELEASE + "-exporter:19102/metrics"
+            )
         f.require(
-            len(targets) == 1
-            and targets[0]["health"] == "up"
-            and targets[0]["scrapeUrl"] == "http://" + RELEASE + "-exporter:19100/metrics",
+            len(targets) == len(expected_targets)
+            and {t["labels"]["job"]: t["scrapeUrl"] for t in targets} == expected_targets
+            and all(t["health"] == "up" for t in targets),
             "Target binding differs",
         )
         import yaml
 
         intended = yaml.safe_load((CHART / "files/alerts.yml").read_text())["groups"][0]["rules"]
+        if telemetry:
+            intended += yaml.safe_load((CHART / "files/session/alerts.yml").read_text())["groups"][
+                0
+            ]["rules"]
         rule_deadline = time.monotonic() + 60
         while True:
             rule_groups = http(prometheus, "/api/v1/rules")["data"]["groups"]

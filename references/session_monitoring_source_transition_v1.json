@@ -1,0 +1,14 @@
+{
+  "schema": "fraud_session_monitoring_source_transition_v1",
+  "scope": "exact host-only observability extension; historical runtime, model, data and session receipts unchanged",
+  "changes": {
+    "scripts/platform/kind_observability.py": {
+      "before": "01c3baeab16ae7155eca86c4cf651ff8479e003aa34e576af43c6948c1000c79",
+      "after": "0468591896df5326972486cb3ba31f546a3061410e9cea4d1e77636e99733d12"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "2c8d2db8377ef5ec63b6b3c7b8666ef0e29889ab26f52f8f38aa3ac1b15146f1",
+      "after": "9c9ccaaf2025435a9067ca8a31c41eae81142167511466972884b5b47c7f9aae"
+    }
+  }
+}

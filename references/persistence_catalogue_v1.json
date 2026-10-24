@@ -5,6 +5,15 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/storage/kind-platform/observability/session-monitoring",
+      "family": "private_aggregate_projection_binding_token_image_activation_and_native_receipts",
+      "owner": "platform",
+      "producers": [
+        "scripts/session_monitoring/controller.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/storage/kind-platform/local-access",
       "family": "private_nohup_local_access_logs_process_identity_and_locks",
       "owner": "platform",

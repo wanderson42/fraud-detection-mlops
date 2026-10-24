@@ -11,6 +11,7 @@ include infra/make/round.mk
 include infra/make/updates.mk
 include infra/make/product.mk
 include infra/make/session.mk
+include infra/make/session-monitoring.mk
 include infra/make/serving-recovery.mk
 include infra/make/case-explanations.mk
 include infra/make/portal.mk
@@ -29,6 +30,7 @@ help:
 	  'Desenvolver: validate | portal-ui-test' \
 	  'Background:  access-up | access-status | access-logs | access-stop-all' \
 	  'Sessão:      session-prepare | session-run | session-pause | session-status | session-open' \
+	  'Monitorar:   session-monitor-watch | session-monitor-rehearse' \
 	  'Catálogo:    make help-all' \
 	  'Guia:       docs/operations/PRODUCT_OPERATIONS.md'
 

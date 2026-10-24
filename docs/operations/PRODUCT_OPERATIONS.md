@@ -145,7 +145,7 @@ Terraform permanece posterior à consolidação funcional.
 O marco KinD/Helm e o aceite do portal foram integrados à main. A consolidação
 ocorre em `feat/fraud-operations-demo`, começando pela revisão dos comandos e
 pela retirada de uma transição de uso único já aplicada. A chegada gradual e a fila corrente foram validadas em uma sessão de 200 decisões.
-A ampliação de volume e a ligação das métricas à mesma sessão são os próximos recortes.
+A ampliação foi aceita com 2.001 decisões. A ligação das métricas à mesma sessão está preparada para aceite nativo.
 
 ## Sessão de chegada gradual
 
@@ -157,4 +157,18 @@ pendente; os dashboards existentes preservam a fonte do replay concluído.
 
 ## Sessões ampliadas
 
-O ensaio de 200 decisões foi aceito pelo autor em 2026-10-23. [Sessões ampliadas](PRODUCT_SESSION_SCALE.md) permitem nova janela/volume, fila paginada e medição por fase, preservando o checkpoint anterior. A ampliação ainda requer aceite nativo; fila e métricas Prometheus/Grafana da mesma sessão continuam no próximo recorte.
+O ensaio de 200 decisões foi aceito pelo autor em 2026-10-23. [Sessões ampliadas](PRODUCT_SESSION_SCALE.md) permitem nova janela/volume, fila paginada e medição por fase, preservando o checkpoint anterior. A ampliação foi aceita com 2.001 decisões. [Monitoramento da mesma sessão](SESSION_MONITORING.md) possui procedimento de instalação, coleta e recuperação; seu aceite nativo ainda está pendente.
+
+## Fila e observabilidade com a mesma identidade
+
+O produtor continua responsável pela chegada; o analista recebe os casos sem
+solicitar transações. O operador usa `session-monitor-watch` para observar o
+checkpoint e publicar apenas agregados. Prometheus coleta o job
+`fraud-product-session`; Grafana apresenta `fraud-product-session`. A sessão,
+o recibo, os pesos e a release identificam o vínculo. Os painéis anteriores
+continuam apontando ao replay concluído, com outra origem explícita.
+
+O observador não inicia dados, treina, pontua ou altera a fila. A fonte perde
+validade após 30 s sem publicação. Uma sessão concluída pode ser observada
+novamente; isso atualiza a leitura, não cria novos eventos.
+[Procedimento principal desta integração](SESSION_MONITORING.md).

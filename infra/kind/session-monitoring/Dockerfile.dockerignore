@@ -1,0 +1,6 @@
+**
+!scripts/
+!scripts/session_monitoring/
+!scripts/session_monitoring/__init__.py
+!scripts/session_monitoring/contract.py
+!scripts/session_monitoring/server.py

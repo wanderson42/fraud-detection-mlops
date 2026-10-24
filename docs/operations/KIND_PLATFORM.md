@@ -127,3 +127,11 @@ a avaliação temporal estão aceitos em 2026-10-22. Eles consultam evidências
 identificadas, sem declarar uma sessão contínua já concluída. A consolidação
 revisará também atalhos de serving inicial versus champion ativo.
 [Guia de responsabilidades, dados e próximos critérios](PRODUCT_OPERATIONS.md).
+
+## Observabilidade da sessão corrente
+
+[SESSION_MONITORING.md](SESSION_MONITORING.md) liga a fila corrente ao
+Prometheus/Grafana existentes. Sua habilitação conserva imagens/PVCs históricos
+e requer novo baseline de configuração; preserve o baseline anterior como
+evidência da topologia anterior. O observador é separado do produtor e não
+controla tráfego, treino ou Registry.

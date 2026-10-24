@@ -231,3 +231,16 @@ e dashboards aprovados depois do reinício no mesmo ciclo canônico. Baseline an
 de código/spec fica preservado; o próximo ensaio cria outro. Não edite o JSON.
 
 [Evidência do ciclo canônico e proxy após reinício](../../references/evidence/canonical_lifecycle_author_validation_2026-10-23.json).
+
+## Extensão para a fila corrente
+
+A configuração padrão preserva o replay concluído. A extensão opcional
+`sessionTelemetry` adiciona um receiver stdlib ao pod exporter existente, um job
+`fraud-product-session`, duas regras e o dashboard `fraud-product-session`.
+Não altera as imagens históricas, dados de origem ou PVCs. Sua preparação e
+aceite próprios estão em [SESSION_MONITORING.md](SESSION_MONITORING.md).
+`kind_observability up` conserva a extensão habilitada pelo recibo privado,
+sem reverter silenciosamente seus valores Helm. `verify_http` valida ambos os
+targets e as dez regras quando habilitada; os quatro painéis anteriores
+continuam verificando a origem histórica. Um baseline anterior à extensão
+representa a configuração anterior e deve ser preservado.

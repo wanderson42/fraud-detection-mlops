@@ -349,6 +349,7 @@ def test_http_gate_checks_source_gauges_rules_dashboard_panels_and_proxy(
                     "activeTargets": [
                         {
                             "health": "up",
+                            "labels": {"job": "fraud-replay"},
                             "scrapeUrl": "http://fraud-observability-exporter:19100/metrics",
                         }
                     ]

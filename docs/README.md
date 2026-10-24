@@ -337,3 +337,5 @@ parada/subida nem promoção de sucessor. [Evidência](../references/evidence/sy
 - [Sessão operacional de investigação](operations/PRODUCT_SESSION.md): chegada gradual, pausa/retomada e fila corrente.
 
 - [Sessões ampliadas](operations/PRODUCT_SESSION_SCALE.md): janela/volume, fila paginada e relatórios de tempo/memória.
+
+- [Monitoramento da mesma sessão](operations/SESSION_MONITORING.md): vínculo com a fila, frescor da coleta e recuperação no Prometheus/Grafana.

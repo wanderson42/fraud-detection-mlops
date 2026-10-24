@@ -120,7 +120,14 @@ mesmas datas de um dia completo e `SESSION_TARGET_DECISIONS=50000`: o total efet
 será a disponibilidade desse dia. Primeiro confira tempo, memória, latências,
 integridade e usabilidade; depois escolha janelas maiores dentro do protocolo.
 
-O aceite de 200 decisões está fechado; **o ensaio ampliado e sua revisão visual
-continuam pendentes**. A unificação do portal permanece planejada. Prometheus/Grafana
-continuam na fonte anterior até o próximo recorte de instrumentação da mesma
-sessão. O teste não valida CT nem promoção/rollback de sucessor com pesos diferentes.
+O ensaio `arrival-2k-v1` foi aceito pelo autor: **2.001 decisões HTTP**, 81 alertas,
+1.561 clientes e feedback das 2.001 decisões. O alvo nominal de 2.000 preservou
+pares no mesmo timestamp. p50 21,51 ms, p95 110,47 ms, máximo 632,64 ms no cliente.
+O warmup inicial de 369,42 s é reconstrução de contexto; não é latência de inferência.
+A reexecução completa fez zero novas chamadas HTTP e a sessão de 200 permaneceu
+inalterada. [Evidência](../../references/evidence/product_session_scale_author_validation_2026-10-23.json).
+
+O novo [monitoramento da mesma sessão](SESSION_MONITORING.md) está preparado para
+aceite nativo separado. Os quatro dashboards históricos preservam sua fonte.
+A unificação do portal permanece planejada. O teste não valida CT nem
+promoção/rollback de sucessor com pesos diferentes.
