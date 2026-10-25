@@ -1,0 +1,126 @@
+{
+  "schema": "fraud_api_runtime_trim_author_validation_v1",
+  "date": "2026-10-25",
+  "status": "docker_size_and_control_HTTP_qualified_kind_deployment_pending",
+  "scope": "same_release_weights_control_HTTP_restart_integrity_checks_in_temporary_Docker_containers",
+  "footprint_sources": [
+    {
+      "kind": "author_uploaded_report",
+      "file_name": "report(8).json",
+      "sha256": "0a216977b9d975afca8638c7787d5b588ac5a740e1d527184707cef329b15e9a"
+    },
+    {
+      "kind": "author_uploaded_report",
+      "file_name": "report(7).json",
+      "sha256": "ed0e57b9dbac557197789863bd4c57c9c26618673280316914d79dac8aea76fe"
+    }
+  ],
+  "measurement": {
+    "metric": "Docker_image_inspect_Size_same_engine_and_platform_not_total_daemon_disk",
+    "baseline_image_id": "sha256:d9e3ff91b7fb85aba90b2d7c6a8effe9f419f3cca6d666742db2baae08738534",
+    "candidate_image_id": "sha256:1215b5ec0bc53a9163e5154b783a7cf03822a8a44b9bae70b11a20d612b03e5e",
+    "before_bytes": 175012393,
+    "after_bytes": 170839706,
+    "reduction_bytes": 4172687,
+    "reduction_percent": 2.3842237275162566,
+    "site_packages_logical_before_bytes": 426845426,
+    "site_packages_logical_after_bytes": 414901631,
+    "site_packages_logical_reduction_bytes": 11943795,
+    "site_packages_logical_reduction_percent": 2.7981546181544417,
+    "same_python": "3.14.4",
+    "same_platform": "linux/amd64",
+    "same_inference_distribution_versions": true,
+    "removed_distributions": [
+      "pip"
+    ],
+    "candidate_venv_bytecode_detected_bytes": 0,
+    "third_party_test_paths_bytes_unchanged": 46016249,
+    "shared_base_diff_ids": [
+      "sha256:79dd1f4c855cd061f687a994426634cf5f84c8ecdbc66c7a7d118e828dd93c99",
+      "sha256:0b7e91e0cb082f08532f5d9753a6bbb405a38ac612f170aee82e220176787cb9",
+      "sha256:2ff49d237ca72786f6fdff356f6ba405c6b7b2a7c4412457f0b0aa8cf70b665c",
+      "sha256:0fdd03cabe483dddf2f479d83936e08ec12263bc12a081908af9d222e73eea02"
+    ],
+    "filesystem_byte_identity_proven_by_package_inventory": false
+  },
+  "native_HTTP_sources": {
+    "kind": "author_pasted_terminal_receipts",
+    "original_receipt_file_hashes_provided": false,
+    "baseline": {
+      "report": "data/serving/image-footprint/baseline-http-v1.json",
+      "recorded_at_utc": "2026-10-25T10:50:44Z",
+      "status": "success",
+      "image_id": "sha256:d9e3ff91b7fb85aba90b2d7c6a8effe9f419f3cca6d666742db2baae08738534"
+    },
+    "candidate": {
+      "report": "data/serving/image-footprint/candidate-http-v1.json",
+      "recorded_at_utc": "2026-10-25T10:51:14Z",
+      "status": "success",
+      "image_id": "sha256:1215b5ec0bc53a9163e5154b783a7cf03822a8a44b9bae70b11a20d612b03e5e"
+    },
+    "check_script_sha256": "c87f54273c351dc9470d1178b66138e250e4345c9de3e5d92c86f81cb64b2f49"
+  },
+  "release": {
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "manifest_sha256": "fdef602970fbb5d4a4abeb510a074c8f943547d5f3d6c54f21f5a8600ca31400",
+    "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+    "feature_contract_version": "gold_v1",
+    "model_id": "hist_gradient_boosting",
+    "control_transaction_id": 335910,
+    "control_score_before": 0.4178630794049542,
+    "control_score_after": 0.4178630794049542,
+    "parity_tolerance": 1e-12,
+    "score_semantics": "uncalibrated_ranking",
+    "release_files_unchanged": true
+  },
+  "both_image_qualifications": {
+    "startup_and_readiness": true,
+    "health_and_info_contract": true,
+    "control_score_parity": true,
+    "invalid_input_HTTP_status": 422,
+    "restart_recovery": "passed",
+    "wrong_manifest_startup_rejected": true,
+    "corrupt_model_startup_rejected": true,
+    "missing_model_startup_rejected": true,
+    "readonly_write_probes": "passed",
+    "runtime_uid": 10001,
+    "runtime_gid": 10001,
+    "runtime_excluded_packages": [
+      "mlflow",
+      "shap",
+      "duckdb",
+      "matplotlib",
+      "optuna",
+      "typer"
+    ],
+    "runtime_environment": {
+      "numpy": "2.5.3",
+      "pandas": "3.0.6",
+      "pyarrow": "25.0.1",
+      "python": "3.14.4",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "skops": "0.16.0"
+    }
+  },
+  "performance_observations": {
+    "requests_per_image": 100,
+    "warmup_requests_per_image": 10,
+    "scope": "sequential_single_client_repeated_control_request_including_http",
+    "baseline_p95_ms": 9.969892998924479,
+    "candidate_p95_ms": 12.45934798498638,
+    "baseline_memory_snapshot": "182.7MiB / 2GiB",
+    "candidate_memory_snapshot": "177.9MiB / 2GiB",
+    "peak_memory_measured": false,
+    "statistical_speed_or_memory_improvement_validated": false,
+    "SLA_or_load_capacity_validated": false
+  },
+  "kind_deployment_validated": false,
+  "operational_baseline_modified": false,
+  "champion_modified": false,
+  "fit_executed": false,
+  "global_model_quality_recomputed": false,
+  "production_promotion": false,
+  "successor_promotion_and_rollback_with_different_weights_validated": false,
+  "remaining_acceptance": "controlled canonical runtime replacement in KinD; same release; live readbacks and observability; update operational baseline after acceptance"
+}

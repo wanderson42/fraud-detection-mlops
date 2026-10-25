@@ -1,6 +1,58 @@
 # Footprint das imagens da infraestrutura
 
-## Estado da revisão em 2026-10-24
+## Aceite atual: redução e qualificação em Docker, 2026-10-25
+
+A primeira redução da imagem da API está **medida e qualificada em Docker** com
+os mesmos pesos e manifesto do champion. A candidata ainda não foi implantada
+no KinD. A otimização do conjunto inteiro de imagens permanece em andamento.
+
+| Medida | Baseline | Candidata | Redução |
+| --- | --- | --- | --- |
+| `docker image inspect Size` | 175.012.393 bytes | 170.839.706 bytes | 4.172.687 bytes, 2,38% |
+| Arquivos lógicos em `site-packages` | 426.845.426 bytes | 414.901.631 bytes | 11.943.795 bytes, 2,80% |
+
+As imagens comparadas são `fraud-api-footprint:baseline-v1` e
+`fraud-api-footprint:candidate-v1`. Seus IDs completos, fontes e gates estão na
+[evidência nativa](../../references/evidence/api_runtime_trim_author_validation_2026-10-25.json).
+A comparação entre esses dois builds é a referência; não se calcula a economia
+usando a imagem histórica anterior ou o tamanho total de `docker system df`.
+O valor de `image inspect Size` não representa o espaço exclusivo liberável do
+daemon. Nenhuma imagem, volume ou cache foi removido.
+
+Somente pip desapareceu da lista de distribuições; as versões restantes foram
+preservadas. Não foi detectado bytecode na venv candidata. O inventário atribui
+uma diferença de bytes ao pacote do próprio projeto, compatível com a limpeza
+de bytecode; contagem de bytes e versões não comprova identidade de todo fonte.
+A qualificação funcional abaixo é uma verificação separada. Os caminhos de testes
+de terceiros continuam com os mesmos 46.016.249 bytes. PyArrow e todas as
+bibliotecas de inferência permanecem presentes.
+
+Os dois ensaios HTTP reportaram sucesso, com o mesmo modelo
+`6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b`,
+release `e8350e0a841f4136983e0d905068a743` e manifesto
+`fdef602970fbb5d4a4abeb510a074c8f943547d5f3d6c54f21f5a8600ca31400`.
+O score da transação de controle 335910 foi idêntico: `0.4178630794049542`, com
+tolerância de 1e-12. Também passaram startup/readiness, contrato health/info,
+entrada inválida com HTTP 422, reinício, usuário 10001 e escrita bloqueada na
+raiz. Manifesto incorreto e modelo corrompido ou ausente impediram a inicialização.
+Os arquivos originais da release foram preservados.
+
+O p95 observado foi 9,97 ms no baseline e 12,46 ms na candidata. Foram apenas
+100 requisições sequenciais de controle por imagem após 10 de aquecimento.
+Esse resultado não comprova melhoria ou regressão estatística, SLA ou capacidade
+sob carga. As leituras de memória de 182,7 e 177,9 MiB são snapshots, não picos,
+e não demonstram economia estável de RAM. Não houve nova avaliação global de
+qualidade, treinamento, alteração do champion ou promoção de sucessor.
+
+**Próximo aceite:** substituir o runtime canônico de forma controlada no KinD,
+conservar a release e os pesos, validar a API e a observabilidade e atualizar o
+baseline operacional após a implantação aceita. Essa mudança de runtime é
+independente da promoção recorrente de um modelo com pesos diferentes, cujo
+aceite continua condicionado a um candidato qualificado.
+
+As seções seguintes conservam a revisão e o roteiro usados na preparação.
+
+## Revisão de fontes em 2026-10-24 (histórico da preparação)
 
 **Há otimizações implementadas, mas a otimização global de tamanho ainda não
 foi medida e aceita.** Esta revisão leu Dockerfiles, allowlists de contexto,
@@ -263,12 +315,8 @@ site-packages com bytes de site-packages e `image.Size` com `image.Size`; não u
 `system df -v` como se fosse o mesmo indicador. Uma economia em disco do daemon
 não é obtida pela simples soma dos tamanhos de tags.
 
-**Aceite ainda pendente:** builds nativos, antes/depois e qualificação da imagem
-candidata com a release imutável do champion, incluindo startup, readiness,
-paridade do score, entrada inválida e rejeição de pesos/manifesto corrompidos.
-Reutilize `scripts.serving.check_docker_runtime` com diretório e SHA da release
-verificados, sem reexportar ou treinar o modelo. Os comandos de build e medição
-acima não fazem essa qualificação nem implantam a imagem. Nenhum carregamento
-no KinD, troca de tráfego, mudança de alias ou novo baseline operacional ocorre
-neste recorte de preparação. Uma implantação posterior exige um resultado
-qualificado e atualização operacional correspondente.
+**Estado após o ensaio do autor:** builds e comparação antes/depois concluídos,
+com qualificação HTTP em Docker dos mesmos pesos. Os detalhes aceitos estão no
+início deste documento. O roteiro acima continua disponível para reprodução,
+usando novas tags e diretórios para preservar recibos anteriores. A implantação
+no KinD e seu baseline operacional correspondente permanecem como próximo aceite.
