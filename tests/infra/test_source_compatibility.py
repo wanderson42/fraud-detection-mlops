@@ -92,6 +92,7 @@ def refactor(tmp_path):
         compat.RETIREMENT_TRANSITION,
         compat.MONITORING_TRANSITION,
         compat.RUNTIME_TRANSITION,
+        compat.PROBE_FORWARD_TRANSITION,
     ):
         src = ROOT / name
         transitions.append(json.loads(src.read_bytes()))

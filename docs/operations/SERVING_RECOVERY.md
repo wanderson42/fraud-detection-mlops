@@ -288,3 +288,36 @@ A transição `references/runtime_maintenance_source_transition_v1.json` declara
 os hashes exatos da limpeza de build e da manutenção operacional. A aceitação é
 em memória e exige o arquivo commitado; não altera políticas de qualidade,
 fitter, contratos Gold/Silver, pesos, recibos científicos ou modelos registrados.
+
+
+### Retomada do prepare após a correção do encaminhamento isolado
+
+A correção de 2026-10-25 mantém o helper de encaminhamento canônico intacto.
+O pod `fraud-runtime-check-*` usa um encaminhamento próprio, limitado ao
+namespace/contexto da plataforma e ao loopback; nome, UID e spec são conferidos
+antes do processo, antes de entregar a URL e depois do gate HTTP. Labels de
+seleção do Service canônico não são aceitas. O processo de encaminhamento é
+encerrado também quando o HTTP falha.
+
+Depois de aplicar, testar e commitar a correção, retome **o mesmo ID**:
+
+```bash
+make serving-runtime-prepare \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json \
+  SERVING_RUNTIME_ID=api-trim-v1 \
+  SERVING_NO_OTHER_WRITERS=1
+```
+
+`runtime-preparing.json`, o baseline e a qualificação Docker não são reescritos.
+O leitor aceita apenas os hashes declarados e commitados da correção de runtime
+e de seu leitor de compatibilidade. Código científico, pesos, node e estado
+ativo continuam fixados. O preparo concluído registra o perfil de fontes atual.
+
+Se o pod de prova já tiver expirado com `DeadlineExceeded`, ou tiver sido
+removido após seu UID ser registrado, a retomada arquiva a tentativa em
+`runtime-probe-attempts/`, registra a renovação e cria outra prova com a mesma
+spec/imagens. Os ponteiros de **rascunho** do probe são atualizados de forma
+retomável; o pod expirado é conservado para diagnóstico. Um UID/spec estranho,
+um pod ainda ativo ou uma prova já concluída não autoriza renovação. Outras
+falhas são preservadas para investigação. Não apague a pasta de manutenção e
+não edite os hashes para passar pelo gate. A API canônica permanece intacta.

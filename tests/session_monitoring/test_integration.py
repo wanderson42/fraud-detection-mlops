@@ -99,6 +99,11 @@ def test_exact_transition_preserves_receipts_but_rejects_science_change():
         if name in runtime["changes"]:
             assert runtime["changes"][name]["before"] == digest
             expected[name] = runtime["changes"][name]["after"]
+    probe_fix = json.loads((ROOT / compatibility.PROBE_FORWARD_TRANSITION).read_bytes())
+    for name, digest in expected.items():
+        if name in probe_fix["changes"]:
+            assert probe_fix["changes"][name]["before"] == digest
+            expected[name] = probe_fix["changes"][name]["after"]
     assert all(digest == k.state.sha(ROOT / name) for name, digest in expected.items())
 
 

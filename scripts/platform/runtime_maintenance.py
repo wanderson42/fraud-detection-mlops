@@ -1,10 +1,15 @@
 """Maintain a qualified API runtime in the SAME slot without changing model or Registry."""
 
 import argparse
+from contextlib import contextmanager
 import copy
 import json
+import os
 from pathlib import Path
+import re
 import subprocess
+import tempfile
+import time
 from uuid import uuid4
 
 from scripts.platform import kind_operations as operations
@@ -164,6 +169,149 @@ def pod_get(name):
     return json.loads(value) if value else None
 
 
+@contextmanager
+def probe_forward(desired, uid):
+    """Forward ONLY the reviewed isolated pod; canonical forwarding stays unchanged."""
+    name = desired["metadata"]["name"]
+    p.require(
+        re.fullmatch(r"fraud-runtime-check-[a-f0-9]{12}", name) is not None
+        and desired["metadata"].get("namespace") == f.NAMESPACE
+        and desired["metadata"].get("labels") == {"fraud.runtime-maintenance": name},
+        "Only the exact isolated runtime probe may be forwarded",
+    )
+
+    def bound():
+        live = pod_get(name)
+        p.require(
+            live is not None
+            and live["metadata"]["uid"] == uid
+            and recovery.includes(desired, live)
+            and "app.kubernetes.io/instance" not in live["metadata"].get("labels", {})
+            and live.get("status", {}).get("phase") == "Running",
+            "Isolated probe UID/spec/phase changed before HTTP verification",
+        )
+
+    bound()
+    args = [
+        "kubectl",
+        "--kubeconfig",
+        str(f.workspace() / "kubeconfig"),
+        "--context",
+        f.CONTEXT,
+        "--namespace",
+        f.NAMESPACE,
+        "port-forward",
+        "--address",
+        "127.0.0.1",
+        "pod/" + name,
+        ":8000",
+    ]
+    with tempfile.TemporaryFile() as output:
+        process = subprocess.Popen(args, cwd=f.ROOT, stdout=output, stderr=subprocess.STDOUT)
+        try:
+            deadline = time.monotonic() + 30
+            while True:
+                p.require(process.poll() is None, "Isolated probe port-forward exited")
+                match = re.search(
+                    rb"Forwarding from 127\.0\.0\.1:([0-9]+) -> 8000",
+                    os.pread(output.fileno(), 65536, 0),
+                )
+                if match:
+                    port = int(match[1])
+                    p.require(0 < port < 65536, "Invalid isolated probe local port")
+                    break
+                p.require(time.monotonic() < deadline, "Isolated probe port-forward timed out")
+                time.sleep(0.1)
+            bound()
+            yield "http://127.0.0.1:" + str(port)
+            p.require(
+                process.poll() is None, "Isolated probe forward exited during HTTP verification"
+            )
+            bound()
+        finally:
+            if process.poll() is None:
+                process.terminate()
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+
+
+def renew_probe(folder, desired, live):
+    """Archive an unaccepted expired/missing probe and resume its draft pointers."""
+    journal_path = folder / "runtime-probe-renewal.json"
+    uid_path = folder / "runtime-probe-uid.json"
+    spec_path = folder / "runtime-probe-spec.json"
+    if not journal_path.exists():
+        if (folder / "runtime-probe.json").exists() or not uid_path.exists():
+            return False
+        uid = json.loads(uid_path.read_bytes())["uid"]
+        if live is not None:
+            p.require(
+                live["metadata"]["uid"] == uid and recovery.includes(desired, live),
+                "Refuse renewal of a foreign probe",
+            )
+            if not (
+                live.get("status", {}).get("phase") == "Failed"
+                and live.get("status", {}).get("reason") == "DeadlineExceeded"
+            ):
+                return False
+        updated = copy.deepcopy(desired)
+        name = "fraud-runtime-check-" + uuid4().hex[:12]
+        updated["metadata"]["name"] = name
+        updated["metadata"]["labels"] = {"fraud.runtime-maintenance": name}
+        f.private_json(
+            journal_path,
+            {
+                "previous_spec": desired,
+                "previous_uid": uid,
+                "next_spec": updated,
+                "reason": "probe_missing" if live is None else "DeadlineExceeded",
+            },
+        )
+    p.require(not (folder / "runtime-probe.json").exists(), "A completed proof cannot be renewed")
+    renewal = json.loads(journal_path.read_bytes())
+    previous, updated = renewal["previous_spec"], renewal["next_spec"]
+    next_name = updated["metadata"]["name"]
+    expected = copy.deepcopy(previous)
+    expected["metadata"]["name"] = next_name
+    expected["metadata"]["labels"] = {"fraud.runtime-maintenance": next_name}
+    p.require(
+        updated == expected
+        and next_name != previous["metadata"]["name"]
+        and re.fullmatch(r"fraud-runtime-check-[a-f0-9]{12}", next_name) is not None,
+        "Probe renewal cannot change its specification",
+    )
+    uid = renewal["previous_uid"]
+    p.require(desired in (previous, updated), "Probe renewal pointer changed")
+    # Never delete or adopt the retained pod. Bind a remaining object to its old UID/spec.
+    prior_live = pod_get(previous["metadata"]["name"])
+    p.require(
+        prior_live is None
+        or (
+            prior_live["metadata"]["uid"] == uid
+            and recovery.includes(previous, prior_live)
+            and prior_live.get("status", {}).get("phase") == "Failed"
+            and prior_live.get("status", {}).get("reason") == "DeadlineExceeded"
+        ),
+        "Previous probe is foreign or still active; refuse renewal",
+    )
+    if uid_path.exists():
+        p.require(json.loads(uid_path.read_bytes())["uid"] == uid, "Renewal UID pointer changed")
+    attempts = folder / "runtime-probe-attempts"
+    attempts.mkdir(mode=0o700, exist_ok=True)
+    record = attempts / (p.digest({"uid": uid}) + ".json")
+    if record.exists():
+        p.require(json.loads(record.read_bytes()) == renewal, "Archived probe attempt changed")
+    else:
+        f.private_json(record, renewal)
+    recovery.atomic_json(spec_path, updated)
+    uid_path.unlink(missing_ok=True)
+    journal_path.unlink()
+    return True
+
+
 def isolated_probe(folder, after, templates):
     spec_path = folder / "runtime-probe-spec.json"
     receipt_path = folder / "runtime-probe.json"
@@ -196,8 +344,19 @@ def isolated_probe(folder, after, templates):
         f.private_json(spec_path, desired)
     desired = json.loads(spec_path.read_bytes())
     name = desired["metadata"]["name"]
+    expected_spec = copy.deepcopy(templates[slot]["spec"]["template"]["spec"])
+    expected_spec["containers"][0]["image"] = image["image"]
+    expected_spec.update(restartPolicy="Never", activeDeadlineSeconds=240)
     p.require(
-        name.startswith("fraud-runtime-check-")
+        desired["spec"] == expected_spec
+        and desired["metadata"]
+        == {
+            "name": name,
+            "namespace": f.NAMESPACE,
+            "labels": {"fraud.runtime-maintenance": name},
+            "annotations": {"fraud.serving/owner-id": after["owner_id"]},
+        }
+        and re.fullmatch(r"fraud-runtime-check-[a-f0-9]{12}", name) is not None
         and desired["spec"]["containers"][0]["image"] == image["image"]
         and desired["spec"]["initContainers"][0]["image"]
         == after["plan"]["slot_images"][slot]["artifacts"]["image"]
@@ -206,6 +365,8 @@ def isolated_probe(folder, after, templates):
     )
     live = pod_get(name)
     uid_path = folder / "runtime-probe-uid.json"
+    if renew_probe(folder, desired, live):
+        return isolated_probe(folder, after, templates)
     if receipt_path.exists():
         receipt = json.loads(receipt_path.read_bytes())
         p.require(
@@ -242,7 +403,7 @@ def isolated_probe(folder, after, templates):
                 in {recovery.kind_tracking.image_digest(v) for v in expected["loaded_identities"]},
                 "Probe image identity differs",
             )
-        with deployment.old.forward(name) as url:
+        with probe_forward(desired, live["metadata"]["uid"]) as url:
             gate = deployment.gate(url, after["plan"], slot, recovery.config())
         receipt = {
             "status": "runtime_probe_verified",
@@ -308,10 +469,10 @@ def prepare(key, qualification, baseline, no_other_writers):
             },
         )
     draft = json.loads(draft_path.read_bytes())
+    source_compatibility.accept(draft["source_pins"], pins, f.ROOT)
     p.require(
         draft["before_active"] == before
         and draft["local_image_id"] == image_id
-        and draft["source_pins"] == pins
         and draft["node_uid"] == f.owner()["node_uid"]
         and draft["baseline_sha256"] == p.sha(baseline)
         and draft["qualification_sha256"] == p.sha(qualification),
@@ -337,6 +498,7 @@ def prepare(key, qualification, baseline, no_other_writers):
     deployment.check_active(copy.deepcopy(before), recovery.config())
     intent = {
         **draft,
+        "source_pins": pins,
         "schema": "fraud_runtime_maintenance_v1",
         "maintenance_id": key,
         "status": "runtime_prepared_awaiting_approval",

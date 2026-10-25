@@ -68,6 +68,13 @@ RUNTIME_ALLOWED = {
 }
 
 
+PROBE_FORWARD_TRANSITION = "references/runtime_probe_forward_source_transition_v1.json"
+PROBE_FORWARD_ALLOWED = {
+    "scripts/platform/runtime_maintenance.py",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -130,6 +137,11 @@ def accept(saved, current, root):
             RUNTIME_TRANSITION,
             "fraud_runtime_maintenance_source_transition_v1",
             RUNTIME_ALLOWED,
+        ),
+        (
+            PROBE_FORWARD_TRANSITION,
+            "fraud_runtime_probe_forward_source_transition_v1",
+            PROBE_FORWARD_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

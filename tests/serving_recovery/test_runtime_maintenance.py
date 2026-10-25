@@ -214,7 +214,8 @@ def test_native_probe_is_isolated_reuses_carrier_and_only_cleans_up_owned_pod(
         return SimpleNamespace(stdout="")
 
     @contextmanager
-    def forward(_):
+    def forward(desired, uid):
+        assert uid == "own-pod" and desired["spec"]["containers"][0]["image"] == "candidate"
         yield "http://isolated"
 
     def gate(*_):
@@ -225,7 +226,7 @@ def test_native_probe_is_isolated_reuses_carrier_and_only_cleans_up_owned_pod(
         return {"score": {"model_sha256": after["model_sha256"]}}
 
     monkeypatch.setattr(m.f, "kube", kube)
-    monkeypatch.setattr(m.deployment.old, "forward", forward)
+    monkeypatch.setattr(m, "probe_forward", forward)
     monkeypatch.setattr(m.deployment, "gate", gate)
     if tamper:
         with pytest.raises(ValueError):

@@ -1,0 +1,17 @@
+{
+  "schema": "fraud_runtime_probe_forward_source_transition_v1",
+  "basis_commit": "e49d570",
+  "purpose": "exact_isolated_probe_forward_and_same_id_draft_resume_only",
+  "canonical_forward_guard_changed": false,
+  "historical_receipts_rewritten": false,
+  "changes": {
+    "scripts/platform/runtime_maintenance.py": {
+      "before": "7d7272a01694128630bb89701ca6365b15ec2ebbebc0ecf4dc3581350c2ad1fa",
+      "after": "f85886058b661e8262e570d09bff2fedd486fede3cf3f620048a47589b6a6681"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "1c763823fa9fe6c4a85f83c705aebd8761158da1f68b54aa013d8c5f06a705fd",
+      "after": "f9154de7749a1cbc56861e3ee93c87d781df1856aa833748312887e4418dc13b"
+    }
+  }
+}
