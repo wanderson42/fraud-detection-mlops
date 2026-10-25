@@ -38,6 +38,7 @@ def intent(tmp_path, monkeypatch):
     monkeypatch.setattr(m, "read", lambda _: copy.deepcopy(state))
     monkeypatch.setattr(m.deployment, "files", lambda _: None)
     monkeypatch.setattr(m, "live_guard", lambda _: None)
+    monkeypatch.setattr(m, "validate_chart", lambda *_: {"status": "runtime_chart_validated"})
     monkeypatch.setattr(
         m.deployment,
         "check_active",
@@ -419,3 +420,17 @@ def test_prepare_binds_qualified_image_and_resumes_without_replacing_active_stat
     with pytest.raises(ValueError, match="qualification changed"):
         m.read("runtime-v1")
     assert (r.updates.workspace() / "current.json").read_bytes() == before_bytes
+
+
+def test_failed_chart_preflight_never_authorizes_or_changes_the_active_slot(intent, monkeypatch):
+    folder, state, calls = intent
+
+    def reject(*_):
+        raise ValueError("Runtime chart preflight failed")
+
+    monkeypatch.setattr(m, "validate_chart", reject)
+    with pytest.raises(ValueError, match="chart preflight"):
+        m.change("runtime-v1", state["approval_sha256"], True)
+    assert calls == []
+    assert r.current() == state["before_active"]
+    assert not (folder / "runtime-authorized.json").exists()

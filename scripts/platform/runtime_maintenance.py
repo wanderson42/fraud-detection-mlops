@@ -425,6 +425,58 @@ def isolated_probe(folder, after, templates):
     return receipt
 
 
+def runtime_tag():
+    """Use the canonical runtime namespace required by the unchanged chart schema."""
+    return "fraud-kind-serving-runtime:" + uuid4().hex
+
+
+def chart_values(plan, slot):
+    """Same values as deployment.apply(..., both=False); checked against its output."""
+    return {
+        "ownerId": plan["owner_id"],
+        "images": {k: v["image"] for k, v in plan["images"].items()},
+        "slotImages": {
+            s: {k: v["image"] for k, v in images.items()}
+            for s, images in plan["slot_images"].items()
+        },
+        "activeSlot": slot,
+        "greenEnabled": True,
+        "blueReplicas": 1 if slot == "blue" else 0,
+        "greenReplicas": 1 if slot == "green" else 0,
+        "manifests": {s: value["manifest_sha256"] for s, value in plan["releases"].items()},
+    }
+
+
+def validate_chart(folder, plan, slot, action):
+    p.require(action in {"prepare", "apply", "rollback"}, "Unknown chart validation phase")
+    values = chart_values(plan, slot)
+    path = folder / ("runtime-helm-" + action + "-" + p.digest(values)[:16] + ".json")
+    if path.exists():
+        p.require(json.loads(path.read_bytes()) == values, "Saved chart validation values changed")
+    else:
+        f.private_json(path, values)
+    # No install/upgrade and no connection to Kubernetes: validate schema and
+    # render the same chart, namespace, release name and values before mutation.
+    result = f.run(
+        [
+            "helm",
+            "template",
+            "fraud-detector",
+            deployment.CHART,
+            "--namespace",
+            f.NAMESPACE,
+            "--kube-version",
+            "1.35.8",
+            "--values",
+            path,
+        ],
+        timeout=60,
+        check=False,
+    )
+    p.require(result.returncode == 0, "Runtime chart preflight failed: " + result.stderr[-2500:])
+    return {"status": "runtime_chart_validated", "values_sha256": p.sha(path)}
+
+
 def prepare(key, qualification, baseline, no_other_writers):
     p.require(no_other_writers, "Declare no other serving/Registry writers")
     folder = recovery.work(key)
@@ -461,7 +513,7 @@ def prepare(key, qualification, baseline, no_other_writers):
                 "qualification_path": str(qualification),
                 "qualification_sha256": p.sha(qualification),
                 "local_image_id": image_id,
-                "tag": "fraud-runtime-maintenance:" + uuid4().hex,
+                "tag": runtime_tag(),
                 "templates": {
                     s: {"metadata": {"uid": v["metadata"]["uid"]}, "spec": v["spec"]}
                     for s, v in templates.items()
@@ -478,6 +530,10 @@ def prepare(key, qualification, baseline, no_other_writers):
         and draft["qualification_sha256"] == p.sha(qualification),
         "Partial runtime preparation changed",
     )
+    p.require(
+        re.fullmatch(r"fraud-kind-serving-runtime:[a-f0-9]{32}", draft["tag"]) is not None,
+        "Noncanonical runtime tag in retained draft; preserve it and prepare a new maintenance ID",
+    )
     recovery.original.image_command(["docker", "image", "tag", image_id, draft["tag"]], timeout=30)
     loaded = recovery.original.load_image(draft["tag"])
     image = {
@@ -493,6 +549,7 @@ def prepare(key, qualification, baseline, no_other_writers):
         after["plan"]["slot_images"][slot]["runtime"] = image
     runtime_only(before, after)
     deployment.files(after["plan"])
+    chart_validation = validate_chart(folder, after["plan"], after["slot"], "prepare")
     probe = isolated_probe(folder, after, draft["templates"])
     p.require(recovery.current() == before, "Active state changed during runtime preparation")
     deployment.check_active(copy.deepcopy(before), recovery.config())
@@ -504,6 +561,7 @@ def prepare(key, qualification, baseline, no_other_writers):
         "status": "runtime_prepared_awaiting_approval",
         "after_active": after,
         "native_probe": probe,
+        "chart_validation": chart_validation,
         "champion_modified": False,
         "model_weights_changed": False,
         "same_slot_rollout": True,
@@ -596,6 +654,7 @@ def change(key, approval, no_other_writers, *, rollback=False):
     deployment.files(before["plan"])
     deployment.files(after["plan"])
     live_guard(intent)
+    validate_chart(folder, target["plan"], target["slot"], "rollback" if rollback else "apply")
     journal = folder / ("rollback-authorized.json" if rollback else "runtime-authorized.json")
     authorization = {"approval_sha256": approval, "target_sha256": p.digest(target)}
     if not journal.exists():

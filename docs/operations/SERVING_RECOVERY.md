@@ -321,3 +321,41 @@ retomável; o pod expirado é conservado para diagnóstico. Um UID/spec estranho
 um pod ainda ativo ou uma prova já concluída não autoriza renovação. Outras
 falhas são preservadas para investigação. Não apague a pasta de manutenção e
 não edite os hashes para passar pelo gate. A API canônica permanece intacta.
+
+### Pré-validação do chart e nova tentativa após rollback
+
+A tentativa `api-trim-v1` foi revertida com sucesso em 2026-10-25. O gate HTTP
+confirmou o mesmo modelo, release e score de controle, e os readbacks funcionais
+passaram. A imagem candidata ainda não está aceita como runtime ativo.
+Os recibos desse ID devem ser preservados; as instruções de retomada acima
+referem-se ao preparo anterior à aplicação e não reabrem uma tentativa revertida.
+
+O gerador passa a usar `fraud-kind-serving-runtime:<32 hex>`, como exige o
+schema existente do chart. A tag anterior `fraud-runtime-maintenance:...` não
+era aceita pelo Helm. O schema não foi flexibilizado. O preparo executa
+`helm template` com os mesmos valores do rollout antes de emitir uma aprovação;
+a aplicação e o rollback também verificam o chart antes de alterar workloads.
+Uma falha de schema traz o diagnóstico na saída. A renderização valida o chart;
+a disponibilidade e o contrato HTTP continuam exigindo os gates nativos.
+
+Depois de aplicar, testar e commitar a correção, crie um baseline do estado
+restaurado e prepare outro ID:
+
+```bash
+make platform-baseline \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-runtime-rollback-v1.json \
+  PLATFORM_TRACKING_REPORT=data/storage/kind-platform/tracking/rehearsal-e835e0ee8ce34106a203594a23c4bb3a.json &&
+make platform-check \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-runtime-rollback-v1.json &&
+make serving-runtime-prepare \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-runtime-rollback-v1.json \
+  SERVING_RUNTIME_ID=api-trim-v2 \
+  SERVING_NO_OTHER_WRITERS=1
+```
+
+Não sobrescreva um baseline existente. O baseline anterior continua histórico;
+o rollback alterou o recibo do estado ativo e não gerou um baseline novo.
+A qualificação Docker existente é reaproveitada: atribuir uma tag válida não
+reconstrói a imagem. A próxima aprovação terá outro digest. Não reutilize os
+digests de `api-trim-v1`. Esta manutenção conserva pesos e alias e usa rollout
+no mesmo slot; não comprova promoção de sucessor nem ausência de interrupção.
