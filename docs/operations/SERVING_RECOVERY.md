@@ -173,3 +173,118 @@ registra o aceite a partir das saídas fornecidas pelo autor. Este passo valida
 o instalador e a manutenção do mesmo modelo; não inclui outro reboot do host
 nem a promoção de um sucessor com pesos diferentes. O fluxo de eventos concluído
 foi reutilizado, sem treino ou replay completo adicional.
+
+
+## Manutenção do runtime da API com os mesmos pesos
+
+Preparação de 2026-10-25, sobre o commit do autor
+`595dff4a13ab2451a233d71d5e9f60522df96810`. Os gates Docker já aceitaram a
+imagem `sha256:1215b5ec0bc53a9163e5154b783a7cf03822a8a44b9bae70b11a20d612b03e5e`,
+com redução de 2,38%. A implantação e a reversão em KinD **ainda precisam de
+aceite nativo**. Este fluxo não promove um modelo sucessor.
+
+O operador continua usando Make. A preparação verifica o baseline vigente,
+confere o recibo Docker contra a release ativa e o checker commitado, carrega a
+imagem pelo export de plataforma já existente e executa uma API isolada no KinD.
+Essa API usa o mesmo carrier e manifesto, em novos emptyDirs, sem labels que
+permitam ao Service canônico selecionar o pod. As imagens efetivas e o HTTP são
+verificados. Só o pod de prova, com UID e spec conferidos novamente, é removido
+após sucesso. Uma falha preserva o pod e seus recibos para diagnóstico; ele tem
+prazo máximo de execução de 240 segundos. Não são alterados dados históricos,
+pesos, alias, tráfego ou workloads canônicos nessa preparação.
+
+Antes de usar: commit da implementação revisada; node e serviços disponíveis;
+nenhum outro writer de serving/Registry durante a operação. Se houver um
+`session-monitor-watch` aberto com a versão anterior do código, encerre somente
+essa coleta com Ctrl+C e reabra após o commit. O monitor aceita a transição exata
+de fontes operacionais, sem rebuild da imagem receiver, rebind ou reexecução de
+transações. A coleta retomada restabelece a atualização dos agregados.
+
+### Preparar e revisar
+
+```bash
+make serving-runtime-prepare \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json \
+  SERVING_NO_OTHER_WRITERS=1
+```
+
+Valores padrão: `SERVING_RUNTIME_ID=api-trim-v1` e
+`SERVING_RUNTIME_DOCKER_REPORT=data/serving/image-footprint/candidate-http-v1.json`.
+A saída mostra `runtime_prepared_awaiting_approval`, imagem local e identidades
+carregadas, gate isolado, `approval_sha256` e `rollback_approval_sha256`.
+Confira que modelo, release e versão do Registry continuam os do champion.
+Repetir prepare com o mesmo ID retorna o preparo íntegro. Não edite os recibos
+nem use outro ID apenas para contornar divergência de identidade.
+
+### Aplicar, conferir e renovar o baseline
+
+O chart usa **Recreate**. A manutenção troca o runtime no mesmo slot, podendo
+interromper brevemente a API; não promete zero downtime. O slot, o Service ativo,
+o carrier, os pesos e o alias permanecem os mesmos. Os templates do slot inativo
+também recebem a imagem revisada, conservando zero réplicas. A reversão retém as
+imagens e os caminhos anteriores. Não remova essas imagens durante o aceite.
+
+```bash
+make serving-runtime-apply SERVING_NO_OTHER_WRITERS=1 \
+  SERVING_APPROVAL_SHA256=COLE_O_APPROVAL_SHA256_REVISADO &&
+make serving-runtime-verify &&
+make portal-verify &&
+make portal-performance-verify &&
+make access-up
+```
+
+`verify` confere Registry, imagens, HTTP, ownership, PVCs e os readbacks
+funcionais anteriores de tracking/S3/Prometheus/Grafana. A preservação de versões
+históricas de Secrets do Helm segue a política de retenção do próprio Helm;
+apenas seu histórico de revisões pode variar. Outros Secrets/configurações e
+UIDs dos recursos existentes não são adotados nem substituídos. O fluxo não
+reescreve os recibos antigos da rodada, sessão, portal ou baseline.
+
+Depois do verify aprovado, crie **outro** baseline com o comando canônico:
+
+```bash
+make platform-baseline \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-runtime-trim-v1.json \
+  PLATFORM_TRACKING_REPORT=data/storage/kind-platform/tracking/rehearsal-e835e0ee8ce34106a203594a23c4bb3a.json &&
+make platform-check \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-runtime-trim-v1.json
+```
+
+O baseline anterior é histórico, não é atualizado. O novo baseline passa a ser
+usado nos próximos check/stop/start. Não há novo aceite de reboot ou recuperação
+de perda do host somente por criar esse baseline. A prova de chegadas simultâneas
+com monitoramento, a qualidade global do modelo e a promoção de sucessor com
+pesos diferentes continuam aceites independentes.
+
+### Retomar ou reverter uma tentativa
+
+Os recibos ficam em
+`data/storage/kind-platform/serving-maintenance/<SERVING_RUNTIME_ID>/`.
+A autorização é persistida antes do Helm, o HTTP é verificado antes de publicar
+`current.json`, e o resultado concluído é ligado à cadeia de manutenções.
+Uma interrupção durante apply pode ser retomada com o **mesmo** ID e digest.
+Se outro modelo/slot/alias, recurso ou template estranho aparecer, a operação
+recusa sobrescrever o estado. Os comandos não aceitam uma alteração arbitrária
+no YAML como justificativa para "adotar" o recurso.
+
+Para voltar à imagem anterior, inclusive se a tentativa falhou antes de publicar
+o novo `current.json`, use o digest específico de rollback impresso no prepare:
+
+```bash
+make serving-runtime-rollback SERVING_NO_OTHER_WRITERS=1 \
+  SERVING_APPROVAL_SHA256=COLE_O_ROLLBACK_APPROVAL_SHA256 &&
+make serving-runtime-verify &&
+make access-up
+```
+
+A reversão registra outro elo da cadeia, restaura somente as imagens runtime
+anteriores, conserva pesos/Registry e não apaga o recibo da tentativa. Repetir a
+mesma reversão concluída é idempotente. Para aplicar de novo após rollback, faça
+uma nova manutenção revisada: não reutilize o apply antigo. Se a reversão for
+aceita, gere um baseline de rollback em caminho novo pelo mesmo procedimento
+canônico. A disponibilidade continua sujeita ao Recreate.
+
+A transição `references/runtime_maintenance_source_transition_v1.json` declara
+os hashes exatos da limpeza de build e da manutenção operacional. A aceitação é
+em memória e exige o arquivo commitado; não altera políticas de qualidade,
+fitter, contratos Gold/Silver, pesos, recibos científicos ou modelos registrados.

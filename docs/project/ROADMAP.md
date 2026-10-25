@@ -884,3 +884,14 @@ jobs/ensaios. [Avaliação de código e medição](../operations/IMAGE_FOOTPRINT
 Uma alteração posterior de imagem será qualificada com os gates de sua função;
 a promoção/rollback de sucessor com novos pesos continua dependente de candidato
 qualificado, sem afrouxamento do gate.
+
+
+### Manutenção do runtime qualificado — preparação de 2026-10-25
+
+Redução de 2,38% e gates Docker com o mesmo champion aceitos em
+[IMAGE_FOOTPRINT.md](../operations/IMAGE_FOOTPRINT.md). A manutenção agora tem
+preparação isolada no KinD, aprovação vinculada à imagem/release, apply e rollback
+retomáveis, cadeia de recibos compatível e verificação dos readbacks anteriores.
+Execução nativa e baseline correspondente **pendentes**. O chart mantém Recreate;
+não é um aceite de zero downtime nem de promoção de sucessor com pesos diferentes.
+Guia: [SERVING_RECOVERY.md](../operations/SERVING_RECOVERY.md).

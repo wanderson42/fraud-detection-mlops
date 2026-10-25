@@ -2,19 +2,18 @@
 
 ## Onde estamos
 
-A infraestrutura KinD/Helm e a recuperação operacional foram aceitas. A rodada
-canônica recompôs dados, registrou candidatos com Inputs e colocou o champion
-identificado na API. O fluxo HTTP causal aceitou 200 decisões e seu feedback.
-O portal consulta esses casos e cinco explicações. A avaliação completa das
-67.255 transações de validação foi conciliada com MLflow e aceita funcional e
-visualmente pelo autor em 2026-10-22. Esses recortes estão encerrados.
+A infraestrutura KinD/Helm, a rodada canônica e o champion identificado na API
+foram aceitos. A sessão ampliada conciliou 2.001 decisões HTTP, 81 alertas e
+feedback; seu monitoramento no Prometheus/Grafana e a navegação no portal único
+foram aceitos. O portal também conserva os 200 casos de evidência, cinco
+explicações e a avaliação de 67.255 transações. A leitura da sessão concluída
+no monitor não comprova por si só chegadas simultâneas no ensaio nativo.
 
-Falta consolidar uma **sessão operacional contínua e reproduzível**: produtor
-liberando eventos em ritmo controlado, processamento pelo champion, fila que
-acompanha o avanço, feedback posterior e observabilidade da mesma sessão.
-O portal atual é um snapshot e o monitoramento KinD aceito usa uma cópia de
-replay concluído. Mantê-los abertos simultaneamente não comprova atualização
-contínua nem que estejam mostrando a mesma execução.
+A redução conservadora do runtime da API e sua qualificação em Docker estão
+aceitas. O recorte atual prepara sua implantação e reversão controladas no KinD,
+com os mesmos pesos e alias, pelo fluxo de [manutenção do serving](SERVING_RECOVERY.md).
+O aceite nativo dessa manutenção permanece pendente. A promoção recorrente de
+um sucessor com pesos diferentes continua condicionada a candidato qualificado.
 
 ## Serviços conectados, responsabilidades distintas
 

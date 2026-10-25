@@ -57,6 +57,17 @@ MONITORING_ALLOWED = {
 }
 
 
+RUNTIME_TRANSITION = "references/runtime_maintenance_source_transition_v1.json"
+RUNTIME_ALLOWED = {
+    "docker/serving/Dockerfile",
+    "scripts/platform/serving_recovery.py",
+    "scripts/platform/source_compatibility.py",
+    "scripts/platform/runtime_maintenance.py",
+    "scripts/session_monitoring/controller.py",
+    "infra/make/serving-recovery.mk",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -114,6 +125,11 @@ def accept(saved, current, root):
             MONITORING_TRANSITION,
             "fraud_session_monitoring_source_transition_v1",
             MONITORING_ALLOWED,
+        ),
+        (
+            RUNTIME_TRANSITION,
+            "fraud_runtime_maintenance_source_transition_v1",
+            RUNTIME_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

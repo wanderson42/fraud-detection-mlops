@@ -93,7 +93,13 @@ def test_feature_retained_by_future_observability_up_without_changing_old_image_
 def test_exact_transition_preserves_receipts_but_rejects_science_change():
     transition = json.loads((ROOT / compatibility.MONITORING_TRANSITION).read_bytes())
     assert set(transition["changes"]) == compatibility.MONITORING_ALLOWED
-    assert all(v["after"] == k.state.sha(ROOT / name) for name, v in transition["changes"].items())
+    runtime = json.loads((ROOT / compatibility.RUNTIME_TRANSITION).read_bytes())
+    expected = {name: value["after"] for name, value in transition["changes"].items()}
+    for name, digest in expected.items():
+        if name in runtime["changes"]:
+            assert runtime["changes"][name]["before"] == digest
+            expected[name] = runtime["changes"][name]["after"]
+    assert all(digest == k.state.sha(ROOT / name) for name, digest in expected.items())
 
 
 def test_partial_helm_failure_resumes_without_requiring_old_pod_ready(tmp_path, monkeypatch):

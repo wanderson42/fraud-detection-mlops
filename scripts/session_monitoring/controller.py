@@ -16,6 +16,7 @@ from uuid import uuid4
 
 from scripts.platform import kind_foundation as f
 from scripts.platform import kind_observability as k
+from scripts.platform import source_compatibility
 from scripts.platform.container_images import inspect_image
 from scripts.product_session import controller as session
 from scripts.product_session import reader
@@ -81,10 +82,15 @@ def token():
     return value["token"]
 
 
+def reviewed_sources(saved):
+    source_compatibility.accept(saved, pins(), f.ROOT)
+    return True
+
+
 def image_record():
     value = json.loads((work() / "image.json").read_bytes())
     f.require(
-        value["source_pins"] == pins()
+        reviewed_sources(value["source_pins"])
         and value["node_uid"] == f.owner()["node_uid"]
         and value["owner_id"] == k.credentials()["owner_id"],
         "Monitoring image/source identity differs",
@@ -146,7 +152,8 @@ def settings():
         return None
     value = json.loads(f.managed_destination(path, "storage").read_bytes())
     f.require(
-        value["source_pins"] == pins() and value["owner_id"] == k.credentials()["owner_id"],
+        reviewed_sources(value["source_pins"])
+        and value["owner_id"] == k.credentials()["owner_id"],
         "Enabled session monitoring source/owner differs",
     )
     contract.binding(value["binding"])
@@ -172,7 +179,7 @@ def prepare(key, previous_sha=None):
         existing = json.loads(path.read_bytes())
         if existing["binding"] == binding:
             f.require(
-                existing["source_pins"] == pins() and existing["image"] == value["image"],
+                reviewed_sources(existing["source_pins"]) and existing["image"] == value["image"],
                 "Prepared implementation changed",
             )
             return {"status": "session_monitor_already_prepared", "binding": binding}
@@ -201,7 +208,7 @@ def up():
     directory, _ = session.load(proposed["binding"]["session_id"])
     f.require(
         collector.identity(directory)[0] == proposed["binding"]
-        and proposed["source_pins"] == pins(),
+        and reviewed_sources(proposed["source_pins"]),
         "Prepared source changed",
     )
     f.require(proposed["image"] == image_record()["image"], "Prepared image differs")

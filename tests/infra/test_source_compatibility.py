@@ -91,6 +91,7 @@ def refactor(tmp_path):
         compat.REFACTOR_TRANSITION,
         compat.RETIREMENT_TRANSITION,
         compat.MONITORING_TRANSITION,
+        compat.RUNTIME_TRANSITION,
     ):
         src = ROOT / name
         transitions.append(json.loads(src.read_bytes()))
@@ -118,7 +119,9 @@ def previous(current, transitions):
     return saved
 
 
-@pytest.mark.parametrize("scope", ["round", "updates", "product", "operations", "replay"])
+@pytest.mark.parametrize(
+    "scope", ["round", "updates", "product", "operations", "replay", "session_monitoring"]
+)
 @pytest.mark.parametrize("before_seed", [False, True])
 def test_current_readers_accept_exact_old_profiles_without_editing_them(
     refactor, scope, before_seed
@@ -127,6 +130,7 @@ def test_current_readers_accept_exact_old_profiles_without_editing_them(
     from scripts.operational_round import controller as round_controller
     from scripts.platform import kind_operations, kind_replay
     from scripts.product_flow import controller as product
+    from scripts.session_monitoring import controller as session_monitoring
 
     readers = {
         "round": round_controller.pins,
@@ -134,6 +138,7 @@ def test_current_readers_accept_exact_old_profiles_without_editing_them(
         "product": product.pins,
         "operations": kind_operations.pins,
         "replay": kind_replay.pins,
+        "session_monitoring": session_monitoring.pins,
     }
     root, transitions = refactor
     current = readers[scope]()

@@ -320,3 +320,13 @@ com qualificação HTTP em Docker dos mesmos pesos. Os detalhes aceitos estão n
 início deste documento. O roteiro acima continua disponível para reprodução,
 usando novas tags e diretórios para preservar recibos anteriores. A implantação
 no KinD e seu baseline operacional correspondente permanecem como próximo aceite.
+
+
+## Implantação da imagem qualificada
+
+O fluxo de manutenção preparado em 2026-10-25 reutiliza a cadeia de recibos e o
+Helm canônico: [SERVING_RECOVERY.md](SERVING_RECOVERY.md#manutenção-do-runtime-da-api-com-os-mesmos-pesos).
+A preparação usa o recibo Docker e um pod isolado com os mesmos pesos. Apply e
+rollback têm autorizações distintas, retomada e gates; não alteram o champion.
+A imagem anterior permanece disponível. O aceite de implantação e reversão no
+KinD segue pendente de execução do autor; não foi deduzido do ensaio Docker.

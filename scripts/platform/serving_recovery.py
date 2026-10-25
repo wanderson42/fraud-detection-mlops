@@ -58,17 +58,23 @@ def resolve_active(saved):
         path = f.managed_destination(Path(location), "storage")
         p.require(
             path.is_relative_to(f.workspace() / "serving-maintenance")
-            and path.name == "applied.json",
+            and path.name in {"applied.json", "rolled-back.json"},
             "Foreign maintenance receipt",
         )
         receipt = json.loads(path.read_bytes())
-        p.require(
-            receipt["status"] == "serving_seed_maintenance_applied"
-            and receipt["after_active"] == cursor
-            and receipt["native_seed_restart_verified"] is True,
-            "Incomplete serving maintenance",
-        )
-        check_same_model(receipt["before_active"], cursor)
+        if receipt.get("schema") == "fraud_runtime_maintenance_applied_v1":
+            from scripts.platform.runtime_maintenance import validate_chain
+
+            validate_chain(receipt, cursor, path)
+        else:
+            p.require(
+                path.name == "applied.json"
+                and receipt["status"] == "serving_seed_maintenance_applied"
+                and receipt["after_active"] == cursor
+                and receipt["native_seed_restart_verified"] is True,
+                "Incomplete serving maintenance",
+            )
+            check_same_model(receipt["before_active"], cursor)
         cursor = receipt["before_active"]
     raise ValueError("Serving maintenance chain exceeds the reviewed limit")
 
@@ -78,6 +84,7 @@ def committed():
     for name in [
         "references/serving_seed_source_transition_v1.json",
         "infra/make/serving-recovery.mk",
+        "scripts/platform/runtime_maintenance.py",
     ]:
         values[name] = p.sha(f.ROOT / name)
     for name, value in values.items():

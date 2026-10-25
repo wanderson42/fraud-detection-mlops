@@ -1614,3 +1614,32 @@ originais, que não são reescritos. [Evidência](../../references/evidence/unif
 
 O footprint global de Docker/KinD ainda requer medição própria; revisão de
 Dockerfiles e recibos antigos não certifica o tamanho de todas as imagens ativas.
+
+
+## Manutenção de runtime com os mesmos pesos
+
+Base preparada sobre `595dff4`, sem reexportar o champion. Regressão isolada:
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/serving_recovery tests/infra/test_source_compatibility.py \
+  tests/session_monitoring tests/product_session tests/product_flow \
+  tests/model_updates tests/infra/test_platform_entrypoints.py \
+  tests/infra/test_kind_operations.py tests/storage/test_managed_paths.py \
+  tests/storage/test_persistence_inventory.py
+```
+
+O conjunto local cobre o probe isolado, UID/imagens/spec estranhos, falta de
+aprovação/writers, paridade vinculada à release, retomada de publicação,
+rollback de tentativa sem publicação, idempotência e recusas de alterações
+científicas. Também conserva leitura de recibos e compatibilidade do monitor.
+Isso não é um ensaio no Docker/KinD do autor. O aceite nativo usa os comandos
+`serving-runtime-prepare`, `serving-runtime-apply`, `serving-runtime-verify` e,
+quando executado com sua aprovação própria, `serving-runtime-rollback`, conforme
+[SERVING_RECOVERY.md](SERVING_RECOVERY.md). Apply/rollback não são acionados por
+testes comuns ou por `make serving-runtime-prepare`.
+
+Uma verificação após apply não comprova rollback. Somente registre cada etapa
+que tiver sido executada. A manutenção usa os mesmos pesos e não substitui o
+aceite pendente de promoção recorrente com pesos diferentes. Após a implantação
+aceita, emita novo baseline com o fluxo canônico, conservando o anterior.
