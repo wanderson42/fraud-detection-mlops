@@ -1,0 +1,27 @@
+{
+  "schema": "fraud_image_footprint_preparation_v1",
+  "date": "2026-10-24",
+  "status": "collector_prepared_native_package_measurement_pending",
+  "basis": "author closure commit db96595; author Docker/CRI inventory received 2026-10-24",
+  "author_inventory": {
+    "api_docker_display": "757MB",
+    "api_cri_display": "175MB",
+    "whole_daemon_build_cache_display": "18.2GB",
+    "includes_other_projects": true
+  },
+  "local_validation": {
+    "tests_passed": 7,
+    "ruff_check": true,
+    "ruff_format": true,
+    "stdlib_probe_from_isolated_stdin": true,
+    "docker_execution_available": false
+  },
+  "images_built": false,
+  "packages_removed": false,
+  "size_reduction_validated": false,
+  "native_image_package_measurement_validated": false,
+  "deployment_modified": false,
+  "champion_modified": false,
+  "operational_baseline_modified": false,
+  "next_acceptance": "author report by immutable image ID, then choose and qualify a size reduction with the same release bytes"
+}

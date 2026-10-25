@@ -114,3 +114,73 @@ Referências oficiais:
 O fechamento documental atual não muda Dockerfiles, locks, versões, imagens,
 artefatos ou o baseline vigente. A decisão sobre mudanças virá dos tamanhos
 atuais coletados e dos gates, não apenas da aparência de um Dockerfile enxuto.
+
+## Medição por pacote antes de alterar a API
+
+O inventário do autor, recebido em 2026-10-24, registra 757 MB para
+`fraud-kind-serving-runtime:61439c973d934fa68b7f3e413f1ca394` no Docker do host e
+175 MB no CRI do KinD. São contabilidades distintas, não uma redução entre builds.
+O daemon também contém imagens e clusters do projeto de energia, contêineres
+encerrados e 18,2 GB de cache de construção. Nenhum desses totais é atribuído
+integralmente à plataforma de fraude. O tamanho atual desta API não deve ser
+apresentado como 175 MB de ocupação completa no host.
+
+A coleta abaixo identifica as distribuições Python e os diretórios que mais
+ocupam espaço, preservando Pandas/PyArrow e os contratos da release. Este recorte
+instrumenta a decisão de otimização; ainda não altera Dockerfiles/dependências
+nem demonstra redução. Não repete treinamento ou promoção.
+
+```bash
+poetry run python -m scripts.serving.image_footprint \
+  --image fraud-kind-serving-runtime:61439c973d934fa68b7f3e413f1ca394 \
+  --output data/reports/image-footprint/api-before-v1
+```
+
+A referência vem do inventário aceito. O relatório não afirma que essa imagem
+está ativa no gateway: seu vínculo com o deployment precisa ser confirmado antes
+de uma implantação posterior. O coletor resolve a referência para o ID local e
+executa o diagnóstico nesse ID, mesmo se a tag mudar durante a coleta.
+
+O diagnóstico inicia um contêiner temporário: sem rede, volumes do projeto,
+capabilities ou escrita na raiz; com usuário não privilegiado e limites de CPU,
+memória e processos. Não inicia a API nem importa bibliotecas de ML. Não baixa
+imagens, altera deployments, acessa o modelo ou remove imagens/cache/volumes.
+O contêiner é removido ao terminar; uma interrupção tratada tenta remover somente
+o contêiner de diagnóstico identificado por um nome aleatório próprio. Uma
+interrupção abrupta do processo/daemon pode exigir conferir esse nome.
+
+A saída fica em diretório novo, com `report.json` e `report.sha256`. O diretório
+já existente não é sobrescrito; se precisar repetir, use outro sufixo. Esses
+arquivos ficam em `/data/`, já ignorado no Git. O coletor não salva variáveis de
+ambiente, comando original das camadas ou configuração do contêiner da imagem.
+
+Para enviar o resultado da coleta:
+
+```bash
+python3 -m json.tool data/reports/image-footprint/api-before-v1/report.json
+```
+
+Interpretação dos campos:
+
+| Campo | Significado |
+| --- | --- |
+| `image.Size` | Bytes reportados por `docker image inspect`, associados ao ID e plataforma |
+| `rootfs_diff_ids` | Identidades das camadas, não seus tamanhos exclusivos |
+| `history` | Tamanho formatado de cada entrada do histórico; não somar com os pacotes |
+| `python_inventory.site_packages` | Bytes dos arquivos regulares legíveis em site-packages, incluindo bytecode |
+| `top_level_directories` | Visão por diretório: também evidencia bibliotecas nativas em pastas `.libs` |
+| `distributions` | Nome, versão e bytes atribuídos pelos arquivos RECORD; referências externas são excluídas |
+
+Bytes lógicos, blocos alocados, diretórios e RECORD são visões distintas do mesmo
+conteúdo. Não devem ser somados entre si, ao CRI ou ao tamanho total da imagem.
+RECORD pode omitir arquivos gerados ou compartilhar referências com outra
+distribuição. Pastas `test/tests` e bytecode são apenas candidatos para análise;
+a sua presença não autoriza apagá-los. Conteúdo da base fora de site-packages
+não entra na medição por pacote. O diagnóstico não mede RAM do serviço,
+latência, vulnerabilidades, dependências efetivamente usadas ou espaço liberável.
+
+A implementação usa somente biblioteca padrão. Pode ser aplicada aos outros
+runtimes Python informando `--python` com o interpretador existente na imagem;
+o valor padrão `/opt/runtime/bin/python` corresponde à API atual. Compare sempre
+a mesma plataforma e a mesma definição de tamanho. Requalificar a imagem
+resultante com os mesmos pesos e contrato HTTP continua obrigatório.
