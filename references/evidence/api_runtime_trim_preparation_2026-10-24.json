@@ -1,0 +1,38 @@
+{
+  "schema": "fraud_api_runtime_trim_preparation_v1",
+  "date": "2026-10-24",
+  "status": "builder_cleanup_prepared_native_comparison_pending",
+  "author_source_commit": "cf44f53",
+  "source_report_sha256": "a324f196a7fb0c3729408632d33c64254a00791237ab60d832d6074f6ad93a5e",
+  "observed_image_id": "sha256:570db485edf4c98ce19852f7cf42a76a943faafaef25eab13d8df5101a6c6cda",
+  "observed_image_inspect_size_bytes": 175014717,
+  "observed_site_packages": {
+    "allocated_bytes": 444416000,
+    "bytecode_bytes": 6439247,
+    "files": 7709,
+    "logical_bytes": 426841007,
+    "test_path_bytes": 46016249
+  },
+  "change": "pip check; remove venv pip and bytecode in builder before final COPY",
+  "preserved": [
+    "release contract",
+    "all inference distributions and versions",
+    "weights",
+    "runtime HTTP settings",
+    "active deployment",
+    "baseline",
+    "historical receipts"
+  ],
+  "local_validation": {
+    "offline_venv_cleanup_test_passed": true,
+    "ruff_check": true,
+    "ruff_format": true
+  },
+  "native_builds_validated": false,
+  "size_reduction_validated": false,
+  "same_champion_native_HTTP_validated": false,
+  "fit_executed": false,
+  "champion_modified": false,
+  "deployment_modified": false,
+  "successor_promotion_and_rollback_with_different_weights_validated": false
+}

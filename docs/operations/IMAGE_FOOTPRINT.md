@@ -184,3 +184,91 @@ runtimes Python informando `--python` com o interpretador existente na imagem;
 o valor padrão `/opt/runtime/bin/python` corresponde à API atual. Compare sempre
 a mesma plataforma e a mesma definição de tamanho. Requalificar a imagem
 resultante com os mesmos pesos e contrato HTTP continua obrigatório.
+
+## Primeira redução conservadora: instalador e bytecode
+
+O relatório do autor identifica a imagem
+`sha256:570db485edf4c98ce19852f7cf42a76a943faafaef25eab13d8df5101a6c6cda`,
+com `image inspect Size = 175014717`. Dentro do ambiente, `site-packages` contém
+426841007 bytes lógicos, 6439247 bytes de bytecode e 46016249 bytes em caminhos
+de testes. O RECORD de pip atribui 11152395 bytes à distribuição. Esses valores
+podem se sobrepor e não podem ser somados para prometer redução comprimida.
+
+A alteração no Dockerfile faz `pip check`, desinstala somente o pip da venv e
+remove `__pycache__` na etapa **builder**, antes do COPY para a imagem final.
+Apagar depois do COPY deixaria os bytes na camada anterior. A configuração
+`PYTHONDONTWRITEBYTECODE=1` continua ativa no runtime. O pip da base Python, fora
+da venv, não é removido: está em uma camada herdada, e sua remoção posterior não
+eliminaria os bytes dessa camada. A API é um runtime imutável; instalação de
+pacotes continua sendo responsabilidade do build.
+
+Não são removidos testes de terceiros, bibliotecas nativas, arquivos `.dist-info`
+de inferência ou dependências científicas. NumPy, Pandas, SciPy, scikit-learn,
+skops e PyArrow conservam suas versões e os contratos da release. A limpeza
+não acrescenta uma nova dependência ou serviço.
+
+PyArrow permanece como oportunidade maior: seu RECORD tem 157189725 bytes,
+mas `feature_schema.py` o importa e o contrato de versões da release o exige.
+Retirá-lo requer um recorte próprio de contratos e compatibilidade, com
+paridade dos pesos existentes. Não se falsifica sua presença mantendo apenas
+metadados e apagando sua implementação.
+
+### Comparação controlada no host
+
+O pacote fornece `Dockerfile.before`, cópia exata do arquivo anterior. Faça os
+builds no mesmo checkout revisado, sem editar fontes/lock entre eles, usando o
+mesmo digest e plataforma. Os nomes abaixo são novos e não substituem a imagem
+ativa. Se esses nomes já tiverem sido usados, escolha outro sufixo para ambos.
+
+```bash
+api_size_base=$(python3 -c \
+  'import json; print(json.load(open("infra/serving/images.lock.json"))["build_python"])') &&
+
+docker build --platform linux/amd64 \
+  --build-arg PYTHON_IMAGE="$api_size_base" \
+  --file /tmp/fraud-api-runtime-trim/Dockerfile.before \
+  --tag fraud-api-footprint:baseline-v1 . &&
+
+docker build --platform linux/amd64 \
+  --build-arg PYTHON_IMAGE="$api_size_base" \
+  --file docker/serving/Dockerfile \
+  --tag fraud-api-footprint:candidate-v1 . &&
+
+poetry run python -m scripts.serving.image_footprint \
+  --image fraud-api-footprint:baseline-v1 \
+  --output data/reports/image-footprint/api-controlled-before-v1 &&
+
+poetry run python -m scripts.serving.image_footprint \
+  --image fraud-api-footprint:candidate-v1 \
+  --output data/reports/image-footprint/api-controlled-after-v1
+```
+
+O pacote também fornece `measure.sh`, que executa a sequência acima, recusa
+sobrescrever tags/relatórios existentes e verifica o checkout antes/depois:
+
+```bash
+bash /tmp/fraud-api-runtime-trim/measure.sh
+```
+
+Para uma coleta nova, use `API_SIZE_RUN_ID=v2 bash /tmp/fraud-api-runtime-trim/measure.sh`.
+Mantenha o checkout sem alterações durante os builds; o script não cria uma cópia
+isolada das fontes. Se um build falhar, preserve o diagnóstico e use um ID novo
+para repetir a comparação completa.
+
+Envie os dois `report.json`. O recibo original `api-before-v1` é preservado,
+mas não substitui o baseline reconstruído com as fontes atuais. Devem ser iguais
+plataforma, Python e versões das distribuições de inferência; o candidato deve
+estar sem a distribuição pip e sem bytecode na venv. Compare bytes de
+site-packages com bytes de site-packages e `image.Size` com `image.Size`; não use
+`system df -v` como se fosse o mesmo indicador. Uma economia em disco do daemon
+não é obtida pela simples soma dos tamanhos de tags.
+
+**Aceite ainda pendente:** builds nativos, antes/depois e qualificação da imagem
+candidata com a release imutável do champion, incluindo startup, readiness,
+paridade do score, entrada inválida e rejeição de pesos/manifesto corrompidos.
+Reutilize `scripts.serving.check_docker_runtime` com diretório e SHA da release
+verificados, sem reexportar ou treinar o modelo. Os comandos de build e medição
+acima não fazem essa qualificação nem implantam a imagem. Nenhum carregamento
+no KinD, troca de tráfego, mudança de alias ou novo baseline operacional ocorre
+neste recorte de preparação. Uma implantação posterior exige um resultado
+qualificado e atualização operacional correspondente.

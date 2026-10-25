@@ -23,6 +23,13 @@ RUN /opt/poetry/bin/poetry build --format wheel \
     && /opt/runtime/bin/pip install --no-deps dist/*.whl \
     && rm -rf /root/.cache
 
+# Runtime has no package installation responsibility. Clean in the builder:
+# deleting files after COPY in the final stage would retain their lower layer.
+RUN /opt/runtime/bin/python -m pip check \
+    && /opt/runtime/bin/python -m pip uninstall --yes pip \
+    && find /opt/runtime -type d -name __pycache__ -prune -exec rm -rf '{}' +
+# END_RUNTIME_BUILD_CLEANUP
+
 FROM ${PYTHON_IMAGE} AS runtime
 ENV PATH=/opt/runtime/bin:$PATH \
     PYTHONDONTWRITEBYTECODE=1 \
