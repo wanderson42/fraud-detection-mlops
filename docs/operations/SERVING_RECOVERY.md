@@ -359,3 +359,45 @@ A qualificação Docker existente é reaproveitada: atribuir uma tag válida nã
 reconstrói a imagem. A próxima aprovação terá outro digest. Não reutilize os
 digests de `api-trim-v1`. Esta manutenção conserva pesos e alias e usa rollout
 no mesmo slot; não comprova promoção de sucessor nem ausência de interrupção.
+
+
+### Aceite nativo da imagem otimizada
+
+O runtime otimizado foi aplicado na manutenção `api-trim-v2` e verificado
+no KinD. A identidade Docker qualificada é
+`sha256:1215b5ec0bc53a9163e5154b783a7cf03822a8a44b9bae70b11a20d612b03e5e`;
+a tag usada é `fraud-kind-serving-runtime:85a8a2d76aeb4a0c99a4710baae27bae`.
+O tamanho medido passou de 175.012.393 para 170.839.706 bytes: redução de
+4.172.687 bytes (aproximadamente 2,38%). Esse resultado se refere à imagem da
+API; não encerra uma auditoria de tamanho de todas as imagens da plataforma.
+
+O gate HTTP preservou o score `0.4178630794049542` da transação `335910`,
+o contrato `gold_v1`, a release `e8350e0a841f4136983e0d905068a743` e o modelo
+`6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b`.
+Entrada inválida recebeu HTTP 422. O p95 observado foi 48,33 ms em 20 requisições;
+é uma amostra de verificação, sem demonstração de ganho de latência ou SLA.
+Os readbacks funcionais, o snapshot do portal e a avaliação de 67.255 linhas
+continuaram verificados, com os mesmos manifests. Não houve refit nem mudança
+do alias champion.
+
+O estado ativo passou a ter SHA-256
+`50ff71ba6637f9b5671046b4817070f8fb32928ec5ad34d3482d52ea155c706b`.
+O baseline atual é
+`data/storage/kind-platform/operations/baseline-api-trim-v2.json`, SHA-256
+`d9e113804306f31df92b6a70333d80a28a674f6d28ac17cd0ba50d261eed19b5`.
+Use-o para os próximos checks da topologia atual:
+
+```bash
+make platform-check \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-api-trim-v2.json
+```
+
+O check `check-fedcd3dadc3f4f4499558fe3d83d6487.json` confirmou os readbacks.
+A criação deste baseline não repete um ensaio de parada/reinício ou reboot.
+O rollback comprovado pertence à tentativa anterior `api-trim-v1`, após a
+falha do apply. Não foi executado rollback de `api-trim-v2`; seus recibos e
+aprovação permanecem disponíveis para recuperação. Promoção e rollback de um
+sucessor com outros pesos continuam condicionados a um candidato qualificado.
+
+Evidência consolidada:
+[aceite da manutenção do runtime](../../references/evidence/runtime_maintenance_author_validation_2026-10-25.json).
