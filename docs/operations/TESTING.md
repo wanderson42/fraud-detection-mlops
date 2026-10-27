@@ -3,17 +3,21 @@
 A nova rodada tem testes de política, linhagem, MLflow HTTP, recarga, Registry, API real em processo e Helm. Execute `tox -e py314 -- tests/operational_round tests/storage/test_persistence_inventory.py tests/storage/test_managed_paths.py`; a execução nativa dos Jobs/serving permanece no runbook.
 [Guia da rodada operacional](OPERATIONAL_ROUND.md).
 
-## Transferência do histórico e Registry no KinD
+## Interfaces comuns e escopo da suíte
+
+Os 12 comandos de ajuda de dados/modelagem e a verificação dos diretórios padrão
+agora estão em um único teste parametrizado:
 
 ```bash
-.venv/bin/python -m tox -e py314 -- tests/infra/test_kind_history.py
+.venv/bin/python -m tox -e py314 -- tests/interfaces/test_command_entrypoints.py
 ```
 
-Os testes usam snapshots reais de fixture, SQLite e um servidor MLflow HTTP real:
-importação dos dois stores, três baselines, métricas completas, linhagem, retomada,
-recarga e recusas antes do alias. PostgreSQL/S3/KinD são conferidos na execução
-nativa de `plan`, `import`, `verify` e `champion`, conforme [KIND_HISTORY.md](KIND_HISTORY.md).
-Não confundir esses testes com uma nova validação de qualidade preditiva.
+A matriz conserva os cenários anteriores, sem duplicar o corpo do subprocesso.
+Em seleções focadas de dados ou modelagem, acrescente `tests/interfaces` quando
+quiser incluir os smokes dos CLIs. A suíte completa continua coletando todos.
+Os testes exclusivos do importador histórico foram retirados com essa ferramenta;
+o fluxo canônico mantém seus testes de Inputs, métricas, Registry, HTTP e recovery.
+[Critérios da revisão](CODEBASE_SIMPLIFICATION.md).
 
 <!-- kind-operations-acceptance-2026-10-21:start -->
 **Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
@@ -37,7 +41,7 @@ poetry install
 make validate
 ```
 
-`make validate` executa `poetry run tox -e py314`, a mesma referência da CI.
+`make validate` executa `poetry run python -m tox -e py314`, a mesma referência da CI.
 Para desenvolvimento rápido, use `make test`. Para selecionar uma área mantendo
 os checks de lint e formatação:
 
@@ -1338,23 +1342,22 @@ A regressão de preparação (181 testes/4 live ignorados) pertence ao ambiente 
 assistente; não foi inferida como nova execução nativa.
 [Evidência e limites](KIND_REPLAY.md#aceite-nativo--2026-10-20).
 
-### Gate do serving no KinD
+### Serving no KinD e aposentadoria da instalação sintética
 
-`tests/infra/test_kind_serving.py` confere templates Helm reais, semântica HTTP
-com releases copiadas, identidades, rejeição de artefatos e rollback sob controle
-de Kubernetes/Docker simulado. Os testes não substituem build/import reais.
-`tox -e kind-serving` executa o gate opt-in na release própria já instalada:
-Service blue/green, EndpointSlices, falha 502 e rollback Helm para a baseline.
-[Entrada confiável, comandos e diagnóstico](KIND_SERVING.md).
+O live gate histórico da release `fraud-serving` foi aposentado após a retirada
+nativa. Seu aceite original está preservado em [KIND_SERVING.md](KIND_SERVING.md).
+Os testes exclusivos do controlador/instalador antigo foram removidos.
 
-Aceite nativo em 2026-10-21: **1 teste em 19,48 s**, tox OK em 34,53 s.
-Seis eventos completos, candidata no EndpointSlice, zero endpoints prontos na
-falha, HTTP 502 e rollback Helm para blue aprovados. A correção de importação
-por arquivo `linux/amd64` foi exercitada nas três imagens, com arquivos temporários
-removidos. A regressão nativa anterior registrou 222 testes/4 ignorados; o conjunto
-privado após a correção registrou 228/4, sem executar Docker/KinD no assistente.
-[Recibo e limites](KIND_SERVING.md#aceite-nativo--2026-10-21). Não é necessário
-repetir o gate para aplicar somente este fechamento documental.
+A segurança do chart compartilhado continua em
+`tests/operational_round/test_controller_and_templates.py`. Os gates HTTP reais,
+identidade de readiness/info/score, rejeição de input e convergência/retry ficam
+em `tests/serving/test_docker_runtime_checks.py`. Atualizações, recuperação do
+seeder, causalidade e transações de promoção conservam suas suítes próprias.
+A CI mantém `serving-delivery` e `serving-consumer`.
+
+O gate diário `platform-check` confere o estado atual e recusa divergência ou
+corrida de identidade, sem declarar um novo ciclo de parada/subida. Seus cenários
+estão em `tests/infra/test_kind_operations.py`. Não substitui `platform-verify`.
 
 ### Observabilidade no KinD
 
@@ -1389,6 +1392,12 @@ aplicar somente este fechamento documental.
 
 
 ## Gate operacional opt-in do KinD
+
+O controlador atual usa baseline canônico v2 e o gate compartilhado de acesso à
+API ativa. Testes cobrem active blue/green, inativo zero/ausente, ownership,
+ponteiro/alias divergentes, contagens salvas, staging recusado e recibos v1
+preservados. O aceite nativo anterior abaixo corresponde ao laboratório inicial;
+o ciclo canônico deve gerar sua própria evidência.
 
 Regressão sem Docker: `poetry run python -m pytest -q tests/infra/test_kind_operations.py`. O ambiente tox `kind-operations` exige `FRAUD_KIND_NO_OTHER_WRITERS=1` e `FRAUD_KIND_TRACKING_REPORT` explícitos. Interrompe e retoma o cluster próprio; não deve entrar na CI comum. O teste live permanece skipped na suíte padrão. Reboot manual tem gate separado `verify --expect-reboot`; ambos os gates nativos foram aprovados em 2026-10-21. O ciclo teve 1 teste em 252,23 s; o reboot foi uma verificação CLI separada. Mocks não comprovam persistência nativa. [Comandos e limites](KIND_OPERATIONS.md).
 
@@ -1540,3 +1549,97 @@ explicitamente concluída pelo autor. O manifest da avaliação está registrado
 [evidência](../../references/evidence/portal_performance_author_validation_2026-10-22.json).
 Não implica nova confirmação independente, promoção de sucessor ou chegada
 contínua de novos eventos ao portal.
+
+## Sessão operacional do produto
+
+`tests/product_session` verifica HTTP real, pausa, retomada, unicidade persistida,
+identidade, leitura concorrente e feedback disponível no relógio correto.
+`tests/fraud_portal/test_session_ui.py` integra o ambiente `portal-ui`.
+O ambiente opcional `product-session` exige sessão preparada nova e declaração
+de writers; executa o ensaio no champion corrente sem treino ou promoção.
+Veja [PRODUCT_SESSION.md](PRODUCT_SESSION.md) para comandos e aceite visual.
+
+## Ampliação de sessões
+
+`tests/product_session/test_scaling.py` testa captura temporal, 262 decisões HTTP reais, paginação SQL, totais globais, feedback e reconstrução independente. `portal-ui` testa navegação de páginas sem reduzir os indicadores globais. O ambiente opt-in `product-session-scale` valida uma nova sessão de 2.000 decisões e preserva os bytes da sessão de 200 já aceita. [Procedimento](PRODUCT_SESSION_SCALE.md).
+
+## Monitoramento da sessão identificada
+
+`tests/session_monitoring` exercita HTTP real com autenticação, corpo limitado,
+expiração, retomada, identidade incorreta, regressão de watermark/contagens,
+coleta de checkpoints causais HTTP antes/depois de pausa e feedback, renderização
+Helm com/sem extensão e retomada após falha parcial de instalação.
+`tox -e session-monitoring` é opt-in e exige a sessão ampliada concluída e a
+extensão instalada. Confere a projeção no Prometheus e proxy do Grafana, expiração,
+retomada e preservação dos bytes aceitos. Não gera novas decisões nem comprova
+chegada concorrente no KinD, firing de alertas ou avaliação visual.
+[Comandos](SESSION_MONITORING.md).
+
+### Aceite do monitoramento da sessão — 2026-10-24
+
+O autor executou o ambiente `session-monitoring`: **1 teste passou em 68,39 s**,
+total tox 82,19 s. Os agregados de `arrival-2k-v1` foram conferidos no receiver,
+Prometheus e proxy do Grafana; expiração e retomada passaram. A revisão visual
+foi confirmada separadamente, preservando o campo automatizado original.
+
+A suíte geral teve **1.705 testes aprovados, 51 pulados, 165 warnings e 12
+subtestes aprovados**, em 365,26 s; `py314: OK`, total 386,24 s. Ruff e formatação
+foram aprovados (474 arquivos). As saídas são evidência fornecida pelo autor,
+não execução nativa no ambiente do assistente.
+
+O novo baseline passou na checagem de leitura atual; snapshot do portal e
+avaliação de 67.255 transações mantiveram seus manifests. O escopo não inclui
+outro stop/start ou reboot, firing de alertas, chegada concorrente no KinD ou
+promoção/rollback de sucessor com pesos diferentes.
+[Evidência](../../references/evidence/session_monitoring_author_validation_2026-10-24.json).
+
+## Portal único com sessão vinculada
+
+`test_unified_portal.py` exercita a mesma aplicação com sessão, investigação e
+evidências, falhas independentes, limites de página e identidade exata para SHAP.
+`test_session_link.py` e `test_session_link_host.py` conferem ponteiro, paths,
+credenciais, idempotência e troca explícita sem alterar as fontes.
+O ambiente `portal-unified` é opt-in, usa os arquivos reais já aceitos em um
+Streamlit AppTest isolado e confere os hashes antes/depois. Não pontua nem treina;
+saúde HTTP e revisão visual são registradas separadamente. [Guia](UNIFIED_PORTAL.md).
+
+### Aceite do portal unificado e cabeçalho — 2026-10-24
+
+O autor forneceu `py314: OK` para o recorte (103 testes, 12 pulados, 13 warnings),
+`portal-ui: OK` (44 testes) e `portal-unified: OK` com os arquivos reais (1 teste,
+0,96 s; tox 12,69 s). A navegação AppTest e os hashes das fontes passaram; portal
+e desempenho mantiveram seus manifests. O autor confirmou o refinamento visual
+com "Ficou muito bom!". Essa confirmação é separada dos campos automatizados
+originais, que não são reescritos. [Evidência](../../references/evidence/unified_portal_author_validation_2026-10-24.json).
+
+O footprint global de Docker/KinD ainda requer medição própria; revisão de
+Dockerfiles e recibos antigos não certifica o tamanho de todas as imagens ativas.
+
+
+## Manutenção de runtime com os mesmos pesos
+
+Base preparada sobre `595dff4`, sem reexportar o champion. Regressão isolada:
+
+```bash
+.venv/bin/python -m tox -e py314 -- \
+  tests/serving_recovery tests/infra/test_source_compatibility.py \
+  tests/session_monitoring tests/product_session tests/product_flow \
+  tests/model_updates tests/infra/test_platform_entrypoints.py \
+  tests/infra/test_kind_operations.py tests/storage/test_managed_paths.py \
+  tests/storage/test_persistence_inventory.py
+```
+
+O conjunto local cobre o probe isolado, UID/imagens/spec estranhos, falta de
+aprovação/writers, paridade vinculada à release, retomada de publicação,
+rollback de tentativa sem publicação, idempotência e recusas de alterações
+científicas. Também conserva leitura de recibos e compatibilidade do monitor.
+Isso não é um ensaio no Docker/KinD do autor. O aceite nativo usa os comandos
+`serving-runtime-prepare`, `serving-runtime-apply`, `serving-runtime-verify` e,
+quando executado com sua aprovação própria, `serving-runtime-rollback`, conforme
+[SERVING_RECOVERY.md](SERVING_RECOVERY.md). Apply/rollback não são acionados por
+testes comuns ou por `make serving-runtime-prepare`.
+
+Uma verificação após apply não comprova rollback. Somente registre cada etapa
+que tiver sido executada. A manutenção usa os mesmos pesos e não substitui o
+aceite pendente de promoção recorrente com pesos diferentes. Após a implantação
+aceita, emita novo baseline com o fluxo canônico, conservando o anterior.

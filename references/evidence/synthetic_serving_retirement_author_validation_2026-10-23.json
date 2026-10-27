@@ -1,0 +1,50 @@
+{
+  "schema": "fraud_synthetic_serving_retirement_author_validation_v1",
+  "status": "success",
+  "date": "2026-10-23",
+  "source": "operator supplied native command output",
+  "source_basis_reported_commit": "23a15c9",
+  "release": "fraud-serving",
+  "preserved_champion_release": "fraud-detector",
+  "resources_removed": [
+    "ConfigMap/fraud-serving-gateway",
+    "Deployment/fraud-serving-blue",
+    "Deployment/fraud-serving-gateway",
+    "Service/fraud-serving-active",
+    "Service/fraud-serving-gateway"
+  ],
+  "native_retirement_executed": true,
+  "private_report": "data/storage/kind-platform/synthetic-retirement/6ed9a850f1384d3998def4b5a34366c8/result.json",
+  "new_baseline": "data/storage/kind-platform/operations/baseline-synthetic-retired-66006d3ae07f4c0887a22eb044d5db67.json",
+  "old_baseline": "data/storage/kind-platform/operations/baseline-4fb6e8ecc8b14ad79564a84086a6c170.json",
+  "old_baseline_modified": false,
+  "preserved_resource_identities_verified": true,
+  "functional_readbacks_verified": true,
+  "helm_history_preserved": true,
+  "champion_model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+  "champion_modified": false,
+  "PVCs_or_images_deleted": false,
+  "maintenance_tool_tests": {
+    "passed": 16,
+    "seconds": 0.07
+  },
+  "portal": {
+    "status": "portal_snapshot_verified",
+    "manifest_sha256": "ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af",
+    "decisions": 200,
+    "customers": 199,
+    "alerts": 13,
+    "feedback": 200,
+    "explanations": 5
+  },
+  "performance": {
+    "status": "portal_performance_verified",
+    "manifest_sha256": "6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475",
+    "validation_rows": 67255,
+    "model_loaded": false,
+    "champion_modified": false
+  },
+  "new_stop_start_or_reboot_validated": false,
+  "repository_code_removal_native_readback_validated": false,
+  "different_weight_successor_promotion_and_rollback_validated": false
+}

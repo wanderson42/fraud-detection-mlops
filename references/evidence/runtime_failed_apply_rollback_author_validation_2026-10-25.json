@@ -1,0 +1,25 @@
+{
+  "schema": "fraud_runtime_failed_apply_rollback_author_validation_v1",
+  "date": "2026-10-25",
+  "source": "author supplied CLI output; original receipt bytes not provided",
+  "maintenance_id": "api-trim-v1",
+  "apply_status": "failed",
+  "rollback_status": "runtime_maintenance_rolled_back",
+  "verification_status": "runtime_maintenance_verified",
+  "active_state_sha256": "d6ea07a51f844d3932f6061dff47ecab04f1608ad22fbdb6c00a993b28593498",
+  "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+  "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+  "HTTP": {
+    "transaction_id": 335910,
+    "score": 0.4178630794049542,
+    "invalid_input_http_status": 422,
+    "p95_ms": 66.54592769482406,
+    "measurements": 20
+  },
+  "functional_readbacks_verified": true,
+  "rollback_executed": true,
+  "champion_modified": false,
+  "new_baseline_written": false,
+  "optimized_runtime_accepted_as_active": false,
+  "different_weight_successor_promotion_validated": false
+}

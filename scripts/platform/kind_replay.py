@@ -11,6 +11,7 @@ from uuid import uuid4
 
 from scripts.platform import kind_foundation as f
 from scripts.platform import kind_tracking as tracking
+from scripts.platform.container_images import inspect_image as loaded
 
 CHART = f.ROOT / "infra/helm/fraud-replay"
 
@@ -42,23 +43,6 @@ def pins():
             if p.is_file() and (not suffix or p.suffix == suffix)
         )
     return {name: sha(f.ROOT / name) for name in sorted(names)}
-
-
-def loaded(tag):
-    return json.loads(
-        f.run(
-            [
-                "docker",
-                "exec",
-                f.CLUSTER + "-control-plane",
-                "crictl",
-                "--runtime-endpoint",
-                "unix:///run/containerd/containerd.sock",
-                "inspecti",
-                tag,
-            ]
-        ).stdout
-    )["status"]
 
 
 def image_record():

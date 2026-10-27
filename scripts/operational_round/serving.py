@@ -10,6 +10,7 @@ import subprocess
 from tempfile import TemporaryDirectory
 from threading import Thread
 import time
+from urllib.error import URLError
 from uuid import uuid4
 
 from mlflow import MlflowClient
@@ -374,9 +375,58 @@ def forward(pod):
             reader.join(timeout=5)
 
 
-def check(url, value, slot):
-    from scripts.platform.kind_serving import wait_route
+def check_api(requester, plan, slot):
+    manifest = plan["releases"][slot]["manifest"]
+    code, ready = requester("/ready")
+    f.require(
+        code == 200 and ready.get("serving_release_id") == manifest["serving_release_id"],
+        "Readiness identity differs",
+    )
+    code, info = requester("/info")
+    f.require(
+        code == 200
+        and all(
+            info.get(key) == manifest[key]
+            for key in [
+                "serving_release_id",
+                "model_id",
+                "model_sha256",
+                "feature_contract_version",
+                "evidence_kind",
+            ]
+        ),
+        "API information identity differs",
+    )
+    score = checks.check_score(
+        None,
+        plan["smoke"],
+        manifest,
+        requester=lambda _, route, payload=None: requester(route, payload),
+    )
+    code, _ = requester("/score", {})
+    f.require(code == 422, "Invalid input must return 422")
+    return {"score": score, "invalid_input_http_status": code}
 
+
+def wait_route(url, plan, slot, timeout=60):
+    deadline = time.monotonic() + timeout
+    wanted = plan["releases"][slot]["manifest"]["serving_release_id"]
+    while time.monotonic() < deadline:
+        try:
+            code, ready = checks.request_json(url, "/ready")
+            if code == 200 and ready.get("serving_release_id") == wanted:
+                return check_api(
+                    lambda route, payload=None: checks.request_json(url, route, payload),
+                    plan,
+                    slot,
+                )
+        except URLError, TimeoutError, ConnectionError:
+            pass
+        time.sleep(0.25)
+    raise ValueError("Gateway did not converge to the requested release identity")
+
+
+def check(url, value, slot):
     return wait_route(url, value, slot, timeout=45)
 
 

@@ -2,6 +2,7 @@
 
 import argparse
 from contextlib import contextmanager
+import copy
 import json
 import subprocess
 import time
@@ -19,14 +20,45 @@ def connection(service):
         with tracking.port_forward() as url:
             yield {"service": service, "url": url}
     elif service == "api":
-        from scripts.platform import kind_serving as serving
-        from scripts.platform import kind_serving_delivery as delivery
+        from scripts.model_updates import deployment
+        from scripts.operational_round import serving
+        from scripts.platform import serving_recovery
 
-        plan = delivery.plan()
-        observed = serving.observe(plan)
-        with delivery.forward(observed["pods"]["gateway"]["name"]) as url:
-            checked = serving.wait_route(url, plan, "blue")
-            yield {"service": service, "url": url, "verification": checked}
+        active = serving_recovery.current()
+        slot = active["slot"]
+        manifest = active["plan"]["releases"][slot]["manifest"]
+        foundation.require(
+            active["model_sha256"] == manifest["model_sha256"],
+            "Active model binding differs",
+        )
+        policy = json.loads(
+            (foundation.ROOT / "references/model_update_policy_v1.json").read_bytes()
+        )
+        # The shared deployment gate checks Registry, route, images and HTTP identity.
+        # Pass a copy: existing gates may enrich plan paths while inspecting them.
+        inspected = copy.deepcopy(active)
+        deployment.check_active(inspected, policy)
+        plan = inspected["plan"]
+        with serving.forward(serving.gateway(plan)) as url:
+            checked = deployment.gate(url, plan, slot, policy)
+            foundation.require(
+                serving_recovery.current() == active,
+                "Active deployment changed while opening access; reopen the command",
+            )
+            yield {
+                "service": service,
+                "url": url,
+                "registry_version": active["version"],
+                "slot": slot,
+                "model_sha256": active["model_sha256"],
+                "serving_release_id": manifest["serving_release_id"],
+                "verification": checked,
+            }
+        foundation.require(
+            serving_recovery.current() == active,
+            "Active deployment changed during access; reopen the command",
+        )
+        deployment.check_active(copy.deepcopy(active), policy)
     else:
         raise ValueError("Only mlflow and api local access are supported")
 

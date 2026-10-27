@@ -1,0 +1,23 @@
+{
+  "schema": "fraud_runtime_chart_fix_preparation_v1",
+  "date": "2026-10-25",
+  "basis_commit": "deea2ae",
+  "status": "prepared_native_candidate_apply_pending",
+  "cause": "generated runtime image prefix rejected by unchanged chart schema",
+  "fix": "canonical runtime image tag and real Helm template preflight using rollout values before prepare approval and deployment mutation",
+  "chart_schema_changed": false,
+  "model_weights_changed": false,
+  "champion_modified": false,
+  "historical_receipts_rewritten": false,
+  "local_validation": {
+    "focused_tests_passed": 40,
+    "focused_tests_deselected": 1,
+    "real_Helm_template_valid_and_invalid_tags": true,
+    "preflight_values_match_actual_deployment_apply": true,
+    "ruff_check": true,
+    "ruff_format": true,
+    "full_current_checkout_suite_executed": false,
+    "fixture_limitation": "one prepare integration test needs newer kind_operations.check absent from retained fixture; author should run targeted full subset in current checkout"
+  },
+  "native_candidate_apply_validated": false
+}

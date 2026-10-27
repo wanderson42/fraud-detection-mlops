@@ -1,0 +1,74 @@
+{
+  "schema": "fraud_canonical_lifecycle_preparation_v1",
+  "status": "locally_verified_native_acceptance_pending",
+  "prepared_on": "2026-10-22",
+  "basis": {
+    "branch": "feat/fraud-operations-demo",
+    "latest_native_commit_reported": "b930187",
+    "includes_reported_commits": [
+      "4664f6a",
+      "b1d11c2",
+      "b930187"
+    ],
+    "method": "exact accepted payloads over public main; guarded file hashes, not direct access to native checkout"
+  },
+  "behavior": [
+    "same active-champion gate as platform-api",
+    "single startup dependency order; shutdown reverses it",
+    "preserve absent/zero inactive slot; reject staged two-active-slot baseline",
+    "restore exact recorded replicas after partial or full planned shutdown",
+    "optional legacy rehearsal requires its own ownership receipt",
+    "private immutable baseline v2 binds current active state; old baselines not rewritten",
+    "no new runtime module or service"
+  ],
+  "validation": {
+    "python": "3.14.4",
+    "ruff_check": true,
+    "ruff_format": true,
+    "regression_passed": 429,
+    "regression_skipped": 12,
+    "warnings": 21,
+    "subtests_passed": 12,
+    "seconds": 104.35,
+    "command": "python -m pytest -q tests/infra tests/model_updates tests/product_flow tests/serving_recovery tests/storage/test_managed_paths.py tests/storage/test_persistence_inventory.py",
+    "full_suite_repeated": false,
+    "model_update_source_pins_unchanged": true,
+    "product_source_pins_unchanged": true,
+    "model_update_pin_count": 187,
+    "product_pin_count": 193,
+    "tracking_consumer_review": {
+      "tracking_review_valid": true,
+      "issues": 0,
+      "source_files_scanned": 196,
+      "declared_consumers": 29,
+      "services_contacted": false,
+      "models_or_databases_opened": false
+    },
+    "guarded_application_rollback_and_idempotency": true,
+    "commit_helper_preserves_unrelated_staged_editor": true
+  },
+  "source_changes": {
+    "scripts/platform/kind_operations.py": {
+      "before": "6711b31b7fd54d62b44843c360e7ce9ad924e75f25260a9a57073882fbd5ca53",
+      "after": "c05a6406188bdc78c3747f5758e23d2ef4b530dca2064d3d149b5efb1a419824"
+    },
+    "tests/infra/live/test_kind_operations_live.py": {
+      "before": "69ff6309c026b4a2d8b362a4a286e4845095cf692ef071c7d99a4ffeb31c9074",
+      "after": "2014877be10f63d26ff7676bcecd3d06e972fbebceccd7d4ad1422fad519432f"
+    },
+    "tests/infra/test_kind_operations.py": {
+      "before": "def6b0d68dcb233bcc8811b913c6bf55a5cc48aeb0b54343ac092fc21ed1dc6d",
+      "after": "4ba79823ed6fbc70d0cb8078f1eb9eb5b12e9ec278d52ea6073984f395db0b63"
+    }
+  },
+  "native_stop_start_validated": false,
+  "host_reboot_validated": false,
+  "different_weights_successor_promotion_validated": false,
+  "native_data_or_receipts_modified": false,
+  "historical_evidence_removed": false,
+  "pending": [
+    "operator canonical stop/start and readback receipt",
+    "training/CRI deduplication and bounded scientific source compatibility",
+    "continuous product session"
+  ]
+}

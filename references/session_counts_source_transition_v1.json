@@ -1,0 +1,14 @@
+{
+  "schema": "fraud_session_counts_source_transition_v1",
+  "scope": "backward-compatible aggregate count validation; old image identities remain historical, new receiver requires explicit maintenance",
+  "changes": {
+    "scripts/session_monitoring/contract.py": {
+      "before": "f26373255f4cff09f4e14ca5622844ed76d7b7c7a67b8fd076e6cf51607a21e5",
+      "after": "932a31f2a020ebbf20e905979ff7d1f2999f22073170c58670eac162842e2a88"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "ca92c178bc9222ec6992e5514f126557afd8b2a09cac1e1e1b132d96caaa7d03",
+      "after": "8f79f3dc708c9591a1ddb01adab15d2eb612dcfef35486e33afde4957ad1c629"
+    }
+  }
+}

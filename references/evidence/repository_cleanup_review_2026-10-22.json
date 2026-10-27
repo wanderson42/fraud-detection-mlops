@@ -1,0 +1,1394 @@
+{
+  "schema": "fraud_repository_cleanup_review_v1",
+  "status": "locally_verified_native_cleanup_application_pending",
+  "reviewed_on": "2026-10-22",
+  "basis": {
+    "main_commit": "740ca24bcbd17c57465ae9f654f9dbbfefd47d30",
+    "native_commits_reported_by_operator": [
+      "4664f6a",
+      "b1d11c2"
+    ],
+    "branch": "feat/fraud-operations-demo",
+    "method": "public main Git blobs plus exact accepted patch manifests; native branch not yet published",
+    "native_untracked_editor_and_mlruns_excluded": true
+  },
+  "scope": {
+    "files": 780,
+    "python_files": 358,
+    "python_lines": 67725,
+    "python_syntax_errors": [],
+    "includes": [
+      "Python AST imports and function bodies",
+      "Make recipes and included families",
+      "Docker and Dockerignore build inputs",
+      "Helm charts",
+      "GitHub Actions workflow",
+      "Poetry/tox configuration",
+      "test collection sources",
+      "notebook cells and textual references",
+      "protocol/catalogue consumers"
+    ],
+    "limits": "Structural scan of every listed file; targeted semantic review of removal candidates and frozen dependency boundaries. Not proof of arbitrary dynamic plugins or runtime branches."
+  },
+  "groups": {
+    "(root)": {
+      "files": 8,
+      "lines": 6509
+    },
+    ".github/workflows": {
+      "files": 1,
+      "lines": 191
+    },
+    "docker/serving": {
+      "files": 1,
+      "lines": 40
+    },
+    "docs/.gitkeep": {
+      "files": 1,
+      "lines": 0
+    },
+    "docs/ARCHITECTURE.md": {
+      "files": 1,
+      "lines": 678
+    },
+    "docs/README.md": {
+      "files": 1,
+      "lines": 327
+    },
+    "docs/data": {
+      "files": 5,
+      "lines": 1087
+    },
+    "docs/modeling": {
+      "files": 6,
+      "lines": 2064
+    },
+    "docs/operations": {
+      "files": 37,
+      "lines": 10916
+    },
+    "docs/project": {
+      "files": 4,
+      "lines": 2087
+    },
+    "examples/model_contribution.py": {
+      "files": 1,
+      "lines": 163
+    },
+    "examples/serving_smoke.py": {
+      "files": 1,
+      "lines": 74
+    },
+    "fraud_detection_mlops/__init__.py": {
+      "files": 1,
+      "lines": 1
+    },
+    "fraud_detection_mlops/artifacts.py": {
+      "files": 1,
+      "lines": 46
+    },
+    "fraud_detection_mlops/config.py": {
+      "files": 1,
+      "lines": 11
+    },
+    "fraud_detection_mlops/data": {
+      "files": 20,
+      "lines": 2461
+    },
+    "fraud_detection_mlops/evaluation": {
+      "files": 8,
+      "lines": 1137
+    },
+    "fraud_detection_mlops/features": {
+      "files": 6,
+      "lines": 320
+    },
+    "fraud_detection_mlops/integrations": {
+      "files": 4,
+      "lines": 612
+    },
+    "fraud_detection_mlops/modeling": {
+      "files": 26,
+      "lines": 4268
+    },
+    "fraud_detection_mlops/serving": {
+      "files": 4,
+      "lines": 376
+    },
+    "fraud_detection_mlops/storage": {
+      "files": 2,
+      "lines": 28
+    },
+    "fraud_detection_mlops/streaming": {
+      "files": 21,
+      "lines": 2948
+    },
+    "infra/helm": {
+      "files": 55,
+      "lines": 5532
+    },
+    "infra/kind": {
+      "files": 33,
+      "lines": 6002
+    },
+    "infra/make": {
+      "files": 11,
+      "lines": 575
+    },
+    "infra/observability": {
+      "files": 17,
+      "lines": 3475
+    },
+    "infra/portal": {
+      "files": 5,
+      "lines": 2146
+    },
+    "infra/serving": {
+      "files": 2,
+      "lines": 75
+    },
+    "infra/tracking": {
+      "files": 14,
+      "lines": 3189
+    },
+    "models/.gitkeep": {
+      "files": 1,
+      "lines": 0
+    },
+    "notebooks/.gitkeep": {
+      "files": 1,
+      "lines": 0
+    },
+    "notebooks/fraud_detection_mlops.ipynb": {
+      "files": 1,
+      "lines": 2188
+    },
+    "notebooks/stages": {
+      "files": 27,
+      "lines": 5582
+    },
+    "references/.gitkeep": {
+      "files": 1,
+      "lines": 0
+    },
+    "references/baseline_protocol_v1.json": {
+      "files": 1,
+      "lines": 33
+    },
+    "references/causal_replay_protocol_v1.json": {
+      "files": 1,
+      "lines": 134
+    },
+    "references/customer_day_alert_policy_v1.json": {
+      "files": 1,
+      "lines": 8
+    },
+    "references/evidence": {
+      "files": 162,
+      "lines": 19817
+    },
+    "references/experiment_protocol_v1.json": {
+      "files": 1,
+      "lines": 117
+    },
+    "references/feature_monitoring_v1.json": {
+      "files": 1,
+      "lines": 59
+    },
+    "references/final_evaluation_protocol_v1.json": {
+      "files": 1,
+      "lines": 55
+    },
+    "references/frozen_candidate_v1.json": {
+      "files": 1,
+      "lines": 178
+    },
+    "references/gold_contract_v1.json": {
+      "files": 1,
+      "lines": 47
+    },
+    "references/handbook_source.json": {
+      "files": 1,
+      "lines": 1294
+    },
+    "references/hgb_optuna_protocol_v1.json": {
+      "files": 1,
+      "lines": 142
+    },
+    "references/kind_observability_legacy_image_pins_v1.json": {
+      "files": 1,
+      "lines": 38
+    },
+    "references/model_update_compatibility_v1.json": {
+      "files": 1,
+      "lines": 16
+    },
+    "references/model_update_policy_search_v1.json": {
+      "files": 1,
+      "lines": 112
+    },
+    "references/model_update_policy_v1.json": {
+      "files": 1,
+      "lines": 80
+    },
+    "references/native_causal_replay_execution_v1.json": {
+      "files": 1,
+      "lines": 76
+    },
+    "references/native_causal_replay_numerical_v1.json": {
+      "files": 1,
+      "lines": 117
+    },
+    "references/operational_round_policy_v1.json": {
+      "files": 1,
+      "lines": 54
+    },
+    "references/paced_monitoring_protocol_v1.json": {
+      "files": 1,
+      "lines": 20
+    },
+    "references/persistence_catalogue_v1.json": {
+      "files": 1,
+      "lines": 1220
+    },
+    "references/product_flow_policy_v1.json": {
+      "files": 1,
+      "lines": 13
+    },
+    "references/reference_assessment_execution_v1.json": {
+      "files": 1,
+      "lines": 30
+    },
+    "references/reference_assessment_protocol_v1.json": {
+      "files": 1,
+      "lines": 125
+    },
+    "references/serving_seed_source_transition_v1.json": {
+      "files": 1,
+      "lines": 32
+    },
+    "references/silver_contract_v1.json": {
+      "files": 1,
+      "lines": 21
+    },
+    "references/temporal_protocol_v1.json": {
+      "files": 1,
+      "lines": 18
+    },
+    "reports/.gitkeep": {
+      "files": 1,
+      "lines": 0
+    },
+    "reports/figures": {
+      "files": 1,
+      "lines": 0
+    },
+    "scripts/case_explanations": {
+      "files": 4,
+      "lines": 460
+    },
+    "scripts/check_serving_wheel.py": {
+      "files": 1,
+      "lines": 127
+    },
+    "scripts/check_test_environment.py": {
+      "files": 1,
+      "lines": 19
+    },
+    "scripts/fraud_portal": {
+      "files": 12,
+      "lines": 1813
+    },
+    "scripts/model_updates": {
+      "files": 8,
+      "lines": 1898
+    },
+    "scripts/monitoring": {
+      "files": 7,
+      "lines": 1006
+    },
+    "scripts/operational_round": {
+      "files": 8,
+      "lines": 1970
+    },
+    "scripts/platform": {
+      "files": 32,
+      "lines": 9449
+    },
+    "scripts/product_flow": {
+      "files": 5,
+      "lines": 892
+    },
+    "scripts/replay": {
+      "files": 2,
+      "lines": 592
+    },
+    "scripts/serving": {
+      "files": 4,
+      "lines": 1787
+    },
+    "scripts/storage": {
+      "files": 15,
+      "lines": 5009
+    },
+    "scripts/tracking": {
+      "files": 6,
+      "lines": 2357
+    },
+    "scripts/validation": {
+      "files": 1,
+      "lines": 227
+    },
+    "tests/__init__.py": {
+      "files": 1,
+      "lines": 1
+    },
+    "tests/case_explanations": {
+      "files": 3,
+      "lines": 255
+    },
+    "tests/conftest.py": {
+      "files": 1,
+      "lines": 215
+    },
+    "tests/data": {
+      "files": 6,
+      "lines": 1316
+    },
+    "tests/evaluation": {
+      "files": 6,
+      "lines": 770
+    },
+    "tests/experiment_fixtures.py": {
+      "files": 1,
+      "lines": 11
+    },
+    "tests/features": {
+      "files": 3,
+      "lines": 374
+    },
+    "tests/fraud_portal": {
+      "files": 7,
+      "lines": 857
+    },
+    "tests/infra": {
+      "files": 25,
+      "lines": 5502
+    },
+    "tests/integrations": {
+      "files": 4,
+      "lines": 559
+    },
+    "tests/model_updates": {
+      "files": 4,
+      "lines": 555
+    },
+    "tests/modeling": {
+      "files": 15,
+      "lines": 2825
+    },
+    "tests/monitoring": {
+      "files": 7,
+      "lines": 881
+    },
+    "tests/operational_round": {
+      "files": 3,
+      "lines": 512
+    },
+    "tests/product_flow": {
+      "files": 4,
+      "lines": 481
+    },
+    "tests/serving": {
+      "files": 14,
+      "lines": 1883
+    },
+    "tests/serving_recovery": {
+      "files": 3,
+      "lines": 580
+    },
+    "tests/storage": {
+      "files": 17,
+      "lines": 4333
+    },
+    "tests/streaming": {
+      "files": 11,
+      "lines": 2384
+    },
+    "tests/test_artifacts.py": {
+      "files": 1,
+      "lines": 69
+    },
+    "tests/tracking": {
+      "files": 20,
+      "lines": 3652
+    }
+  },
+  "retirements": [
+    "scripts/platform/history/__init__.py",
+    "scripts/platform/history/registry.py",
+    "scripts/platform/history/source.py",
+    "scripts/platform/history/transfer.py",
+    "scripts/platform/history/worker.py",
+    "scripts/platform/kind_history.py",
+    "tests/data/test_entry_points.py",
+    "tests/infra/test_kind_history.py",
+    "tests/modeling/test_entry_points.py"
+  ],
+  "history_import_lines_removed": 1923,
+  "cli_scenarios_preserved": 13,
+  "current_code_Make_CI_Docker_consumers_of_retired_importer": [],
+  "removed_catalogue_consumers": [
+    "scripts_platform_history_registry",
+    "scripts_platform_history_transfer",
+    "scripts_platform_history_worker"
+  ],
+  "accepted_update_and_product_runtime_pins_unchanged": true,
+  "exact_function_body_clone_groups": [
+    [
+      [
+        "scripts/model_updates/training.py",
+        "main",
+        333,
+        24
+      ],
+      [
+        "scripts/operational_round/training.py",
+        "main",
+        306,
+        24
+      ]
+    ],
+    [
+      [
+        "scripts/operational_round/controller.py",
+        "cri",
+        239,
+        15
+      ],
+      [
+        "scripts/platform/kind_replay.py",
+        "loaded",
+        47,
+        15
+      ],
+      [
+        "scripts/platform/kind_serving_delivery.py",
+        "cri",
+        51,
+        15
+      ]
+    ],
+    [
+      [
+        "scripts/model_updates/training.py",
+        "request_for",
+        37,
+        19
+      ],
+      [
+        "scripts/operational_round/training.py",
+        "request_for",
+        34,
+        19
+      ]
+    ],
+    [
+      [
+        "tests/data/test_entry_points.py",
+        "test_command_help_does_not_build_or_download",
+        21,
+        10
+      ],
+      [
+        "tests/modeling/test_entry_points.py",
+        "test_commands_start_without_training",
+        21,
+        10
+      ]
+    ],
+    [
+      [
+        "fraud_detection_mlops/streaming/replay/durable_triage_replay.py",
+        "summary",
+        333,
+        9
+      ],
+      [
+        "fraud_detection_mlops/streaming/replay/temporal_replay_executor.py",
+        "summary",
+        248,
+        9
+      ]
+    ],
+    [
+      [
+        "scripts/product_flow/controller.py",
+        "information",
+        262,
+        7
+      ],
+      [
+        "scripts/product_flow/http_scoring.py",
+        "information",
+        64,
+        7
+      ]
+    ]
+  ],
+  "pending_consolidations": [
+    {
+      "priority": "P1_operational_coherence",
+      "area": "stop/start still targets the initial synthetic serving",
+      "sources": [
+        "scripts/platform/kind_operations.py:STOP_ORDER",
+        "scripts/platform/kind_operations.py:START_ORDER",
+        "scripts/platform/kind_operations.py:probes",
+        "scripts/platform/kind_operations.py:read_baseline"
+      ],
+      "evidence": "Workloads fraud-serving-blue/gateway and kind_serving_delivery.plan are used, whereas the active product uses fraud-detector. Baseline also demands exact controller hashes, including the changed observability controller.",
+      "required_action": "Move lifecycle verification to the active canonical deployment with explicit new baseline validation; preserve previous receipts and legacy acceptance scope. Do not claim complete unified operational validation."
+    },
+    {
+      "area": "training main/request_for",
+      "sources": [
+        "scripts/operational_round/training.py",
+        "scripts/model_updates/training.py"
+      ],
+      "reason": "Exact duplicate bodies; modifying these files changes accepted source pins. Design a bounded source compatibility transition before consolidation."
+    },
+    {
+      "area": "CRI image inspection",
+      "sources": [
+        "scripts/operational_round/controller.py",
+        "scripts/platform/kind_replay.py",
+        "scripts/platform/kind_serving_delivery.py"
+      ],
+      "reason": "Exact duplicate lookup implementation with distinct consumers and frozen caller hashes; unify with contract tests and receipt transition."
+    },
+    {
+      "area": "broad source pin boundaries",
+      "sources": [
+        "scripts/operational_round/controller.py",
+        "scripts/model_updates/controller.py",
+        "scripts/platform/source_compatibility.py"
+      ],
+      "reason": "Whole-directory source identity couples utility cleanup to accepted scientific receipts. Separate scientific identity from operational implementation while preserving provenance."
+    }
+  ],
+  "evidence_or_data_deleted": false,
+  "historical_MLflow_runs_deleted": false,
+  "new_services_added": false,
+  "local_validation": {
+    "python": "3.14.4",
+    "full_suite_passed": 1630,
+    "full_suite_skipped": 52,
+    "warnings": 166,
+    "subtests_passed": 12,
+    "seconds": 914.57,
+    "ruff_check": true,
+    "ruff_format": true,
+    "common_CLI_scenarios_collected": 13,
+    "tracking_consumers_inventory": {
+      "valid": true,
+      "source_files_scanned": 196,
+      "declared_consumers": 29,
+      "issues": 0,
+      "services_contacted": false,
+      "models_or_databases_opened": false
+    },
+    "guarded_application_and_rollback_verified": true
+  },
+  "size_change": {
+    "repository_files_before": 780,
+    "repository_files_after": 773,
+    "net_files_removed": 7,
+    "Python_files_before": 358,
+    "Python_files_after": 350,
+    "Python_lines_removed_net": 1946,
+    "runtime_code_lines_removed": 1360,
+    "new_runtime_modules": 0
+  },
+  "files": [
+    {"path":".dockerignore","lines":13,"sha256":"90fa72bf41927de1eb93d402816d381bc3a7694342a37bc5f06bf297856057b7","decision":"retained_project_input_or_entrypoint"},
+    {"path":".github/workflows/ci.yml","lines":191,"sha256":"292c1c264c959b2670cd1b8b24b3cf1bfd5e18c40eb658907bc83ede0abd8581","decision":"retained_project_input_or_entrypoint"},
+    {"path":".gitignore","lines":204,"sha256":"cb8d0b2ef931a4e2f0eb4237f62969090a64653ed83b51df46b187606a7e9895","decision":"retained_project_input_or_entrypoint"},
+    {"path":"Makefile","lines":42,"sha256":"aa99088516d31b893d165ae976f6fafdab18a7568fce953176e341053b392882","decision":"retained_project_input_or_entrypoint"},
+    {"path":"README.md","lines":599,"sha256":"7f406c4d8fcab5e58105863c99f034deb43e4d48e5cf3f0f780084f8d675f14d","decision":"retained_project_input_or_entrypoint"},
+    {"path":"docker/serving/Dockerfile","lines":40,"sha256":"54045bff14d283e8ec88d4164c37815a0d762a38cd0d287e005e82ffe84a6bbb","decision":"retained_project_input_or_entrypoint"},
+    {"path":"docs/.gitkeep","lines":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","decision":"documentation_or_walkthrough"},
+    {"path":"docs/ARCHITECTURE.md","lines":678,"sha256":"7c078482ba0d937c55b03f09bbf5c3e6ef0c628dfa7854f8a7b4e98f2ea026ab","decision":"documentation_or_walkthrough"},
+    {"path":"docs/README.md","lines":327,"sha256":"5e1f667dd05bfebbc19dd9b3babaf41911c60bc2cfcb32127abdd78f15fb73f4","decision":"documentation_or_walkthrough"},
+    {"path":"docs/data/DATA_DICTIONARY.md","lines":250,"sha256":"d5f52027a8ecad1a7bf3bea272eb38d8b31bcfe2a2a89edd36082f6f4d5b57ce","decision":"documentation_or_walkthrough"},
+    {"path":"docs/data/DATA_PIPELINE.md","lines":313,"sha256":"f340aebcde2a5d39ae25c08d65a3900f000cb0372046deffba8a7500fdcc847c","decision":"documentation_or_walkthrough"},
+    {"path":"docs/data/EDA.md","lines":190,"sha256":"bc56b8cd2948cf3dfa21575617170eda858d80eafe80a9e90ae37db042b52bc6","decision":"documentation_or_walkthrough"},
+    {"path":"docs/data/GOLD_CONTRACT.md","lines":226,"sha256":"21c90ebd7948a20428831790351b7e777fff4c64ee8e8ed1fdf0b77948b7e417","decision":"documentation_or_walkthrough"},
+    {"path":"docs/data/SILVER_CONTRACT.md","lines":108,"sha256":"502342adde77ea39f221cc7aae2b3c1bf76990cc0c7548d5ddc7945a83851cf1","decision":"documentation_or_walkthrough"},
+    {"path":"docs/modeling/BASELINE.md","lines":312,"sha256":"63c478f82ba70cd682cba41f6edeedd09e690556fb118beea91a5ef987bf4e3a","decision":"documentation_or_walkthrough"},
+    {"path":"docs/modeling/CONTRIBUTING_MODELS.md","lines":180,"sha256":"72d822f671c262bd933bcb7c2734ba3bdb3c457ba43a5d66ee7352a1c5739f11","decision":"documentation_or_walkthrough"},
+    {"path":"docs/modeling/DIAGNOSTICS.md","lines":222,"sha256":"bfdded0217249a6169e24791f5612792216b5e367ee311df47bf29acefbad24b","decision":"documentation_or_walkthrough"},
+    {"path":"docs/modeling/EVALUATION_PROTOCOL.md","lines":891,"sha256":"13dc597df1f3aa0bc41e8fe2d26d20e533d25bdd01469817619c045544b3de3c","decision":"documentation_or_walkthrough"},
+    {"path":"docs/modeling/EXPERIMENT_PROTOCOL.md","lines":243,"sha256":"99d44a760d53ea40909d148a63a13f12848ebfbb45fa56997bdc7e3b73261fe9","decision":"documentation_or_walkthrough"},
+    {"path":"docs/modeling/MODEL_CARD.md","lines":216,"sha256":"586aaa5f94e8a19dedda0f140232526f77a5692b7ce6ce08d6700fbbd893eb1f","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/CASE_EXPLANATIONS.md","lines":124,"sha256":"e5e2aa51144b5298743a827a1ad36033d22e1c4de713e5e6d250ae80a8a6e2e9","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/CAUSAL_REPLAY.md","lines":494,"sha256":"2536ca7104fe3f384cb236990f82621470843da6bb10bb1cc2c7403a6763dfc7","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/CODEBASE_SIMPLIFICATION.md","lines":89,"sha256":"2449fd5762a7ee11f5f809d1d1d289098cd707b696287097f475e6ecf612fcbf","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/DASHBOARD_COLORS.md","lines":114,"sha256":"dd247fcb317f9e2575cfe46f91976ccbb888d7e09f1513d930a662551e3c321c","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/EXPERIMENT_EXECUTION.md","lines":145,"sha256":"051f67809ce486f7e224ece59e09fe7fe48944ec68ad0f28b990324eba070080","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/FEATURE_MONITORING.md","lines":243,"sha256":"f6cd20183be316b28a822952824d0cd8e793a6eb6da9f00a11a811205975601b","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/FRAUD_PORTAL.md","lines":170,"sha256":"875608c35e0be07e2e0b69996a21b54065dc5d465f3564b7f28c9a67dcf4fae6","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/HGB_TRACKING.md","lines":99,"sha256":"2bfda4c4d4b7627ac026d6df83140e69c2cb8575cd53a240c694676d79f53ffe","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_BOOTSTRAP_DIAGNOSTICS.md","lines":73,"sha256":"bfa5a21fd766f599e2bc6b6b1958b8f396d5dca53d40429576c197cb187bbb5e","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_DATASETS.md","lines":159,"sha256":"ab4c796d179d5b4bfa3db8119eb43ead6d7fb689d0231cc2934347b82a88056c","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_FOUNDATION.md","lines":193,"sha256":"7965218553692670122af0e4004c8ceb8c7475f626e7f586584cbdf001ebc748","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_FOUNDATION_ACCEPTANCE.md","lines":88,"sha256":"3e8ac28962734e66972f7f78a93a667bc565fc2d49ed2b6482fc6662f66486f0","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_HISTORY.md","lines":140,"sha256":"3c4f4d6c8f1524222844538edd24fbc8803acb24d74da4c7c5ad37f46ae82580","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_OBSERVABILITY.md","lines":193,"sha256":"5f8feb49314c0c23727a72c62c29155871fc11eadd5697440c3cfc3bb3e6fc4c","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_OPERATIONS.md","lines":187,"sha256":"b4b57168a051e7b55be33983d4a406b6ad3ceaaf684cb463fb58f010645f3c71","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_PIPELINE.md","lines":188,"sha256":"f9ba1032defae336e18ed40a8cbd102debe514dd6a00383afa1815617f9a120a","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_PLATFORM.md","lines":130,"sha256":"8037e1cec109e00303a08a5ca17d7ce6540d712e470d5607fbfc5ee64e9e6146","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_REPLAY.md","lines":122,"sha256":"77252068d7f019fca45fea113063f8b03dadf99819d44af8d56d831857da8ad0","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_SERVING.md","lines":187,"sha256":"d2c62689c49ae1011c239406c0f9fbf7e431628f1b40a6004442ad422b943204","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/KIND_TRACKING.md","lines":164,"sha256":"c42b0a3ea3598bec760498d828384b3fbf3b338b66a86550cdf83a98ec166189","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/LOCAL_ACCESS.md","lines":107,"sha256":"f417b601edee2e48d5cef2aabfdd0ef781bc872a325f171eb75ea8af53ac8913","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/MLFLOW.md","lines":810,"sha256":"59f594f6e471aa394ae6b6d6eabf7c60a7dcf73035ac516720a0613f03540b93","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/MODEL_UPDATES.md","lines":250,"sha256":"ebd7902c79fd64a3c3153b40786db4a4698d05080f870b808187f8e5f565bc1c","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/NUMERICAL_CORRECTIVE_REPLAY.md","lines":178,"sha256":"5b163170c37bad62abd34c51ed0a2c31617ec8c946f5adf58ebde0ed2e4697d6","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/OBSERVABILITY.md","lines":321,"sha256":"9bacb8250ad0354b742612eb2d7a32257d383d453928417b235baad528a5b24a","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/OPERATIONAL_ROUND.md","lines":167,"sha256":"053462f34e2ea2c044d7604e5e2a11af18aded07060be7284493514af4f5edf9","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/OPERATIONS.md","lines":466,"sha256":"1696298291a248bea3565b8517116e2526e9269b1f5bc2f8ebdd7b9e881063c5","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/PORTAL_PERFORMANCE.md","lines":134,"sha256":"5cb03e247fa5738dd75d6a8909692811e51e80c8add01bb5f609e3c710b38e40","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/PORTFOLIO_WALKTHROUGH.md","lines":256,"sha256":"41ff826da214eb2ac82cfabab74abe57f38362283fd58a0065e2f7d9dcbf58f8","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/PRODUCT_DELIVERY.md","lines":328,"sha256":"003e1b6bd52ae71dde234c66d4cf43b53ca361adff6e0542df8216bfeb48c51f","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/PRODUCT_OPERATIONS.md","lines":133,"sha256":"1611a60c8cf057e67957ff42c9d6615aa5844ca9b00e433c79ffb82cda388549","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/SERVING_CONTRACT.md","lines":303,"sha256":"11de04509ea7ff12f9237e12fef58caa637a569943d7e294fb9dbff459d9b49f","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/SERVING_RECOVERY.md","lines":175,"sha256":"cbd1aac059cb0338205fa1d5d17746651e096c0a0e9b7dcd1354be3da3c7a22d","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/SERVING_ROLLOUT.md","lines":507,"sha256":"35a98dfa6d67ff24de5487d3219f6f10011025b730a54b4ce2db245c4908f786","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/STORAGE.md","lines":1556,"sha256":"5b41a2c6dead4b220655759c9d285aec739d91dead22bce0e53a82f60cca2069","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/TESTING.md","lines":1542,"sha256":"1a68be2d81e33c59adacc76974fd20b000e181ed475d55c61124933cb9c9e4cb","decision":"documentation_or_walkthrough"},
+    {"path":"docs/operations/TRACKING_RECOVERY.md","lines":381,"sha256":"2bc860c3af632f39cdab0a807d5bb217aa548b29d6e0cf45296524e6e873d438","decision":"documentation_or_walkthrough"},
+    {"path":"docs/project/DOCUMENTATION_POLICY.md","lines":149,"sha256":"35c1771c05c2f5ebfb766f9e95c7c9e2b03983fd8a12acfbee851cd49a3dea3d","decision":"documentation_or_walkthrough"},
+    {"path":"docs/project/PROBLEM_CONTEXT.md","lines":320,"sha256":"f8806f49d7933f133b297e8a184ed7f48855829c0866fc5dbba4d42902278f82","decision":"documentation_or_walkthrough"},
+    {"path":"docs/project/ROADMAP.md","lines":810,"sha256":"3b0924fa093fc19e1100726af93e9691d53943735d2efec4ddade802a3d880b9","decision":"documentation_or_walkthrough"},
+    {"path":"docs/project/STAKEHOLDERS.md","lines":808,"sha256":"0993860e540aac0eb589fa580e5f1456fa4694c1a897fe6df022777a2546fbbf","decision":"documentation_or_walkthrough"},
+    {"path":"examples/model_contribution.py","lines":163,"sha256":"01ecd4937e17ff080a68e48148bceb0be1da7ea96038076716f258dcf25231c4","decision":"retained_project_input_or_entrypoint"},
+    {"path":"examples/serving_smoke.py","lines":74,"sha256":"f5e82849d8d961452178c9d41b2b49b72f63411ff3164ff88ac23c5cef007c94","decision":"retained_project_input_or_entrypoint"},
+    {"path":"fraud_detection_mlops/__init__.py","lines":1,"sha256":"ea70c909d7aec685ecf8ec026ebbec0fe6a4200cda39b17cf8231d6d431ede6b","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/artifacts.py","lines":46,"sha256":"d3d700d345af24098b5218f54d0043c20eeeb57d0c9ded3833c5861ff96a87e3","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/config.py","lines":11,"sha256":"2c020fd8f531646eda0e54781f4c86aae5a48c1380aeb5373f9aa40e19f38368","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/__init__.py","lines":1,"sha256":"75271206f352e00c3a15b6f9bf2d059b376c79038743582ccb2e9b892b4dcc2c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/contracts/__init__.py","lines":1,"sha256":"6ca7f655ade6b2239f21c2e1ba1f0506283921d492d3dcf3e9b53dcb1dfc88dd","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/contracts/dataset_errors.py","lines":13,"sha256":"3b3aeac26c0dd1e2ce0a96e90b26ad3af61f1f34484523f14be53c9186a62196","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/contracts/gold_contract.py","lines":39,"sha256":"8e9c55ebf226c130eef41e0ac0fee32e7fc4246b4279ffb3ad02eefa5f4a5e96","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/contracts/silver_contract.py","lines":59,"sha256":"1b2ff9725bc5b445560d25969dcb1b73c964f2ea3119eede371cbe0a07424492","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/contracts/temporal_protocol.py","lines":70,"sha256":"613d22a0db9efa73022783bfa0149500e32bfa11408277e3dd563c1269bb2e3d","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/contracts/transaction_schema.py","lines":45,"sha256":"096878f9d7ce106716323b067b263c8cee4f1c20e5162b07d87f0cfac21a76c3","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/datasets/__init__.py","lines":1,"sha256":"c822646c6f63be966f5266a4cc32111bbe2f4eea010ae9cf413c8493908bfd9b","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/datasets/development_scoring_dataset.py","lines":115,"sha256":"96ac8840bc035c7d47ca414a11e034813b96836f6f055fb94214e5e7601597f4","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/datasets/gold_dataset.py","lines":431,"sha256":"5afa0b3196b9466965a92a262734286bac8829fb7177fb8d2d1c941a58ffd588","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/datasets/native_replay_dataset.py","lines":152,"sha256":"f504a74998b8123bc9378b6c31c4bd6e7d9ab3ea5895b5ba2d7b1bbdf3a6b0a9","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/datasets/reference_assessment_dataset.py","lines":200,"sha256":"717705ccf215f7e99c1a6b21f409390cc935aab57469c42a8e097b2d8f39a283","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/datasets/silver_dataset.py","lines":360,"sha256":"820b2e7642b033797afbd19adb63873ab3eba3824c8a5a5f71b2573041b6fea9","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/ingestion/__init__.py","lines":1,"sha256":"59cc05c00eae6c6a21c1908ab904111ce14656fc4426f21479b7d558cccd66c0","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/ingestion/handbook_bronze.py","lines":281,"sha256":"68ca005aeb7d74a1a9e73213f68a86376c5510fa88570a526fcf30ef0afa419d","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/ingestion/handbook_download.py","lines":76,"sha256":"513f760b9db525006b6e9e21a28493044008e4efc120ff8b2ea68ad70651558c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/ingestion/handbook_inventory.py","lines":68,"sha256":"bbd37146958c83d74192b0f5cb8464bd3cb6aaea73f87c743af10b006bfc6f4f","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/quality/__init__.py","lines":1,"sha256":"2b0d64cc7e4a39942815233da63e32241d52697386bdfa4945eb83a10621c48f","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/quality/training_eda.py","lines":348,"sha256":"a1df487c60ccc232e25ccb1322e285249a9b20059c6b48c7e3b08b7ecebdea6a","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/data/quality/transaction_profile.py","lines":199,"sha256":"be0be7d5b61d402ff461a609ad66a55e4efabbc928e186c48d660301747ac1a7","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/evaluation/__init__.py","lines":1,"sha256":"47b1f03910f21adac166a3026194a73d2dcb00bf56ba7f180af8fc51d4c8f42d","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/evaluation/conditional_queue_reference.py","lines":109,"sha256":"03fdb036c78a804825e00bf36bfa678c59ad1ee956f773020e1b8d771bbbfb2a","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/evaluation/paired_comparison.py","lines":139,"sha256":"1815aaae1e333ecfc1ad11a1787d436a0e8399e6e0d5207bac5741a0711b40b5","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/evaluation/ranking_metrics.py","lines":73,"sha256":"fd8905db53aaa8623b93df0d415ae99fc03985e319936dc4aecbf6c1bdc73a9e","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/evaluation/temporal_block_resampling.py","lines":178,"sha256":"acd5b1ae16f665e1b0d55e93c0cedc6f377df08a0074f4d04ac69ae468b1e47b","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/evaluation/temporal_dependence_diagnostics.py","lines":171,"sha256":"d2d86dbd47b09ba1fa333ef39d5c14a780634e46ecde7d03b10f3ac1ceac30e7","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/evaluation/temporal_reference_metrics.py","lines":36,"sha256":"86d4ab4714e9e132bf21f98db3d018753fe7cb001b777612575b10f0ecbe77e5","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/evaluation/validation_diagnostics.py","lines":430,"sha256":"36a71bc933d9b530f36065823187b7a0bb0983e98a0fea70fbcb6c22318b217b","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/features/__init__.py","lines":31,"sha256":"a9860cd2feab2deac373361e6e24fadb99173288e6fa18d5091464fcf555a873","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/features/causal_history.py","lines":92,"sha256":"15f176b235151e2c54bb64ab7d7fe990b5d262fe4c3df378538ff38340fa94dc","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/features/deterministic_causal_history.py","lines":37,"sha256":"00f138096252f031d08ed08bd6d3b9cfea0c098b7133d1367ba3af423fc98919","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/features/exact_binary_mean.py","lines":37,"sha256":"46431274c50674bee63cce328c7bf28ad6569e9b6cabe5b41bd6aa67060ae653","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/features/feature_schema.py","lines":44,"sha256":"eadd9f11e0b6dc204eaab5dc90aaf8589645062ee082f7371138a93eba12b4d7","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/features/feature_validation.py","lines":79,"sha256":"654a7c60fea672c80a3a9fb3719e31013c3b3bf958ac90bc123e265bc58e4887","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/integrations/__init__.py","lines":1,"sha256":"ce3845b6ce08c910f43db06d670bd395c586f26a718072b004aaf25b761abdd9","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/integrations/mlflow_tracking.py","lines":314,"sha256":"641de2903345d3141b0afa8c79e24ba59360572e12247304bb67a409ec35644e","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/integrations/serving_release_export.py","lines":233,"sha256":"1303df87a8c3fd438fe6182f03c8a64359d8d424c1a4ea8f8a3c90237b080138","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/integrations/skops_persistence.py","lines":64,"sha256":"ad8c8d9ae68561f765d7cd868bcbca30231a96363349d9d067fc15ef85834c3c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/__init__.py","lines":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/algorithms/__init__.py","lines":1,"sha256":"caf16012f1205c2004beea2df33643f4859124a9fbb87c6d0255618f9bc165aa","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/algorithms/dummy_prior.py","lines":10,"sha256":"cfae6e4f7f09beb73ade833a5369f670ce554d6cdf98d876f53909ff5dc55fed","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/algorithms/hist_gradient_boosting.py","lines":27,"sha256":"d508bb28bd97820b37b40f069e949b4c5573942cde8ffb602a4c421f05a57e14","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/algorithms/logistic_regression.py","lines":23,"sha256":"7eeac8a981232e47895ada324b5c1661c213997d845fa47bdef14e19efb33990","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/algorithms/model_catalog.py","lines":49,"sha256":"21ec75d22b4d98da36b53e5a70425a7f2371268edcc8f6293d4bf1bf1fe363af","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/contracts/__init__.py","lines":1,"sha256":"b37ee901eacaf2e41385edd2282bf90fa28678ca73079c0d71d583dd6e159395","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/contracts/experiment_errors.py","lines":9,"sha256":"5f54d5077d1b577094385ed9c506e0b37a4dbca7b516291701536073ec809299","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/contracts/model_interface.py","lines":195,"sha256":"1d86df976c44f93b3a8ed39f6a9e1c9a919148d8386e79f3f58a037c4ae29fe3","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/contracts/prediction_schema.py","lines":14,"sha256":"0f0328bdcf87850df1a61144cc7391383202fb69d4006266497977344fdc4b31","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/contracts/temporal_assessment_protocol.py","lines":52,"sha256":"5911e309088bf830c3b742b4199c48ec305e2989c48e1b990a07a1e2d065ef1a","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/__init__.py","lines":1,"sha256":"c83e418e3aab52a0adae6af4e203597f3a91873f89a6c37d3750ec23d1ab97d0","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/baseline_experiment.py","lines":386,"sha256":"63139e2ffceedf48800057bc50b355638ae434ed2b534ed3c47d999422235d73","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/baseline_policy.py","lines":218,"sha256":"03433e7c937c2b2c7840e8eed3d89c86150d8558bef52069e3ed87975109838a","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/candidate_freeze.py","lines":291,"sha256":"2914859e6777e1a7a66c543a139c011a406b4ebd5a6b29bd2456583e2e62ef33","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/candidate_training.py","lines":103,"sha256":"e8390c9098d17e56916c47c1e212d54ff17bcff0585b94b6af1eb380934e00d5","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/experiment_artifacts.py","lines":23,"sha256":"11787a87b584e15cf3137cf40913d50f514125d029999012e08ba92aad8d78ce","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/experiment_provenance.py","lines":45,"sha256":"b6538698877d0545612260d49b6e08e9bc1dae4a7aeec27089862c329d573163","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/final_holdout_evaluation.py","lines":458,"sha256":"12d977af36e838589b4b6738f1a5e238d58e90728f3f43d7d1a2dca0270fb171","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/hgb_optimization.py","lines":544,"sha256":"9ffb8cb985de2bea7785be3d26706be5d09c0e49095239625889839f47c1d3d0","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/reference_assessment_execution.py","lines":413,"sha256":"6ce4ec30b242e65ced08a46767b5439b3279985133f9426ed6a316365dc1233a","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/reference_dependence_diagnostics.py","lines":80,"sha256":"ac8c1f054284ab90b3e8e7d6796768507c5440c7632f01271017dbb62c4064e8","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/reference_temporal_assessment.py","lines":127,"sha256":"2abb3b4c248d8e67246292ce4adb1a188858f8e0b43c46e30747af278a34af80","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/reference_uncertainty_analysis.py","lines":95,"sha256":"e40e2004dce2f943eab62d2c9108d3d34ad964098388defde5809410779b4c2c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/temporal_development_data.py","lines":437,"sha256":"047ce4f0690b43e65db0769205b78f172851ae98922ee991b61fd5de55482c75","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/modeling/experiments/terminal_feature_ablation.py","lines":666,"sha256":"1d999b089fd3234cd7d2cef236cb9474d622c1998094a0645dc94087381f14af","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/serving/__init__.py","lines":1,"sha256":"5c151fac3419f73a0dc13bb717231723a4f17443527b71fac1c634a0ea09bdee","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/serving/http_service.py","lines":80,"sha256":"93f27d3d4c127218e6558528b16d542c1b86d4b367eee0807814f71e3d8b59fd","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/serving/model_release.py","lines":186,"sha256":"3a64add1eb4cec79293246270821ef1ed4833c61b480ba69f900ba693ab5f5fc","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/serving/request_schema.py","lines":109,"sha256":"70d9ad6d2c6f548b1cd37b0a832370adb6048ef7fadf04c40503f9ce053300aa","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/storage/__init__.py","lines":1,"sha256":"d8185383192481502159a2437fa4d783fb3d5a27105d1ebcc500ab70c27325ec","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/storage/managed_paths.py","lines":27,"sha256":"818cb971359c8fe36481268f3e0fa2fd63315f5cbd6a503e036c418813609332","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/__init__.py","lines":1,"sha256":"608411fd407c1898ff3a91029317fc73e1049cb0f78f0b83bbe55cf0d3cc8df1","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/contracts/__init__.py","lines":1,"sha256":"3c2da5fa3dfbe98ce3adbc2eb71b9cae6dc760c36584ad2a0b038d11a4310f9c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/contracts/customer_day_alerts.py","lines":29,"sha256":"c4123c71eac52c0470ce24eec42df85bf9bc6fac5d80c0d72ea46adecb4d5cb7","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/contracts/native_replay_execution.py","lines":99,"sha256":"71011c6a127c173a4c9dfbc7508eee178f5c44a62e42cc6a309f0409b8cb13b8","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/contracts/transaction_events.py","lines":106,"sha256":"47dbd7636acd20fd5cf53495e31bfef1e47cbdb28ac19164507fec88905e27a2","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/decisions/__init__.py","lines":1,"sha256":"b3cf863eba2b72d5a64fa5455112c10cc12702107b21fba33d652234a52f205d","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/decisions/customer_day_alert_policy.py","lines":138,"sha256":"43be868983cba1222375d01afda6fed5b70f42244e290c072d80e83a966a0dd3","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/decisions/development_threshold_selection.py","lines":71,"sha256":"91d8a864c6c2275c5b59d13741f91bd51d0e7ecb98777910fc2a016433a85d45","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/evaluation/__init__.py","lines":1,"sha256":"62525955ea2e258c6629a59e53322bcfd8ed6b300fc111772b74146c3e3184cb","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/evaluation/native_triage_assessment.py","lines":216,"sha256":"c91bd5e0207a3ba2709d009163c3fed3d2ca57daf4abd6923a5af82e5b8f6b1c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/features/__init__.py","lines":1,"sha256":"fa7b30d1a13d5339b3ed5ffd01a2fc84dad84af6cebd49436fd56c664ad20f92","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/features/causal_feature_state.py","lines":63,"sha256":"feba7c1976d40cb41f94080ea0a593ef4b8fd828651da62fdf5f6d81409ccc35","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/features/deterministic_feature_state.py","lines":30,"sha256":"423c9ca124f228b035ca6f3494045f0a4c343c75ef23bce00095f98b42a35932","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/preparation/__init__.py","lines":1,"sha256":"a1318a953e31488abc3e239d6504dcc5e32074f8859af2360dda727c28ee25c0","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/preparation/development_alert_threshold.py","lines":285,"sha256":"6467076361ec754c847b0462568db4eb16dc97c272726a6bec0cfb03f33f1814","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/replay/__init__.py","lines":1,"sha256":"ae72044ecb48945e0b27e526140208028bc8f0d7cb010564c6185a65d456c3cb","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/replay/durable_triage_replay.py","lines":456,"sha256":"99b84707768a42438726419f84b8a45c28d67563109ab925528e5602f3fee94d","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/replay/native_causal_replay.py","lines":457,"sha256":"c458bdf365493a8e3005dd70b301f771701c29ec5d4445748821d18b39549370","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/replay/numerical_corrective_replay.py","lines":601,"sha256":"355c0f8cdb5fe348328f5488d8f568dbdf5a5ebb1252a497bba4dce0974bd460","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/replay/synthetic_event_stream.py","lines":54,"sha256":"e9a1081f751cfd0071bdc81ca016d3a16898784c0122622051c257c99b93e3bb","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"fraud_detection_mlops/streaming/replay/temporal_replay_executor.py","lines":336,"sha256":"e4c7d353fe44d07e3e0f7c3f142ff4959a07eb1457c598bbca4239778f6c5c51","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"infra/helm/fraud-data-jobs/Chart.yaml","lines":6,"sha256":"fbe896dbfd46189b61c4a92de01c1d2ebb037e8ae372103e3ae59fd49757b561","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-data-jobs/README.md","lines":18,"sha256":"9df1cfca2fb30946696fe5fcee7de8d8c07b0046b935455dd8d44e35ed705d1c","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-data-jobs/templates/jobs.yaml","lines":110,"sha256":"89fc7662de034d856e66d99dd892f265af67720f22217a27503d1a2df3c4d2ae","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-data-jobs/values.schema.json","lines":69,"sha256":"8a80950d293f5d486bb18f981c16727621de16d2958a819b89325e01833dfc1e","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-data-jobs/values.yaml","lines":9,"sha256":"761fd78dd73791eba970c3638c67cd171813b4e47740cd6c7ddf020c703a8ca4","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-model-updates/Chart.yaml","lines":5,"sha256":"75836a8ba4140f1380cdcc3a296e8c387c3c72b862a5d33f2133fe214149a271","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-model-updates/README.md","lines":3,"sha256":"48bfcd2157d11781dc776f9022b802f46ba1863c4efeda6c8964743a2dcaba89","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-model-updates/templates/backends.yaml","lines":83,"sha256":"d14c8ea9a7fafe910b4e844a23a03917b42a3cfdfc1304fa49aa017a65f291cf","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-model-updates/templates/gateway.yaml","lines":121,"sha256":"6257c0905c52a6e11e29cfe956dcb8023cd31545ef56f9460b70e5d8b90351ad","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-model-updates/values.schema.json","lines":127,"sha256":"93bcc43cb98f40020df35a12b5c1327efe2947099e71a057d104d74fbaaf832c","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-model-updates/values.yaml","lines":20,"sha256":"65ac3de8ce5bd53d0a04bb055b91b279f2176b5b4cd24087264c283fb54fe9e4","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/Chart.yaml","lines":6,"sha256":"90d477206418b37bdf4a8eb31a62fb7d12c8c5494db2967cb637888ca9a420b2","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/README.md","lines":11,"sha256":"f8e640f861d658f069901a3ef1dda42e53ea2c9813976e202d3b74bad87af45b","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/files/alerts.yml","lines":59,"sha256":"ea3af123ffec28c04d074d4725b417783f5b14fd2ba3d4d7aafc4362cd547c79","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/files/dashboards/feature-health.json","lines":775,"sha256":"2a90ccd7cd64ac3c16132d610612f19b8d22c4218d6746bdbd38d684dd928630","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/files/dashboards/kind-overview.json","lines":277,"sha256":"dea803820472cebf091f3ea324182f07517b490b7e8a4a2cf9c553fc4e2a996e","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/files/dashboards/replay-operations.json","lines":1064,"sha256":"df8a3f036de9948666e5955614fc48e1800cd089ffb42531dcf7f0ad464fc5c5","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/files/dashboards/triage-quality.json","lines":1116,"sha256":"f5a6f0a224e1dd52588a15afbd0d6a849eaf6e634f9c6e9965f8f553c2afef11","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/templates/_helpers.tpl","lines":7,"sha256":"054a8929b58bb36654929f3bdfaa42426960c7b0614669db7cda3d3b98b0aa3d","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/templates/config.yaml","lines":52,"sha256":"ea3bbe2ec648a6d2ca69a9a33297c5da5b6d7cefd9a15e3fad80203a0d2f0f2c","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/templates/storage.yaml","lines":45,"sha256":"e73bae9a7ef3c0e60b758d6e0efad7c83d8c5fbe938a6561d5dc3362216d3b54","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/templates/workloads.yaml","lines":244,"sha256":"7b645bd5eff92fb76a4170c22535a39b2aca68d81704bbbc94102ead1b1b9138","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/values.schema.json","lines":42,"sha256":"aada7a0b6a4506fe2a6dfba313fd49e97c65984b4a9286bb85cff2ea0f0a0305","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-observability/values.yaml","lines":6,"sha256":"4e1b89a80a2e6c716da7b2028e9b455ab69b7114e666eeafa4352e27b4bde95b","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/Chart.yaml","lines":7,"sha256":"72c5624925fec087c15f1447edf3e07d932076df86b80fe6e81b2871d6445569","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/README.md","lines":21,"sha256":"d1e2e34b9876f01769f00014882ce5ce39fe880a90d2bb5862d5a9cedfcc4609","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/templates/_helpers.tpl","lines":8,"sha256":"6ee0479c00e81d323983a0030e256fb3b615455f124717300bf428566227e0c1","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/templates/postgres-services.yaml","lines":31,"sha256":"17da9dd9d2272fe8a4082501b5bea052035f8a67723d2bd2fcea5da8fe1979b7","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/templates/postgres-statefulset.yaml","lines":87,"sha256":"fa594d97bbf9827206e87a2cdbbf2d7f5e94d3725d4ed9111ab2c970ca0813b7","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/templates/postgres-storage.yaml","lines":15,"sha256":"2250114138f4572d41a782247036866efda06d520c534db177ff237ac1f6f520","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/templates/rustfs-services.yaml","lines":31,"sha256":"71653d80a88c90ede6b3a192ebefa65926a293e7d6b606d59fcd4f8dedb8b43a","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/templates/rustfs-statefulset.yaml","lines":93,"sha256":"4044765b932039f6076555181ebaad5301cdf73cfd4f8a06d967d5666c9e076e","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/templates/rustfs-storage.yaml","lines":15,"sha256":"1b3652920bcbe7458a312d33aaee221ef924924348108cb77dae79e1b60d32d8","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/values.schema.json","lines":162,"sha256":"1531883d731b7dc074e296be478bcb5b89e97a3decc59447e044a195489988ea","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-platform/values.yaml","lines":17,"sha256":"1f47bc8cc0ca723f81ecd66aa849f95d0c2e560ca0994319f0b94a08bd2d875b","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-replay/Chart.yaml","lines":5,"sha256":"1d3c1126b80687a5941bb7963b37e6132046f1965a463326156db1f658e90670","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-replay/README.md","lines":10,"sha256":"3182e49a2cae882a9212513dbee7a4983f626881bbace28f8f6e022cd184d723","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-replay/templates/replay.yaml","lines":60,"sha256":"54344faa02c8a6f87aa86f0da4afcde7f2bd02a25383c63cf56c55c9c2b378c4","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-replay/values.schema.json","lines":19,"sha256":"03431ae7024387dea2ebd8d6b2746c9e093dd7818d7f54d36e4498c9642411ff","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-replay/values.yaml","lines":2,"sha256":"e99b8e4075817adf868aa7b8a610a437ab5dbd83a60860d536579ada935f0c8f","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-round-training/Chart.yaml","lines":5,"sha256":"9ff695010ad91dbfde510c030f5c1195721a51573518a1ca367f04da8a61c808","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-round-training/templates/job.yaml","lines":75,"sha256":"326b830c67c6d635d3664100b9654c2ec9584b8b210597dcab9faa5c796aeb43","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-round-training/values.schema.json","lines":47,"sha256":"3357bf86f8ec3bcff6c3dbd19bfd19f7b2ad6b96f400365c85b281ff599af919","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-round-training/values.yaml","lines":8,"sha256":"6981c81b82cbe461b0a868f70c9128312d28ad5e3e7d3d4a6920c113560f1577","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-serving/Chart.yaml","lines":5,"sha256":"140cb16397e81a80429ece718de7cc5ebcc77327246e81acf1e94b21089581cf","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-serving/README.md","lines":17,"sha256":"47dfa1274b3eb2f4b9708f75d78a4d11bb8364477d18177736395566f926b49a","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-serving/templates/backends.yaml","lines":83,"sha256":"1b05b473e2afb65ef4bbeb622caf7fc5b852039786f4af8366b3822999f5fb53","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-serving/templates/gateway.yaml","lines":121,"sha256":"6257c0905c52a6e11e29cfe956dcb8023cd31545ef56f9460b70e5d8b90351ad","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-serving/values.schema.json","lines":74,"sha256":"479372f51d35b9a65115d9a03d0af32edef237cd764cc2dcda39263cf384a0ea","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-serving/values.yaml","lines":11,"sha256":"5418527ddd15b3d4c7f1c736372e03d81654f92b30db465fe12b32deee192767","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-tracking/Chart.yaml","lines":7,"sha256":"fed68229761d17dc7564b6d238b093051913b709a539c0b170dc36739eef881b","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-tracking/README.md","lines":14,"sha256":"e6cc5c20647fb34f3e3fcb12a60dc44b06b27d30640d3921e015ea968c4d9455","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-tracking/templates/tracking.yaml","lines":130,"sha256":"fa71aa66f9f9a602a31b131373bbc86503a52c39e4b996ed6b3b7a591e29b24a","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-tracking/values.schema.json","lines":70,"sha256":"950c75c44b051e10c89ada46771936ac98a5733abcc6a3f42ea1ec0d1def2038","decision":"build_or_cluster_configuration"},
+    {"path":"infra/helm/fraud-tracking/values.yaml","lines":7,"sha256":"5293f798c35201109ee07ab14478700aeb1e8bdc7da7b2b729b9a82c286b99e9","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/README.md","lines":38,"sha256":"2948708077437c3810d79ddf3c60aa74a6963a544a78b959e2ea2dd47125efe4","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/cluster.yaml","lines":7,"sha256":"638ec729e578f4774c66862254f348a75f2db974fe63717e4cb294fd38820377","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/datasets/Dockerfile","lines":9,"sha256":"bfc91204265557849e2792b56da1514f41f08ce982c7d4f2da2907eb02c7819c","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/datasets/Dockerfile.dockerignore","lines":15,"sha256":"56dc97650cf43e055943a161733e9a5bc3aef499279b6d01d01764ca334bfb03","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/images.lock.json","lines":11,"sha256":"dff7a012335374c62389f80a62ffa8267dc54961d1bda170e9712961e573e29b","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/model-updates/Dockerfile","lines":12,"sha256":"dfd3314bc7298e5437eb1d29f649d6f6645867036dae3e820b875bb52d45e4f4","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/model-updates/Dockerfile.dockerignore","lines":18,"sha256":"72d6a721c6edacf20da8c40c7d7a1f9931d5fb0351f2c0fc0ef4c9c366ffd22b","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/model-updates/requirements.txt","lines":2480,"sha256":"f327299bebd5989ccff9b2743a922b916f481b31c5a6776eb888aa13c127cb79","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/observability/Dockerfile","lines":9,"sha256":"c1073ef5d2b87821435d032c1d61f41f98cf1b05d3f48f091f024f7b7e1fcc78","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/observability/Dockerfile.dockerignore","lines":8,"sha256":"a80b5cbbca412159b51dca8f585e50c7e147c02f7ee1588ac5a693bfc2ae0919","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/observability/README.md","lines":9,"sha256":"87f7def1b990c336039cda4303042a44abd32e89087921e395f8ece2363eb4f3","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/operations/90-fraud-platform.conf","lines":3,"sha256":"c58059230dba811786b125f77a3bfb3c86a439deadbc951106bb8e6de750d747","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/operations/README.md","lines":10,"sha256":"cac89211ff928835db8a1ae8286006b3091af3eeaa6ad83e55146d82c5e3cd14","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/pipeline/Dockerfile.science","lines":11,"sha256":"25ee103834ec1374c8ec94b739ac03bb1c1e59bf3ddb8ba6cbf50e7908bf0f84","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/pipeline/Dockerfile.science.dockerignore","lines":20,"sha256":"7b5df4e8b4d0669c50fe25027fbe88337e769474497ba729d47b9698426f4421","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/pipeline/Dockerfile.transport","lines":9,"sha256":"038d18c117e3e7f214545ad90d71d5645da244d75992c639bbd71102010f2731","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/pipeline/Dockerfile.transport.dockerignore","lines":17,"sha256":"59e1f3950b7821a949657783c47f01261fa9a6dc97ab0eaa4065cb268bbef084","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/pipeline/README.md","lines":12,"sha256":"42e792819a5a61e7d34f6f6b2ec8d74f34647b27f9084ec0823214c530e78ba4","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/pipeline/requirements-science.txt","lines":240,"sha256":"0b7bf1ccb1b5e9ef6ef2303e8a6d77c3507bb07a3e87545fc046f6bfb033fa9d","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/replay/Dockerfile","lines":10,"sha256":"e4475152046a969d14d97a94c64644a2f68153e1b423d2ce3258a1642b9a9e33","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/replay/Dockerfile.dockerignore","lines":13,"sha256":"c2bcbbb0f3b5a45060bffb9a1c1afad89ebd71fe010cde1e7cb8ce9758fab1b7","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/replay/README.md","lines":10,"sha256":"a8240889a6f42b714cd1b779dfed85e1724ea51c8f2ca123d1a8536b8430356e","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/replay/requirements.txt","lines":447,"sha256":"f9045b5834be3f46dde0ecc13f5987465ba5cfd91bd1ad673c8b1bdab5e85aa8","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/round/Dockerfile","lines":11,"sha256":"161fdb361a710bb1f18a50d4be01b7d6737e886ce612912c6f0eb8d3485a35be","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/round/Dockerfile.dockerignore","lines":16,"sha256":"4a1cbd0817c8e563a3d8b2bc1a9a2407f2f6e3a33341856f091bbaab4ad89e86","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/round/requirements.txt","lines":2472,"sha256":"19b6603f9ca970174f31c2f349296c0bd4bfe256ef49e619a43cfc2ec89988b3","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/round/transport.py","lines":22,"sha256":"e7a5f8564815b05a9fd44941496d1bea917125630731a9881fd080385a619bdb","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/serving/Dockerfile.artifacts","lines":9,"sha256":"3ec568ae365eedb93705c6693be66d51fd50a44e85165370c63ce28a774d5f96","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/serving/Dockerfile.artifacts.dockerignore","lines":10,"sha256":"6b01474c23f7f326cf61870be0bc42580a8504070e2ce5c2d8be3b738a9dc964","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/serving/README.md","lines":17,"sha256":"79b6bfabcd9b45591f26161a1849c6f0951d9d768da2dedcaf52c116256fa936","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/tracking/Dockerfile","lines":9,"sha256":"e0e7646cb0571ccd814ffa06a9e7894bf7bdd8797fc9e54893b61da595b833c9","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/tracking/Dockerfile.dockerignore","lines":7,"sha256":"21ab5d5b6d2018012d65da6bae2c9634269be4a187daf5847aa4aff93984c78d","decision":"build_or_cluster_configuration"},
+    {"path":"infra/kind/tracking/README.md","lines":11,"sha256":"27efc1b5aa314e13a854c9bce2cfe6d2ed9be449f3a57fe0da02864ad4b60c73","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/README.md","lines":37,"sha256":"4ae755f5cd6beee61ea744c410f44eb24985a48a794f3adfc49c6e5db097ac19","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/access.mk","lines":29,"sha256":"26fb9c1b1784f80213826747f260d9fc5fef0007acdab0b4fd6ee34615a8e12f","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/case-explanations.mk","lines":19,"sha256":"cc0eba3e08602ab8f787144ee9ee189d914b8852fe8683199be7e3164515d521","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/development.mk","lines":66,"sha256":"155cbaf9b79045ba039d53249e1d39451c3f01887502bd384e73fd43fa01e9d2","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/platform.mk","lines":138,"sha256":"215dd6b220b4c76901e82fd54ce7562b674417e50183bc95af6a127ed86d2213","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/portal.mk","lines":47,"sha256":"451331203eb889835081e87ef7334b38a704f9d4f639174505c9406fa2ab5d33","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/product.mk","lines":34,"sha256":"d66594be7d1fc00e8e0c711b153811fa162f380d2e6d3760d32fdec885f7f7fc","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/round.mk","lines":47,"sha256":"883f8dadbef54ba8b60e998342aa7788743293db5f68a621df19c5dd60534f9b","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/science.mk","lines":80,"sha256":"f0387e6a70565724724bd582e02a9417a7b1c72a92197584a215f76c3ab253f0","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/serving-recovery.mk","lines":19,"sha256":"6c4c9d9a7e5e99f21b441fae33297ae5bd4fb606114a14a3619bd5a8910cb896","decision":"build_or_cluster_configuration"},
+    {"path":"infra/make/updates.mk","lines":59,"sha256":"28e1994d92e6200d5d27b66a843b839ad5b0fb2670ed03e51138e3afd9d2612c","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/Dockerfile","lines":8,"sha256":"e1939313ea04b6918066d2c709ef5f7d3a1dffa946bb33a537efa81633fdb354","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/Dockerfile.dockerignore","lines":11,"sha256":"20632ce3abefff6f8f4286d209bfdf18b27f280d19da6deda747f80a028e9417","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/Dockerfile.storage","lines":8,"sha256":"5ec390e6ed35e9f0e88c160a52ec0c1c8d8c3b76e890db36acbdcbce4a8a07f2","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/Dockerfile.storage.dockerignore","lines":12,"sha256":"143e85e4ef7ac329ac01a54dbd6e0c7e644258084854f16e62e411cd7fdb3f14","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/README.md","lines":161,"sha256":"fd2378d6d00ffea112eb0ace58c2e3f6cb343fb35f5598d62ee1e1213ea7deb9","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/alerts.test.yml","lines":48,"sha256":"15c1fdcf05922e20c747ddaf138852ed021b9d6b957cfa21e4761494aa7a1648","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/alerts.yml","lines":59,"sha256":"ea3af123ffec28c04d074d4725b417783f5b14fd2ba3d4d7aafc4362cd547c79","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/compose.yaml","lines":132,"sha256":"91da7166a5e438270c5e38363d73ee36ecdd1785cf95288ca5fd10f51edcadb6","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/grafana/dashboards/feature-health.json","lines":775,"sha256":"2a90ccd7cd64ac3c16132d610612f19b8d22c4218d6746bdbd38d684dd928630","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/grafana/dashboards/replay-operations.json","lines":1064,"sha256":"df8a3f036de9948666e5955614fc48e1800cd089ffb42531dcf7f0ad464fc5c5","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/grafana/dashboards/triage-quality.json","lines":1116,"sha256":"f5a6f0a224e1dd52588a15afbd0d6a849eaf6e634f9c6e9965f8f553c2afef11","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/grafana/provisioning/dashboards/fraud.yaml","lines":10,"sha256":"06b2df1f9a71d37b72fdb944cf9a08e9222af50401a20e61984f2a06286f5f41","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/grafana/provisioning/datasources/prometheus.yaml","lines":9,"sha256":"fe3f9c0075b4054ab97fb0f54ebb4fe84c53c490b24551cdba55d373811837bb","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/images.lock.json","lines":31,"sha256":"a65c3a30d2d7dce13d182344e03e249d1f98606117f4ef4c0ed90b950dc70dbb","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/prometheus.yml","lines":8,"sha256":"1deb272a0a1162d69c7ac9c3144d1cd8a5090c4854b557f15d667dfd5b22f38e","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/storage-requirements.in","lines":2,"sha256":"0c3aecbd4ad10b64edb55176bc8d3c57ab39e58804397366cf7492781b0e7bb3","decision":"build_or_cluster_configuration"},
+    {"path":"infra/observability/storage-requirements.txt","lines":21,"sha256":"712d15d78b8415efc8f0bdcfd7992a122da3ca060b6d9cdab55d5090b2c358bb","decision":"build_or_cluster_configuration"},
+    {"path":"infra/portal/README.md","lines":14,"sha256":"756671f52c78366386529b6c69efe37b55bc47bb19c4a91d2c082fe1cc9a42e8","decision":"build_or_cluster_configuration"},
+    {"path":"infra/portal/requirements-test.in","lines":2,"sha256":"62e44d2cf4ddf9771d4430065fcd744446d5691aee6ba983526687514668af1a","decision":"build_or_cluster_configuration"},
+    {"path":"infra/portal/requirements-test.txt","lines":1072,"sha256":"c73a045ebc50e54578ed68a29652f3e99929e2a151b4dadbaee5c81732efbdd5","decision":"build_or_cluster_configuration"},
+    {"path":"infra/portal/requirements.in","lines":3,"sha256":"743ad1914d20cf8070976c8e266f488a220604dd3ff8f32ccfc5fd7b31511404","decision":"build_or_cluster_configuration"},
+    {"path":"infra/portal/requirements.txt","lines":1055,"sha256":"741211e3cef5bf1e81d3918c204f7f280477a5496f4d90f7fcb558449f65cee9","decision":"build_or_cluster_configuration"},
+    {"path":"infra/serving/README.md","lines":61,"sha256":"91a52994ce70fa7767eecdd41d729ebbcb2f3a8cdb8d6c1e823997598c324221","decision":"build_or_cluster_configuration"},
+    {"path":"infra/serving/images.lock.json","lines":14,"sha256":"bf5c01d5d08d0999dd1128868954cd352f66322b7ff299dba6923bf194f77675","decision":"build_or_cluster_configuration"},
+    {"path":"infra/tracking/Dockerfile","lines":9,"sha256":"08282b7ad139fdd33d3b8811faf447bfcb9df54607461d65469281cefdeaa2af","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/Dockerfile.capture","lines":9,"sha256":"76d61eee99648c3c717bb9f8528dd546aa274a83fd054fca82a45d663aecff8e","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/Dockerfile.capture.dockerignore","lines":7,"sha256":"78093b27abe7d289d868c602ed060e6643c3174351f65c1286d0833a86a9196c","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/Dockerfile.dockerignore","lines":7,"sha256":"ac3241ce61c5dfbdc39dc474ae75c9380b2982a0f73c78db7f4a9fb0a325fe6f","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/Dockerfile.restore","lines":10,"sha256":"484a8bd0ab18e121802cfa473ef30c149ad00bcf63709fe2cb1a4c1f9447905f","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/Dockerfile.restore.dockerignore","lines":11,"sha256":"066db1f56eb26941399a3991eed4d79bad680c20e66f7d5875daf91c2cabe000","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/README.md","lines":324,"sha256":"adc05281beee8a6a691fedd09e6659ed383faf55df426b58455e94c222e6e480","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/capture.compose.yaml","lines":30,"sha256":"36f3ee11dcfe1dc11a962d5a01992015d7afd0352a56d8149e8e966ad1d2e98f","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/compose.yaml","lines":118,"sha256":"44985d0818b33afea3d176a16e5d25ecec98f5271c4967945511cc1f6cefe78b","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/images.lock.json","lines":17,"sha256":"35dba2d70d73f65d1e2452bc684f7868368074b3e3e7a90652862202f383aa02","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/init-postgres.sh","lines":9,"sha256":"2a5d6eb20a9e880ada56fd84df6f5cf455d6703d8034f8edaf107de264b5be2f","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/requirements.in","lines":5,"sha256":"8c37f74d9150b30df295f08d8e9c82138a3d0767548e0c4d3050c49b86b06865","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/requirements.txt","lines":2514,"sha256":"9f09ef2ce4882ad71f8f2043f832a3761e0d2a10b867350f8f9b5fa36727bfa5","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"infra/tracking/restore.compose.yaml","lines":119,"sha256":"ad877c25ed896923934fe3b41138b596547d4aeace4c4d3786ffbd4a430e00a1","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"models/.gitkeep","lines":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","decision":"retained_project_input_or_entrypoint"},
+    {"path":"notebooks/.gitkeep","lines":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/fraud_detection_mlops.ipynb","lines":2188,"sha256":"50f7f0e472bb4e3bcd0315cc452899da5dd68412eafb24ee8ccc72a90dee0321","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/01_bronze_ingestion.ipynb","lines":233,"sha256":"f643f3bbab549d2d16793a6587b65d9f4a9aa2851ec79716fb70b0ef52567376","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/02_silver_data_contract.ipynb","lines":483,"sha256":"f83736aeef4b25e62452650a85cdc74a39b0cc2cb8b37915bbeeccb3fcaab660","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/03_silver_eda.ipynb","lines":417,"sha256":"95fb9c40881344424a0748b3074e2650781f9beada094f54a41419e775fc2661","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/04_gold_temporal_features.ipynb","lines":254,"sha256":"f04909d65635f4ec62540c2461555fe7ad09d40c49ef8846e41d20541438c7fa","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/05_temporal_baseline.ipynb","lines":223,"sha256":"2d2dde23562b2d074c5a3567baa2e6b16a832e0abf0bdacf4497872eea04432b","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/06_mlflow_tracking.ipynb","lines":259,"sha256":"ff7ae27249b212ec534be919bf7a0b62899e0743d88e9664dcacad420c8210eb","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/07_baseline_diagnostics.ipynb","lines":380,"sha256":"5d36123050d86f1c38b34e5bfbaec9c22d9231c85d6b99cfc11f25b3f04e01f6","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/08_controlled_experiments.ipynb","lines":146,"sha256":"8dc422df1c94480700a72dbcafe5f2209ece472296284bcfb02a31285484882a","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/09_final_evaluation.ipynb","lines":222,"sha256":"1babec1ca2be4b21683cd1e1e4f50339b4a5687bb2dd2402cb26ff5685107770","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/10_hgb_optuna.ipynb","lines":178,"sha256":"fbd97d5661e4414659391a197420ebfa2d8828bbfc2910d4c5fdbb487ebaaca0","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/11_modeling_organization.ipynb","lines":96,"sha256":"5e3fa3fcd4aee271ec365d122964321dcc5c1d923d0fc13a2651035bec221732","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/12_data_features_organization.ipynb","lines":104,"sha256":"ba3427fc9938a7b1c999f38f680c77e220e858688301cbcfc5a961253a0738dd","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/13_laboratory_serving.ipynb","lines":117,"sha256":"187bed0c41ec0c8768015cf70c004159326e595ca9662cdff47dd17e613f487f","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/14_reference_assessment_protocol.ipynb","lines":173,"sha256":"be2bc82108cc115952de99d67a07325f661611866c1b88c90fecedde66b9916d","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/15_reference_assessment_execution.ipynb","lines":189,"sha256":"219a9e49a71d2ccf116e696dbd2c4ab45be48917ea4d17d4e9b04f5a831cc1f9","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/16_laboratory_docker.ipynb","lines":134,"sha256":"fa3f0d0a92b3b398e93fc1b9d2a5397387853b2bab6b913070c368719f21ee11","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/17_causal_replay_contracts.ipynb","lines":204,"sha256":"7bc3729239c0c55c132cbf5d9d81c1d232e8cef769a885005fd5a69645b61d71","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/18_local_observability.ipynb","lines":220,"sha256":"dea09da04aa83929c9b15faea89fbcbee11248ab2ae6306819b8871bf08b6871","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/19_storage_inventory_and_recovery.ipynb","lines":926,"sha256":"cabf68f25a29fdb5a2512607b7ecee09c5bb4631c6e33f148a3a09defbec8e48","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/20_serving_rollout_and_rollback.ipynb","lines":152,"sha256":"158f77d89412833ae73e14dfbc4c9c6cdeb871d69914af04224bdf0779e955b8","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/21_kind_helm_foundation.ipynb","lines":193,"sha256":"034de4a8fbddfbd05257c7849d1dc7fc39423385474036461013c0c83d8170aa","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/22_kind_operations_and_reboot.ipynb","lines":34,"sha256":"8e67913734e6e28a1535d17a64a3d0b4cf42af8feb342975b4ad054176991628","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/23_champion_case_explanations.ipynb","lines":70,"sha256":"fb9bc11ecf8ee899094d64cca671efd8a00f8c6fcb59286145c51054372a9c37","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/23_operational_round.ipynb","lines":57,"sha256":"6d8a24062851c50abf8318000bf7fc6c4a97d9475d4b534c2ff8c40c7226a754","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/24_fraud_investigation_portal.ipynb","lines":41,"sha256":"b49fc5b4b38bba60eae121a4562d2089e3879e4deea9fa437e57735376985445","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/24_model_updates_and_approval.ipynb","lines":31,"sha256":"9d5054839afa38189928bb95e053f379b40795a1a0ec06815dd923b640391bea","decision":"documentation_or_walkthrough"},
+    {"path":"notebooks/stages/25_portal_model_performance.ipynb","lines":46,"sha256":"91406e0cf27e540fc5d0785814c2f9573268a50c33ab0e1c0cbb7ff126dc4b85","decision":"documentation_or_walkthrough"},
+    {"path":"poetry.lock","lines":5148,"sha256":"c4cdf885190ad00f35eb61c83f57d6e0a3d7cde097f956bfdf01d154c2842584","decision":"retained_project_input_or_entrypoint"},
+    {"path":"poetry.toml","lines":2,"sha256":"aa057105d3dc259387747093381a196276b77247b854681190d6746ca80deabb","decision":"retained_project_input_or_entrypoint"},
+    {"path":"pyproject.toml","lines":63,"sha256":"0127d552bf12989c318589e1591d14ca819ee76c96bc5d8b3a034c9bf68a8635","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/.gitkeep","lines":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/baseline_protocol_v1.json","lines":33,"sha256":"053e31caae9fe7b5752f8829e1d4213eda4e912c2f424e7185a5c724b92de23c","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/causal_replay_protocol_v1.json","lines":134,"sha256":"a932d674509444665cbafb093225c6255ce6f0b0ef109cc6a3b2dcac3af43cc3","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/customer_day_alert_policy_v1.json","lines":8,"sha256":"7c3e710a510509fe919c875dd5472c18905dd76fab41a6ded861f20a7c066c05","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/evidence/ablation_reconstruction_preparation_2026-10-08.json","lines":46,"sha256":"df1f3c074f981e24fe4013700a7b783246aea3635267c6d3c82c571dab28f6dc","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/baseline_http_preparation_2026-10-17.json","lines":84,"sha256":"3a4758485319aeb19231cd94dba38f1d52cdd9223999ceba235e0201bf07bd8a","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/baseline_preparation_2026-10-07.json","lines":134,"sha256":"121c087ae1bb447c0a28c2577e1a6a3272c2b9b8cc6bd4593b13cbde18c0f499","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/baseline_tracking_author_validation_2026-10-17.json","lines":79,"sha256":"11f7913098343a72eea484fafd302654508ab5f6ef2f41bb1edc99d2e06263f2","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/baseline_validation_2026-10-07.json","lines":120,"sha256":"776c4d717b61a326a6e98b2ca44c2a3388dc23286f8cc4ef9faf56d92b8d7df8","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/blue_green_rehearsal_preparation_2026-10-19.json","lines":49,"sha256":"f4afc951b3325f7b6e787fade2ecf66e5a665e4b8a86438fe4fc4f010f592686","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/bronze_2026-10-06.json","lines":92,"sha256":"5415770480e2c085fc75e83d203a575dce993638bf427b8f93887a1f8b4a82fe","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/bronze_archive_author_validation_2026-10-15.json","lines":26,"sha256":"26fd730111069fd891404ece28173a870b5a96219b27a89006385cc5357c5335","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/bronze_archive_preparation_2026-10-15.json","lines":39,"sha256":"930c408853e5f850198ba75b87353dee4730430377d5fda336c91bf886ec1bf9","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/bronze_transfer_author_validation_2026-10-15.json","lines":76,"sha256":"9ae87ae053c01e159307022be08dc4a81e5e5097a5fb2bb04fd075af18f83111","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/bronze_transfer_preparation_2026-10-15.json","lines":49,"sha256":"9f1fcd3811a46bbe04d32510a30a32955455dd8acf3971c87af4ddb3abe7700f","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/case_explanations_author_validation_2026-10-22.json","lines":172,"sha256":"53b4c1478e53f4b07703da93de9bd789326729dafa976c80c944b3cb4a7419ee","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/case_explanations_preparation_2026-10-22.json","lines":54,"sha256":"b23aad4bf2d05f7ef450bc9f129e0e66be3843aab23352c03cec2b1122a775eb","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/causal_replay_author_validation_2026-10-13.json","lines":154,"sha256":"0f2d452cffeb5e9d5a6f357f7e7ec19b82b68e853a04f13f9aa21152c2c1f4d4","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/causal_replay_preparation_2026-10-13.json","lines":279,"sha256":"54003ccb01939860d7692e7ab581cf412c554cfb593a5057172b8fcc33408d66","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/controlled_ablation_execution_2026-10-08.json","lines":251,"sha256":"1f1d6c7eca897e02d970e0d5a89a630833f8d923f1e7f688742fd97e9e846e59","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/dashboard_color_policy_author_validation_2026-10-21.json","lines":806,"sha256":"56db575d44da92a7e9ff46f43fea91581146dbb52b7987ddf12aef0881165f89","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/dashboard_color_policy_preparation_2026-10-21.json","lines":88,"sha256":"450cf92b0f0bacec7113ea858c488b16e5d828d60eff415f6ca7291b3672468d","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/data_features_organization_preparation_2026-10-09.json","lines":72,"sha256":"85c14cb4a216c6179255e15baf1bc9e37e0f28c8209712f3bb6f94d6041a444f","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/development_alert_threshold_author_validation_2026-10-13.json","lines":180,"sha256":"e9a31ed26b1a41dc3737a436d3dad5d53b6c5c8316d4b2ac9b24f8055b537000","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/development_alert_threshold_preparation_2026-10-13.json","lines":53,"sha256":"93cc98787a7e3a8ba8738a892f41781b7d60dcbbc8df8887cad4634430f6b8b2","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/development_gold_archive_author_validation_2026-10-15.json","lines":158,"sha256":"456e90ff62adf27f29066f8bc8fa664d538a1cdf567043ddb58acbeeb0c7866f","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/development_gold_archive_preparation_2026-10-15.json","lines":87,"sha256":"3828337cb936a176c3936d55204f43ea582b4f888ffe6e154ee7b0ce30edba3f","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/development_storage_inventory_author_2026-10-15.json","lines":62,"sha256":"b98f00dcb81941268aaf80ceb80c6a49f2599d33f45999a903fb524459db4ec4","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/diagnostics_execution_2026-10-07.json","lines":481,"sha256":"fa03dfc097f24edb0b75d9150cf1dd240406b9637fd31cd04a253e92c8b83706","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/diagnostics_preparation_2026-10-07.json","lines":67,"sha256":"58c05e43d89ddb806766637fc251081df95f43bc631baeba1749b87a482f81a7","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/durable_triage_replay_preparation_2026-10-13.json","lines":138,"sha256":"4dc69373a95838b6e0d9f4f0cf504a6e7d7023e4f7542c1ed779c47a7c51eed2","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/eda_preparation_2026-10-07.json","lines":88,"sha256":"8eeee774fa0d5f0e01e140fd1e41a1a348c6d90aa8a6d624f4b1b89708c1be70","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/eda_training_2026-10-07.json","lines":438,"sha256":"c29e5c2d9f14a63e77fcc912081e2164a7c646e51656863d1632e086bf803920","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/exporter_recovery_author_validation_2026-10-15.json","lines":79,"sha256":"1f8db3a7762c1b2de9e9922c8517ad4b9ef305b755d0290c50de8ddf5e9dac23","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/feature_monitoring_author_validation_2026-10-19.json","lines":91,"sha256":"cebc7e82e848e2579be245729908798c51b37cfc5240feb64512739cf738f4e9","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/feature_monitoring_preparation_2026-10-19.json","lines":45,"sha256":"3119db447d3074f6a86bda1ee528492935f0a346a24da876788bd7b759b3a590","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/final_evaluation_execution_2026-10-08.json","lines":229,"sha256":"0c92f27a4a02a4c0f7c959978b10185cd87dc5276085c31f194119072a43527e","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/final_evaluation_preparation_2026-10-08.json","lines":44,"sha256":"a3d7e14070317a10bf63c12e273a2b7428d51584e6b1a63f49f2bf67d3fbc67d","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/fraud_portal_dark_theme_preparation_2026-10-22.json","lines":49,"sha256":"3e429c45b46056c562fef11ca5aedcc44789b2e84048f8ca93c3f1bf148ef53f","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/fraud_portal_preparation_2026-10-22.json","lines":58,"sha256":"1b7979e436c1c29c6909f7a08cb0123cf98d969d6d30cfb36a41e434ba74b866","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/freeze_execution_2026-10-08.json","lines":23,"sha256":"cd1089af6a786b21edf4bd05dc2c8a798fbe95049e201ef1acbd01f45de4f34b","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/freeze_preparation_2026-10-08.json","lines":58,"sha256":"a307c596246c5e5675d307c1d166c89205967c0dddbebb05404f9f4fc0aae82b","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/gold_archive_author_validation_2026-10-15.json","lines":165,"sha256":"6a1f8cd42e4c0e680c6f72a59023a7f159e78d3e0a5575a94931df5de50d2605","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/gold_archive_preparation_2026-10-15.json","lines":79,"sha256":"42d88ebc13b8b0bcd4acddab1ffc570dc858730f79a472af987b75e6e5aa80d0","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/gold_build_2026-10-07.json","lines":157,"sha256":"f8dbf4cfaa440dc0053937bce1c5c191f9d3af252e597de2559ec1661e69f209","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/gold_preparation_2026-10-07.json","lines":115,"sha256":"906a4395a93bfb49e7c9f6cf3815d9af9de8f64e901bbe73a6f91413c6cd7567","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/gold_storage_inventory_author_2026-10-15.json","lines":133,"sha256":"82cbb3c133242bc6566d2489c74acc69e859c74f096d576fca827ed1608a46f9","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/hgb_fold_tracking_author_validation_2026-10-17.json","lines":37,"sha256":"23eae25254db31ed04c6f18573114f9724c72242b29f17a7bb2d01112cce2ac1","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/hgb_http_preparation_2026-10-17.json","lines":84,"sha256":"b31c48f4ace9fabac72bc9515cbea7923149d0e3d7435a14c3b5f84ad185b10b","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/hgb_optuna_author_report_2026-10-09.json","lines":75,"sha256":"26b63de0cf143f13cfb2fe1124a54ac7e9451e15476ca7f98463339076472ede","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/hgb_study_backup_author_validation_2026-10-15.json","lines":52,"sha256":"a1f36be90e559ac5044e5c1f2e0f293fb6a83dcbdc372ab4f31f6780de6fe7f7","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/hgb_study_backup_preparation_2026-10-15.json","lines":102,"sha256":"08d056b1bd3644a4f651c8bb58b86f5f4a5014008e9252f16ed30c6c5925baf6","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/hgb_study_transfer_author_validation_2026-10-16.json","lines":180,"sha256":"eff2636da97830225474013b714716d970f2b14d033005842afe6e819808cb90","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/hgb_study_transfer_preparation_2026-10-15.json","lines":86,"sha256":"6e6313e2c11190558291146a47d9cc4220853ed3f31fc3103da6e69edb07b02e","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_bootstrap_diagnostics_preparation_2026-10-20.json","lines":23,"sha256":"d05d0bd4d8ba6ede3d2cad997087c40a9d92daeb748438a3f2543ae8ba6ec7dd","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_datasets_author_validation_2026-10-20.json","lines":147,"sha256":"902114e89c4c1dcc95416033dc0dfb5d404782baf502e06e6e497f929351e2df","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_datasets_preparation_2026-10-20.json","lines":48,"sha256":"e728f4dceeb80e1f131cef6968a2a031d76b2a1022616b877803af8ce2e24d41","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_foundation_author_validation_2026-10-20.json","lines":86,"sha256":"1f334ced22030612bbe39ef61958f31e4c31f99e760764304d2ac2af0ee05816","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_foundation_preparation_2026-10-20.json","lines":53,"sha256":"9c0a61f19614bd71a4d49816f84bb08d8a9d1943b181f05627a1de80703f9d04","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_history_preparation_2026-10-21.json","lines":65,"sha256":"cfad9ebcf3442e4175ee6b98360fb1c8ea3a1c5600fa3b32b29daee6d364c9b6","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_history_readback_fix_preparation_2026-10-21.json","lines":44,"sha256":"e76c2e82c5f0a0301b8bb402d0e97089c3904b5fc7cda08f0f5a693664331a8c","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_observability_author_validation_2026-10-21.json","lines":798,"sha256":"5647404eb16fe07217a15e0c3afb774eb269497314e523b9a618772e75796f02","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_observability_helm4_fix_preparation_2026-10-21.json","lines":51,"sha256":"550bc64def0d2ddee121791690543b2bd24060b62a9f5c0d1d932529ff6df5ca","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_observability_preparation_2026-10-21.json","lines":78,"sha256":"c6d66919f5a0a687731355f85b333d2a352e8adce029cfd0695c2861a5eca90f","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_operations_author_validation_2026-10-21.json","lines":572,"sha256":"142f9da13aa83e38538d953fba103ef8bba2956448ff2240cddefc8462d1555d","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_operations_preparation_2026-10-21.json","lines":56,"sha256":"cf68d39712871d480beae4c4da773ce05e1f3167b74be12ab05d18e32f5a0cf8","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_pipeline_author_validation_2026-10-20.json","lines":674,"sha256":"75b32435885b8bed2a284c9c4b7d673dffca75e799c4632b833ff5b7dee52d14","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_pipeline_preparation_2026-10-20.json","lines":56,"sha256":"6eab4235d8815c05a2d8db27e59c80c773e0967e130fc87bd07c0a3dfed7f558","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_replay_author_validation_2026-10-20.json","lines":422,"sha256":"58afc8dbe87397fbbdda077e3353d8ac470d835869776084a9529dfbd2fa7d55","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_replay_preparation_2026-10-20.json","lines":59,"sha256":"62dadd3e9cad5b68f43d24b7e68adc82e05c15f1a08e89d04f36b6e0504d87af","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_serving_author_validation_2026-10-21.json","lines":375,"sha256":"427c5062003e896ae60566e8a4a1e47d1a55776c10b5f00599e52bdf115b93ab","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_serving_import_fix_preparation_2026-10-21.json","lines":53,"sha256":"525801ef9b00aa0bd8590b89763162a319080871c109a46f2aa3a38be7bb46e3","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_serving_preparation_2026-10-21.json","lines":72,"sha256":"fb73c244be48603ce1599cdb96162dc1a65091fc1bf4cb2bd1588c9138e51695","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_tracking_author_validation_2026-10-20.json","lines":135,"sha256":"41f3c59074adb917d28ecf165f50348ed3ad9b11828769708f4b1a8526422860","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/kind_tracking_preparation_2026-10-20.json","lines":44,"sha256":"3ae221992bf1dbcd21a227391c23571d07b8a2079c0245190ca83214bd46556b","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/laboratory_serving_author_validation_2026-10-09.json","lines":52,"sha256":"4ff6698dff683deea6a12dca4516a147ba5a0a6c817cae59de687477fa50c9ac","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/laboratory_serving_docker_native_validation_2026-10-09.json","lines":153,"sha256":"d507f47a5054551cd1324e08677e371c72dba3c7d46920907235f14ed75357da","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/laboratory_serving_docker_preparation_2026-10-09.json","lines":84,"sha256":"e0c03150ac1a9fcc3719460251991b21fd4af126dc1fe1c13df7fd623a448d4a","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/laboratory_serving_native_validation_2026-10-09.json","lines":40,"sha256":"a7aceb2971ae8d87efa127abe33aab20c5f8aec448f9118583771363e87579fc","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/laboratory_serving_preparation_2026-10-09.json","lines":115,"sha256":"785c63af67cc8c5a27d395709fe00408cfe83a3cb66235a24f6fbb6c551ce52a","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/local_access_background_preparation_2026-10-22.json","lines":60,"sha256":"6ea61690d6667aed1a8ead26f4d493f2ff84d9c0a9bd5edabb3b1fa87a0a2b75","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/local_observability_preparation_2026-10-15.json","lines":100,"sha256":"2f9415862fe139d9c708b574812a7dba9235c47f02d4ef87ec09b737467f2197","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/managed_output_paths_author_validation_2026-10-16.json","lines":22,"sha256":"70644db3eccc947c7cd4587b69b7ea7f501d233b6f7d0f11b3fff3b4d156798b","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/managed_output_paths_preparation_2026-10-16.json","lines":71,"sha256":"94ce9dc8f58557cfac990edae5b32aa4565d05dd34ab4d7309dccdc945370def","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_backup_author_validation_2026-10-16.json","lines":103,"sha256":"d650ce2bd24f904d6c6e7a22753f40b734e6f6fad41477228aafcbb182434c78","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_backup_multistore_preparation_2026-10-16.json","lines":90,"sha256":"1ded91fc702e735cd83a90e699082c49162f2c7848d236945675be4a16efd223","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_backup_preparation_2026-10-16.json","lines":110,"sha256":"52ee98d69133e01ba083df12f98657cf3255c0bc1e03b46c7647810cb2ac7ece","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_execution_2026-10-07.json","lines":101,"sha256":"92cf919e63a1bdf60af15347f5edd6d0a20025a5ea04eb565da3ebeb17db54b5","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_inventory_author_validation_2026-10-16.json","lines":114,"sha256":"07daf9c1a55e846adcd3081e5d2dba36e7f00057c2a21cfc84be15fb321381fa","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_inventory_classification_fix_preparation_2026-10-16.json","lines":95,"sha256":"679a691a57e6950afd1b2685a08f48b982834da9ecaedf2087997b948b20dc78","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_inventory_preparation_2026-10-16.json","lines":98,"sha256":"f9af0246edaafd938d74773db3b70b96cd567dca70fc323dad21353e7a142928","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_preparation_2026-10-07.json","lines":109,"sha256":"7c403f5ddd20b8bc6025873858e1965c2c5d23c248c046e37b607c59cde6fe4a","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_recovery_author_validation_2026-10-16.json","lines":171,"sha256":"c268e02180ad999bba742e008a3205589eb37835a3e8dd69db50773739de69ae","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_recovery_preparation_2026-10-16.json","lines":106,"sha256":"1488f8ed2c5218394353d889509efd562d7bac8e60a253392c4367e06a94b64e","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_recovery_signature_fix_preparation_2026-10-16.json","lines":73,"sha256":"1539dbb098729f2e613c2f2b838e6fb08b888c79521bc60df24916664c774219","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_transfer_author_validation_2026-10-16.json","lines":134,"sha256":"e71b6d4b43c5c087d3daac0b8538b7e167829b4532d7ab6726c0ffa8ea373554","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/mlflow_transfer_preparation_2026-10-16.json","lines":85,"sha256":"752cff2c7897f5702844eb7238006ad42ab42a8c71c44c5f0198fded01a61e46","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/model_contribution_http_author_validation_2026-10-17.json","lines":37,"sha256":"db96b80860808c55eec905e637e2c92e6fdb4459858543b622ae2269565276a9","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/model_contribution_http_preparation_2026-10-17.json","lines":92,"sha256":"2847c0828f4d3279a34eed31f652b6a2c30e3c4c4d89c9c2b356bf8566b87c72","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/model_contribution_proxy_fix_2026-10-17.json","lines":91,"sha256":"94562581b006a9ce243a9291267378f08440f6a9c4c335dc855b3730d08587bf","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/model_interface_preparation_2026-10-08.json","lines":75,"sha256":"6fc26bf4e203a79834bc29b5aea8dabbd8a38070dd886733a28e446712c62847","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/model_updates_author_validation_2026-10-22.json","lines":155,"sha256":"27d62e56ae23d77475311b77a232994cc0309eee195e9ed66c36c29332b1e606","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/model_updates_preparation_2026-10-21.json","lines":224,"sha256":"c49ce9eb8f7a0b2f27e393d305ea4a3f0ca0e7a73d98dbf09e3f431f5f715559","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/native_causal_replay_preparation_2026-10-13.json","lines":56,"sha256":"0904437aa6561d2e41b6dce47b884cdf550da5afc55415f6454cdfd757725ad1","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/native_numerical_correction_author_validation_2026-10-13.json","lines":586,"sha256":"99ae00665d2aaec9dddf47e64e72708435805e53e963bc641c3874f34ef75aa5","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/native_numerical_correction_preparation_2026-10-13.json","lines":34,"sha256":"6bb8f013a478ff287054b321c4980a23f296d5d7cc1b0baf4efc465f733b0407","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/native_score_parity_failure_author_2026-10-13.json","lines":29,"sha256":"9a41ece9929f8a453cc6b2a05204517c9f90e2f26cd21711712cfc081ab57509","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/native_tracking_preparation_2026-10-07.json","lines":84,"sha256":"04bc73ec80f8bf9dcfb23b84eb213b9d9e402a3ddd9c5d46cee33cc17ddb0cd4","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/observability_closure_preparation_2026-10-15.json","lines":59,"sha256":"5d42afc21131efbf111d82e2a1083ed9e374d98e5e9e8af5ec72e48b2e1bcc95","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/observability_recovered_readiness_preparation_2026-10-22.json","lines":44,"sha256":"242bee566487c52bcf21269573e6d7c8f2ee3eed0ed4f4c891c7fdd7246078b1","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/operational_round_author_validation_2026-10-21.json","lines":110,"sha256":"c20fd8aa9092d8847f2fb1b22e00b47afc10b82111247b22c55d0999c0e4aaa4","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/operational_round_make_fix_preparation_2026-10-21.json","lines":39,"sha256":"a18ace8e9dcbec0fb36488027a7d5c56ec1a7b9958c4aba79c90ad363fa1418a","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/operational_round_preparation_2026-10-21.json","lines":217,"sha256":"b64ba33cb2d084239e4923fd676b44ec4f3ba5a1a1f77a5b45a1b2d8aa7cb490","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/operations_simplification_author_validation_2026-10-22.json","lines":27,"sha256":"60c4135deb3d2ab50f2e81157fdc79229bdc285d369438e00a56334c1f2a2ef0","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/operations_simplification_preparation_2026-10-22.json","lines":69,"sha256":"d9c0eb90d1d7d0bbbc349da3f082c9fcbae4ef73f001d2d662c0b9621f926627","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/optuna_preparation_2026-10-08.json","lines":91,"sha256":"fb80b3b8470e9330a948a22060f9cb61db9d2a077a9a2cd79f1108cf1ad1d25e","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/paced_native_author_validation_2026-10-15.json","lines":170,"sha256":"752e5572a8831ceb744d04ed1abd51171b3e790dc66f7e20c838795cb7090bba","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/persistence_inventory_author_validation_2026-10-16.json","lines":89,"sha256":"b6f0d8bafb2100cb9ef24732aab047a0686f5589f009df9e4737af28ef8db8e5","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/persistence_inventory_preparation_2026-10-16.json","lines":43,"sha256":"d4c6440bdd92a8306e589354afdb0d6b89da1c2291ae96e9e1aace2ff3243271","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/portal_performance_author_validation_2026-10-22.json","lines":62,"sha256":"8cad1c9cf67a16245bac935e65a253c09b339d38cc423d484ca7d05d91656a69","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/portal_performance_preparation_2026-10-22.json","lines":59,"sha256":"002796b1cd3b1fc5f2c93333d059c5a772950854c61687784d37527c9fa4143c","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/portfolio_workflow_preparation_2026-10-21.json","lines":49,"sha256":"a9ba0e427e6395198550750adfeeabddc03ae082b6f0ead23a0a598a75043166","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/product_http_flow_author_validation_2026-10-22.json","lines":66,"sha256":"97dfc9346c5086659eb0677af5cddf885a43aedef192a153f611977763af791a","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/product_http_flow_preparation_2026-10-22.json","lines":231,"sha256":"349c61826a9feebecd3fe85bed6f69499873cc6fbdee1c9e70aec4523ad88e87","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/reference_assessment_author_validation_2026-10-09.json","lines":220,"sha256":"734001c89eccf2c70a711e622e2f06c679efb14f011503e4c002e9eded991480","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/reference_assessment_execution_preparation_2026-10-09.json","lines":110,"sha256":"f6cfc37c7b232b74d08698d96cde2268c7be7507dad6ae26e62d85225234c818","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/reference_assessment_preparation_2026-10-09.json","lines":104,"sha256":"d58b16895b1de6e5ab8f98b654ab15c0706bb48cf4a04e4d254815cb91dfdbfa","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/reference_dependence_author_validation_2026-10-09.json","lines":1028,"sha256":"42ee8db51f6477e13bb1abaca4fc3b783cc976a9a36d2307ebd2dfa21d21f3a5","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/reference_dependence_preparation_2026-10-09.json","lines":65,"sha256":"934fc23ee576fff1300a96d0493fd90cdb4d32977b646e7d0b00bf710b12ea9d","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/reference_uncertainty_author_validation_2026-10-09.json","lines":315,"sha256":"ca6d6c9a47363c1ad68140a4cf2cc837b9975f286d951ea3d2364dec74638909","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/reference_uncertainty_preparation_2026-10-09.json","lines":87,"sha256":"a429420271ea910b80dbcc68e8ca65df07599790d24138a4fa4957dffe02db13","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/restore_diagnostics_fix_2026-10-19.json","lines":34,"sha256":"8ed8fd94fb7cdfe173c785376b33d1a17711f9b505bd78123708bd33e0b173cf","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/restore_schema_fix_preparation_2026-10-19.json","lines":97,"sha256":"87c6220a5dc1afa9b7c362fac326de5f81b3d88ee52b7c030fabda52bcb6932f","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_actions_validation_2026-10-19.json","lines":236,"sha256":"54cef2f114043ebc608a417d63ca94fd2699194cfe5b90280b61c5f265a5360c","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_consumer_author_validation_2026-10-19.json","lines":62,"sha256":"abfe05a84019b628d2ec1e322beb110d87fb51a02ef9f89d929c7652c9d4aca8","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_consumer_preparation_2026-10-19.json","lines":46,"sha256":"7a187a6a4794a206a019ae69c9f1564a85a45e6b50e887cf7d6b18525e7754d0","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_delivery_author_validation_2026-10-19.json","lines":74,"sha256":"2a604fa362f670ae19d78eb085e5e33dbba081c923ad792f31d29664b7e4816d","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_delivery_permissions_fix_preparation_2026-10-19.json","lines":41,"sha256":"14462d342e47a9b997ac34866801389788f0b3d23e350f7f0575fb472c84f2fc","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_delivery_preparation_2026-10-19.json","lines":52,"sha256":"89ede2ec35664989eac778fe265706d0719cf1837b07d42b8542bda2b89fb811","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_rollout_author_validation_2026-10-19.json","lines":104,"sha256":"51d477667010eb3aa1db15f39bcb79ed5145bd4af03fd1af0ebc6786b5128670","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_rollout_network_fix_preparation_2026-10-19.json","lines":29,"sha256":"ca41a46f88ab7dd26a20c12074ea25358aee51349f8762b568e187fba9a7041a","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_seed_probe_fix_preparation_2026-10-22.json","lines":43,"sha256":"2ca8790ce88551042e8f7aa784b4c4da849b2f1a17facf7c1c083cffc4289820","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_seed_recovery_author_validation_2026-10-22.json","lines":107,"sha256":"4dcc680570fdb2aedef647be5f87b15c275bd3788c49c60624e924d66f21ce98","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/serving_seed_recovery_preparation_2026-10-22.json","lines":69,"sha256":"540c8263259f73fd83afda92c971ced4add8aabda7d2f0d12ad98ae511859692","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/silver_archive_author_validation_2026-10-15.json","lines":108,"sha256":"b732b847188d316d3e7c82ee9bd5b57da9b4274f94b3fa7e4da03493dcb9a818","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/silver_archive_preparation_2026-10-15.json","lines":72,"sha256":"9799cb28cad4d062eb6229fa3100fcd480808cde6a1ed4574136b6dc19daa663","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/silver_build_2026-10-06.json","lines":98,"sha256":"34a9b0d419117c563ffc876308abefb0d5a233d8597e403c94f7cfa9eeea3bc2","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/silver_first_partition_2026-10-06.json","lines":76,"sha256":"14b1c8ad3ffbdc0b9d803d2fb4658ba4df09ede8bf962573aa8be9c9f4f41cae","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/silver_implementation_validation_2026-10-07.json","lines":45,"sha256":"681e3de5e4af860bcc6491eb3fb775c1df55492109f56eabc4f05a7a238ad3e0","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/silver_profile_2026-10-06.json","lines":140,"sha256":"73b798bdb07c565d838e48cb943ebf7283515616d9770baf59e6fc7036fbf3b5","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/storage_pilot_author_validation_2026-10-15.json","lines":94,"sha256":"5ab2e24c6d0163d012e5cee2fa221e4594e3e66691bf8e1a9a7bd7f1ea29e56c","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/storage_pilot_preparation_2026-10-15.json","lines":51,"sha256":"bf1264becd81e9e875859aff40358c33986206d731b788ac94f908bce94f5ca0","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/storage_release_archive_author_validation_2026-10-15.json","lines":62,"sha256":"08b9d78eefcfb3c26238004eecfaa0ee375f9716929acd61c4af13ff8c6a7349","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/storage_release_reload_author_validation_2026-10-15.json","lines":46,"sha256":"a34b6088d207462764a01fb5002a47c7c5a9940b6c005d3dabfe70ce1a0a59ca","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/streaming_triage_policy_preparation_2026-10-13.json","lines":48,"sha256":"7f0e0eea50c140b2a997f0185936e3e0b54eb3a9b9f57a3865926f82d6a25c31","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/test_suite_maintenance_preparation_2026-10-09.json","lines":46,"sha256":"6da27bc191dcc0ae042a4a4dac168d42ebca3b772c0241e43a6139dab7d13705","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tox_preparation_2026-10-07.json","lines":62,"sha256":"16464d30889859842d3d34a719b425b13d803a64f69d3c0df2204b66fdf2ba1b","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tracking_capture_author_validation_2026-10-19.json","lines":25,"sha256":"b0687ca1db7deb3886389f8e84f465ea546003bd1d5e7c7c873ea4af1b26dbfa","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tracking_capture_preparation_2026-10-19.json","lines":63,"sha256":"47b17bf00312f2378c3d76661eadd21ca5c6c97efd667f85028bb6aa6a3bd0fe","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tracking_consumers_author_validation_2026-10-19.json","lines":19,"sha256":"79c75915a0102fc7d79fe823036ebb9d510297a88bc89ec2134f75bbbc22b650","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tracking_consumers_review_preparation_2026-10-17.json","lines":94,"sha256":"8c33a99558273f0c40c8cc544cd518c35868e2a884c094e46726bdfd3368ed64","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tracking_lab_author_validation_2026-10-17.json","lines":111,"sha256":"9800200a7dfa59fc89e1a0412baaea9a68409ec0dd0094754ef08801d04ffebe","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tracking_lab_preparation_2026-10-16.json","lines":65,"sha256":"6b86b650be211e742db480c00538912e05db8af3b9d3c5ebd9b7040867144ad8","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tracking_restore_author_validation_2026-10-19.json","lines":194,"sha256":"be0591bbb3bb270fcdbfefd0140d54ac6d4eacf03e448c79551f277049a077ab","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tracking_restore_preparation_2026-10-19.json","lines":59,"sha256":"76d228048cab0d8469b62ccfcfba6b54243d650f61a22ddebd3569bb20696a30","decision":"historical_evidence_preserved"},
+    {"path":"references/evidence/tracking_worker_json_fix_2026-10-16.json","lines":68,"sha256":"fe70ab05433eff710313c2585c742d34512b1ea852c8acc3f12cda95d6acebf0","decision":"historical_evidence_preserved"},
+    {"path":"references/experiment_protocol_v1.json","lines":117,"sha256":"9823236160304650e821a2ee09c796e6db6a3b5118b6a370198426ae545e53f2","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/feature_monitoring_v1.json","lines":59,"sha256":"112afe13a1d12043f8f52b6d94702ae28ec3dd6b4ee1d089e71383a5f6d38b54","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/final_evaluation_protocol_v1.json","lines":55,"sha256":"5f82c5fe83841a728271b9ac36a4133f453247a57c853ee7d2af9de5a52bb5a7","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/frozen_candidate_v1.json","lines":178,"sha256":"6281337ac9ad872947470d94de0307d7c1934365538877376559d3dee2e57120","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/gold_contract_v1.json","lines":47,"sha256":"b90b9be97bb2e2e6cf2b819487b2b805882c6d6f22587ff4671a01e25db54796","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/handbook_source.json","lines":1294,"sha256":"815d00ee359c3972af931768f81c28b4744a5459c60e4b4db408b4d1924de7db","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/hgb_optuna_protocol_v1.json","lines":142,"sha256":"d0289c3002945b47d433d601b9f6dba1ae41789e9bf19b04010c399d58858531","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/kind_observability_legacy_image_pins_v1.json","lines":38,"sha256":"7baf8c4e0280965fe2ecbb1b6f0393c6d12069f3338b5532c072289605e77553","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/model_update_compatibility_v1.json","lines":16,"sha256":"812d8196906322705d0770b5c596123f22051ef7a72384bda02f77e2ce53d1ae","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/model_update_policy_search_v1.json","lines":112,"sha256":"c734c58b235d65b2ceacaa7c9fb931b7d428147cefcfa96d1094a05c17cbb0c2","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/model_update_policy_v1.json","lines":80,"sha256":"ee45b86a86e10c59672fd8a196099abdcc7aa95c03619f89d8ef55724fd68b46","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/native_causal_replay_execution_v1.json","lines":76,"sha256":"762d10cea3bebdcddde3d94b67846e0f239bda5fcfcd8b547cf3225058ba5ff5","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/native_causal_replay_numerical_v1.json","lines":117,"sha256":"f5fd8b9f93abb0d8051db365d7b15a96d5f759a94d9f75b3638e050b6f07938c","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/operational_round_policy_v1.json","lines":54,"sha256":"010e75d8f603c5fca506caf0c67d7c4138a89c8c606a474b9296b9cf1ac966d7","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/paced_monitoring_protocol_v1.json","lines":20,"sha256":"f6bf6209fcfc0449b5537450cbaf685651f913958343454c1e7fe58d7a95e4a6","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/persistence_catalogue_v1.json","lines":1220,"sha256":"ad40ac933d8ec79235dd0cc5819a8c37e90d3c450d1a97836cf59df5b73cd888","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/product_flow_policy_v1.json","lines":13,"sha256":"616b00db9a06b01da4f7d84c07af6a659c05a66bddd73265d0523c538b50b557","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/reference_assessment_execution_v1.json","lines":30,"sha256":"46b2d6e94c3e2fc39cf7f6f19ee0578fa03db87a2df371ffcdc8ccfdb4fa6919","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/reference_assessment_protocol_v1.json","lines":125,"sha256":"b548521f0d54d2be47f47918f47d3f0c834bc8234da07c56f9be1d3be83edced","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/serving_seed_source_transition_v1.json","lines":32,"sha256":"e7a41cf10eb5216cd88aca9e894c4014eb873dd5389b2df59fca15cafbe19db0","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/silver_contract_v1.json","lines":21,"sha256":"a5ca3f01e7292ecbaa21cb69bb96c7cbad06e9cea065cddc4ce4414592d1f26f","decision":"retained_project_input_or_entrypoint"},
+    {"path":"references/temporal_protocol_v1.json","lines":18,"sha256":"7332129121d13eac68bf2e4776abe7aacf0b24b449e60f08ef8283b56954e4d4","decision":"retained_project_input_or_entrypoint"},
+    {"path":"reports/.gitkeep","lines":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","decision":"retained_project_input_or_entrypoint"},
+    {"path":"reports/figures/.gitkeep","lines":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/case_explanations/__init__.py","lines":1,"sha256":"137de2dc9e5b5b2f9875b8a478b18a57685dd2aa4fa8cc5fb4d7ab5b9a2f07b1","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/case_explanations/controller.py","lines":304,"sha256":"0f14d223da9fca403c54a789321be25df5325df40aaba37b8e64926630401e90","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/case_explanations/hgb_shap.py","lines":66,"sha256":"4fe512f049bcda390e16aa765e7f3e65e406146aa09f403d1af8da668169904d","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/case_explanations/report.py","lines":89,"sha256":"e5f993365fdaf05b9cbcf002ca725e67796592015321e683cc53c87a268baff8","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/check_serving_wheel.py","lines":127,"sha256":"32abb503772664a8602aa685e580f1440e979a0a92840c9bdf5b2b76bbee239f","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/check_test_environment.py","lines":19,"sha256":"522f9c98162c7d11fed202404db4d2fdee95f5aebb3c252e21c5c9618d99e22a","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/__init__.py","lines":1,"sha256":"8d9e06e80c5ca56d515797703598182470d9ca4a97470a745df8d624497f0b20","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/app.py","lines":392,"sha256":"053475e489fd20a7a0ef8291f0e474518d69ef53a49c87fa8ed2788151d1905c","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/charts.py","lines":115,"sha256":"e21b9cbe6da054d50971953eedb7799f524ed0e5004b77272208a36064d27960","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/controller.py","lines":253,"sha256":"affde41293cd780a16727b3bfbd960396284db7b11c17550f78ac3d0b6de33a9","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/data.py","lines":161,"sha256":"f8772dc77da11aad9354477f994824b36f6d9dda3c6db71cb020de75dcde94b4","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/export.py","lines":154,"sha256":"c37bb3227df04d176c4bc18543247ecb0b208c2e5b9480f55f8eb5ca43139863","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/performance/__init__.py","lines":1,"sha256":"24b0bb940c64240eefa8e8677c5afa7b7f4503778a3241ffb6e340437066794b","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/performance/collect.py","lines":284,"sha256":"0502c1505d51654d7558ddf2a4c1ee46470e695460305082b16fee7a97d72b81","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/performance/metrics.py","lines":127,"sha256":"835611ad427a5020dc9521f1e63be172848cedfff059e73f276c07482c7dc0d7","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/performance/reader.py","lines":58,"sha256":"51f70dfedc3a9c922da5c0a761c4cfc2edec581fbef93e9819395ffd5ca0412a","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/performance/view.py","lines":200,"sha256":"817f1f00882d771107d3690b0b3ab45c0c13d4e6a094fe910bece373c2228791","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/fraud_portal/theme.py","lines":67,"sha256":"716669ab1416e792b425de4d5bab5c1f692ccf86d0174a9b36fcb2918657d74f","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/model_updates/__init__.py","lines":1,"sha256":"9297d39e6f2e640a234de0d80bf23e13fde7c8dc53d0c405d414a3c19058ea2e","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/model_updates/controller.py","lines":567,"sha256":"8507b9e1739132efdddfa1b72ac33a90dea014f998e0b0df569653a3d91cf785","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/model_updates/deployment.py","lines":473,"sha256":"032cebb34a206782bd4a59f3f73eef2790f7c6e569fb162c10f065eb65347525","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/model_updates/policy.py","lines":130,"sha256":"8c30e5e9ae9270a5151d7655fbd89cd0d8002f418c772fb34350c87b5b394e52","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/model_updates/registry.py","lines":165,"sha256":"32bd83932d52751828e7812676b458241151da6bb5010781fe5ef38f4af9be7b","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/model_updates/search.py","lines":138,"sha256":"43c23d9ec3895084b025c3f316d241f59b4b9d2e2c982d940de4973c70e93c68","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/model_updates/training.py","lines":360,"sha256":"57a400ca7163aef9d36e0621e5e11bfeccdb1805e5690b706ef174481baef31e","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/model_updates/transaction.py","lines":64,"sha256":"7187b25e8eaf56ab6f5af85955afdb3c66036ca9bacc12243177115e069db14c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/monitoring/collector.py","lines":207,"sha256":"5ffa1df86e37435716fb76ad2554da053ee31bede4ee37e43cda46119fb6fa16","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/monitoring/feature_health.py","lines":267,"sha256":"cdc86a129c09f9f1aac5fb12192da5cec60f8fb04409a0bef05cc62c6a75dc86","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/monitoring/feature_monitoring.py","lines":122,"sha256":"5656e60b5b8af9294710e3153cd5976ec6e654ee4a4f96f60c6406651f664960","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/monitoring/local_stack.py","lines":78,"sha256":"cc3d2114ac5e8dd8ba984684bf5156922a33a7add98ec966373cee6b00f002b3","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/monitoring/monitoring_exporter.py","lines":112,"sha256":"ef722d60b2197c1825bdf229c6863ba7d578b8df4075aea7f63156659ee67881","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/monitoring/statistics.py","lines":84,"sha256":"1f4a6a05d7df1afa54e8db646b6fd480eb2978445ed6c3e562e7834e88e6861b","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/monitoring/telemetry.py","lines":136,"sha256":"0e47dfc993f76d3ca51a7df24382780d7b7f538ec5d3c1ea8c557d03637d0f07","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/operational_round/__init__.py","lines":1,"sha256":"d7dffa33538984ca95f231fe97f1445207e6b5ff98236a621604a2fa89923791","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/operational_round/controller.py","lines":557,"sha256":"5caea90b6e0c1be33072b80a1651e52fb1d41ea1b54e6021d702c2d1471f0df5","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/operational_round/lineage.py","lines":84,"sha256":"44d6b67d652c2d41cba10d1b9a17362d75fd98f2b35d3daf01647739a3403c7e","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/operational_round/policy.py","lines":86,"sha256":"7062ad97766e3f84db5ff24e70a9d9dddd196ead97e13651a5cc5883d1b25973","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/operational_round/promotion.py","lines":268,"sha256":"fa4f053376f01e26a165ae52cfc518d4367d6f581e71e58813337850ac610de3","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/operational_round/seed.py","lines":118,"sha256":"33151c4a225e62c095a8c49019f48239bfb4a980d1e71079f41a546e898bf4d1","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/operational_round/serving.py","lines":523,"sha256":"a8e21bce273770c642ff85421df49fe3be1f93dc5132fd88cf9b9ef160a0a01c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/operational_round/training.py","lines":333,"sha256":"180671c39b0ce3121d77410d1bfe67640df971bbaa13a045572d8ca5236ffc2c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/platform/dashboard_colors.py","lines":214,"sha256":"ebc11b47abfc7beb5ac1c143a7e6f012bd0a2844ec6f9821c01f2c5cef8556f5","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/history/__init__.py","lines":1,"sha256":"daeb77e3fd7f3fa7b894f54bcf1f6eebfd1f178ebd7d4030f3cd05c640fd2709","decision":"retired_completed_history_import"},
+    {"path":"scripts/platform/history/registry.py","lines":262,"sha256":"3c8702d268318015bad4cfbb4aa839d9e3ca298dd89ef399c760559e536ec7f8","decision":"retired_completed_history_import"},
+    {"path":"scripts/platform/history/source.py","lines":303,"sha256":"f19655605f704df46e72f372f089f53002c6dd768582ae3f4646015664f13089","decision":"retired_completed_history_import"},
+    {"path":"scripts/platform/history/transfer.py","lines":509,"sha256":"c65ffcae8095042c31abdd0ee10a7d91e89e55fa9bbfab072f385f5f1da08e93","decision":"retired_completed_history_import"},
+    {"path":"scripts/platform/history/worker.py","lines":92,"sha256":"1399aa2e70f475a0b0ad33f6b24af0528050bc8b35c884a3a4abfdd0a729a1d3","decision":"retired_completed_history_import"},
+    {"path":"scripts/platform/kind_bootstrap_diagnostics.py","lines":280,"sha256":"5badf0fc32dbd2a8ef59f744143affd5b44dcf1b925ce79d350306b99858b80f","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_datasets.py","lines":464,"sha256":"1d5a38fff0d7c30ff23fb4d37f7856ead309a25dbe74046bdc60f8002fe729af","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_datasets_worker.py","lines":108,"sha256":"503698735fc48cb04e1adc53a8a80b5841d487319cea2e9e6e260ca8be3fe2ad","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_foundation.py","lines":608,"sha256":"956730f550bc6f89c5fe452045fcc893f956ee141a2f4ce99203bf1678e50fd0","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_history.py","lines":193,"sha256":"981e198ee632c2ed922b0b75a54243e54bd54647b0f01ed85d18f0f07aa3fa4d","decision":"retired_completed_history_import"},
+    {"path":"scripts/platform/kind_observability.py","lines":1097,"sha256":"bda1805c7f1664573ad0e8a445c70a22def3ec1939f40962f557033042136d20","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_observability_state.py","lines":150,"sha256":"6d12e078e0afceec64c435dd867a9c99214b7be957aa8a299825fd89388bc590","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_operations.py","lines":685,"sha256":"6711b31b7fd54d62b44843c360e7ce9ad924e75f25260a9a57073882fbd5ca53","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_pipeline.py","lines":499,"sha256":"443bf8cb9fc3717b5a86f50164f277f9a99069697d36a0d614bcd7188c199626","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_pipeline_compute.py","lines":157,"sha256":"753386897b09edb47094818fb740a57c779aaf756cfab2b1c9c29961b1f63f87","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_pipeline_transport.py","lines":111,"sha256":"575a24f3c4bcb72f7d5122d0c0fc68d4ba400950e3c22e5da7b29264996473ee","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_replay.py","lines":396,"sha256":"7c983ee4457c559c7ceb8cd510152d2fd2d319d6d85abe9fe262d1a18573a4ac","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_replay_worker.py","lines":245,"sha256":"a2bf76cf8b47813e6d0a05918f9c975b629e4d960168367dfd1af363cd436604","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_serving.py","lines":624,"sha256":"775c43c887cc0e69bf3a0ae26e6c385b7597bb474ac42b9b681abaddd694fc25","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_serving_delivery.py","lines":415,"sha256":"2ad023a56fb1b6f6cfea4b2b1580a935566c820b6c3159f59de7607a134aba06","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_serving_seed.py","lines":71,"sha256":"4ca3ec100883448a03b9fdf75f3902ea5d3a1bd6df86d6ebb2aa71587f9854dc","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_tracking.py","lines":668,"sha256":"fa674f4ad5e77e0cafb0bb225e1469501068d153864ee31f71abc9bfc34aaab7","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_tracking_client.py","lines":134,"sha256":"63007e160f825376af2352bac90b58e89b329dac214fb3cd4fc02ca05c1f1232","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/kind_tracking_storage.py","lines":75,"sha256":"6e79932f1b70340cb10767510e8309ea608b891685d4c03b25ccdf00f45017aa","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/local_access.py","lines":97,"sha256":"e98972d3c175c71818114ca923670e8825ebf8b621acf53ef65991a52aaf0fb7","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/local_services/__init__.py","lines":1,"sha256":"a40611e786c4f38e6d358c3faf6007df217479fd68a9b29d24a2e48b8ed362a4","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/local_services/controller.py","lines":238,"sha256":"0d9b8724fefe8856323fc6b3722229dd19a6d7cd8cc91b39dfac9d30f8fe8b39","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/local_services/processes.py","lines":60,"sha256":"5df2d2d7741e9276182008e7cb03166978afa68b8e0706a2f1ffaf0ba22e065b","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/local_services/services.py","lines":90,"sha256":"97eca230bb43bfb592dfa2f9ab7d8cafbe1bad82981f41fac388cc7679f70e98","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/serving_recovery.py","lines":555,"sha256":"f640f8979966b1fb387030bd804bfd321d0f857c6a319ea0103b02412e15a94c","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/platform/source_compatibility.py","lines":47,"sha256":"ec229e600f2b2776cf13d4dce5bb4d68f09e2390ccc74603ca1554a4e5d96a57","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/product_flow/__init__.py","lines":1,"sha256":"8c470de4a1f7d582bd2f252ca4aa4427bc52fc437f65efa3d031774ef5546510","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/product_flow/controller.py","lines":502,"sha256":"024ee8eb0a2e7de9a214218737e0493a99725db09047e710d086084faceb5755","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/product_flow/http_scoring.py","lines":136,"sha256":"ce3669e031f39b0f8159c6a75f43108bb5f96d42475f26930a22640a5027c8bb","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/product_flow/inputs.py","lines":129,"sha256":"a63b56bfd2551155a8e4add73fee1c0385cdf2cc153e8ae41be7f75e300209e3","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/product_flow/ledger.py","lines":124,"sha256":"19e3fe2dc12583c524bbb8f829a04ead741db58b8ee1fbe9c1a9f189db1072fe","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/replay/assess_paced_replay.py","lines":167,"sha256":"c6598231f903be89f38a8b9853185f15cfb46ba4511dc9a58778c2d2912550ba","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/replay/paced_triage_replay.py","lines":425,"sha256":"62a29acdd15d8d9289220815fdc299d23df45e5eb3438ce2d8e59416de257766","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/serving/blue_green_rehearsal.py","lines":595,"sha256":"2d06129fa4f9ea666da6b1f27030a71732969ea8c2d65b7836d6a87da6f4f39d","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/serving/check_docker_runtime.py","lines":479,"sha256":"c87f54273c351dc9470d1178b66138e250e4345c9de3e5d92c86f81cb64b2f49","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/serving/delivery_consumer.py","lines":210,"sha256":"c7f273b6735bafe6aad38089ff33e98a2794f8d168d956b96fbc3f233fc158c8","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/serving/delivery_gate.py","lines":503,"sha256":"63932d800c7be06683023d9d0ecf1ff561f1934516757d374d456a4fa8c892d9","decision":"retained_project_input_or_entrypoint"},
+    {"path":"scripts/storage/archive.py","lines":784,"sha256":"6b4cb52bc86223ed052faf2e42032b222e8c0d2feb36cf70f2067c944e3925af","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/bronze_archive.py","lines":157,"sha256":"0b3f6a5ebe531d811dfa6cfa431644b2114fcec444c6cda35b7e86bd3baa32b0","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/bronze_s3_worker.py","lines":353,"sha256":"536178c3dbeff0037bd8194e4388a2140a472b01639676322bad46ef4e8a5d39","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/bronze_transfer.py","lines":141,"sha256":"a60e8890b996e299f41562695e622e8ff5f4c584e0f5b3e1cc527e48088b446c","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/development_gold_archive.py","lines":264,"sha256":"50c8c519515a98765bda8f72621e4a313a26cb679cb390620f828077f3fc340b","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/gold_archive.py","lines":258,"sha256":"b8086f80233a0e8e1730dd8648f44cc24fea898729c87d50489c859ad015abd6","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/hgb_study_backup.py","lines":389,"sha256":"2455c9f0aa0c942ab070fc60fdb1c27d9475857b494632faeec3f159d8b14fa9","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/hgb_study_transfer.py","lines":125,"sha256":"74f40fc66f1783add9a6662b955cc6b7a31647715c2ebd3f54e438479479d6c5","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/mlflow_backup.py","lines":678,"sha256":"c38deb68fe785f89241664d1034c221867ddb0119ce4dede7200432a3df88277","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/mlflow_inventory.py","lines":498,"sha256":"ecd407f85bdc9e0b4de3aa81f2bb263de09b276dc62178e2a0b572b9f1d3056b","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/mlflow_recovery.py","lines":274,"sha256":"fdcbc9c1b74195cd99e286f6c25eb3d2d84ae1931bae28b71a91b71bc6304075","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/mlflow_recovery_worker.py","lines":278,"sha256":"5b0ac055269e3039ed2c8dabd9380421c97434e389b7ff7c4c13f67d4bd82346","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/mlflow_transfer.py","lines":118,"sha256":"474063ff2376c24f6c9d4e0adeb742c0f81c000ac2902869b603dcae7919fd39","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/persistence_inventory.py","lines":452,"sha256":"5b528ca2e139b7940f17eb6268ecf526c0198af00b72e807c6aec9c48041c1e1","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/storage/silver_archive.py","lines":240,"sha256":"f1944de7e191d1d57a5374fb9b455b26c8d2d7d7cbb4ee108952485f9e6a27bb","decision":"retained_runtime_or_pinned_dependency"},
+    {"path":"scripts/tracking/capture.py","lines":427,"sha256":"7a73d5475b34b368eae9d5623eb7cfc82e638f7625edb9d0380b4771a392d0dd","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"scripts/tracking/capture_worker.py","lines":383,"sha256":"6c56668a5955aa70d10686ef485e1dcda3d38b0cba511dcd94e791899f7c47cf","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"scripts/tracking/local_stack.py","lines":397,"sha256":"80e1856ebed62fc1f825dac3de0f09bb46c51ef262d52af471083d4393f63d03","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"scripts/tracking/probe.py","lines":218,"sha256":"ea7d9eee09b03a810d57eff7b4f2a01fb77376932c22b14229302290fd8a1dea","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"scripts/tracking/restore.py","lines":488,"sha256":"d6f8df61338772011d7342640142ce2d56661c36ee0fd742bcc2e29dfc0e9763","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"scripts/tracking/restore_worker.py","lines":444,"sha256":"10e981cd729f9a29a5253432011bcb2b2aa2a910176ee1d2014a37c07dce81db","decision":"retained_tracking_capture_restore_or_recovery_tooling"},
+    {"path":"scripts/validation/exporter_recovery.py","lines":227,"sha256":"0908be61d956da1a5339f3c7814de4ad096704663bc1bc58cf722235601c7d1f","decision":"retained_project_input_or_entrypoint"},
+    {"path":"tests/__init__.py","lines":1,"sha256":"6c25de924c6b27839f087ec6095e98dadd67e9d5f975a5b08170b3630e6b7053","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/case_explanations/conftest.py","lines":47,"sha256":"46cc831b2d5552ab9bdab23c6beef2dfba8c73cf05ef0ff99a5ab8b2916c34b7","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/case_explanations/live/test_current_champion_cases.py","lines":26,"sha256":"b47ac057133f7866d862874f93ce84fa2f95085de019e8f0379a74a34c12d1ca","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/case_explanations/test_cases.py","lines":182,"sha256":"e0b97d7053d031229e6447b3fb9bd6b56eaf9fd296d6008c514bf37628dfa120","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/conftest.py","lines":215,"sha256":"05c91d34daf98457ce23d2d705db4ae3889b45fba2b19135b57004b240f343aa","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/data/datasets/test_gold_dataset.py","lines":286,"sha256":"cb99bbf4a80472e9e256beaef4ce8f6550430f46e7e57e2c4ad143bfd4d8fc02","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/data/datasets/test_silver_dataset.py","lines":251,"sha256":"7f1df801f5ac575c09a18187273d0e5bc11fe7a315583957be9c8af3bd075521","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/data/ingestion/test_handbook_bronze.py","lines":380,"sha256":"8099a7ca407951c903e9912c89c2849781e2deb6091aef38dcbaa1694daca6c7","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/data/quality/test_training_eda.py","lines":207,"sha256":"b54f743f3311130311ac55c642251a20cbb136afa600cba612aded9974d7332c","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/data/quality/test_transaction_profile.py","lines":152,"sha256":"49c70b807ef96acfb10df6c7050f3ab2a860b751a007c5caeff9628ecd6fc00c","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/data/test_entry_points.py","lines":40,"sha256":"c42f8fa75c0e1840b57410d42d1a9a1110be8f9373beff5f1ac01c85808403c9","decision":"replaced_by_shared_cli_matrix"},
+    {"path":"tests/evaluation/test_conditional_queue_reference.py","lines":111,"sha256":"08e43710552ef1d53b74cdf868bc5dcbe7e3db1395b2fb47dd6657cac7a3dd2e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/evaluation/test_paired_comparison.py","lines":103,"sha256":"e6b730d8f8c7f9bfc54a96487258d4906d3270c4b737877f406af954c035f4e4","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/evaluation/test_ranking_metrics.py","lines":66,"sha256":"5b3fc92417bbf53c387dccb3dfaa51ab1af46913a80114185c0b48eef3c340be","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/evaluation/test_temporal_block_resampling.py","lines":122,"sha256":"f37191c048cc3f32c678ab59f60b93d242e7ce2524be003bd77bcb16f1d6d35c","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/evaluation/test_temporal_dependence_diagnostics.py","lines":100,"sha256":"9580769c46194d8069f02450d224cbd2c417399a3df57259f166c12003598ff0","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/evaluation/test_validation_diagnostics.py","lines":268,"sha256":"a5963880a7000a9e8fc4081fbeb77d520e1d64a66b0b3c95f3d8541c1f8bb032","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/experiment_fixtures.py","lines":11,"sha256":"30602775b0c1a428dfea0971d96e81a795b294c9be55fa5f56159747c0302348","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/features/test_causal_history.py","lines":212,"sha256":"139e7534dcca779c312fbdfd66df398324a269d607563ff28ad7178db931aed0","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/features/test_deterministic_causal_history.py","lines":81,"sha256":"d52bd13b987d8548192ec2fc8e90668a371c440ce52d019495a07dc81520176e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/features/test_exact_binary_mean.py","lines":81,"sha256":"340c542a88ef7e95ae6f842fb3776aed58edf63720fc88e8f7463672c4b5ecc6","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/fraud_portal/conftest.py","lines":87,"sha256":"2842a9da4a79633b61891eeb94c194574111131ab29195bed15880af7368e5d9","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/fraud_portal/test_app.py","lines":137,"sha256":"99eb6a0bae39600b89f44f56c9182942da8394620dffd44faf8efa235771b374","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/fraud_portal/test_controller.py","lines":45,"sha256":"6030ac9aa8c828766218948ca236f5ddba2d42308e5e47c48aa64b31da662b02","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/fraud_portal/test_data.py","lines":106,"sha256":"25a956f32dc232637d52cdef6a1e9a7d646011607257087b08e8f28e66be824e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/fraud_portal/test_export.py","lines":76,"sha256":"1da2f8569399f972f58536e22698a62b24618578ea7e4e5e7b9db86e8be1836e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/fraud_portal/test_performance_core.py","lines":273,"sha256":"3d51219f7a7fdea3886df4577fc57f877cda63549d86fdae5dbca1cb49330a56","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/fraud_portal/test_performance_ui.py","lines":133,"sha256":"bcf7d48bff364721dd9f80688cd121bbffd8c5ff15fb2a75081fe48da17fe4ef","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/live/test_kind_datasets_live.py","lines":27,"sha256":"9223e5f0a4f879221893628b49cc408a73bbc6eeb00aa33dea1a249a0ad468d2","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/live/test_kind_observability_live.py","lines":20,"sha256":"72be1e21630480269c7821387f8e7649e3e6796cd087e804e34bdf3ede7bc88d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/live/test_kind_operations_live.py","lines":28,"sha256":"69ff6309c026b4a2d8b362a4a286e4845095cf692ef071c7d99a4ffeb31c9074","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/live/test_kind_pipeline_live.py","lines":33,"sha256":"deeab9a5c68bc7b2b9c88113709190a7bdb561ba23cc28cc39be5c110518440a","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/live/test_kind_replay_live.py","lines":25,"sha256":"cc4759625ff6e8350221b75b78125264c5917e0e3929af4680437c46f3376eef","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/live/test_kind_serving_live.py","lines":24,"sha256":"30e12c5f0a6c0a04c569dc76191572233283175d405cd31d51990ad5e66dfc9a","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/live/test_kind_tracking_live.py","lines":23,"sha256":"f85a4af3713725010922eeedbc0292c9970a659890450c8e9d47ee4914504c74","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_dashboard_colors.py","lines":140,"sha256":"87996501860815aa25fbc041f7bc788ae9fa61eb286411fbba4ffe34a5c7926c","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_bootstrap_diagnostics.py","lines":196,"sha256":"12cfd08bcab578d7524a0efcdb239ba8bf1c838d9317a376ea77223998ae2f20","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_dataset_layers.py","lines":49,"sha256":"226ff38ff73e62b1b60eb5c7ce37febfe8fff4566b6cc56fbb637e3ae3f4edc7","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_datasets.py","lines":287,"sha256":"3dcfd4138a679997034c78dec8dba27d37263895a8aa6cacfe7a826c60de8566","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_foundation.py","lines":353,"sha256":"ed07a6cc2efc404a24ec0c8b91328ce10d9477a867bbf5c56e41b624875d1bb5","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_history.py","lines":563,"sha256":"e84da2381aa5fefa7bc33b865d027eded02b3bd3fba576858c6d7803a2c2774c","decision":"retired_completed_history_import"},
+    {"path":"tests/infra/test_kind_observability.py","lines":587,"sha256":"85d18bba84512372dd08b436c1911b8d2a62cc2720de643cace931279a46d6b4","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_observability_readiness.py","lines":107,"sha256":"3b29c70193fd8115f60e7bc3457be67eb11510c8586d436b4e75cabeed66ec6e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_operations.py","lines":366,"sha256":"def6b0d68dcb233bcc8811b913c6bf55a5cc48aeb0b54343ac092fc21ed1dc6d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_pipeline.py","lines":340,"sha256":"6268734e8327b7534ff69879545ad4de6116ed7e9e875e67620a62428eb811a8","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_pipeline_workers.py","lines":215,"sha256":"ddab34e50a028334f548b7d8036d1ec918ef700962d2035c6bf51379e402d756","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_replay.py","lines":228,"sha256":"3fae2e4177e92703b54c84a1855bb5479751ae6df51a7cf9716c4dc376915538","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_serving.py","lines":618,"sha256":"ee07ecb85553fdbfc79d98b5c810bde5877cf34242ed5330df43f4eb50f893e3","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_tracking.py","lines":364,"sha256":"fce2c6d1bd692b5288e272a165726d4f5ec463752cb31d6e13a008ebf74a61a4","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_tracking_client.py","lines":105,"sha256":"f2739c9c83aba4b9717621d45b0316da552b315551c519173a97dc557ffbfdbc","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_kind_tracking_storage.py","lines":101,"sha256":"bd865cf9a6496a46c3973d2c35de0f62d773c9c955c01a7157c96810d9a81bb4","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_local_services.py","lines":295,"sha256":"2d55ed1b4483927d2b6bd50b63a84f4053eb01a9f8e981b784fdb1922324242c","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/infra/test_platform_entrypoints.py","lines":408,"sha256":"8d74ba48224b9e355f3ead215210db5eabbe4c3ea76c3f74e4ba8b999de14d02","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/integrations/test_mlflow_http_tracking.py","lines":190,"sha256":"4edde2579a48433d7c5f62802cb3df705a871dc8117ed75dafb42a10c0f81728","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/integrations/test_mlflow_tracking.py","lines":154,"sha256":"ef640e3568c0d5f145fe4ffd8fdeaca28213efbbd00c2e1fd5d191f4c3aff394","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/integrations/test_serving_release_export.py","lines":192,"sha256":"aea278432276cde6659fb5b3d9a8a46265b3a596acf021e80734d1dfd7600cfb","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/integrations/test_skops_persistence.py","lines":23,"sha256":"dd7232723437851f9eb59acff2a464fb39fdf3ffb22651e2e7c7b56e9535f990","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/model_updates/conftest.py","lines":4,"sha256":"5890d598cefd54f54cf1c09e7fe9e5717739c3fa6b491544a5c61b9ea64c7921","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/model_updates/test_http.py","lines":266,"sha256":"7f7dcaee7757253fec94ca1621654aca2ff64a3438e2027c4499dab2031039cb","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/model_updates/test_policy_and_transactions.py","lines":158,"sha256":"cb3d8cd5093a74a86c04fef69996e03e61a6d4c75abc9415daf8044ce603d144","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/model_updates/test_templates_and_make.py","lines":127,"sha256":"0585ed336974221b7801fe2f1f26012fc71e03f076697737009211ae5845904d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/contracts/test_model_interface.py","lines":187,"sha256":"4613bc6b743c4b9cae713ea253368f5c7cc3099d5dd2d1de3023fc43a9312594","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_baseline_experiment.py","lines":257,"sha256":"cec5db2f535c2a5a56836e89c0bb82bc3b3c2b66add908343b95d134d3e2f362","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_baseline_history.py","lines":52,"sha256":"b62c044c1a163b9efc2fadc73d9af02b7ac031824669ca636bb2af43e0d19caa","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_baseline_tracking_destination.py","lines":77,"sha256":"b9df7cc3a798169db63d88fa641880a97332fd685d1b7b42f8c0cd7249544de8","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_candidate_freeze.py","lines":358,"sha256":"d1ac53c7e83ec681a98e111b56b2b865ccac33c1e0e59ed2ff5478f6f8b79c0d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_final_holdout_evaluation.py","lines":376,"sha256":"e39d5c5a8042b9b7ee942ebde4d2558ed0989baba43732653ea9ca8b7623c19a","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_hgb_optimization.py","lines":372,"sha256":"62a1eb357a355a3820d4597404617f29c544a244566fb4100614791a3604b58f","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_hgb_tracking_destination.py","lines":73,"sha256":"ba9ce74743e6fe28b6071131c101e27a9fddf7c508208faf58ed5a45c3492c11","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_reference_assessment_execution.py","lines":476,"sha256":"5b33043f39f5b39234b6504fb242da2e4aa01e4f10a975d46e0c83dba0d5808d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_reference_assessment_plan.py","lines":112,"sha256":"e152aea2acead444492cbc6652125de2f719bf2d25cb084c861ff59245281caf","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_reference_dependence_diagnostics.py","lines":68,"sha256":"bc63b70592983a951a1018c63f38a6a3395cbd9f897302389c9f311392de7de6","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_reference_uncertainty_analysis.py","lines":66,"sha256":"76bb17da01fde8bcbc533472bf362e00f01ddafcaa4c1e225a9d2dbc421e154d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_temporal_development_data.py","lines":121,"sha256":"23ba6c503953ad8581537fac9c6f06934f849ab2bc7837f46dded7c329b8696c","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/experiments/test_terminal_feature_ablation.py","lines":200,"sha256":"cf0a331767bc589867e78cfcfa1fd650c749f66414734f1db7b147fd7dddea79","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/modeling/test_entry_points.py","lines":30,"sha256":"539990e4072943f4829e0df9e1228dd15ba0b2881e55195f6f84d29c6df717ee","decision":"replaced_by_shared_cli_matrix"},
+    {"path":"tests/monitoring/conftest.py","lines":54,"sha256":"2fba7fef53f2bc8156cbd881a310123602e820f7ef635d45692b8606a1626ad6","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/monitoring/live/test_exporter_recovery.py","lines":18,"sha256":"dc9e7a3875e14e0a0f425723d7acd9ca1fb0d5fc38df9cdf014a3793c43c9bee","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/monitoring/test_exporter_recovery.py","lines":223,"sha256":"9da357434c5155c74deb3a44ad907d0b9797627b44c9f9e327e27e47aefb881a","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/monitoring/test_feature_health.py","lines":142,"sha256":"f33f245b56af71438fe0584cd038d34b8b1180bf02cd07b770677c67b5aaaacd","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/monitoring/test_feature_monitoring_integration.py","lines":136,"sha256":"eb540335ea79c9470a32899472bd508f17b97538039e702cae8499b084a3f594","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/monitoring/test_paced_replay.py","lines":187,"sha256":"87cdedacca74c31dbcbcb98d2cc2414875faf4cbd839050331caee9caac7e129","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/monitoring/test_statistics_and_exporter.py","lines":121,"sha256":"548423104e98d369fc6ac1948c2fc5d4e9e757bf44d9e1eb6b206f7605d5ca36","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/operational_round/test_controller_and_templates.py","lines":185,"sha256":"de4c9fc4a388dd091b03dd5b2a344f91c693e164aaa07f304d76f4ab0f3ef9ca","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/operational_round/test_make.py","lines":71,"sha256":"23049afcb8c73c76286324073cbb0b52be3017d4717a3ed08478253fe31d5eae","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/operational_round/test_policy_and_training.py","lines":256,"sha256":"ff0b1c6cd6d5eb2c3f94abeaba0139123ff6b766dd2c98a2cf300ca8a825cc79","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/product_flow/conftest.py","lines":127,"sha256":"3cd329b48c7efa26af19515f7737a4074e378ede4fd50a2674357f0ee8389778","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/product_flow/live/test_champion_http_flow.py","lines":26,"sha256":"109124c5e00ab56639a91d036c9e4b85bbaf5606a42d0d054a4627433b02e54e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/product_flow/test_http_replay.py","lines":167,"sha256":"ba8b9f6bedb6af94140dd7aec137e74fa9b4acb4fc7dafe2db1b493b50c2bc4f","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/product_flow/test_inputs_and_entrypoints.py","lines":161,"sha256":"b39d7d54d9ddbc426a7988c963140313650860a7b947481c7a02f3bb6a025ea0","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/conftest.py","lines":19,"sha256":"a84fd75a742cf9d2c149314b27325102ad96fc195c33519069e020365daae36a","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/live/test_blue_green_rehearsal.py","lines":29,"sha256":"b51acacf678d50961281efe0a9507a827b09c2973b75e6b7187f614ad12390e9","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/live/test_delivery_consumer.py","lines":29,"sha256":"919f8c8339409b08e977d74dd80204559ccd1dc59fd66828843f1009f00b9f72","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/live/test_delivery_gate.py","lines":24,"sha256":"22518d097cebdaa4b004a32354e1a059df8243aea71eda25ffd2475fb1dc7adc","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_blue_green_nginx_runtime.py","lines":118,"sha256":"00ca7cce63a54c0205a9a3e276be7c407986e25a1a89884dc865c99429b06406","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_blue_green_rehearsal.py","lines":362,"sha256":"39fdfa8468eb51929f111b3073c21cc2b9cccdf18033ef0ac813d8dac522ddb2","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_delivery_consumer.py","lines":255,"sha256":"146297c7ad6d0aff8a8c831084388ad480aac509bf69944c276d7a1362b975c3","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_delivery_gate.py","lines":395,"sha256":"5081867052175e7cd6948e46e79f04d03fccfb964fe68e91f7aecd799b403830","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_docker_engine_capabilities.py","lines":81,"sha256":"5e7898f212d464839b2f469382e35d20b0322df5993f1916b0a8f420aeb781e9","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_docker_runtime_checks.py","lines":218,"sha256":"04a5f934c9f28dae26820673c0593dd5149f1e10b8f388ef491bd9dedf5a068e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_docker_startup_diagnostics.py","lines":72,"sha256":"5c6c389b8eb299e75503e5e6f13d1a5b4259419998e06868b39b8825b0ea1268","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_feature_coherence.py","lines":59,"sha256":"b654d2c60c753c5bb05edd417d8d7a2d7ce194cd46817abf84c090896aed3127","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_http_scoring.py","lines":152,"sha256":"2496d7d0c8fa3cf7223824682ec1478ff1178f303c6ba3551a8723a32756f950","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving/test_release_integrity.py","lines":70,"sha256":"0ead41a700934d7308bb795b8d24520e700b6d767ba0086908b890af065b5c25","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving_recovery/conftest.py","lines":30,"sha256":"95dc29501bf67e33f23f4e91934024663bd47504445f0369065e5fc557247955","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving_recovery/test_maintenance.py","lines":436,"sha256":"a882bf97f6179ac6b925f95bde7c7c40dab99bd20addf935b33a15620afd791f","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/serving_recovery/test_seed_restart.py","lines":114,"sha256":"00270ff60162ce806c7eb3833f4bfc5be323e46a5a2c8c1de1c23e75632edd50","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/conftest.py","lines":41,"sha256":"e37f23b63284952f0085d7af905a55b180eed70b6652d7630a3bf20c185427bc","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/sdk/test_s3_client.py","lines":135,"sha256":"03cc376bc90e5986a135b8bfef3dc93d92cc072ddbbe1d344126630a2d88d499","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_archive.py","lines":340,"sha256":"0e216a7278d072dea0afba99845e29c0f32c05b38ba5a35f7128cd3ff13c71b8","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_bronze_archive.py","lines":200,"sha256":"cf4e91228de3753f6c1cba0564efa2c2139cfd26351db7cd4e6a255985d0896f","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_bronze_transfer.py","lines":283,"sha256":"4448fd27951cf456374bb5048911950a5ff61285f4af041d927e36f70ac43ae1","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_development_gold_archive.py","lines":292,"sha256":"8c99313e4dbaaacfc6f33ffdd6069184d9abd32d97f0ebf6d3722444e9836bba","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_gold_archive.py","lines":305,"sha256":"23a6fb1798e3d9ffe9dc03c5b66130e8b76970b244767346861ab2f3b6f037b2","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_hgb_study_backup.py","lines":288,"sha256":"552865ff9b8029665f0efea3078ffffa8a8dfbb4165c353f8d0c584ef4a2a7da","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_hgb_study_transfer.py","lines":181,"sha256":"6fa1cf0d709cfe21dcb920155b06e98d4aba745ea317025b7d7149a2bf7a5010","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_managed_paths.py","lines":169,"sha256":"ca09655728a0b67821b51b1e513bb88eef1fa4dffc9888994685116c01f9804b","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_mlflow_backup.py","lines":542,"sha256":"224958cdcd4fe547ae206d38d380e032a0de20a4277b8e64035135b6e42ee745","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_mlflow_inventory.py","lines":249,"sha256":"70d660c018ac095d1c1bc37bd6d4a1ddeb53c005ba8ee6cecfa70d03fad18f26","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_mlflow_recovery.py","lines":265,"sha256":"65a6d83162e04ed296f888ed6e25e66008644c2d54b60e5cdd5c94d9a37dfafe","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_mlflow_transfer.py","lines":226,"sha256":"bb44490e0c199d85be5a2f391ab2c0b4a0731220e7dd28ddf885516f987902a2","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_persistence_inventory.py","lines":349,"sha256":"3711ae31a990de79ffcff7a2a4d5ee46df283e195ba16068ba87029630114218","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_restored_release.py","lines":181,"sha256":"6a03df27be17560507a8d671737d01c1f2ccf00717998a38e2c5d208ae37255c","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/storage/test_silver_archive.py","lines":287,"sha256":"bd699d60dcc02f4054baede84eaa1b59d5eba9ac3bce0cf1794dc7acd370e295","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/conftest.py","lines":34,"sha256":"a4eec9905db21e637bd63d9b244bafe587b427c381d3987d1a57b8932bb8ff79","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/contracts/test_transaction_events.py","lines":86,"sha256":"7348491290afc8edae38eba26233474fd7fea4c290f9da214eb27b957d7f2b41","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/decisions/test_customer_day_alert_policy.py","lines":176,"sha256":"a1a1306dfdf0436da1ad3b48aa6ef2e036a73a522e7a9664717fa81577e099bd","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/decisions/test_development_threshold_selection.py","lines":83,"sha256":"d221d5a234a5fe14487731b648abe28a21be5fe4ea858abbd316693e7d13a88e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/preparation/test_development_alert_threshold.py","lines":316,"sha256":"8f60c0feb155bc20e01923c2b1e0de21c2e55c5b42615e0f0f8f71fc9835aa81","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/replay/conftest.py","lines":121,"sha256":"f79283dc1bf63efe8def2eb32636d0d02958ded6d0057c767e64ca4a7733ebb0","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/replay/test_durable_triage_replay.py","lines":553,"sha256":"13b2bce29a3c64601af6176d369d1e5aa2383ff13cf946611cddb3f4c82f9911","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/replay/test_native_causal_replay.py","lines":378,"sha256":"a0a5982449bd8e71d588991f034bd5bb47516c4b5223b93f22cf358fd01dec68","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/replay/test_numerical_corrective_replay.py","lines":237,"sha256":"bd09d4415763e45f2a5cd407275af9db1ea7d044c87ac33dba0447fc72bdd9d8","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/replay/test_paced_native_assessment.py","lines":76,"sha256":"de8496ecfe8b94614594030446d7370c7582fc101229fc7fa7348c958cfcb11e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/streaming/replay/test_temporal_replay_executor.py","lines":324,"sha256":"c95860a512fd5893a904ef30a1252adf9d43f07f10f9f11ba8c5ddab365681f0","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/test_artifacts.py","lines":69,"sha256":"5de8aabe3abea85f72f354e522cb8bad6593637892085cb17f6fde0359779f9d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/capture_sdk/fixtures/pg17_schema_representations.json","lines":363,"sha256":"4256c220d4b064cb958cea1c51cf9c0a14d930e91c6ccb123c7f1fb3a1a2cfa8","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/capture_sdk/test_capture_worker.py","lines":339,"sha256":"609037c5bae702e3fa4134193aa5ceb2b71eb9ac4d699cbc7c5ae4b47027a3d2","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/capture_sdk/test_restore_worker.py","lines":154,"sha256":"3a70dacf7d542df76e4dc380f4304f1d943e656064b1229270af2b4ebabb6e05","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/capture_sdk/test_schema_postgres.py","lines":191,"sha256":"d7dae222608c0cc421ed45b6b3fca0c5709644b3526cd18250ba4e7e40c02a66","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/capture_sdk/test_schema_representation.py","lines":118,"sha256":"bbf772a70d7eb909d92252b5bf5f546d92e7fe238b7bcdfeaf83bdf7213ca8ce","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/live/test_baseline_http.py","lines":187,"sha256":"38ede36a26b41d3f11bbb1ecdaf955643f655aa42ad9c83d8648c7ea65267629","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/live/test_hgb_fold_http.py","lines":142,"sha256":"453843a2f8adb3e0b396a9751f36fe6246b75c15b719023bbccf1f9ecf526dba","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/live/test_model_contribution_http.py","lines":160,"sha256":"e5c894d02a420d37392aa0985123a433bb93f9eb02ebf2451ee078a0b879c976","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/live/test_tracking_capture.py","lines":25,"sha256":"84eb1b5ec4535d7714340161184b1c87097699d2f1f784ef99e6fa1a6c7706a4","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/live/test_tracking_rehearsal.py","lines":18,"sha256":"84a9448a3f5a572f2c30ce792ca4be74977920fb547355e8564fa6fbd1e0ea2d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/live/test_tracking_restore.py","lines":23,"sha256":"2591610ec63ce0146f6735a848c692576e7c6e1b332a8bd7cec0ec1d5824f5e0","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/runtime/conftest.py","lines":86,"sha256":"068fa7c93d997b1646cf772a4d3bd3abe12671460ab378889e54a7eab245403d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/runtime/test_baseline_http.py","lines":229,"sha256":"ae49df8d570500de6afaf26307a26df5b6b631e59e2d6b4e45d68313e8c5201e","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/runtime/test_hgb_http.py","lines":169,"sha256":"4b115d131e95316c32c2fd326896f793eba3955375e3d95458b903e230b744a0","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/runtime/test_http_proxy.py","lines":124,"sha256":"f4fa039896afaf8b7d9cf2e1f772fe960ba72741fd9226ab1f28d8440c25fb99","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/runtime/test_model_contribution_http.py","lines":255,"sha256":"0af7dc8db21f5f6c7a8a15568dc4eb4cff99817783c1a85aa1762c13647b327b","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/runtime/test_restore_client.py","lines":101,"sha256":"f27e0883e20519215b0d2fe1eb4d9853875400901a8556a5c21a401bb2860b52","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/test_capture.py","lines":274,"sha256":"3d2977cc38562b043da847ec974adc90a32006ce26bc34f879dfec7c7eb09e5d","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/test_restore.py","lines":346,"sha256":"a949fbe4a8a4a2927165c44adf421b5e9c75d2b672b3cf4042dae939ecf913ee","decision":"retained_contract_or_failure_regression"},
+    {"path":"tests/tracking/test_tracking_lab.py","lines":348,"sha256":"95cea3e71c8bb2289c593bff027913c003b95c0fb5ef200d825d4e1260e0f5b1","decision":"retained_contract_or_failure_regression"},
+    {"path":"tox.toml","lines":438,"sha256":"326bcfab5a1cf4e6ea89060c18f1199bf2a788d5924d476c3a3dc89cf9736a84","decision":"retained_project_input_or_entrypoint"}
+  ]
+}

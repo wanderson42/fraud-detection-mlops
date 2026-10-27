@@ -23,6 +23,14 @@ def test_owned_stack_controlled_stop_start_and_existing_readback():
     with f.exclusive():
         result = rehearse(Path(path), True)
     assert result["status"] == "success"
+    baseline = json.loads(Path(result["baseline"]).read_bytes())
+    assert baseline["schema"] == "fraud_kind_operations_baseline_v2"
+    probe = result["verification"]["probes"]["serving_http"]
+    assert probe["slot"] in ("blue", "green")
+    assert probe["invalid_input_http_status"] == 422
+    inactive = "green" if probe["slot"] == "blue" else "blue"
+    saved = baseline["resources"].get("Deployment/fraud-detector-" + inactive)
+    assert saved is None or saved["replicas"] == 0
     assert result["verification"]["controlled_stop_start_validated"]
     assert not result["host_reboot_validated"]
     print(json.dumps(result, indent=2))

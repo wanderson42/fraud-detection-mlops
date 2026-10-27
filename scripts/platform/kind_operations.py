@@ -13,32 +13,26 @@ from uuid import UUID, uuid4
 
 from scripts.platform import kind_foundation as f
 from scripts.platform import kind_observability as monitor
-from scripts.platform import kind_serving as serving
-from scripts.platform import kind_serving_delivery as delivery
 from scripts.platform import kind_tracking as tracking
+from scripts.platform import local_access, source_compatibility
 
 NODE = f.CLUSTER + "-control-plane"
 # Dependents stop first; dependencies start first. No cluster/volume creation occurs.
-STOP_ORDER = (
-    ("deployment", "fraud-serving-gateway"),
-    ("deployment", "fraud-serving-blue"),
-    ("deployment", "fraud-observability-exporter"),
-    ("deployment", "fraud-observability-grafana"),
-    ("deployment", "fraud-observability-prometheus"),
-    ("deployment", "fraud-tracking"),
-    ("statefulset", "fraud-platform-postgres"),
-    ("statefulset", "fraud-platform-rustfs"),
-)
 START_ORDER = (
     ("statefulset", "fraud-platform-rustfs"),
     ("statefulset", "fraud-platform-postgres"),
     ("deployment", "fraud-tracking"),
-    ("deployment", "fraud-serving-blue"),
-    ("deployment", "fraud-serving-gateway"),
     ("deployment", "fraud-observability-exporter"),
     ("deployment", "fraud-observability-prometheus"),
     ("deployment", "fraud-observability-grafana"),
+    ("deployment", "fraud-detector-blue"),
+    ("deployment", "fraud-detector-green"),
+    ("deployment", "fraud-detector-gateway"),
 )
+STOP_ORDER = tuple(reversed(START_ORDER))
+REQUIRED = set(STOP_ORDER) - {
+    ("deployment", "fraud-detector-green"),
+}
 MINIMUM_INOTIFY = {"max_user_instances": 512, "max_user_watches": 524288}
 SCOPE = "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery"
 
@@ -64,14 +58,15 @@ def pins():
         "scripts/platform/kind_foundation.py",
         "scripts/platform/kind_tracking.py",
         "scripts/platform/kind_tracking_storage.py",
-        "scripts/platform/kind_serving.py",
-        "scripts/platform/kind_serving_delivery.py",
         "scripts/platform/kind_observability.py",
         "scripts/platform/kind_observability_state.py",
         "scripts/platform/dashboard_colors.py",
         "infra/kind/operations/90-fraud-platform.conf",
     }
-    return {name: monitor.state.sha(f.ROOT / name) for name in sorted(names)}
+    from scripts.model_updates import controller as updates
+
+    names.add("scripts/platform/local_access.py")
+    return {**updates.pins(), **{name: monitor.state.sha(f.ROOT / name) for name in sorted(names)}}
 
 
 def host():
@@ -141,12 +136,23 @@ def resources():
         if item["kind"] in {"Deployment", "StatefulSet"}
     }
     f.require(
-        actual == set(STOP_ORDER),
+        REQUIRED <= actual <= set(STOP_ORDER),
         "Unexpected or missing workload in fraud namespace; do not stop unreviewed controllers",
     )
     result = {}
+    active = active_state()
     for item in items:
         kind, name = item["kind"], item["metadata"]["name"]
+        if kind == "Deployment" and name.startswith("fraud-detector-"):
+            metadata = item["metadata"]
+            f.require(
+                metadata.get("annotations", {}).get("fraud.serving/owner-id") == active["owner_id"]
+                and metadata.get("labels", {}).get("app.kubernetes.io/instance")
+                == "fraud-detector"
+                and metadata.get("labels", {}).get("app.kubernetes.io/component")
+                == name.removeprefix("fraud-detector-"),
+                "Canonical workload ownership/labels differ; refuse adoption",
+            )
         spec = dict(item.get("spec", {}))
         replicas = spec.pop("replicas", None) if kind in {"Deployment", "StatefulSet"} else None
         content = {k: item[k] for k in ("data", "binaryData", "type", "immutable") if k in item}
@@ -160,6 +166,52 @@ def resources():
         if kind == "PersistentVolumeClaim":
             f.require(item.get("status", {}).get("phase") == "Bound", "PVC not bound: " + name)
     return result
+
+
+def active_state():
+    from scripts.platform.serving_recovery import current
+
+    return current()
+
+
+def serving_probe():
+    # Reuse the daily-access gate: Registry, route, exact images/bytes, HTTP and latency.
+    with local_access.connection("api") as checked:
+        return {
+            **{
+                key: checked[key]
+                for key in ("registry_version", "slot", "model_sha256", "serving_release_id")
+            },
+            # Latency must pass its budget on each run, but is not an equality fingerprint.
+            "score": checked["verification"]["score"],
+            "invalid_input_http_status": checked["verification"]["invalid_input_http_status"],
+        }
+
+
+def replica_plan(current, active):
+    slot = active["slot"]
+    f.require(slot in ("blue", "green"), "Unknown active serving slot")
+    inactive = "green" if slot == "blue" else "blue"
+    for component in (slot, "gateway"):
+        key = "Deployment/fraud-detector-" + component
+        f.require(
+            current.get(key, {}).get("replicas") == 1, "Active serving must have one replica"
+        )
+    for key, item in current.items():
+        count = item["replicas"]
+        if count is None:
+            continue
+        expected = 0 if key == "Deployment/fraud-detector-" + inactive else 1
+        f.require(count == expected, "Finish staged rollout before operations: " + key)
+
+
+def ordered(baseline, order):
+    return [
+        (kind, name, baseline["resources"][key]["replicas"])
+        for kind, name in order
+        if (key := ("Deployment" if kind == "deployment" else "StatefulSet") + "/" + name)
+        in baseline["resources"]
+    ]
 
 
 def stable(value):
@@ -194,11 +246,19 @@ def tracking_report(path):
         and result.get("status") == "success",
         "A successful existing KinD tracking rehearsal is required",
     )
-    f.require(
-        result["controller_sha256"] == tracking.sha(f.ROOT / "scripts/platform/kind_tracking.py")
-        and result["client_sha256"]
-        == tracking.sha(f.ROOT / "scripts/platform/kind_tracking_client.py"),
-        "Tracking report source identity differs",
+    source_compatibility.accept(
+        {
+            "scripts/platform/kind_tracking.py": result["controller_sha256"],
+            "scripts/platform/kind_tracking_client.py": result["client_sha256"],
+        },
+        {
+            name: tracking.sha(f.ROOT / name)
+            for name in (
+                "scripts/platform/kind_tracking.py",
+                "scripts/platform/kind_tracking_client.py",
+            )
+        },
+        f.ROOT,
     )
     selected = {
         key: result[key] for key in ("run_id", "model_uri", "model_artifact_uri", "model_sha256")
@@ -248,16 +308,7 @@ def probes(record):
         "Existing metric history differs",
     )
     s3 = tracking.storage_pod("verify", record)
-    plan = delivery.plan()
-    serving_state = serving.observe(plan)
-    f.require(
-        set(serving_state["pods"]) == {"blue", "gateway"},
-        "Baseline route only; finish candidate rollout before operations",
-    )
-    current = serving.current_values()
-    f.require(current == serving.values(plan), "Serving Helm values are not the baseline")
-    with delivery.forward(serving_state["pods"]["gateway"]["name"]) as uri:
-        scored = serving.wait_route(uri, plan, "blue")
+    scored = serving_probe()
     observed = monitor.inventory()
     monitoring = monitor.verify_http()
     f.require(
@@ -271,8 +322,8 @@ def probes(record):
         "tracking_history_fingerprint": digest(canonical(history)),
         "tracking_history_rows": len(history["metrics"]),
         "s3": s3,
-        "serving_release_id": plan["releases"]["blue"]["manifest"]["serving_release_id"],
-        "serving_model_sha256": plan["releases"]["blue"]["manifest"]["model_sha256"],
+        "serving_release_id": scored["serving_release_id"],
+        "serving_model_sha256": scored["model_sha256"],
         "serving_http": scored,
         "monitoring": monitoring,
         "monitoring_pvcs": observed["pvcs"],
@@ -285,6 +336,7 @@ def probes(record):
 def prepare(report_path, output=None):
     initialize()
     system = checked_host()
+    source_pins = pins()
     owner = docker_owner()
     f.require(
         owner["running"] and not owner["paused"] and not owner["restarting"],
@@ -292,15 +344,14 @@ def prepare(report_path, output=None):
     )
     f.owner()
     no_jobs_or_bare_writers()
+    active = active_state()
     before = resources()
-    f.require(
-        all(item["replicas"] in (None, 1) for item in before.values()),
-        "Every supported controller must have one baseline replica",
-    )
+    replica_plan(before, active)
     recorded = tracking_report(report_path)
     checked = probes(recorded["record"])
     after = resources()
     f.require(before == after, "Resource/configuration identity changed during baseline reads")
+    f.require(active_state() == active, "Active serving changed during baseline reads")
     path = (
         f.managed_destination(output.absolute(), "storage")
         if output
@@ -308,17 +359,20 @@ def prepare(report_path, output=None):
     )
     f.require(path.parent == work(), "Baseline must be directly inside the operations workspace")
     value = {
-        "schema": "fraud_kind_operations_baseline_v1",
+        "schema": "fraud_kind_operations_baseline_v2",
+        "active_state_sha256": digest(active),
         "status": "prepared",
         "scope": SCOPE,
         "host": system,
         "owner": owner,
-        "source_pins": pins(),
+        "source_pins": source_pins,
         "resources": before,
         "tracking_report": recorded,
         "probes": checked,
         "prepared_timestamp": time.time(),
     }
+    f.require(not path.exists(), "Baseline already exists; preserve it and choose a new path")
+    f.require(source_pins == pins(), "Implementation changed during baseline reads")
     f.private_json(path, value)
     print("Baseline: " + str(path), flush=True)
     return path
@@ -332,10 +386,13 @@ def read_baseline(path):
     )
     value = json.loads(path.read_text())
     f.require(
-        value["schema"] == "fraud_kind_operations_baseline_v1"
-        and value["status"] == "prepared"
-        and value["source_pins"] == pins(),
-        "Baseline code identity differs; preserve receipt",
+        value["schema"] == "fraud_kind_operations_baseline_v2" and value["status"] == "prepared",
+        "Baseline schema/code identity differs; preserve receipt and prepare a new canonical baseline",
+    )
+    source_compatibility.accept(value["source_pins"], pins(), f.ROOT)
+    f.require(
+        value["active_state_sha256"] == digest(active_state()),
+        "Active serving receipt changed; prepare a new baseline without editing the old one",
     )
     f.require(
         value["host"]["machine_id_sha256"] == host()["machine_id_sha256"],
@@ -445,7 +502,11 @@ def stop(path, no_other_writers):
         f.owner()
         no_jobs_or_bare_writers()
         check_resources(baseline)
-        for kind, name in STOP_ORDER:
+        f.require(
+            serving_probe() == baseline["probes"]["serving_http"],
+            "Active Registry/HTTP identity differs before stop",
+        )
+        for kind, name, _saved in ordered(baseline, STOP_ORDER):
             print("Parando " + name, flush=True)
             change_replica(baseline, kind, name, 0)
             result["steps"].append({"workload": kind + "/" + name, "replicas": 0})
@@ -504,10 +565,10 @@ def start(path, no_other_writers):
         wait_api()
         check_resources(baseline)
         no_jobs_or_bare_writers()
-        for kind, name in START_ORDER:
-            print("Subindo " + name, flush=True)
-            change_replica(baseline, kind, name, 1)
-            result["steps"].append({"workload": kind + "/" + name, "replicas": 1})
+        for kind, name, saved in ordered(baseline, START_ORDER):
+            print("Restaurando " + name + " para " + str(saved), flush=True)
+            change_replica(baseline, kind, name, saved)
+            result["steps"].append({"workload": kind + "/" + name, "replicas": saved})
         current = check_resources(baseline)
         f.require(
             current == baseline["resources"],
@@ -538,6 +599,39 @@ def latest_stop(path):
         bool(reports), "No completed controlled stop for this baseline; no restart-cycle claim"
     )
     return max(reports, key=lambda item: item["finished_timestamp"])
+
+
+def check(path):
+    """Read the current owned topology and services; do not assert a stop/start occurred."""
+    baseline, owner = read_baseline(path)
+    checked_host()
+
+    def execute(result):
+        f.require(owner["running"], "Owned node is not running")
+        before = check_resources(baseline)
+        f.require(before == baseline["resources"], "Original replica plan differs")
+        checked = probes(baseline["tracking_report"]["record"])
+        f.require(
+            checked == baseline["probes"],
+            "Service readback/model/monitoring differs from baseline",
+        )
+        _, after_owner = read_baseline(path)
+        f.require(
+            after_owner == owner and resources() == before,
+            "Owned resources changed during readback",
+        )
+        result.update(
+            status="current_platform_readbacks_verified",
+            scope="current_owned_topology_and_functional_readbacks_not_stop_start_or_reboot_acceptance",
+            baseline_modified=False,
+            new_stop_start_executed=False,
+            functional_readbacks_verified=True,
+            model_sha256=checked.get("serving_model_sha256"),
+            fit_executed=False,
+            champion_modified=False,
+        )
+
+    return event("check", path, execute)
 
 
 def verify(path, expect_reboot=False):
@@ -646,7 +740,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "action",
-        choices=("host-check", "status", "prepare", "stop", "start", "verify", "rehearse"),
+        choices=(
+            "host-check",
+            "status",
+            "prepare",
+            "stop",
+            "start",
+            "check",
+            "verify",
+            "rehearse",
+        ),
     )
     parser.add_argument("--baseline", type=Path)
     parser.add_argument("--tracking-report", type=Path)
@@ -669,7 +772,9 @@ def main():
             else:
                 f.require(args.baseline is not None, "Explicit --baseline required")
                 result = (
-                    verify(args.baseline, args.expect_reboot)
+                    check(args.baseline)
+                    if args.action == "check"
+                    else verify(args.baseline, args.expect_reboot)
                     if args.action == "verify"
                     else {"stop": stop, "start": start}[args.action](
                         args.baseline, args.no_other_writers

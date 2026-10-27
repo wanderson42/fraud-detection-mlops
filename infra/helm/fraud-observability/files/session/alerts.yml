@@ -1,0 +1,15 @@
+groups:
+  - name: fraud-product-session
+    rules:
+      - alert: FraudSessionSourceStale
+        expr: fraud_session_source_valid == 0
+        for: 20s
+        labels: {severity: warning}
+        annotations:
+          summary: Sessão sem coleta válida; contagens anteriores não representam atualização corrente
+      - alert: FraudSessionReceiverDown
+        expr: up{job="fraud-product-session"} == 0
+        for: 20s
+        labels: {severity: critical}
+        annotations:
+          summary: Prometheus não alcança o receiver da sessão

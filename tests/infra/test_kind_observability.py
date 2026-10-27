@@ -10,6 +10,7 @@ import sqlite3
 import subprocess
 import sys
 from types import SimpleNamespace
+from urllib.error import HTTPError
 
 import pytest
 from scripts.platform import kind_observability as k
@@ -185,6 +186,8 @@ def test_real_chart_readonly_state_private_services_security_and_provisioning(re
         if container["name"] == "grafana":
             secret = next(v for v in container["env"] if v["name"] == "GF_SECURITY_ADMIN_PASSWORD")
             assert "valueFrom" in secret and "value" not in secret
+            environment = {v["name"]: v.get("value") for v in container["env"]}
+            assert environment["GF_PLUGINS_PREINSTALL_AUTO_UPDATE"] == "false"
     config = next(
         v
         for v in objects
@@ -237,9 +240,7 @@ def test_image_import_exports_only_selected_platform_and_preserves_identity(
         return SimpleNamespace(stdout="")
 
     monkeypatch.setattr(k, "command", cmd)
-    monkeypatch.setattr(
-        k.delivery, "cri", lambda _: {"id": "sha256:" + "2" * 64, "repoTags": [tag]}
-    )
+    monkeypatch.setattr(k, "cri", lambda _: {"id": "sha256:" + "2" * 64, "repoTags": [tag]})
     record = k.import_image(role, tag)
     assert record["docker_id"] == "sha256:" + "1" * 64
     assert record["platform"] == "linux/amd64" and record["temporary_archive_removed"]
@@ -332,6 +333,7 @@ def test_http_gate_checks_source_gauges_rules_dashboard_panels_and_proxy(
     monkeypatch.setattr(k, "forward", forward)
     seen = []
     corrupted = False
+    plugin_failure = None
 
     def http(uri, path, auth=False):
         seen.append((uri, path, auth))
@@ -347,6 +349,7 @@ def test_http_gate_checks_source_gauges_rules_dashboard_panels_and_proxy(
                     "activeTargets": [
                         {
                             "health": "up",
+                            "labels": {"job": "fraud-replay"},
                             "scrapeUrl": "http://fraud-observability-exporter:19100/metrics",
                         }
                     ]
@@ -376,6 +379,11 @@ def test_http_gate_checks_source_gauges_rules_dashboard_panels_and_proxy(
                     ]
                 }
             }
+        if path == "/api/datasources/uid/fraud-prometheus/health":
+            assert auth
+            if plugin_failure == "not_registered":
+                raise HTTPError(uri + path, 404, "Plugin not registered", {}, None)
+            return {"status": "ERROR" if plugin_failure else "OK"}
         if path == "/api/datasources/uid/fraud-prometheus":
             assert auth
             return {"type": "prometheus", "url": "http://fraud-observability-prometheus:9090"}
@@ -405,6 +413,15 @@ def test_http_gate_checks_source_gauges_rules_dashboard_panels_and_proxy(
     corrupted = True
     with pytest.raises(ValueError, match="dashboard differs"):
         k.verify_http()
+    corrupted = False
+    for plugin_failure, message in [
+        ("not_registered", "plugin health failed"),
+        ("unhealthy", "plugin is not healthy"),
+    ]:
+        before = len(seen)
+        with pytest.raises(ValueError, match=message):
+            k.verify_http()
+        assert not any("/proxy/" in path for _, path, _ in seen[before:])
 
 
 @pytest.mark.parametrize("fail_at", ["save", "load"])
@@ -577,11 +594,9 @@ def test_legacy_loaded_images_are_reused_without_receipt_rewrite(workspace, monk
     path = workspace / "images.json"
     path.write_text(json.dumps(receipt))
     before = path.read_bytes()
-    monkeypatch.setattr(
-        k.delivery, "cri", lambda tag: {"id": "sha256:" + "1" * 64, "repoTags": [tag]}
-    )
+    monkeypatch.setattr(k, "cri", lambda tag: {"id": "sha256:" + "1" * 64, "repoTags": [tag]})
     assert k.image_record() == receipt and path.read_bytes() == before
-    monkeypatch.setattr(k.delivery, "cri", lambda tag: {"id": "foreign", "repoTags": [tag]})
+    monkeypatch.setattr(k, "cri", lambda tag: {"id": "foreign", "repoTags": [tag]})
     with pytest.raises(ValueError, match="image identity differs"):
         k.image_record()
     assert path.read_bytes() == before

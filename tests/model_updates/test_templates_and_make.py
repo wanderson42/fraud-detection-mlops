@@ -105,7 +105,7 @@ def test_current_update_keeps_original_scientific_source_unchanged(monkeypatch):
     u.legacy_compatible(base)
     changed = copy.deepcopy(base)
     changed["source_pins"]["references/gold_contract_v1.json"] = "f" * 64
-    with pytest.raises(ValueError, match="contracts"):
+    with pytest.raises(ValueError, match="Scientific"):
         u.legacy_compatible(changed)
 
 

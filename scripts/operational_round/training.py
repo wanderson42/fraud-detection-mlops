@@ -303,30 +303,34 @@ def execute(plan, incoming, work):
     )
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+def run_worker(executor, description, marker):
+    parser = argparse.ArgumentParser(description=description)
     parser.add_argument("--plan", type=Path, required=True)
     parser.add_argument("--work", type=Path, default=Path("/work"))
     args = parser.parse_args()
     try:
         with redirect_stdout(sys.stderr):
-            result = execute(
+            result = executor(
                 json.loads(args.plan.read_bytes()),
                 json.loads((args.work / "input.json").read_bytes()),
                 args.work,
             )
-        print(MARKER + json.dumps(result, allow_nan=False), flush=True)
+        print(marker + json.dumps(result, allow_nan=False), flush=True)
         if result["status"] != "qualified":
             raise SystemExit(2)
     except Exception as exc:  # noqa: BLE001 — bounded subprocess result without credential traceback
         print(
-            MARKER
+            marker
             + json.dumps(
                 {"status": "failed", "error_type": type(exc).__name__, "reason": str(exc)[-2000:]}
             ),
             flush=True,
         )
         raise SystemExit(1) from None
+
+
+def main():
+    run_worker(execute, __doc__, MARKER)
 
 
 if __name__ == "__main__":

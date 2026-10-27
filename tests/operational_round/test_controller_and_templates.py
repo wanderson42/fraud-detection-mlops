@@ -183,3 +183,75 @@ def test_rollout_cleanup_failure_cannot_leave_a_success_receipt(monkeypatch):
     with pytest.raises(ValueError, match="cleanup failure"):
         serving.rehearse("fixture")
     assert calls[-1]["active"] == "blue"
+
+
+def render_serving(tmp_path, **overrides):
+    binary = shutil.which("helm")
+    if binary is None:
+        pytest.skip("Helm executable required for real rendering")
+    values = {
+        "ownerId": "a" * 32,
+        "images": {
+            role: "fraud-kind-serving-" + role + ":" + "b" * 32
+            for role in ("runtime", "artifacts", "gateway")
+        },
+        "activeSlot": "blue",
+        "greenEnabled": False,
+        "greenReplicas": 1,
+        "manifests": {slot: "c" * 64 for slot in ("blue", "green")},
+        **overrides,
+    }
+    path = tmp_path / "values.json"
+    path.write_text(json.dumps(values))
+    command = [binary, "template", "fraud-detector", str(serving.CHART), "--values", str(path)]
+    result = subprocess.run(command, capture_output=True, text=True, check=False)
+    return result, {
+        v["kind"] + ":" + v["metadata"]["name"]: v for v in yaml.safe_load_all(result.stdout) if v
+    }
+
+
+def test_shared_serving_chart_keeps_blue_and_gateway_stable_across_routing(tmp_path):
+    result, baseline = render_serving(tmp_path)
+    assert result.returncode == 0, result.stderr
+    _, green = render_serving(tmp_path, greenEnabled=True)
+    _, routed = render_serving(tmp_path, greenEnabled=True, activeSlot="green")
+    _, outage = render_serving(tmp_path, greenEnabled=True, activeSlot="green", greenReplicas=0)
+    for key in (
+        "Deployment:fraud-detector-blue",
+        "Deployment:fraud-detector-gateway",
+        "ConfigMap:fraud-detector-gateway",
+        "Service:fraud-detector-gateway",
+    ):
+        assert baseline[key] == green[key] == routed[key] == outage[key]
+    assert (
+        routed["Service:fraud-detector-active"]["spec"]["selector"]["app.kubernetes.io/component"]
+        == "green"
+    )
+    assert outage["Deployment:fraud-detector-green"]["spec"]["replicas"] == 0
+    for item in green.values():
+        assert item["kind"] not in {"Secret", "PersistentVolumeClaim", "Role", "RoleBinding"}
+        if item["kind"] != "Deployment":
+            continue
+        pod = item["spec"]["template"]["spec"]
+        assert pod["automountServiceAccountToken"] is False and pod["enableServiceLinks"] is False
+        assert pod["securityContext"]["runAsNonRoot"] is True
+        assert not any("hostPath" in v or "secret" in v for v in pod["volumes"])
+        for container in pod["containers"] + pod.get("initContainers", []):
+            assert container["imagePullPolicy"] == "Never"
+            assert container["securityContext"]["readOnlyRootFilesystem"] is True
+            assert container["securityContext"]["capabilities"]["drop"] == ["ALL"]
+            assert not any("valueFrom" in value for value in container.get("env", []))
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"images": {"runtime": "ubuntu:latest"}},
+        {"ownerId": "invalid"},
+        {"greenReplicas": 2},
+        {"activeSlot": "green"},
+    ],
+)
+def test_shared_serving_chart_rejects_unsafe_or_absent_candidate(tmp_path, overrides):
+    result, _ = render_serving(tmp_path, **overrides)
+    assert result.returncode != 0

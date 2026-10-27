@@ -1,0 +1,93 @@
+{
+  "schema": "fraud_runtime_maintenance_author_validation_v1",
+  "record_date": "2026-10-25",
+  "basis_commit": "7336c03",
+  "evidence_source": "author supplied CLI outputs for prepare, apply, verify, portal checks and baseline/check; original local receipt bytes not supplied",
+  "status": "native_runtime_maintenance_accepted",
+  "maintenance_id": "api-trim-v2",
+  "image": {
+    "tag": "fraud-kind-serving-runtime:85a8a2d76aeb4a0c99a4710baae27bae",
+    "docker_identity": "sha256:1215b5ec0bc53a9163e5154b783a7cf03822a8a44b9bae70b11a20d612b03e5e",
+    "CRI_identity": "sha256:11a3b59ff5e9841d1a8de1f2dd8c3d51353c7fd31e7d95a9b84eab13b219e368",
+    "before_bytes": 175012393,
+    "after_bytes": 170839706,
+    "reduction_bytes": 4172687,
+    "reduction_percent": 2.3842237275162566,
+    "scope": "qualified API runtime only; not all infrastructure images"
+  },
+  "pre_apply_regression": {
+    "passed": 101,
+    "skipped": 1,
+    "ruff_check_passed": true,
+    "ruff_format_passed": true
+  },
+  "approval_sha256": "4119d1befecacba493aa9ec9ae305859fa69010271faea75105de48d5b91966a",
+  "apply": {
+    "status": "runtime_maintenance_applied",
+    "receipt": "data/storage/kind-platform/serving-maintenance/api-trim-v2/applied.json"
+  },
+  "verification": {
+    "status": "runtime_maintenance_verified",
+    "active_state_sha256": "50ff71ba6637f9b5671046b4817070f8fb32928ec5ad34d3482d52ea155c706b",
+    "functional_readbacks_verified": true,
+    "rollback_executed": false,
+    "new_baseline_written_by_verify": false
+  },
+  "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+  "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+  "HTTP": {
+    "transaction_id": 335910,
+    "score": 0.4178630794049542,
+    "feature_contract_version": "gold_v1",
+    "score_semantics": "uncalibrated_ranking",
+    "invalid_input_http_status": 422,
+    "p95_ms": 48.331093904562294,
+    "measurements": 20,
+    "scope": "post deployment control-request verification; not a latency improvement study or SLA"
+  },
+  "portal": {
+    "status": "portal_snapshot_verified",
+    "manifest_sha256": "ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af",
+    "counts": {
+      "decisions": 200,
+      "customers": 199,
+      "alerts": 13,
+      "feedback": 200,
+      "explanations": 5
+    }
+  },
+  "performance": {
+    "status": "portal_performance_verified",
+    "validation_rows": 67255,
+    "manifest_sha256": "6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475"
+  },
+  "baseline": {
+    "path": "data/storage/kind-platform/operations/baseline-api-trim-v2.json",
+    "sha256": "d9e113804306f31df92b6a70333d80a28a674f6d28ac17cd0ba50d261eed19b5",
+    "check_report": "data/storage/kind-platform/operations/check-fedcd3dadc3f4f4499558fe3d83d6487.json",
+    "check_status": "current_platform_readbacks_verified",
+    "baseline_modified_by_check": false,
+    "new_stop_start_executed": false,
+    "functional_readbacks_verified": true
+  },
+  "prior_failed_attempt": {
+    "maintenance_id": "api-trim-v1",
+    "rollback_verified": true,
+    "reference": "runtime_failed_apply_rollback_author_validation_2026-10-25.json",
+    "scope": "restore prior runtime after failed apply; not rollback of applied api-trim-v2"
+  },
+  "accesses": {
+    "api": "already_running",
+    "mlflow": "already_running",
+    "grafana": "already_running",
+    "portal": "already_running",
+    "scope": "local access manager status; functional evidence comes from dedicated readbacks"
+  },
+  "model_weights_changed": false,
+  "champion_modified": false,
+  "fit_executed": false,
+  "different_weight_successor_promotion_validated": false,
+  "same_slot_rollout": true,
+  "zero_downtime_claimed": false,
+  "new_reboot_acceptance": false
+}

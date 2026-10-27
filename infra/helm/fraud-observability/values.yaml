@@ -4,3 +4,5 @@ images:
   exporter: fraud-kind-observability-exporter:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   prometheus: fraud-kind-observability-prometheus:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   grafana: fraud-kind-observability-grafana:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+sessionTelemetry:
+  enabled: false

@@ -1,6 +1,7 @@
 """Real Make dispatch and scoped forward lifecycle, without Docker or data writes."""
 
 from contextlib import contextmanager
+import copy
 from importlib.util import module_from_spec, spec_from_file_location
 import io
 import json
@@ -13,6 +14,8 @@ from tempfile import TemporaryDirectory
 from types import ModuleType, SimpleNamespace
 import unittest
 from unittest.mock import patch
+
+import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -53,12 +56,24 @@ class MakeEntrypoints(unittest.TestCase):
             [json.loads(x) for x in self.log.read_text().splitlines()] if self.log.exists() else []
         )
 
-    def test_default_help_without_poetry_includes_both_styles(self):
+    def test_help_distinguishes_daily_access_from_full_catalogue_without_dispatch(self):
         result = self.run_make()
         self.assertEqual(result.returncode, 0, result.stderr)
-        for target in ("experiments", "verify-data", "platform-start", "platform-api"):
+        for target in ("portal-open", "platform-start", "platform-api", "help-all"):
+            self.assertIn(target, result.stdout)
+        self.assertNotIn("evaluate-final", result.stdout)
+        result = self.run_make("help-all")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        for target in ("experiments", "verify-data", "evaluate-final"):
             self.assertIn(target, result.stdout)
         self.assertEqual(self.calls(), [])
+
+    def test_round_api_compatibility_alias_uses_the_same_active_access(self):
+        result = self.run_make("round-api", ROUND_ID="previous-round")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(
+            self.calls(), [["run", "python", "-m", "scripts.platform.local_access", "api"]]
+        )
 
     def test_status_does_not_provision_or_train(self):
         self.assertEqual(self.run_make("platform-status").returncode, 0)
@@ -83,9 +98,9 @@ class MakeEntrypoints(unittest.TestCase):
             "platform-baseline",
             "platform-stop",
             "platform-start",
+            "platform-check",
             "platform-verify",
             "platform-reboot-verify",
-            "platform-serving-prepare",
             "platform-monitoring-prepare",
             "platform-operations-test",
         ):
@@ -146,32 +161,14 @@ class MakeEntrypoints(unittest.TestCase):
             ],
         )
 
-    def test_delivery_requires_and_forwards_identity_pins(self):
-        result = self.run_make(
-            "platform-serving-prepare",
-            PLATFORM_DELIVERY="delivery dir",
-            PLATFORM_SOURCE_SHA="abc",
-            PLATFORM_DESCRIPTOR_SHA256="def",
-        )
-        self.assertEqual(result.returncode, 0)
-        self.assertEqual(
-            self.calls()[0][4:],
-            [
-                "prepare",
-                "--directory",
-                "delivery dir",
-                "--expected-source-sha",
-                "abc",
-                "--expected-descriptor-sha256",
-                "def",
-            ],
-        )
-
     def test_ordinary_access_is_separate_from_rollout(self):
         self.assertEqual(self.run_make("platform-api").returncode, 0)
         self.assertEqual(self.calls()[0][3:], ["scripts.platform.local_access", "api"])
-        self.assertEqual(self.run_make("platform-rollout-test").returncode, 0)
-        self.assertEqual(self.calls()[1][3:], ["scripts.platform.kind_serving", "rehearse"])
+        self.assertEqual(self.run_make("round-rollout").returncode, 0)
+        self.assertEqual(
+            self.calls()[1][3:],
+            ["scripts.operational_round.controller", "rehearse", "--round-id", "portfolio-v1"],
+        )
 
     def test_data_jobs_only_invoke_existing_producer_chain(self):
         self.assertEqual(self.run_make("platform-data-jobs").returncode, 0)
@@ -203,6 +200,11 @@ class LocalAccess(unittest.TestCase):
         self.module = module_from_spec(spec)
         spec.loader.exec_module(self.module)
         self.calls = []
+        temporary = TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        (root / "references").mkdir()
+        (root / "references/model_update_policy_v1.json").write_text('{"http_measurements": 2}')
 
         @contextmanager
         def forward(*args):
@@ -212,24 +214,60 @@ class LocalAccess(unittest.TestCase):
             finally:
                 self.calls.append("close-own-forward")
 
-        self.foundation = SimpleNamespace(owner=lambda: self.calls.append("owner"))
+        def require(condition, reason):
+            if not condition:
+                raise ValueError(reason)
+
+        self.foundation = SimpleNamespace(
+            owner=lambda: self.calls.append("owner"), ROOT=root, require=require
+        )
         self.tracking = SimpleNamespace(
             inventory=lambda: self.calls.append("tracking-owned"), port_forward=forward
         )
-        self.delivery = SimpleNamespace(plan=lambda: {"pinned": True}, forward=forward)
-        self.serving = SimpleNamespace(
-            observe=lambda _: {"pods": {"gateway": {"name": "owned-gateway"}}},
-            wait_route=lambda *args: {"score": 0.1, "invalid_input_http_status": 422},
+        self.active = {
+            "slot": "green",
+            "version": "7",
+            "model_sha256": "new-weights",
+            "plan": {
+                "releases": {
+                    "green": {
+                        "manifest": {
+                            "model_sha256": "new-weights",
+                            "serving_release_id": "release-seven",
+                        }
+                    }
+                }
+            },
+        }
+        self.recovery = SimpleNamespace(current=lambda: copy.deepcopy(self.active))
+        self.deployment = SimpleNamespace(
+            check_active=lambda active, policy: self.calls.append(
+                ("checked-active", active["version"], active["slot"])
+            ),
+            gate=lambda *args: {"score": 0.1, "invalid_input_http_status": 422},
+        )
+        self.canonical_serving = SimpleNamespace(
+            gateway=lambda plan: "current-gateway", forward=forward
         )
         parent = ModuleType("scripts.platform")
         for name, value in (
             ("kind_foundation", self.foundation),
             ("kind_tracking", self.tracking),
-            ("kind_serving_delivery", self.delivery),
-            ("kind_serving", self.serving),
+            ("serving_recovery", self.recovery),
         ):
             setattr(parent, name, value)
-        context = patch.dict(sys.modules, {"scripts.platform": parent})
+        updates = ModuleType("scripts.model_updates")
+        updates.deployment = self.deployment
+        rounds = ModuleType("scripts.operational_round")
+        rounds.serving = self.canonical_serving
+        context = patch.dict(
+            sys.modules,
+            {
+                "scripts.platform": parent,
+                "scripts.model_updates": updates,
+                "scripts.operational_round": rounds,
+            },
+        )
         context.start()
         self.addCleanup(context.stop)
 
@@ -242,17 +280,82 @@ class LocalAccess(unittest.TestCase):
     def test_api_checks_gateway_release_and_422(self):
         with self.module.connection("api") as result:
             self.assertEqual(result["verification"]["invalid_input_http_status"], 422)
-            self.assertIn(("open", ("owned-gateway",)), self.calls)
+            self.assertEqual(result["registry_version"], "7")
+            self.assertEqual(result["slot"], "green")
+            self.assertEqual(result["model_sha256"], "new-weights")
+            self.assertIn(("open", ("current-gateway",)), self.calls)
+        self.assertEqual(self.calls.count(("checked-active", "7", "green")), 2)
+        self.assertIn("close-own-forward", self.calls)
+
+    def test_no_active_record_never_falls_back_to_synthetic(self):
+        def absent():
+            raise FileNotFoundError("no current deployment")
+
+        self.recovery.current = absent
+        with self.assertRaises(FileNotFoundError), self.module.connection("api"):
+            self.fail("must not use synthetic serving")
+        self.assertEqual(self.calls, ["owner"])
+
+    def test_gate_enrichment_does_not_modify_the_persisted_active_record(self):
+        before = copy.deepcopy(self.active)
+
+        def enrich(active, policy):
+            active["plan"]["paths"] = {"green": "verified-release"}
+
+        def gate(url, plan, slot, policy):
+            self.assertEqual(plan["paths"][slot], "verified-release")
+            return {"invalid_input_http_status": 422}
+
+        self.deployment.check_active = enrich
+        self.deployment.gate = gate
+        with self.module.connection("api"):
+            self.assertEqual(self.active, before)
+        self.assertEqual(self.active, before)
+
+    def test_promotion_while_opening_refuses_the_url_and_closes_forward(self):
+        def promote(*args):
+            self.active["version"] = "8"
+            return {"invalid_input_http_status": 422}
+
+        self.deployment.gate = promote
+        with self.assertRaisesRegex(ValueError, "while opening"), self.module.connection("api"):
+            self.fail("must not yield an outdated identity")
+        self.assertEqual(self.calls[-1], "close-own-forward")
+
+    def test_deployment_gate_failure_does_not_open_access(self):
+        def fail(*args):
+            raise ValueError("Registry or route differs")
+
+        self.deployment.check_active = fail
+        with (
+            self.assertRaisesRegex(ValueError, "Registry or route"),
+            self.module.connection("api"),
+        ):
+            self.fail("must not open")
+        self.assertEqual(self.calls, ["owner"])
+
+    def test_model_binding_failure_precedes_deployment_gate(self):
+        self.active["model_sha256"] = "other-weights"
+        with self.assertRaisesRegex(ValueError, "binding"), self.module.connection("api"):
+            self.fail("must not open")
+        self.assertEqual(self.calls, ["owner"])
+
+    def test_promotion_during_access_requires_reopening_and_closes_forward(self):
+        with (
+            self.assertRaisesRegex(ValueError, "changed during access"),
+            self.module.connection("api"),
+        ):
+            self.active["version"] = "8"
         self.assertEqual(self.calls[-1], "close-own-forward")
 
     def test_failed_api_check_still_closes_forward(self):
         def fail(*args):
             raise ValueError("release differs")
 
-        self.serving.wait_route = fail
+        self.deployment.gate = fail
         with self.assertRaisesRegex(ValueError, "release differs"), self.module.connection("api"):
             self.fail("must not yield an unchecked URL")
-        self.assertEqual(self.calls[-1], "close-own-forward")
+        self.assertIn("close-own-forward", self.calls)
 
     def test_foreign_cluster_does_not_open_forward(self):
         def fail():
@@ -269,8 +372,35 @@ class LocalAccess(unittest.TestCase):
             patch("sys.stdout", new=io.StringIO()),
         ):
             self.module.open_local("api")
-        self.assertEqual(self.calls[-1], "close-own-forward")
+        self.assertEqual(self.calls.count("close-own-forward"), 1)
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_retired_synthetic_targets_do_not_dispatch_to_missing_controllers(tmp_path):
+    for target in (
+        "platform-serving-prepare",
+        "platform-serving-up",
+        "platform-rollout-test",
+        "platform-synthetic-api",
+    ):
+        result = subprocess.run(
+            ["make", "--no-print-directory", "-n", target],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            env={**os.environ, "LC_ALL": "C", "LANG": "C"},
+            check=False,
+        )
+        assert result.returncode != 0 and "No rule to make target" in result.stderr
+    with pytest.raises(ValueError, match="Only mlflow and api"):
+        from scripts.platform import kind_foundation
+        from scripts.platform.local_access import connection
+
+        with (
+            patch.object(kind_foundation, "owner", return_value=None),
+            connection("synthetic-api"),
+        ):
+            raise AssertionError("Retired endpoint must not open")

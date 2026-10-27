@@ -57,10 +57,42 @@ de validação identificadas, com comparação, curvas e métricas da política.
 O portal é independente do algoritmo; explicações são capacidades opcionais.
 Esse recorte está encerrado.
 
-**Próximo recorte: [consolidação da demonstração operacional](../operations/PRODUCT_OPERATIONS.md).**
+A [primeira simplificação do código](../operations/CODEBASE_SIMPLIFICATION.md)
+organiza o Make por finalidade, consolida o acesso ao deployment ativo e retira
+uma revisão pontual de plano histórico já aplicada. Regressão e acesso nativo ao champion foram aprovados pelo autor em 2026-10-22.
+Os [acessos locais em segundo plano](../operations/LOCAL_ACCESS.md) acrescentam
+nohup, logs privados, identidade de processo e parada por serviço.
+Isso não encerra a chegada gradual nem o aceite de um sucessor com novos pesos.
+
+A [revisão de todo o checkout](../operations/CODEBASE_SIMPLIFICATION.md#varredura-do-checkout)
+retira o importador histórico isolado e seus testes exclusivos, consolida os
+smokes de CLI e registra as dependências dos diretórios mantidos. A simplificação
+mais ampla dos controladores com pins continua uma tarefa explícita; não é
+confundida com a entrega de novos atalhos de operação.
+
+**Recorte em andamento: ampliação de janela/volume da sessão e paginação da fila.**
+Treinadores compartilham protocolo/requisição e as consultas CRI têm implementação
+única. README e catálogo ficam separados da identidade executável. Recibos antigos
+permanecem íntegros, com transições de hashes revisadas e commitadas; a instalação
+sintética foi retirada com readbacks nativos preservados, e seu controlador
+exclusivo foi removido após revisar consumidores.
+A consolidação do ciclo de vida agora prepara baseline v2 do champion ativo,
+reutiliza o gate da API e restaura réplicas salvas, inclusive zero no slot inativo.
+Parada/subida canônica aceita pelo autor em 2026-10-23: 1 teste em 276,71 s,
+mesmo node/volumes, plano de réplicas restaurado e proxy Grafana após reinício.
+Não altera o estado da promoção recorrente de sucessor, que continua condicionado
+a candidato qualificado e validação própria. [Procedimento](../operations/KIND_OPERATIONS.md).
+
+O [balanço da varredura](../operations/CODEBASE_SIMPLIFICATION.md#varredura-do-checkout)
+registra a retirada do importador, a consolidação dos testes e o compartilhamento
+de entrada de treino/consulta CRI. A compatibilidade dos pins tem transição exata
+revisada; a família nativa sintética foi aposentada, preservando CI e helpers
+compartilhados. A
+[consolidação da demonstração operacional](../operations/PRODUCT_OPERATIONS.md)
+continua como entrega seguinte, sem encerrar a limpeza por antecipação.
 Unificar comandos/destino ativo e demonstrar chegada gradual de eventos pela API,
 fila e métricas da mesma sessão, com pausa/retomada e atualização visível.
-O portal atual é um snapshot; o monitoramento KinD aceito usa cópia concluída.
+O portal de evidências usa snapshot; a tela operacional acompanha a sessão corrente. O monitoramento KinD aceito ainda usa cópia concluída.
 Não abrir novos estudos de modelo, broker, feature store ou CT para esse recorte.
 A simplificação e revisão de redundâncias fazem parte dessa consolidação.
 
@@ -84,6 +116,7 @@ necessárias estão separadas no backlog; não reabrimos os ensaios já aprovado
 | Eventos causais pela API do champion | Aceite do autor em 2026-10-22: teste nativo aprovado, decisões HTTP e feedback consultáveis, pausa/retomada e reinvocação conferidas pelo teste. Não altera champion nem conclui SHAP por caso. [Evidência](../../references/evidence/product_http_flow_author_validation_2026-10-22.json) |
 | Retenção governada do champion | Aceite nativo em 2026-10-22: duas rodadas, três candidatos por rodada, Inputs/artefatos/validação conferidos, ganho insuficiente e champion versão 1 preservado. Não conclui ativação ou rollback de sucessor com pesos diferentes. [Evidência](../../references/evidence/model_updates_author_validation_2026-10-22.json) |
 | Infraestrutura do fluxo em KinD + Helm | Concluída no escopo do laboratório por aceites incrementais de fundação, tracking, datasets, Jobs, replay, serving, observabilidade e operação. Sequência consolidada; fontes históricas preservadas. Não é migração primária nem execução integral nova em produção. [Guia integrado](../operations/KIND_PLATFORM.md) |
+| Ciclo de vida do champion ativo | Aceite nativo em 2026-10-23: baseline v2, 11 controllers retomados, green em zero, mesma identidade Registry/HTTP e volumes, oito regras/quatro dashboards e proxy Grafana aprovados após reinício; quatro acessos principais reabertos. [Evidência](../../references/evidence/canonical_lifecycle_author_validation_2026-10-23.json) |
 | Parada/subida e reboot planejado | Aceite nativo em 2026-10-21: oito workloads retomados no mesmo node/PVCs, boot_id mudou e inotify 512/524288 persistiu. Tracking/S3, serving e monitoramento iguais ao baseline. Sem recuperação por perda do host ou interrupção abrupta. [Evidência](../../references/evidence/kind_operations_author_validation_2026-10-21.json) |
 | Política de cores dos dashboards | Aceite separado em 2026-10-21: cores, mappings, thresholds e legendas conferidos via API e visualmente pelo autor; métricas e três PVCs iguais ao aceite anterior. Informações não herdam classificação arbitrária por magnitude. Sem replay ou novo resultado de qualidade. [Evidência](../../references/evidence/dashboard_color_policy_author_validation_2026-10-21.json) |
 | Observabilidade no KinD | Aceite nativo e visual em 2026-10-21: cópia de replay concluído conciliada, scrape, oito regras, proxy Grafana e quatro dashboards conferidos; exporter recriado no mesmo PVC, origem e demais recursos preservados. Sem ingestão ao vivo, novo resultado de qualidade, firing ou reboot validados. [Evidência](../../references/evidence/kind_observability_author_validation_2026-10-21.json) |
@@ -801,3 +834,64 @@ veredito automático nem afirma economia operacional sem medição.
 [Guia](../operations/PORTAL_PERFORMANCE.md). O próximo fechamento consolida o
 aceite visual/funcional e a demonstração por usuário. A promoção de sucessor com
 pesos diferentes continua dependendo de candidato qualificado.
+
+### Sessão operacional — preparação em 2026-10-23
+
+Implementação aditiva de produtor com ritmo configurável, pausa/retomada,
+checkpoint causal HTTP e página de investigação com atualização automática.
+[Guia](../operations/PRODUCT_SESSION.md). Não substitui os snapshots aceitos.
+Ensaio nativo de 200 decisões aceito pelo autor e captura final conferida em 2026-10-23. Os indicadores da sessão foram integrados ao
+Prometheus/Grafana, com aceite nativo e visual em 2026-10-24. A unificação das
+páginas de sessão e evidências em um portal continua no recorte seguinte. O gate de promoção permanece inalterado.
+
+### Aceite de sessão e ampliação — 2026-10-23
+
+Sessão `arrival-v1` aceita: 200 decisões/recibos HTTP, 13 alertas, pausa/retomada, feedback e reconciliação; zero novas pontuações na reexecução. [Evidência](../../references/evidence/product_session_author_validation_2026-10-23.json). Preparação da ampliação com janela/volume explícitos, paginação SQL e medição de fases em [PRODUCT_SESSION_SCALE.md](../operations/PRODUCT_SESSION_SCALE.md); ensaio ampliado aceito pelo autor com 2.001 decisões, 81 alertas, 1.561 clientes e zero novas chamadas na reutilização. [Evidência](../../references/evidence/product_session_scale_author_validation_2026-10-23.json). Monitoramento da mesma sessão aceito em [SESSION_MONITORING.md](../operations/SESSION_MONITORING.md), com confirmação nativa e visual em 2026-10-24; unificação do portal permanece no recorte seguinte.
+
+### Monitoramento da sessão — aceite em 2026-10-24
+
+A mesma sessão da fila alimenta uma projeção de agregados no exporter existente,
+com jobs Prometheus distintos, dashboard próprio e expiração explícita da fonte.
+O aceite nativo conferiu o vínculo com `arrival-2k-v1`, a expiração e a retomada,
+sem novo scoring ou alteração do champion. O autor confirmou a revisão visual;
+a suíte geral passou com 1.705 testes e 12 subtestes. O baseline da configuração
+nova foi emitido e passou no `platform-check`, com portal e desempenho intactos.
+[Evidência](../../references/evidence/session_monitoring_author_validation_2026-10-24.json).
+A chegada concorrente permanece fora do escopo desse ensaio de sessão concluída.
+Próximo recorte: unificar fila corrente e evidências no mesmo portal Streamlit,
+com navegação e identidade de sessão/modelo explícitas.
+Promoção recorrente com pesos diferentes e rollback continuam condicionados a
+candidato qualificado; o gate não foi afrouxado.
+
+### Portal único — aceite concluído em 2026-10-24
+
+Sessão corrente, fila, contexto, explicações verificadas e avaliação passam à
+mesma aplicação Streamlit. Origem e identidade acompanham cada área; nenhum
+resultado da avaliação é apresentado como qualidade da janela corrente.
+Vínculo explícito e leitura paginada preservam os recibos e o baseline atuais.
+[Guia](../operations/UNIFIED_PORTAL.md). Aceite nativo com arquivos aceitos e
+conferência visual concluídos pelo autor, incluindo o cabeçalho refinado.
+[Evidência](../../references/evidence/unified_portal_author_validation_2026-10-24.json).
+O gate de promoção permanece inalterado.
+
+### Próximo recorte — footprint medido das imagens
+
+Consolidar as imagens ativas por papel, tamanho reportado por runtime e camadas
+compartilhadas/cache. A API já usa build em estágios e há imagens especializadas,
+mas não existe aceite de otimização global da infraestrutura. O inventário deve
+separar Docker do host, containerd do node KinD, workloads ativos e imagens de
+jobs/ensaios. [Avaliação de código e medição](../operations/IMAGE_FOOTPRINT.md).
+Uma alteração posterior de imagem será qualificada com os gates de sua função;
+a promoção/rollback de sucessor com novos pesos continua dependente de candidato
+qualificado, sem afrouxamento do gate.
+
+
+### Manutenção do runtime qualificado — preparação de 2026-10-25
+
+Redução de 2,38% e gates Docker com o mesmo champion aceitos em
+[IMAGE_FOOTPRINT.md](../operations/IMAGE_FOOTPRINT.md). A manutenção agora tem
+preparação isolada no KinD, aprovação vinculada à imagem/release, apply e rollback
+retomáveis, cadeia de recibos compatível e verificação dos readbacks anteriores.
+Execução nativa e baseline correspondente **pendentes**. O chart mantém Recreate;
+não é um aceite de zero downtime nem de promoção de sucessor com pesos diferentes.
+Guia: [SERVING_RECOVERY.md](../operations/SERVING_RECOVERY.md).

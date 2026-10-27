@@ -362,3 +362,54 @@ def test_rehearsal_uid_precondition_and_failure_receipt(local, monkeypatch, fail
     assert receipt["status"] == ("failed" if fail_write else "success")
     assert receipt["phase"] == ("publish_and_independent_reload" if fail_write else "complete")
     assert receipt.get("independent_http_reload_validated", False) is not fail_write
+
+
+def test_reviewed_bytecode_recipe_keeps_old_tracking_receipt_and_blocks_dependency_drift(
+    local, monkeypatch
+):
+    from scripts.platform import source_compatibility as compat
+
+    declaration = json.loads((ROOT / compat.BYTECODE_TRANSITION).read_bytes())
+    saved, current = {}, {}
+    for name, hashes in declaration["changes"].items():
+        path = local / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes((ROOT / name).read_bytes())
+        if name == "infra/kind/tracking/Dockerfile":
+            saved[name], current[name] = hashes["before"], hashes["after"]
+    target = local / compat.BYTECODE_TRANSITION
+    target.parent.mkdir(exist_ok=True)
+    target.write_text(json.dumps(declaration))
+    subprocess.run(["git", "init", "-q", str(local)], check=True)
+    subprocess.run(["git", "add", "."], cwd=local, check=True)
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            "user.name=Fixture",
+            "-c",
+            "user.email=fixture@example.invalid",
+            "commit",
+            "-qm",
+            "reviewed recipe",
+        ],
+        cwd=local,
+        check=True,
+    )
+    monkeypatch.setattr(k, "pins", lambda: dict(current))
+    value = {
+        "schema": "fraud_kind_tracking_image_v1",
+        "source_pins": saved,
+        "node_uid": "node-owned",
+        "image": "fraud-kind-tracking:" + OWNER,
+        "loaded_identities": ["sha256:" + "c" * 64],
+    }
+    path = k.work() / "image.json"
+    path.write_text(json.dumps(value))
+    before = path.read_bytes()
+    assert k.image_record() == value
+    assert path.read_bytes() == before
+    current["infra/tracking/requirements.txt"] = "changed"
+    with pytest.raises(ValueError, match="sources changed"):
+        k.image_record()
+    assert path.read_bytes() == before

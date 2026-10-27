@@ -10,7 +10,11 @@ metadata:
 spec:
   type: ClusterIP
   selector: {app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: exporter}
-  ports: [{name: http, port: 19100, targetPort: 19100}]
+  ports:
+    - {name: http, port: 19100, targetPort: 19100}
+{{- if .Values.sessionTelemetry.enabled }}
+    - {name: session, port: 19102, targetPort: 19102}
+{{- end }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -67,7 +71,37 @@ spec:
           volumeMounts:
             - {name: tmp, mountPath: /tmp}
             - {name: state, mountPath: /state, readOnly: true}
+{{- if .Values.sessionTelemetry.enabled }}
+        - name: session-exporter
+          image: {{ .Values.sessionTelemetry.image | quote }}
+          imagePullPolicy: Never
+          args: [--binding, /binding/binding.json]
+          env:
+            - name: FRAUD_SESSION_TOKEN
+              valueFrom:
+                secretKeyRef: {name: {{ .Release.Name }}-session-token, key: token}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 25m, memory: 32Mi}
+            limits: {cpu: '1', memory: 128Mi}
+          ports: [{name: session, containerPort: 19102}]
+          readinessProbe:
+            httpGet: {path: /healthz, port: session}
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /healthz, port: session}
+            periodSeconds: 15
+          volumeMounts:
+            - {name: session-binding, mountPath: /binding, readOnly: true}
+{{- end }}
       volumes:
+{{- if .Values.sessionTelemetry.enabled }}
+        - name: session-binding
+          configMap: {name: {{ .Release.Name }}-session-binding}
+{{- end }}
         - name: tmp
           emptyDir: {sizeLimit: 64Mi}
         - name: state
@@ -233,6 +267,8 @@ spec:
             - {name: GF_ANALYTICS_REPORTING_ENABLED, value: 'false'}
             - {name: GF_ANALYTICS_CHECK_FOR_UPDATES, value: 'false'}
             - {name: GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES, value: 'false'}
+            # Keep bundled datasource plugins supplied by the pinned image on restart.
+            - {name: GF_PLUGINS_PREINSTALL_AUTO_UPDATE, value: 'false'}
       volumes:
         - name: tmp
           emptyDir: {sizeLimit: 64Mi}

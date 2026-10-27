@@ -216,3 +216,86 @@ def test_receipt_publish_refuses_overwrite_and_removes_temporary_file(tmp_path):
         checks.save_report(output, {"status": "replaced"})
     assert output.read_bytes() == original
     assert list(tmp_path.iterdir()) == [output]
+
+
+@pytest.mark.parametrize("mutation", [None, "ready", "info", "score", "invalid_input"])
+def test_canonical_HTTP_gate_keeps_exact_identity_and_invalid_input_checks(
+    serving_release, mutation
+):
+    from fastapi.testclient import TestClient
+    from scripts.operational_round import serving as canonical
+
+    from fraud_detection_mlops.serving.http_service import create_app
+
+    directory, pin = serving_release
+    manifest = json.loads((directory / "manifest.json").read_bytes())
+    smoke = json.loads((directory / "smoke.json").read_bytes())
+    plan = {"releases": {"blue": {"manifest": manifest}}, "smoke": smoke}
+    with TestClient(create_app(directory, pin)) as client:
+
+        def requester(path, payload=None):
+            response = client.get(path) if payload is None else client.post(path, json=payload)
+            status, body = response.status_code, response.json()
+            if mutation == "ready" and path == "/ready":
+                body["serving_release_id"] = "different"
+            if mutation == "info" and path == "/info":
+                body["model_sha256"] = "f" * 64
+            if mutation == "score" and path == "/score" and payload:
+                body["model_sha256"] = "f" * 64
+            if mutation == "invalid_input" and path == "/score" and payload == {}:
+                status = 200
+            return status, body
+
+        if mutation is None:
+            assert canonical.check_api(requester, plan, "blue")["invalid_input_http_status"] == 422
+        else:
+            with pytest.raises((ValueError, canonical.checks.CheckFailed)):
+                canonical.check_api(requester, plan, "blue")
+
+
+def test_canonical_gateway_retries_connection_then_verifies_exact_release(
+    serving_release, monkeypatch
+):
+    import itertools
+    from urllib.error import URLError
+
+    from fastapi.testclient import TestClient
+    from scripts.operational_round import serving as canonical
+
+    from fraud_detection_mlops.serving.http_service import create_app
+
+    directory, pin = serving_release
+    manifest = json.loads((directory / "manifest.json").read_bytes())
+    plan = {
+        "releases": {"blue": {"manifest": manifest}},
+        "smoke": json.loads((directory / "smoke.json").read_bytes()),
+    }
+    attempts = []
+    with TestClient(create_app(directory, pin)) as client:
+
+        def request(url, path, payload=None):
+            attempts.append(path)
+            if len(attempts) == 1:
+                raise URLError("temporary connection failure")
+            response = client.get(path) if payload is None else client.post(path, json=payload)
+            return response.status_code, response.json()
+
+        monkeypatch.setattr(canonical.checks, "request_json", request)
+        from types import SimpleNamespace
+
+        clock = itertools.count()
+        monkeypatch.setattr(
+            canonical, "time", SimpleNamespace(sleep=lambda _: None, monotonic=lambda: next(clock))
+        )
+        assert (
+            canonical.wait_route("http://owned", plan, "blue", timeout=10)[
+                "invalid_input_http_status"
+            ]
+            == 422
+        )
+        assert attempts.count("/ready") >= 3
+        monkeypatch.setattr(
+            canonical.checks, "request_json", lambda *a: (200, {"serving_release_id": "wrong"})
+        )
+        with pytest.raises(ValueError, match="Gateway did not converge"):
+            canonical.wait_route("http://owned", plan, "blue", timeout=2)

@@ -1,0 +1,70 @@
+{
+  "schema": "fraud_grafana_plugin_preinstaller_preparation_v1",
+  "status": "locally_verified_native_fix_pending",
+  "prepared_on": "2026-10-23",
+  "diagnosis": {
+    "operator_output": {
+      "grafana_version": "13.2.4",
+      "grafana_health_status": 200,
+      "datasource_configuration_status": 200,
+      "datasource_health_status": 404,
+      "datasource_health_message_id": "plugin.notRegistered",
+      "proxy_status": 404,
+      "proxy_message": "Unable to find datasource plugin"
+    },
+    "confirmed": "Prometheus datasource configured but plugin not registered",
+    "probable_mechanism": "bundled plugin unloaded during failed automatic preinstall update; supported by upstream bug and read-only chart, not independently confirmed by native startup logs",
+    "references": [
+      "https://github.com/grafana/grafana/issues/132528",
+      "https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#preinstall_auto_update"
+    ]
+  },
+  "changes": [
+    "disable plugin preinstall auto-update in Helm pod template",
+    "require Prometheus plugin health before authenticated datasource proxy query",
+    "clear plugin HTTP error without accepting only Grafana core health"
+  ],
+  "validation": {
+    "passed": 139,
+    "skipped": 4,
+    "subtests": 12,
+    "seconds": 8.0,
+    "ruff_check": true,
+    "ruff_format": true,
+    "model_update_and_product_pins_unchanged": true,
+    "native_plugin_reload_validated": false,
+    "native_canonical_stop_start_validated": false
+  },
+  "previous_failed_cycle": {
+    "baseline": "baseline-362ba798d04246399a4a2f3365da2604.json",
+    "rehearsal": "rehearsal-bf1ca3b552324834b5bd3ded6c860bfb.json",
+    "status": "failed",
+    "source": "operator supplied terminal transcript",
+    "old_receipts_preserved": true
+  },
+  "files": {
+    "docs/operations/KIND_OBSERVABILITY.md": {
+      "before": "5f8feb49314c0c23727a72c62c29155871fc11eadd5697440c3cfc3bb3e6fc4c",
+      "after": "164a62b30fb59293112d51543a70f904d58733a9daf43d502aaf72312819405e"
+    },
+    "docs/operations/KIND_OPERATIONS.md": {
+      "before": "5573b3a16d4f70a663fe5c4cee1590319954d1a7006940d52147fd757782e2d9",
+      "after": "b77020fcd37a8458ac023a63319c7e53f7d77001f2f3ea59f7e63faeb27c58fd"
+    },
+    "infra/helm/fraud-observability/templates/workloads.yaml": {
+      "before": "7b645bd5eff92fb76a4170c22535a39b2aca68d81704bbbc94102ead1b1b9138",
+      "after": "fbf07bd9af093546c8b96d91ab93d5cc0e3f2b7982e12382882c0821c040a6ba"
+    },
+    "scripts/platform/kind_observability.py": {
+      "before": "bda1805c7f1664573ad0e8a445c70a22def3ec1939f40962f557033042136d20",
+      "after": "45642360f96a82f534978236ca7a63f234193771c54a13d0066103f44f54d45a"
+    },
+    "tests/infra/test_kind_observability.py": {
+      "before": "85d18bba84512372dd08b436c1911b8d2a62cc2720de643cace931279a46d6b4",
+      "after": "40ed1d00b71ee0526f4266a607aea1e1b21764d3e8ba3cbe5cd7723fbd8915e0"
+    }
+  },
+  "new_images_or_runtime_modules": false,
+  "native_data_modified_by_preparation": false,
+  "source_basis": "accepted canonical-lifecycle package over b930187/background/readiness payloads"
+}

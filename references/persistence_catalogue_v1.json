@@ -5,10 +5,29 @@
   "review_scope": "Manual review of production code, Makefile and Compose; catalogue is not an exhaustive static analysis or proof that all writers are constrained.",
   "locations": [
     {
+      "prefix": "data/storage/kind-platform/observability/session-monitoring",
+      "family": "private_aggregate_projection_binding_token_image_activation_and_native_receipts",
+      "owner": "platform",
+      "producers": [
+        "scripts/session_monitoring/controller.py"
+      ],
+      "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/local-access",
+      "family": "private_nohup_local_access_logs_process_identity_and_locks",
+      "owner": "platform",
+      "producers": [
+        "scripts/platform/local_services/controller.py"
+      ],
+      "review_required": false
+    },
+    {
       "prefix": "data/storage/kind-platform/portal",
-      "family": "private_portal_access_receipt_with_external_manifest_digest",
+      "family": "private_portal_access_session_binding_and_performance_receipts",
       "owner": "product",
       "producers": [
+        "scripts/fraud_portal/controller.py",
         "scripts/fraud_portal/export.py",
         "scripts/fraud_portal/performance/collect.py"
       ],
@@ -36,10 +55,11 @@
     },
     {
       "prefix": "data/storage/kind-platform/serving-maintenance",
-      "family": "same_model_seed_carrier_build_restart_probe_and_approval_receipts",
+      "family": "same_model_carrier_and_runtime_preparation_native_probe_approval_apply_rollback_receipts",
       "owner": "platform",
       "producers": [
-        "scripts/platform/serving_recovery.py"
+        "scripts/platform/serving_recovery.py",
+        "scripts/platform/runtime_maintenance.py"
       ],
       "review_required": false
     },
@@ -50,7 +70,9 @@
       "producers": [
         "scripts/product_flow/controller.py",
         "scripts/product_flow/inputs.py",
-        "scripts/product_flow/ledger.py"
+        "scripts/product_flow/ledger.py",
+        "scripts/product_session/controller.py",
+        "scripts/product_session/configuration.py"
       ],
       "review_required": false
     },
@@ -76,13 +98,12 @@
     },
     {
       "prefix": "data/storage/kind-platform/serving",
-      "family": "kind_serving_preparation_images_values_and_receipts",
+      "family": "retired_synthetic_serving_private_artifacts_and_receipts",
       "owner": "platform",
-      "producers": [
-        "scripts/platform/kind_serving.py",
-        "scripts/platform/kind_serving_delivery.py"
-      ],
-      "review_required": false
+      "producers": [],
+      "review_required": false,
+      "status": "retired_read_only",
+      "reason": "Native release uninstalled on 2026-10-23; retain original image/release artifacts and receipts"
     },
     {
       "prefix": "data/storage/kind-platform/replay",
@@ -280,6 +301,14 @@
         "scripts/platform/kind_pipeline.py"
       ],
       "review_required": false
+    },
+    {
+      "prefix": "data/storage/kind-platform/synthetic-retirement",
+      "family": "synthetic_retirement_private_before_and_result_receipts",
+      "owner": "platform",
+      "producers": [],
+      "review_required": false,
+      "reason": "One-use external maintenance tool; no new repository runtime producer"
     }
   ],
   "source_prefixes": [
@@ -448,15 +477,10 @@
     },
     {
       "id": "kind_serving_runtime_and_emptyDir",
-      "source": "scripts/platform/kind_serving.py",
-      "locations": [
-        "fraud-platform/fraud-serving-blue",
-        "fraud-platform/fraud-serving-gateway",
-        "optional fraud-serving-green",
-        "model releases in per-pod emptyDir; authoritative carrier image and original delivery retained"
-      ],
-      "inspection": "declared_only_native_acceptance_pending",
-      "reason": "Qualified synthetic API image and copied release distribution. Baseline persists in the lab; no primary storage migration or historical model promotion."
+      "locations": [],
+      "inspection": "retired_native_resources_removed",
+      "reason": "Native release retired; retained artifacts remain under data/storage/kind-platform/serving",
+      "historical_source": "scripts/platform/kind_serving.py"
     }
   ],
   "decisions": {
@@ -532,7 +556,7 @@
         ],
         "kind": "producer_http_opt_in",
         "local_migration_blocker": false,
-        "current_behavior": "Treina e publica três modelos; local por padrão e HTTP explícito.",
+        "current_behavior": "Treina e publica tr\u00eas modelos; local por padr\u00e3o e HTTP expl\u00edcito.",
         "migration_gate": "Rota HTTP aprovada no smoke; recuperar novos metadados/artefatos antes de cutover."
       },
       {
@@ -546,7 +570,7 @@
         "kind": "producer_http_opt_in",
         "local_migration_blocker": false,
         "current_behavior": "Publica modelos por fold e fixa destino na identidade Optuna.",
-        "migration_gate": "Fold HTTP aprovado; preservar estado/identidade do estudo concluído, sem repetir busca."
+        "migration_gate": "Fold HTTP aprovado; preservar estado/identidade do estudo conclu\u00eddo, sem repetir busca."
       },
       {
         "id": "contribution",
@@ -557,8 +581,8 @@
         ],
         "kind": "producer_http_opt_in",
         "local_migration_blocker": false,
-        "current_behavior": "Modelo sintético com destino local ou HTTP explícito.",
-        "migration_gate": "Rota e retorno local aprovados; não é referência científica."
+        "current_behavior": "Modelo sint\u00e9tico com destino local ou HTTP expl\u00edcito.",
+        "migration_gate": "Rota e retorno local aprovados; n\u00e3o \u00e9 refer\u00eancia cient\u00edfica."
       },
       {
         "id": "tracking_provider_and_tools",
@@ -575,7 +599,7 @@
         "kind": "shared_provider_and_local_tools",
         "local_migration_blocker": true,
         "current_behavior": "Provider misto; verify_model/ui ainda exigem mlflow.db local.",
-        "migration_gate": "Separar futuros destinos explícitos dos comandos de histórico; preservar loader/tipos/assinatura e restauração de contexto."
+        "migration_gate": "Separar futuros destinos expl\u00edcitos dos comandos de hist\u00f3rico; preservar loader/tipos/assinatura e restaura\u00e7\u00e3o de contexto."
       },
       {
         "id": "validation_diagnostics",
@@ -586,8 +610,8 @@
         ],
         "kind": "local_consumer",
         "local_migration_blocker": true,
-        "current_behavior": "Lê modelo e ownership local para diagnósticos da validação.",
-        "migration_gate": "Não apenas trocar URI: reconciliar owner, tags, baseline/Gold e hashes antes de aceitar outro store."
+        "current_behavior": "L\u00ea modelo e ownership local para diagn\u00f3sticos da valida\u00e7\u00e3o.",
+        "migration_gate": "N\u00e3o apenas trocar URI: reconciliar owner, tags, baseline/Gold e hashes antes de aceitar outro store."
       },
       {
         "id": "terminal_ablation",
@@ -601,8 +625,8 @@
         ],
         "kind": "local_consumer_and_producer",
         "local_migration_blocker": true,
-        "current_behavior": "Lê referência/checkpoints e procura/publica candidatos no store local.",
-        "migration_gate": "Preservar identidade, retomada e anti-duplicação; não reexecutar ablação encerrada."
+        "current_behavior": "L\u00ea refer\u00eancia/checkpoints e procura/publica candidatos no store local.",
+        "migration_gate": "Preservar identidade, retomada e anti-duplica\u00e7\u00e3o; n\u00e3o reexecutar abla\u00e7\u00e3o encerrada."
       },
       {
         "id": "candidate_freeze",
@@ -615,8 +639,8 @@
         ],
         "kind": "local_consumer",
         "local_migration_blocker": true,
-        "current_behavior": "Delegação à referência local; freeze persiste tracking_root relativo e bound_files.",
-        "migration_gate": "Não reescrever freeze histórico. Futuro contrato deve vincular identidade/artefatos do novo store sem consumir teste."
+        "current_behavior": "Delega\u00e7\u00e3o \u00e0 refer\u00eancia local; freeze persiste tracking_root relativo e bound_files.",
+        "migration_gate": "N\u00e3o reescrever freeze hist\u00f3rico. Futuro contrato deve vincular identidade/artefatos do novo store sem consumir teste."
       },
       {
         "id": "final_evaluation",
@@ -629,7 +653,7 @@
         ],
         "kind": "local_consumer",
         "local_migration_blocker": true,
-        "current_behavior": "Lê modelo congelado local e publica avaliação no mesmo store histórico.",
+        "current_behavior": "L\u00ea modelo congelado local e publica avalia\u00e7\u00e3o no mesmo store hist\u00f3rico.",
         "migration_gate": "Preservar freeze, MLmodel/model SHA e ownership; ensaiar transporte sem reabrir janela consumida."
       },
       {
@@ -642,8 +666,8 @@
         ],
         "kind": "local_consumer",
         "local_migration_blocker": true,
-        "current_behavior": "Usa tracking_root congelado e load_frozen_model; ledger controla acesso à janela.",
-        "migration_gate": "Qualquer futuro destino deve respeitar identidade e ledger. Não executar avaliação novamente como teste de infra."
+        "current_behavior": "Usa tracking_root congelado e load_frozen_model; ledger controla acesso \u00e0 janela.",
+        "migration_gate": "Qualquer futuro destino deve respeitar identidade e ledger. N\u00e3o executar avalia\u00e7\u00e3o novamente como teste de infra."
       },
       {
         "id": "serving_export",
@@ -655,7 +679,7 @@
         "kind": "local_consumer",
         "local_migration_blocker": true,
         "current_behavior": "Exporta modelo congelado a partir de mlflow.db e receipt tracking_root.",
-        "migration_gate": "Preservar hashes, ambiente, assinatura e paridade de validação; pode testar cópia isolada, sem mudar release atual."
+        "migration_gate": "Preservar hashes, ambiente, assinatura e paridade de valida\u00e7\u00e3o; pode testar c\u00f3pia isolada, sem mudar release atual."
       },
       {
         "id": "serving_runtime",
@@ -667,8 +691,8 @@
         ],
         "kind": "release_only_runtime",
         "local_migration_blocker": false,
-        "current_behavior": "Inferência lê release skops/manifest/smoke; não consulta MLflow.",
-        "migration_gate": "Manter serving independente do backend de tracking; não adicionar consulta remota no caminho de inferência."
+        "current_behavior": "Infer\u00eancia l\u00ea release skops/manifest/smoke; n\u00e3o consulta MLflow.",
+        "migration_gate": "Manter serving independente do backend de tracking; n\u00e3o adicionar consulta remota no caminho de infer\u00eancia."
       },
       {
         "id": "historical_inventory",
@@ -680,8 +704,8 @@
         ],
         "kind": "historical_maintenance",
         "local_migration_blocker": false,
-        "current_behavior": "Inventaria snapshots locais e referências; não resolve IDs dos novos stores HTTP.",
-        "migration_gate": "Conservar fluxo histórico; inventário entre stores precisa de escopo próprio, sem marcar IDs remotos como corrupção."
+        "current_behavior": "Inventaria snapshots locais e refer\u00eancias; n\u00e3o resolve IDs dos novos stores HTTP.",
+        "migration_gate": "Conservar fluxo hist\u00f3rico; invent\u00e1rio entre stores precisa de escopo pr\u00f3prio, sem marcar IDs remotos como corrup\u00e7\u00e3o."
       },
       {
         "id": "historical_backup",
@@ -693,8 +717,8 @@
         ],
         "kind": "historical_maintenance",
         "local_migration_blocker": false,
-        "current_behavior": "Snapshot consistente dos dois stores históricos SQLite e artefatos.",
-        "migration_gate": "Preservar código produtor/fingerprint e bundles; não adaptar esse contrato para PostgreSQL."
+        "current_behavior": "Snapshot consistente dos dois stores hist\u00f3ricos SQLite e artefatos.",
+        "migration_gate": "Preservar c\u00f3digo produtor/fingerprint e bundles; n\u00e3o adaptar esse contrato para PostgreSQL."
       },
       {
         "id": "historical_recovery_controller",
@@ -706,8 +730,8 @@
         ],
         "kind": "historical_maintenance",
         "local_migration_blocker": false,
-        "current_behavior": "Cria cópia descartável de restores e remapeia URIs revisadas.",
-        "migration_gate": "Manter ensaio histórico e seus pins; não reutilizar como prova de restauração PostgreSQL."
+        "current_behavior": "Cria c\u00f3pia descart\u00e1vel de restores e remapeia URIs revisadas.",
+        "migration_gate": "Manter ensaio hist\u00f3rico e seus pins; n\u00e3o reutilizar como prova de restaura\u00e7\u00e3o PostgreSQL."
       },
       {
         "id": "historical_recovery_worker",
@@ -719,8 +743,8 @@
         ],
         "kind": "historical_maintenance",
         "local_migration_blocker": false,
-        "current_behavior": "Cliente API local sobre cópias SQLite; confere histórico e modelo fixado.",
-        "migration_gate": "Preservar guard/recibos e escopo offline; novo serviço recuperado precisa de verificação própria."
+        "current_behavior": "Cliente API local sobre c\u00f3pias SQLite; confere hist\u00f3rico e modelo fixado.",
+        "migration_gate": "Preservar guard/recibos e escopo offline; novo servi\u00e7o recuperado precisa de verifica\u00e7\u00e3o pr\u00f3pria."
       },
       {
         "id": "tracking_probe",
@@ -731,8 +755,8 @@
         ],
         "kind": "service_operations",
         "local_migration_blocker": false,
-        "current_behavior": "Probe HTTP e S3 no laboratório isolado.",
-        "migration_gate": "Usar só como evidência operacional; o probe JSON não substitui reload dos modelos."
+        "current_behavior": "Probe HTTP e S3 no laborat\u00f3rio isolado.",
+        "migration_gate": "Usar s\u00f3 como evid\u00eancia operacional; o probe JSON n\u00e3o substitui reload dos modelos."
       },
       {
         "id": "tracking_lab_controller",
@@ -746,7 +770,7 @@
         "kind": "service_operations",
         "local_migration_blocker": false,
         "current_behavior": "Controla bancada dedicada e confere SQL/mounts/imagens.",
-        "migration_gate": "Recuperação futura deve usar outro projeto/volume/namespace; não restaurar no Postgres original."
+        "migration_gate": "Recupera\u00e7\u00e3o futura deve usar outro projeto/volume/namespace; n\u00e3o restaurar no Postgres original."
       },
       {
         "id": "isolated_restore_client",
@@ -773,13 +797,13 @@
         ],
         "kind": "service_operations",
         "local_migration_blocker": false,
-        "current_behavior": "Cliente HTTP sintético; publica skops e recarrega em processos separados sem variáveis AWS/PG; sem consulta ao histórico local.",
-        "migration_gate": "Gate nativo PostgreSQL/S3/KinD aprovado: publicação e recarga independente, hash S3, dois pontos da métrica do probe e recarga após recriação do pod MLflow; erro zero. Não declara migração histórica ou primária; evidência kind_tracking_author_validation_2026-10-20.json."
+        "current_behavior": "Cliente HTTP sint\u00e9tico; publica skops e recarrega em processos separados sem vari\u00e1veis AWS/PG; sem consulta ao hist\u00f3rico local.",
+        "migration_gate": "Gate nativo PostgreSQL/S3/KinD aprovado: publica\u00e7\u00e3o e recarga independente, hash S3, dois pontos da m\u00e9trica do probe e recarga ap\u00f3s recria\u00e7\u00e3o do pod MLflow; erro zero. N\u00e3o declara migra\u00e7\u00e3o hist\u00f3rica ou prim\u00e1ria; evid\u00eancia kind_tracking_author_validation_2026-10-20.json."
       },
       {
         "id": "scripts_operational_round_controller",
         "source": "scripts/operational_round/controller.py",
-        "source_sha256": "5caea90b6e0c1be33072b80a1651e52fb1d41ea1b54e6021d702c2d1471f0df5",
+        "source_sha256": "41746ac601256778c5ba27441e84c0673cda59e06e2e6ffeb07eb58650d3648c",
         "functions": [
           "init",
           "train",
@@ -787,21 +811,21 @@
         ],
         "kind": "operational_round_controller",
         "local_migration_blocker": false,
-        "current_behavior": "Nova cadeia de Jobs; datasets nativos, treino de três candidatos e promoção explícita.",
-        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+        "current_behavior": "Nova cadeia de Jobs; datasets nativos, treino de tr\u00eas candidatos e promo\u00e7\u00e3o expl\u00edcita.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manuten\u00e7\u00e3o hist\u00f3rica conserva evid\u00eancia anterior e n\u00e3o participa da sele\u00e7\u00e3o."
       },
       {
         "id": "scripts_operational_round_training",
         "source": "scripts/operational_round/training.py",
-        "source_sha256": "180671c39b0ce3121d77410d1bfe67640df971bbaa13a045572d8ca5236ffc2c",
+        "source_sha256": "c1d92811b3d7e558487b8fbab03ed6ad1326bf3267a4a4b4626ed88258608414",
         "functions": [
           "candidates",
           "execute"
         ],
         "kind": "operational_round_producer",
         "local_migration_blocker": false,
-        "current_behavior": "Inputs obrigatórios de treino/validação, métricas vinculadas ao dataset, recarga completa; sem leitura de experimentos históricos.",
-        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+        "current_behavior": "Inputs obrigat\u00f3rios de treino/valida\u00e7\u00e3o, m\u00e9tricas vinculadas ao dataset, recarga completa; sem leitura de experimentos hist\u00f3ricos.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manuten\u00e7\u00e3o hist\u00f3rica conserva evid\u00eancia anterior e n\u00e3o participa da sele\u00e7\u00e3o."
       },
       {
         "id": "scripts_operational_round_promotion",
@@ -813,13 +837,13 @@
         ],
         "kind": "operational_round_registry",
         "local_migration_blocker": false,
-        "current_behavior": "Confere linhagem e bytes, recalcula qualidade em validação e registra o vencedor em fraud-detector@champion.",
-        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
+        "current_behavior": "Confere linhagem e bytes, recalcula qualidade em valida\u00e7\u00e3o e registra o vencedor em fraud-detector@champion.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manuten\u00e7\u00e3o hist\u00f3rica conserva evid\u00eancia anterior e n\u00e3o participa da sele\u00e7\u00e3o."
       },
       {
         "id": "scripts_operational_round_serving",
         "source": "scripts/operational_round/serving.py",
-        "source_sha256": "a8e21bce273770c642ff85421df49fe3be1f93dc5132fd88cf9b9ef160a0a01c",
+        "source_sha256": "11cf2fccafe5f20caff44dbd8940626e7ad7d688a5d3f4b03e52b04d0918d7fe",
         "functions": [
           "prepare",
           "deploy",
@@ -827,71 +851,34 @@
         ],
         "kind": "operational_round_serving",
         "local_migration_blocker": false,
-        "current_behavior": "Constrói API atual, carrega pesos da nova versão aprovada e confere HTTP/troca/rollback.",
-        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manutenção histórica conserva evidência anterior e não participa da seleção."
-      },
-      {
-        "id": "scripts_platform_history_registry",
-        "source": "scripts/platform/history/registry.py",
-        "source_sha256": "3c8702d268318015bad4cfbb4aa839d9e3ca298dd89ef399c760559e536ec7f8",
-        "functions": [
-          "champion"
-        ],
-        "kind": "historical_maintenance",
-        "local_migration_blocker": false,
-        "current_behavior": "Registro da referência histórica aprovada; fora da nova rodada canônica.",
-        "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
-      },
-      {
-        "id": "scripts_platform_history_transfer",
-        "source": "scripts/platform/history/transfer.py",
-        "source_sha256": "c65ffcae8095042c31abdd0ee10a7d91e89e55fa9bbfab072f385f5f1da08e93",
-        "functions": [
-          "execute",
-          "verify"
-        ],
-        "kind": "historical_maintenance",
-        "local_migration_blocker": false,
-        "current_behavior": "Transferência arquivística e readback integral dos dois stores; fora do fluxo canônico.",
-        "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
-      },
-      {
-        "id": "scripts_platform_history_worker",
-        "source": "scripts/platform/history/worker.py",
-        "source_sha256": "1399aa2e70f475a0b0ad33f6b24af0528050bc8b35c884a3a4abfdd0a729a1d3",
-        "functions": [
-          "execute"
-        ],
-        "kind": "historical_maintenance",
-        "local_migration_blocker": false,
-        "current_behavior": "Cliente HTTP de manutenção histórica, sem novo treino.",
-        "migration_gate": "Manutenção arquivística; não participa da seleção ou promoção da nova rodada."
+        "current_behavior": "Constr\u00f3i API atual, carrega pesos da nova vers\u00e3o aprovada e confere HTTP/troca/rollback.",
+        "migration_gate": "Nova rodada: aceite nativo pendente em OPERATIONAL_ROUND.md; manuten\u00e7\u00e3o hist\u00f3rica conserva evid\u00eancia anterior e n\u00e3o participa da sele\u00e7\u00e3o."
       },
       {
         "id": "recurring_controller",
         "source": "scripts/model_updates/controller.py",
-        "source_sha256": "8507b9e1739132efdddfa1b72ac33a90dea014f998e0b0df569653a3d91cf785",
+        "source_sha256": "2e8439f2914eebfb9b4923b2b4029c8c769ae82db835bbe61ed16fd73770efc6",
         "functions": [
           "init",
           "qualify"
         ],
         "kind": "recurring_update",
         "local_migration_blocker": false,
-        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
-        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+        "current_behavior": "Compara\u00e7\u00e3o com labels maduros; busca opcional; challenger separado; aprova\u00e7\u00e3o expl\u00edcita e transa\u00e7\u00e3o recuper\u00e1vel de tr\u00e1fego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promo\u00e7\u00e3o produtiva autom\u00e1tica."
       },
       {
         "id": "recurring_deployment",
         "source": "scripts/model_updates/deployment.py",
-        "source_sha256": "032cebb34a206782bd4a59f3f73eef2790f7c6e569fb162c10f065eb65347525",
+        "source_sha256": "b85711d1d2eabdffa3a73fbd675c88d413b8342b43c555b485d6959bcb098088",
         "functions": [
           "stage",
           "release"
         ],
         "kind": "recurring_update",
         "local_migration_blocker": false,
-        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
-        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+        "current_behavior": "Compara\u00e7\u00e3o com labels maduros; busca opcional; challenger separado; aprova\u00e7\u00e3o expl\u00edcita e transa\u00e7\u00e3o recuper\u00e1vel de tr\u00e1fego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promo\u00e7\u00e3o produtiva autom\u00e1tica."
       },
       {
         "id": "recurring_registry",
@@ -903,8 +890,8 @@
         ],
         "kind": "recurring_update",
         "local_migration_blocker": false,
-        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
-        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+        "current_behavior": "Compara\u00e7\u00e3o com labels maduros; busca opcional; challenger separado; aprova\u00e7\u00e3o expl\u00edcita e transa\u00e7\u00e3o recuper\u00e1vel de tr\u00e1fego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promo\u00e7\u00e3o produtiva autom\u00e1tica."
       },
       {
         "id": "recurring_search",
@@ -915,21 +902,21 @@
         ],
         "kind": "recurring_update",
         "local_migration_blocker": false,
-        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
-        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+        "current_behavior": "Compara\u00e7\u00e3o com labels maduros; busca opcional; challenger separado; aprova\u00e7\u00e3o expl\u00edcita e transa\u00e7\u00e3o recuper\u00e1vel de tr\u00e1fego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promo\u00e7\u00e3o produtiva autom\u00e1tica."
       },
       {
         "id": "recurring_training",
         "source": "scripts/model_updates/training.py",
-        "source_sha256": "57a400ca7163aef9d36e0621e5e11bfeccdb1805e5690b706ef174481baef31e",
+        "source_sha256": "223bd4a904a1e01df8162f1536a03012d0be91947ed4411532b882b83e1e09b3",
         "functions": [
           "candidates",
           "execute"
         ],
         "kind": "recurring_update",
         "local_migration_blocker": false,
-        "current_behavior": "Comparação com labels maduros; busca opcional; challenger separado; aprovação explícita e transação recuperável de tráfego/alias.",
-        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promoção produtiva automática."
+        "current_behavior": "Compara\u00e7\u00e3o com labels maduros; busca opcional; challenger separado; aprova\u00e7\u00e3o expl\u00edcita e transa\u00e7\u00e3o recuper\u00e1vel de tr\u00e1fego/alias.",
+        "migration_gate": "Aceite nativo pendente em MODEL_UPDATES.md; nenhuma promo\u00e7\u00e3o produtiva autom\u00e1tica."
       },
       {
         "id": "portal_validation_performance",
@@ -941,8 +928,8 @@
         ],
         "kind": "readonly_snapshot_evaluation",
         "local_migration_blocker": false,
-        "current_behavior": "Leitura HTTP MLflow de Inputs, relatórios e pesos; validação identificada somente; métricas e simulação de fila offline; sem fit, escrita Registry ou mudança de tráfego.",
-        "migration_gate": "Preparação da página de desempenho; aceite nativo pendente em PORTAL_PERFORMANCE.md."
+        "current_behavior": "Leitura HTTP MLflow de Inputs, relat\u00f3rios e pesos; valida\u00e7\u00e3o identificada somente; m\u00e9tricas e simula\u00e7\u00e3o de fila offline; sem fit, escrita Registry ou mudan\u00e7a de tr\u00e1fego.",
+        "migration_gate": "Prepara\u00e7\u00e3o da p\u00e1gina de desempenho; aceite nativo pendente em PORTAL_PERFORMANCE.md."
       }
     ],
     "decisions": {
@@ -1061,9 +1048,6 @@
     "retained_pvc_uid": "d68d5529-7b3d-4a08-a569-0ca8c72c9366"
   },
   "kind_serving": {
-    "controller": "scripts/platform/kind_serving.py",
-    "delivery_controller": "scripts/platform/kind_serving_delivery.py",
-    "init_worker": "scripts/platform/kind_serving_seed.py",
     "chart": "infra/helm/fraud-serving",
     "release": "fraud-serving",
     "workspace": "data/storage/kind-platform/serving",
@@ -1074,7 +1058,16 @@
     "production_promotion": false,
     "runbook": "docs/operations/KIND_SERVING.md",
     "validation_evidence": "references/evidence/kind_serving_author_validation_2026-10-21.json",
-    "validation_scope": "qualified_synthetic_runtime_Helm_Service_blue_green_and_native_rollback_not_reference_promotion"
+    "validation_scope": "qualified_synthetic_runtime_Helm_Service_blue_green_and_native_rollback_not_reference_promotion",
+    "historical_sources": [
+      "scripts/platform/kind_serving.py",
+      "scripts/platform/kind_serving_delivery.py",
+      "scripts/platform/kind_serving_seed.py"
+    ],
+    "status": "retired",
+    "native_retirement_validated": true,
+    "retirement_evidence": "references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json",
+    "shared_chart_retained_for": "canonical_first_champion_deployment"
   },
   "kind_observability": {
     "controller": "scripts/platform/kind_observability.py",
@@ -1127,13 +1120,27 @@
     "baseline_private_immutable": true,
     "secret_contents_recorded": false,
     "native_stop_start_validated": true,
-    "host_reboot_validated": true,
+    "host_reboot_validated": false,
     "primary_storage_migrated": false,
     "host_loss_recovery_validated": false,
-    "inotify_persistence_after_reboot_validated": true,
+    "inotify_persistence_after_reboot_validated": false,
     "planned_shutdown_required": true,
-    "validation_evidence": "references/evidence/kind_operations_author_validation_2026-10-21.json",
-    "integrated_runbook": "docs/operations/KIND_PLATFORM.md"
+    "validation_evidence": "references/evidence/canonical_lifecycle_author_validation_2026-10-23.json",
+    "integrated_runbook": "docs/operations/KIND_PLATFORM.md",
+    "historical_acceptance": {
+      "scope": "initial_synthetic_serving_laboratory",
+      "native_stop_start_validated": true,
+      "host_reboot_validated": true,
+      "evidence": "references/evidence/kind_operations_author_validation_2026-10-21.json",
+      "inotify_persistence_after_reboot_validated": true
+    },
+    "baseline_schema": "fraud_kind_operations_baseline_v2",
+    "serving_identity": "model-updates/current.json and shared platform-api gate",
+    "current_validation_status": "canonical_lifecycle_native_stop_start_accepted",
+    "preparation_evidence": "references/evidence/canonical_lifecycle_preparation_2026-10-22.json",
+    "validated_on": "2026-10-23",
+    "grafana_proxy_after_restart_validated": true,
+    "inactive_slot_zero_preserved": true
   },
   "kind_platform_milestone": {
     "status": "accepted_incremental_laboratory_scope",
@@ -1170,7 +1177,7 @@
       "training-failure-*.json"
     ],
     "cloud_writes": "Novos bundles Silver/Gold em fraud-datasets; novos Inputs/runs/modelos e Registry via proxy MLflow.",
-    "retention": "Preservar Bronze e recibos; Jobs de sucesso removidos, falhas preservadas; nenhuma exclusão de histórico.",
+    "retention": "Preservar Bronze e recibos; Jobs de sucesso removidos, falhas preservadas; nenhuma exclus\u00e3o de hist\u00f3rico.",
     "native_cycle_validated": false,
     "historical_models_used": false,
     "production_promotion": false
@@ -1206,6 +1213,6 @@
       "optuna"
     ],
     "native_update_validated": false,
-    "retention": "Preservar modelos e datasets; nunca reescrever recibos canônicos; journal mutável registra recuperação e eventos de release. Aprovação explícita para alterar tráfego."
+    "retention": "Preservar modelos e datasets; nunca reescrever recibos can\u00f4nicos; journal mut\u00e1vel registra recupera\u00e7\u00e3o e eventos de release. Aprova\u00e7\u00e3o expl\u00edcita para alterar tr\u00e1fego."
   }
 }

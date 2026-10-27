@@ -25,6 +25,7 @@ Leia o [README do projeto](../README.md) para começar e a
 | Pergunta | Referência principal |
 | --- | --- |
 | Qual problema e quais próximos marcos? | [Contexto](project/PROBLEM_CONTEXT.md), [mural](project/ROADMAP.md), [stakeholders](project/STAKEHOLDERS.md) |
+| O que foi consolidado ou retirado do código? | [Simplificação e dependências](operations/CODEBASE_SIMPLIFICATION.md) |
 | Como mantemos a documentação? | [Política editorial](project/DOCUMENTATION_POLICY.md) |
 | Como dados e features são construídos? | [Pipeline](data/DATA_PIPELINE.md), [Silver](data/SILVER_CONTRACT.md), [Gold](data/GOLD_CONTRACT.md) |
 | O que significam os campos e os achados? | [Dicionário](data/DATA_DICTIONARY.md) e [EDA](data/EDA.md) |
@@ -324,3 +325,25 @@ Próximo: operação de parada/subida, retomada após reboot e fechamento integr
 
 - [Operação do produto](operations/PRODUCT_OPERATIONS.md): estado atual,
   responsabilidades, chegada de eventos e próxima consolidação operacional.
+
+### Serving operacional após a simplificação
+
+A instalação sintética `fraud-serving` foi aposentada em 2026-10-23. O destino
+ativo é `fraud-detector`; os gates HTTP compartilhados e a qualificação/consumo
+sintéticos da CI foram preservados. A checagem cotidiana é `platform-check`, com
+o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
+parada/subida nem promoção de sucessor. [Evidência](../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).
+
+- [Sessão operacional de investigação](operations/PRODUCT_SESSION.md): chegada gradual, pausa/retomada e fila corrente.
+
+- [Sessões ampliadas](operations/PRODUCT_SESSION_SCALE.md): janela/volume, fila paginada e relatórios de tempo/memória.
+
+- [Monitoramento da mesma sessão](operations/SESSION_MONITORING.md): vínculo com a fila, frescor da coleta e recuperação no Prometheus/Grafana.
+
+- [Aceite nativo e visual do monitoramento da sessão](../references/evidence/session_monitoring_author_validation_2026-10-24.json):
+  mesma sessão da fila no Grafana, expiração/retomada, regressão e baseline de 2026-10-24.
+
+- [Portal único](operations/UNIFIED_PORTAL.md): sessão corrente, investigação e evidências na mesma interface, com origens identificadas.
+
+- [Footprint das imagens](operations/IMAGE_FOOTPRINT.md): revisão de builds existentes,
+  medidas históricas e inventário atual ainda necessário.

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: fraud-observability
-description: Owned local completed-replay observability, with explicit snapshot provenance
-version: 0.1.0
+description: Owned replay and optional identified product-session observability
+version: 0.2.0
 appVersion: '1'
 type: application

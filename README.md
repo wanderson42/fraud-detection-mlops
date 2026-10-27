@@ -595,5 +595,35 @@ de validação e o mesmo modelo dos casos.
 
 [Operação do produto e próximo recorte](docs/operations/PRODUCT_OPERATIONS.md):
 responsabilidades, dados históricos como fluxo reproduzível e consolidação da
-sessão operacional. O portal atual consulta snapshots; atualização contínua da
-fila e das métricas da mesma sessão é o próximo aceite, sem novo treinamento.
+sessão operacional. A fila atualizada foi aceita em sessões de 200 e 2.001 decisões;
+o monitoramento da mesma sessão teve aceite nativo e visual em 2026-10-24, sem novo treinamento.
+
+### Serving operacional após a simplificação
+
+A instalação sintética `fraud-serving` foi aposentada em 2026-10-23. O destino
+ativo é `fraud-detector`; os gates HTTP compartilhados e a qualificação/consumo
+sintéticos da CI foram preservados. A checagem cotidiana é `platform-check`, com
+o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
+parada/subida nem promoção de sucessor. [Evidência](references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).
+
+A [sessão operacional](docs/operations/PRODUCT_SESSION.md) conecta chegada gradual à API e à fila de investigação atualizada automaticamente; aceite nativo concluído para a sessão de 200 decisões.
+
+Sessões com [janela e volume configuráveis](docs/operations/PRODUCT_SESSION_SCALE.md) reutilizam a API e o ledger causal, com fila paginada e medição separada de contexto, chegada e verificação. Os ensaios de 200 e 2.001 decisões foram aceitos pelo autor.
+
+A ampliação operacional foi aceita com **2.001 decisões HTTP e 81 alertas**, com
+paginação, feedback e reconciliação causal. O [monitoramento da mesma sessão](docs/operations/SESSION_MONITORING.md)
+liga esses agregados ao Prometheus/Grafana existentes, identificando sessão,
+pesos e release e detectando interrupção da coleta. Aceite nativo e visual
+confirmados em 2026-10-24, com novo baseline operacional e regressão geral
+aprovada (1.705 testes). [Evidência](references/evidence/session_monitoring_author_validation_2026-10-24.json).
+A próxima entrega reúne a sessão corrente e as evidências em um único portal Streamlit.
+
+O [portal unificado](docs/operations/UNIFIED_PORTAL.md) reúne a sessão corrente,
+investigação e evidências em um único Streamlit em 18501, com vínculo explícito
+de fonte, pesos e release. Aceite nativo e visual concluído pelo autor em 2026-10-24, incluindo o refinamento do cabeçalho.
+
+O [fechamento do portal](references/evidence/unified_portal_author_validation_2026-10-24.json)
+registra os testes e a revisão visual, preservando as fontes de sessão e avaliação.
+A [revisão de footprint das imagens](docs/operations/IMAGE_FOOTPRINT.md) distingue
+as otimizações de build existentes das medições ainda necessárias para o conjunto
+da infraestrutura.

@@ -1,0 +1,81 @@
+{
+  "schema": "fraud_session_counts_author_validation_v1",
+  "date": "2026-10-27",
+  "basis_commit": "0a2ed88",
+  "evidence_origin": "native outputs supplied by project author; assistant did not access the cluster",
+  "status": "receiver_applied_verified_and_current_baseline_accepted",
+  "maintenance_id": "session-counts-v1",
+  "approval_sha256": "51edf588f5a2ddfd7b95a299980d21365ffa8558de9e61e704206868e73faf67",
+  "image": "fraud-session-monitor:e0579d2a069343c18664844155b648c2",
+  "image_multiday_qualification": {
+    "status": "multiday_image_qualified",
+    "contract_sha256": "932a31f2a020ebbf20e905979ff7d1f2999f22073170c58670eac162842e2a88",
+    "scope": "synthetic aggregate contract and receiver projection executed inside candidate Docker image; not native multi-day transaction arrivals"
+  },
+  "binding": {
+    "session_id": "arrival-2k-v1",
+    "session_sha256": "f82d8fb8c2e25f533c31d03f7dc430b4a15ef2761758840506a7136de94edf3e",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+    "expected_events": 272936,
+    "expected_decisions": 2001
+  },
+  "counts": {
+    "events": 272936,
+    "transactions": 136468,
+    "feedback": 136468,
+    "decisions": 2001,
+    "alerts": 81,
+    "customers": 1561,
+    "decision_feedback": 2001,
+    "http_attempts": 2001
+  },
+  "accepted_session_bytes_unchanged": true,
+  "functional_readbacks_verified": true,
+  "same_session_Grafana_validated": true,
+  "observer_restart": {
+    "status": "observing_session",
+    "session_id": "arrival-2k-v1",
+    "sustained_watch_duration_measured": false
+  },
+  "baseline": {
+    "path": "data/storage/kind-platform/operations/baseline-session-counts-v1.json",
+    "sha256": "48e19d7ddce6a7b283732d34e0ccd2823ad6a134b4ede1e54b446fef5efee770",
+    "check_report": "data/storage/kind-platform/operations/check-f6bc6f746ec34bcca1938a97de4bd9a4.json",
+    "status": "current_platform_readbacks_verified",
+    "scope": "current_owned_topology_and_functional_readbacks_not_stop_start_or_reboot_acceptance",
+    "prior_baseline_preserved": true,
+    "baseline_modified_during_check": false,
+    "new_stop_start_executed": false
+  },
+  "portal": {
+    "status": "portal_snapshot_verified",
+    "manifest_sha256": "ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af",
+    "summary": {
+      "decisions": 200,
+      "customers": 199,
+      "alerts": 13,
+      "feedback": 200,
+      "explanations": 5
+    }
+  },
+  "performance": {
+    "status": "portal_performance_verified",
+    "manifest_sha256": "6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475",
+    "validation_rows": 67255
+  },
+  "author_local_validation": {
+    "project_tests_passed": 1788,
+    "project_tests_skipped": 53,
+    "warnings": 165,
+    "subtests_passed": 12,
+    "portal_ui_tests_passed": 44
+  },
+  "native_multiday_arrivals_validated": false,
+  "native_rollback_executed": false,
+  "fit_executed": false,
+  "champion_modified": false,
+  "successor_model_promotion_validated": false,
+  "native_reboot_validated_in_this_maintenance": false,
+  "preparation_evidence": "references/evidence/session_counts_fix_preparation_2026-10-27.json"
+}

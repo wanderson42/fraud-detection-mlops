@@ -1,0 +1,18 @@
+{
+  "schema": "fraud_runtime_tag_source_transition_v1",
+  "basis_commit": "deea2ae",
+  "purpose": "canonical_runtime_tag_and_real_Helm_preflight_before_prepare_and_apply",
+  "chart_schema_changed": false,
+  "model_weights_changed": false,
+  "historical_receipts_rewritten": false,
+  "changes": {
+    "scripts/platform/runtime_maintenance.py": {
+      "before": "f85886058b661e8262e570d09bff2fedd486fede3cf3f620048a47589b6a6681",
+      "after": "d1c48068b15f56a233b7993a8613a1cc6dd9c46902a9d5f59ae902bfad91f8cb"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "f9154de7749a1cbc56861e3ee93c87d781df1856aa833748312887e4418dc13b",
+      "after": "a6a06a37381197c5351e51ab6d5f989908af906cd9897c9896e9d7d98696f70f"
+    }
+  }
+}

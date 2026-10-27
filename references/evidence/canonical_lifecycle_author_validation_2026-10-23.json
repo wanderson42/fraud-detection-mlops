@@ -1,0 +1,400 @@
+{
+  "schema": "fraud_canonical_lifecycle_author_validation_v1",
+  "status": "success",
+  "validated_on": "2026-10-23",
+  "source": "author_supplied_native_terminal_output",
+  "source_attachment": {
+    "name": "Texto colado(20261023-032547).txt",
+    "sha256": "fd959d75a0f88e2e8fe405aec88ecd89bf1c2374ea28536ec1ba6c1701fc7ff2",
+    "hash_scope": "terminal attachment bytes; not the native rehearsal JSON file"
+  },
+  "scope": "active_champion_controlled_stop_start_same_node_volumes_saved_replicas_and_Grafana_proxy_after_restart",
+  "native_test": {
+    "passed": 1,
+    "seconds": 276.71,
+    "tox_seconds": 279.39
+  },
+  "operator_regression": {
+    "passed": 143,
+    "subtests": 12,
+    "seconds": 3.65,
+    "ruff_check": true,
+    "ruff_format": true,
+    "source": "earlier operator terminal output in this session"
+  },
+  "baseline": {
+    "file": "baseline-4fb6e8ecc8b14ad79564a84086a6c170.json",
+    "sha256": "656d636d8fa4ff11981c75ab61d5947769410c3295e2dc3ab5a2ed7279f23f39",
+    "hash_source": "native events baseline_sha256 field"
+  },
+  "workloads": {
+    "controllers": 11,
+    "restored_to_one": 10,
+    "restored_to_zero": [
+      "deployment/fraud-detector-green"
+    ]
+  },
+  "serving": {
+    "registry_version": "1",
+    "slot": "blue",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+    "score": {
+      "schema_version": 1,
+      "transaction_id": 335910,
+      "score": 0.4178630794049542,
+      "score_semantics": "uncalibrated_ranking",
+      "model_id": "hist_gradient_boosting",
+      "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+      "feature_contract_version": "gold_v1",
+      "serving_release_id": "e8350e0a841f4136983e0d905068a743"
+    },
+    "invalid_input_http_status": 422
+  },
+  "monitoring": {
+    "state_bytes_verified": true,
+    "summary_matches_source": true,
+    "prometheus_metrics_verified": {
+      "fraud_monitor_collector_up": 1.0,
+      "fraud_replay_events_total": 556824.0,
+      "fraud_replay_decisions_total": 143945.0,
+      "fraud_replay_alerts_total": 1453.0,
+      "fraud_replay_complete": 1.0,
+      "fraud_feature_comparison_ready": 1.0,
+      "fraud_feature_jensen_shannon{feature=\"TX_AMOUNT\"}": 0.0021550290067184723,
+      "fraud_feature_jensen_shannon{feature=\"CUSTOMER_AVG_AMOUNT_7D\"}": 0.004398245597130813,
+      "fraud_feature_jensen_shannon{feature=\"CUSTOMER_TX_COUNT_7D\"}": 0.001457152007270268,
+      "fraud_feature_jensen_shannon{feature=\"TERMINAL_KNOWN_FRAUD_RATE_7D\"}": 0.002043254733260833
+    },
+    "scrape_target_verified": true,
+    "healthy_alert_rules": 8,
+    "grafana_datasource_proxy_verified": true,
+    "dashboard_color_policy_verified": "semantic_colors_v1",
+    "provisioned_dashboard_UIDs": [
+      "fraud-feature-health",
+      "fraud-kind-overview",
+      "fraud-replay-ops",
+      "fraud-triage-quality"
+    ],
+    "visual_dashboard_review_validated": false,
+    "alert_firing_validated": false,
+    "temporary_port_forwards_removed": true
+  },
+  "tracking_history_rows": 2,
+  "s3_model_verified": {
+    "status": "s3_model_verified",
+    "bucket": "fraud-kind-mlflow",
+    "key": "v1/1/models/m-9dc865b0dac6450a93eadad2e17e8e73/artifacts/model.skops",
+    "model_sha256": "11ede55b832c9c808183c4f3dd38e4e4b8d45c11276d3630e1d189b9d42c7481",
+    "bytes": 20265
+  },
+  "same_node_and_volumes": true,
+  "original_replica_plan_restored": true,
+  "grafana_proxy_after_restart_validated": true,
+  "host_reboot_validated": false,
+  "different_weights_successor_promotion_validated": false,
+  "backup_restore_validated": false,
+  "live_ingestion_validated": false,
+  "historical_failed_cycle_preserved": "rehearsal-bf1ca3b552324834b5bd3ded6c860bfb.json",
+  "post_cycle_local_accesses": {
+    "source": "author message in the same session",
+    "ready": [
+      "api",
+      "mlflow",
+      "grafana",
+      "portal"
+    ],
+    "optional_stopped_or_stale": [
+      "prometheus",
+      "exporter",
+      "rustfs"
+    ],
+    "scope": "local forwarding processes; not Kubernetes service health"
+  },
+  "native_rehearsal_report": {
+    "schema": "fraud_kind_operations_rehearsal_v1",
+    "status": "success",
+    "baseline": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/baseline-4fb6e8ecc8b14ad79564a84086a6c170.json",
+    "host_reboot_validated": false,
+    "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+    "stop": {
+      "schema": "fraud_kind_operations_event_v1",
+      "action": "stop",
+      "status": "stopped",
+      "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+      "baseline": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/baseline-4fb6e8ecc8b14ad79564a84086a6c170.json",
+      "baseline_sha256": "656d636d8fa4ff11981c75ab61d5947769410c3295e2dc3ab5a2ed7279f23f39",
+      "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/stop-ec1b22488e19403f99f1e88225563e56.json",
+      "started_timestamp": 1792725677.282528,
+      "steps": [
+        {
+          "workload": "deployment/fraud-detector-gateway",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-detector-green",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-detector-blue",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-serving-gateway",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-serving-blue",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-observability-grafana",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-observability-prometheus",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-observability-exporter",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-tracking",
+          "replicas": 0
+        },
+        {
+          "workload": "statefulset/fraud-platform-postgres",
+          "replicas": 0
+        },
+        {
+          "workload": "statefulset/fraud-platform-rustfs",
+          "replicas": 0
+        }
+      ],
+      "host": {
+        "boot_id": "5f7a12bb-87f4-4641-b06c-befc2b58bb68",
+        "machine_id_sha256": "f17e9f156fb2741e4bfd91725db9c794e865cafbaa8d56a2292d5971b3e62130",
+        "inotify": {
+          "max_user_instances": 512,
+          "max_user_watches": 524288,
+          "max_queued_events": 16384
+        },
+        "runtime_inotify_sufficient": true
+      },
+      "controlled_quiescence_validated": true,
+      "owner_after": {
+        "container_id": "f4cd4b901607bdc398a3d1d034194c50e0d074fb70b738e58b8a7e27621853dd",
+        "node_uid": "41e72efd-1bae-43d5-998e-4b6a9a19f08c",
+        "docker_engine_id": "03e1b69b-38bd-4c55-80e6-90a465fa9424",
+        "running": false,
+        "paused": false,
+        "restarting": false,
+        "owner_receipt_sha256": "812480bfd64e82e63a097a193119a7e5322fdbe237c4c18c6e521ad2eb736789"
+      },
+      "other_writers_absent_operator_declared": true,
+      "finished_timestamp": 1792725821.9944117
+    },
+    "start": {
+      "schema": "fraud_kind_operations_event_v1",
+      "action": "start",
+      "status": "started",
+      "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+      "baseline": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/baseline-4fb6e8ecc8b14ad79564a84086a6c170.json",
+      "baseline_sha256": "656d636d8fa4ff11981c75ab61d5947769410c3295e2dc3ab5a2ed7279f23f39",
+      "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/start-a91ecd9df7284343b086d4d991a5fdb2.json",
+      "started_timestamp": 1792725822.06178,
+      "steps": [
+        {
+          "workload": "statefulset/fraud-platform-rustfs",
+          "replicas": 1
+        },
+        {
+          "workload": "statefulset/fraud-platform-postgres",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-tracking",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-observability-exporter",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-observability-prometheus",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-observability-grafana",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-serving-blue",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-serving-gateway",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-detector-blue",
+          "replicas": 1
+        },
+        {
+          "workload": "deployment/fraud-detector-green",
+          "replicas": 0
+        },
+        {
+          "workload": "deployment/fraud-detector-gateway",
+          "replicas": 1
+        }
+      ],
+      "host": {
+        "boot_id": "5f7a12bb-87f4-4641-b06c-befc2b58bb68",
+        "machine_id_sha256": "f17e9f156fb2741e4bfd91725db9c794e865cafbaa8d56a2292d5971b3e62130",
+        "inotify": {
+          "max_user_instances": 512,
+          "max_user_watches": 524288,
+          "max_queued_events": 16384
+        },
+        "runtime_inotify_sufficient": true
+      },
+      "owner_after": {
+        "container_id": "f4cd4b901607bdc398a3d1d034194c50e0d074fb70b738e58b8a7e27621853dd",
+        "node_uid": "41e72efd-1bae-43d5-998e-4b6a9a19f08c",
+        "docker_engine_id": "03e1b69b-38bd-4c55-80e6-90a465fa9424",
+        "running": true,
+        "paused": false,
+        "restarting": false,
+        "owner_receipt_sha256": "812480bfd64e82e63a097a193119a7e5322fdbe237c4c18c6e521ad2eb736789"
+      },
+      "original_replica_plan_restored": true,
+      "other_writers_absent_operator_declared": true,
+      "finished_timestamp": 1792725904.3716333
+    },
+    "verification": {
+      "schema": "fraud_kind_operations_event_v1",
+      "action": "verify",
+      "status": "verified",
+      "scope": "planned_owned_kind_stack_quiescence_same_node_volumes_and_readback_not_host_loss_recovery",
+      "baseline": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/baseline-4fb6e8ecc8b14ad79564a84086a6c170.json",
+      "baseline_sha256": "656d636d8fa4ff11981c75ab61d5947769410c3295e2dc3ab5a2ed7279f23f39",
+      "report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/verify-14411c6afccf4b1dac79389407dc0c44.json",
+      "started_timestamp": 1792725904.4145734,
+      "steps": [],
+      "host": {
+        "boot_id": "5f7a12bb-87f4-4641-b06c-befc2b58bb68",
+        "machine_id_sha256": "f17e9f156fb2741e4bfd91725db9c794e865cafbaa8d56a2292d5971b3e62130",
+        "inotify": {
+          "max_user_instances": 512,
+          "max_user_watches": 524288,
+          "max_queued_events": 16384
+        },
+        "runtime_inotify_sufficient": true
+      },
+      "stop_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/stop-ec1b22488e19403f99f1e88225563e56.json",
+      "start_report": "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/operations/start-a91ecd9df7284343b086d4d991a5fdb2.json",
+      "probes": {
+        "foundation_pvcs": {
+          "postgres": {
+            "name": "fraud-platform-postgres-data",
+            "uid": "1285d051-1165-46a8-8a6e-95040df1a448",
+            "volume_name": "pvc-1285d051-1165-46a8-8a6e-95040df1a448"
+          },
+          "rustfs": {
+            "name": "fraud-platform-rustfs-data",
+            "uid": "7fd9c5c0-132b-4ae7-89fd-8ef329221b62",
+            "volume_name": "pvc-7fd9c5c0-132b-4ae7-89fd-8ef329221b62"
+          }
+        },
+        "tracking_deployment_uid": "cbd0b152-bc80-454f-8845-190fbc35514a",
+        "tracking_run_fingerprint": "87fb60eb745b2a37497540c985dddd042e25f72d903caf6ad4073ebe6d75a214",
+        "tracking_history_fingerprint": "9403295387405e76613b76573d9a37033a9cff737386fd1035163718e17f57c2",
+        "tracking_history_rows": 2,
+        "s3": {
+          "status": "s3_model_verified",
+          "bucket": "fraud-kind-mlflow",
+          "key": "v1/1/models/m-9dc865b0dac6450a93eadad2e17e8e73/artifacts/model.skops",
+          "model_sha256": "11ede55b832c9c808183c4f3dd38e4e4b8d45c11276d3630e1d189b9d42c7481",
+          "bytes": 20265
+        },
+        "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+        "serving_model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+        "serving_http": {
+          "registry_version": "1",
+          "slot": "blue",
+          "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+          "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+          "score": {
+            "schema_version": 1,
+            "transaction_id": 335910,
+            "score": 0.4178630794049542,
+            "score_semantics": "uncalibrated_ranking",
+            "model_id": "hist_gradient_boosting",
+            "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+            "feature_contract_version": "gold_v1",
+            "serving_release_id": "e8350e0a841f4136983e0d905068a743"
+          },
+          "invalid_input_http_status": 422
+        },
+        "monitoring": {
+          "state_bytes_verified": true,
+          "summary_matches_source": true,
+          "prometheus_metrics_verified": {
+            "fraud_monitor_collector_up": 1.0,
+            "fraud_replay_events_total": 556824.0,
+            "fraud_replay_decisions_total": 143945.0,
+            "fraud_replay_alerts_total": 1453.0,
+            "fraud_replay_complete": 1.0,
+            "fraud_feature_comparison_ready": 1.0,
+            "fraud_feature_jensen_shannon{feature=\"TX_AMOUNT\"}": 0.0021550290067184723,
+            "fraud_feature_jensen_shannon{feature=\"CUSTOMER_AVG_AMOUNT_7D\"}": 0.004398245597130813,
+            "fraud_feature_jensen_shannon{feature=\"CUSTOMER_TX_COUNT_7D\"}": 0.001457152007270268,
+            "fraud_feature_jensen_shannon{feature=\"TERMINAL_KNOWN_FRAUD_RATE_7D\"}": 0.002043254733260833
+          },
+          "scrape_target_verified": true,
+          "healthy_alert_rules": 8,
+          "grafana_datasource_proxy_verified": true,
+          "dashboard_color_policy_verified": "semantic_colors_v1",
+          "provisioned_dashboard_UIDs": [
+            "fraud-feature-health",
+            "fraud-kind-overview",
+            "fraud-replay-ops",
+            "fraud-triage-quality"
+          ],
+          "visual_dashboard_review_validated": false,
+          "alert_firing_validated": false,
+          "temporary_port_forwards_removed": true
+        },
+        "monitoring_pvcs": {
+          "state": {
+            "uid": "0556675e-d90e-4acb-a9d6-ef1301b58d14",
+            "volume_name": "pvc-0556675e-d90e-4acb-a9d6-ef1301b58d14"
+          },
+          "prometheus": {
+            "uid": "6a7d90c2-de8f-4de6-9b09-ed3e853c3d83",
+            "volume_name": "pvc-6a7d90c2-de8f-4de6-9b09-ed3e853c3d83"
+          },
+          "grafana": {
+            "uid": "0004805e-7cd3-4d49-98a1-1e89cd3256d7",
+            "volume_name": "pvc-0004805e-7cd3-4d49-98a1-1e89cd3256d7"
+          }
+        },
+        "serving_inference_executed": true,
+        "tracking_model_loaded": false,
+        "fit_executed": false
+      },
+      "same_node_and_volumes": true,
+      "controlled_stop_start_validated": true,
+      "host_reboot_validated": false,
+      "inotify_persistence_after_reboot_validated": false,
+      "fit_executed": false,
+      "replay_executed": false,
+      "primary_storage_migrated": false,
+      "production_promotion": false,
+      "backup_restore_validated": false,
+      "finished_timestamp": 1792725927.7721696
+    }
+  }
+}

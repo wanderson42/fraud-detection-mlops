@@ -1,0 +1,73 @@
+{
+  "schema": "fraud_tracking_runtime_maintenance_author_validation_v1",
+  "date": "2026-10-27",
+  "basis_commit": "6096f80",
+  "evidence_origin": "author-provided native command outputs; no independent cluster access by assistant",
+  "status": "native_tracking_runtime_applied_and_current_baseline_verified",
+  "maintenance_id": "tracking-bytecode-v1",
+  "image": {
+    "tag": "fraud-kind-tracking:1f2a295d6b6f4a8d98d4c1d59baba2a1",
+    "docker_image_id": "sha256:8e69f6abbe57055d79edf5987c8e63ae92af7aba9d0056c7bb1453fb12c5b797",
+    "CRI_image_id": "docker.io/library/import-2026-10-27@sha256:49578f7e9f7e9affcd8370df50a1d8276c90573ebd6d3fe3f21d0a0f277edbb6",
+    "registry_published": false
+  },
+  "size_comparison": {
+    "source_commit": "fd8ced7b0fe13ec0069694fb65bbe61c8cebf471",
+    "metric": "Docker image inspect Size",
+    "before_bytes": 310302710,
+    "after_bytes": 246885278,
+    "reduction_bytes": 63417432,
+    "reduction_percent": 20.437279455277718,
+    "change": "pip install --no-compile; same pinned distribution versions and base",
+    "exclusive_disk_reclamation_measured": false
+  },
+  "approval_sha256": "8f7da831c2e9fef0e638ea12c308173d82dddcd225c4c08ad00b06e8e21252d3",
+  "readback": {
+    "status": "tracking_runtime_readbacks_verified",
+    "metadata_tables": 65,
+    "artifact_objects": 711,
+    "store_sha256": "31608b07e748c7f186bcf64501e05e41256e20dde0c13f7b61783a51241157fe",
+    "functional_readbacks_verified": true,
+    "fingerprints_unchanged": true,
+    "backup_or_restore_test": false
+  },
+  "baseline": {
+    "path": "data/storage/kind-platform/operations/baseline-tracking-bytecode-v1.json",
+    "sha256": "406ebb434f77309c1cbc89c9115bfca53962f9cbb754739a79bdf4113ccf7e5e",
+    "prior_baseline_preserved": true,
+    "check_report": "data/storage/kind-platform/operations/check-e7cd8dbe78134a759b9512fcf5d8b2b8.json",
+    "status": "current_platform_readbacks_verified",
+    "scope": "current_owned_topology_and_functional_readbacks_not_stop_start_or_reboot_acceptance",
+    "new_stop_start_executed": false
+  },
+  "portal": {
+    "status": "portal_snapshot_verified",
+    "manifest_sha256": "ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af",
+    "decisions": 200,
+    "customers": 199,
+    "alerts": 13,
+    "feedback": 200,
+    "explanations": 5
+  },
+  "performance": {
+    "status": "portal_performance_verified",
+    "manifest_sha256": "6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475",
+    "validation_rows": 67255
+  },
+  "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+  "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+  "champion_modified": false,
+  "fit_executed": false,
+  "successor_model_promotion_validated": false,
+  "native_tracking_rollback_executed": false,
+  "zero_downtime_claimed": false,
+  "images_volumes_or_caches_deleted": false,
+  "training_image_scope": {
+    "isolated_functional_qualification_accepted": true,
+    "new_native_Kind_training_round_accepted": false
+  },
+  "related_evidence": [
+    "references/evidence/python_bytecode_author_validation_2026-10-27.json",
+    "references/evidence/tracking_runtime_maintenance_preparation_2026-10-27.json"
+  ]
+}

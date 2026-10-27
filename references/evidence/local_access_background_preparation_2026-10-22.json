@@ -1,0 +1,60 @@
+{
+  "schema": "fraud_background_local_access_preparation_v1",
+  "status": "locally_verified_native_lifecycle_pending",
+  "prepared_on": "2026-10-22",
+  "scope": "owned_nohup_access_processes_not_Kubernetes_workload_replacement",
+  "services": [
+    "api",
+    "mlflow",
+    "grafana",
+    "prometheus",
+    "exporter",
+    "rustfs",
+    "portal"
+  ],
+  "launch": {
+    "nohup": true,
+    "stdin_devnull": true,
+    "stdout_stderr_private_log": true,
+    "new_session": true,
+    "loopback_only": true,
+    "no_shell_command_interpolation": true
+  },
+  "lifecycle": {
+    "identity": [
+      "pid",
+      "start_ticks",
+      "boot_id",
+      "group",
+      "argv",
+      "cwd"
+    ],
+    "same_ready_configuration_reused": true,
+    "no_pkill": true,
+    "logs_preserved_per_invocation": true,
+    "no_auto_restart_or_boot_start": true
+  },
+  "local_validation": {
+    "python": "3.14.4",
+    "tests_passed": 83,
+    "tests_skipped": 4,
+    "subtests": 12,
+    "seconds": 1.71,
+    "ruff_check": true,
+    "ruff_format": true,
+    "native_lifecycle_skip_reason": "executor /proc namespace differs from subprocess namespace",
+    "ignore_files_verified": true,
+    "root_and_Docker_specific_ignore_bytes_unchanged": true,
+    "guarded_application_verified": true
+  },
+  "native_lifecycle_validated": false,
+  "cluster_modified": false,
+  "champion_modified": false,
+  "fit_executed": false,
+  "implementation_sha256": {
+    "scripts/platform/local_services/__init__.py": "a40611e786c4f38e6d358c3faf6007df217479fd68a9b29d24a2e48b8ed362a4",
+    "scripts/platform/local_services/controller.py": "0d9b8724fefe8856323fc6b3722229dd19a6d7cd8cc91b39dfac9d30f8fe8b39",
+    "scripts/platform/local_services/processes.py": "5df2d2d7741e9276182008e7cb03166978afa68b8e0706a2f1ffaf0ba22e065b",
+    "scripts/platform/local_services/services.py": "97eca230bb43bfb592dfa2f9ab7d8cafbe1bad82981f41fac388cc7679f70e98"
+  }
+}

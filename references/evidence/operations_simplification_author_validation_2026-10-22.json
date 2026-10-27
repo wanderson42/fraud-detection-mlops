@@ -1,0 +1,27 @@
+{
+  "schema": "fraud_operations_simplification_author_validation_v1",
+  "status": "success",
+  "validated_on": "2026-10-22",
+  "source": "operator_supplied_terminal_output",
+  "tests": {
+    "passed": 186,
+    "skipped": 6,
+    "warnings": 39,
+    "subtests": 12,
+    "seconds": 37.59
+  },
+  "access": {
+    "registry_version": "1",
+    "slot": "blue",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+    "transaction_id": 335910,
+    "score": 0.4178630794049542,
+    "invalid_input_http_status": 422,
+    "p95_ms": 86.79140944514074,
+    "measurements": 20,
+    "ctrl_c_observed": true
+  },
+  "champion_modified": false,
+  "fit_executed": false
+}

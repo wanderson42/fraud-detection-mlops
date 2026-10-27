@@ -1,0 +1,92 @@
+{
+  "schema": "fraud_operational_refactor_preparation_v1",
+  "status": "implementation_locally_verified",
+  "date": "2026-10-23",
+  "basis": {
+    "reported_branch": "feat/fraud-operations-demo",
+    "reported_commit": "8ad8408",
+    "source_files_hash_verified": 776,
+    "scope": "reconstructed accepted package sources; native untracked data and Git object not imported"
+  },
+  "changes": {
+    "training_request_and_worker_CLI_shared": true,
+    "CRI_inspection_implementations_before": 3,
+    "CRI_inspection_implementations_after": 1,
+    "new_runtime_helper_files": 1,
+    "runtime_line_net_removed": 32,
+    "scope_of_line_count": "ten affected runtime files, excluding declaration/tests/docs",
+    "duplicate_implementations_removed": 4,
+    "training_scientific_function_AST_unchanged": true
+  },
+  "source_compatibility": {
+    "declaration": "references/operational_refactor_source_transition_v1.json",
+    "existing_receipts_rewritten": false,
+    "declaration_must_be_committed": true,
+    "unknown_scientific_policy_contract_changes_rejected": true,
+    "previous_seed_transition_chained": true,
+    "documentary_paths_removed_from_execution_identity": [
+      "README.md",
+      "references/persistence_catalogue_v1.json"
+    ],
+    "six_actual_prior_source_profiles_checked": true,
+    "profile_pin_counts_before_after": {
+      "round": [
+        167,
+        167
+      ],
+      "updates": [
+        187,
+        187
+      ],
+      "product": [
+        193,
+        193
+      ],
+      "operations": [
+        195,
+        195
+      ],
+      "serving": [
+        17,
+        19
+      ],
+      "replay": [
+        106,
+        106
+      ]
+    }
+  },
+  "validation": {
+    "ruff": "passed",
+    "focused_tests": "80 passed, 1 skipped",
+    "full_suite": "1668 passed, 52 skipped, 166 warnings, 12 subtests passed in 697.36s (0:11:37)",
+    "tracking_consumer_review": {
+      "valid": true,
+      "declared_consumers": 29,
+      "issues": 0,
+      "source_hashes_updated": 4
+    },
+    "native_readbacks_after_this_refactor_validated": false,
+    "native_cluster_contacted": false,
+    "catalogue_and_source_compatibility_regression": "39 passed in 1.44s",
+    "installer_checks": [
+      "unknown worktree/index refused",
+      "symlink refused",
+      "write failure rollback",
+      "idempotency",
+      "index preserved",
+      "scoped commit preserves editor and local MLflow files"
+    ]
+  },
+  "model_weights_modified": false,
+  "dataset_bytes_modified": false,
+  "training_executed_on_project_data": false,
+  "promotion_policy_modified": false,
+  "production_promotion": false,
+  "historical_evidence_modified": false,
+  "remaining_work": [
+    "review remaining legacy families and dependency consumers before retirement",
+    "native readback with committed transition",
+    "different-weight qualified successor promotion and rollback remains independent and pending"
+  ]
+}

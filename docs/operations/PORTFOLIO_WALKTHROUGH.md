@@ -47,6 +47,8 @@ Na raiz do repositório, com dependências e cluster já preparados:
 
 ```bash
 make help
+# Catálogo completo de provisionamento, ciência e ensaios:
+make help-all
 make platform-status
 ```
 
@@ -57,7 +59,7 @@ baseline de operação que você salvou, conforme a seção 4; não use `create`
 Abra três terminais no repositório:
 
 ```bash
-# Terminal 1: API, pelo gateway; imprime URL e verificação de identidade/score/422.
+# Terminal 1: champion ativo, pelo gateway; confere Registry, pesos e HTTP 422.
 make platform-api
 ```
 
@@ -89,10 +91,10 @@ Se um pod for substituído e o acesso cair, feche e abra novamente o comando.
 
 1. Mostre a origem/contratos e os recibos Bronze–Silver–Gold. Explique que features
    usam apenas o passado e que treino/validação seguem janelas temporais.
-2. No MLflow, mostre `fraud-temporal-baseline-v1`: Dummy, Regressão Logística e HGB,
-   com suas métricas e artefatos, após o aceite da [transferência histórica](KIND_HISTORY.md).
-   Em Models, confira `fraud-hgb-reference` e o alias `champion`. Os experimentos
-   sintéticos continuam separados e não substituem essa comparação.
+2. No MLflow, mostre a rodada `fraud-operational-portfolio-v1`: os candidatos,
+   seus Inputs de dataset, parâmetros e métricas. Em Models, confira
+   `fraud-detector` e a versão ativa em `champion`. A comparação histórica
+   importada e os experimentos sintéticos permanecem identificados à parte.
 3. Na API, mostre a release/hash e o score do smoke impresso por `platform-api`,
    incluindo rejeição HTTP 422. O serviço executa inferência; não treina a cada
    requisição. A URL também permite consultar `/ready` e `/info`.
@@ -153,22 +155,14 @@ não cria os datasets locais ausentes. Preparos específicos estão em
 
 ## 3. Entrega, monitoramento e ensaios opcionais
 
-### Instalar serving a partir de uma entrega qualificada
+### Serving canônico
 
-Para um ambiente novo, tenha a entrega completa, os hashes fornecidos pelo
-produtor e a imagem arquivada. O consumidor não refaz o treino ou o build da API.
-Use caminhos e hashes reais; os valores abaixo são apenas nomes a substituir:
-
-```bash
-make platform-serving-prepare \
-  PLATFORM_DELIVERY=data/serving/deliveries/SUA_ENTREGA \
-  PLATFORM_SOURCE_SHA=COMMIT_DO_PRODUTOR \
-  PLATFORM_DESCRIPTOR_SHA256=SHA256_DO_DESCRIPTOR
-make platform-serving-up
-```
-
-No ambiente já aceito, a preparação existe. Não a substitua para remover erros
-de identidade. Reuse a instalação e os acessos da seção 1.
+O ponto de entrada é a [rodada rastreada](OPERATIONAL_ROUND.md): dados, candidatos,
+qualificação, Registry e primeira implantação em `fraud-detector`. Atualizações
+posteriores seguem [MODEL_UPDATES.md](MODEL_UPDATES.md). No ambiente já aceito,
+use `make platform-api` ou `make access-up`; eles não refazem treino/instalação.
+A antiga release sintética foi retirada. Qualificação e consumo de imagem na CI
+continuam sendo gates independentes da promoção do modelo.
 
 ### Instalar monitoramento de replay concluído
 
@@ -192,7 +186,6 @@ artefatos é uma fronteira a resolver na simplificação do portfólio.
 
 | Comando | Efeito e custo operacional |
 | --- | --- |
-| `make platform-rollout-test` | Ensaio blue → green → blue, com candidata interrompida, falha 502 e rollback Helm. Mesmos pesos sintéticos; não testa superioridade de outro modelo |
 | `make platform-replay-test` | Novo replay sintético pequeno, fit da fixture, interrupção durante feedback e retomada no mesmo PVC novo; PVC retido como evidência |
 | `make platform-operations-test PLATFORM_TRACKING_REPORT=CAMINHO_DO_RECIBO PLATFORM_NO_OTHER_WRITERS=1` | Novo baseline, parada/subida do laboratório e leituras funcionais; indisponibilidade temporária, sem reboot automático |
 

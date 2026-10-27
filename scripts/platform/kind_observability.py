@@ -14,7 +14,7 @@ import sys
 from tempfile import TemporaryDirectory
 from threading import Thread
 import time
-from urllib.error import URLError
+from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import ProxyHandler, Request, build_opener
 from uuid import uuid4
@@ -22,8 +22,8 @@ from uuid import uuid4
 from scripts.platform import dashboard_colors
 from scripts.platform import kind_foundation as f
 from scripts.platform import kind_observability_state as state
-from scripts.platform import kind_serving_delivery as delivery
 from scripts.platform import kind_tracking as tracking
+from scripts.platform.container_images import inspect_image as cri
 
 RELEASE = "fraud-observability"
 ANNOTATION = "fraud.observability/owner-id"
@@ -47,6 +47,7 @@ def work():
 
 def pins():
     names = {
+        "scripts/platform/container_images.py",
         "scripts/platform/dashboard_colors.py",
         LEGACY_PROFILE,
         "scripts/platform/kind_observability.py",
@@ -131,7 +132,7 @@ def import_image(role, tag):
         f.require(archive.stat().st_size > 0, "Empty image archive")
         digest, size = state.sha(archive), archive.stat().st_size
         command(["kind", "load", "image-archive", "--name", f.CLUSTER, archive])
-    loaded = delivery.cri(tag)
+    loaded = cri(tag)
     f.require(
         tag in {v.removeprefix("docker.io/library/") for v in loaded.get("repoTags", [])},
         "Imported tag differs",
@@ -259,7 +260,7 @@ def image_record():
             row["image"] == "fraud-kind-observability-" + role + ":" + value["owner_id"],
             "Image tag differs",
         )
-        loaded = delivery.cri(row["image"])
+        loaded = cri(row["image"])
         f.require(
             row["image"]
             in {v.removeprefix("docker.io/library/") for v in loaded.get("repoTags", [])}
@@ -352,12 +353,26 @@ def owned(item):
     return item
 
 
+def session_telemetry():
+    # Optional projection does not change any accepted historical exporter image bytes.
+    path = work() / "session-monitoring/enabled.json"
+    if not path.exists():
+        return None
+    from scripts.session_monitoring.controller import settings
+
+    return settings()
+
+
 def values(ready):
-    return {
+    result = {
         "ownerId": credentials()["owner_id"],
         "stateReady": ready,
         "images": {role: row["image"] for role, row in image_record()["images"].items()},
     }
+    telemetry = session_telemetry()
+    if telemetry:
+        result["sessionTelemetry"] = telemetry
+    return result
 
 
 def install(ready):
@@ -657,11 +672,46 @@ def inventory():
             "ReplicaSet ownership differs",
         )
         statuses = pod.get("status", {}).get("containerStatuses", [])
+        telemetry = session_telemetry() if role == "exporter" else None
+        if telemetry:
+            from scripts.session_monitoring.controller import image_record as session_image
+
+            image = session_image()
+            sidecars = [s for s in statuses if s.get("name") == "session-exporter"]
+            containers = [
+                c for c in pod["spec"]["containers"] if c.get("name") == "session-exporter"
+            ]
+            f.require(
+                len(sidecars) == len(containers) == 1
+                and containers[0]["image"] == telemetry["image"]
+                and sidecars[0].get("ready") is True
+                and bool(sidecars[0].get("state", {}).get("running"))
+                and tracking.image_digest(sidecars[0]["imageID"])
+                in {tracking.image_digest(v) for v in image["loaded_identities"]},
+                "Session telemetry image/readiness differs",
+            )
         f.require(
-            len(statuses) == 1
-            and statuses[0].get("ready")
-            and statuses[0].get("restartCount", 0) == 0,
-            "Component unready or restarted; preserve diagnostics",
+            len(statuses) == (2 if telemetry else 1)
+            and statuses[0].get("ready") is True
+            and bool(statuses[0].get("state", {}).get("running"))
+            and pod.get("status", {}).get("phase") == "Running"
+            and any(
+                condition.get("type") == "Ready" and condition.get("status") == "True"
+                for condition in pod.get("status", {}).get("conditions", [])
+            ),
+            "Component is not currently ready; "
+            + json.dumps(
+                {
+                    "component": role,
+                    "pod": pod["metadata"]["name"],
+                    "phase": pod.get("status", {}).get("phase"),
+                    "containers": [
+                        {key: status.get(key) for key in ("ready", "restartCount", "state")}
+                        for status in statuses
+                    ],
+                },
+                sort_keys=True,
+            ),
         )
         cid = statuses[0]["imageID"]
         f.require(
@@ -688,10 +738,16 @@ def inventory():
 
 
 @contextmanager
-def forward(role, port=None):
+def forward(role, port=None, *, target_port=None):
     f.require(role in ROLES, "Unknown forwarding role")
     pod = inventory()["pods"][role]["pod"]
     target = PORTS[role]
+    if target_port is not None:
+        f.require(
+            role == "exporter" and target_port == 19102 and session_telemetry(),
+            "Unknown optional forwarding target",
+        )
+        target = target_port
     local = "" if port is None else str(port)
     args = kube_args(
         "port-forward", "--address", "127.0.0.1", "pod/" + pod, local + ":" + str(target)
@@ -830,15 +886,25 @@ def verify_http():
                     raise
                 time.sleep(2)
         targets = http(prometheus, "/api/v1/targets")["data"]["activeTargets"]
+        telemetry = session_telemetry()
+        expected_targets = {"fraud-replay": "http://" + RELEASE + "-exporter:19100/metrics"}
+        if telemetry:
+            expected_targets["fraud-product-session"] = (
+                "http://" + RELEASE + "-exporter:19102/metrics"
+            )
         f.require(
-            len(targets) == 1
-            and targets[0]["health"] == "up"
-            and targets[0]["scrapeUrl"] == "http://" + RELEASE + "-exporter:19100/metrics",
+            len(targets) == len(expected_targets)
+            and {t["labels"]["job"]: t["scrapeUrl"] for t in targets} == expected_targets
+            and all(t["health"] == "up" for t in targets),
             "Target binding differs",
         )
         import yaml
 
         intended = yaml.safe_load((CHART / "files/alerts.yml").read_text())["groups"][0]["rules"]
+        if telemetry:
+            intended += yaml.safe_load((CHART / "files/session/alerts.yml").read_text())["groups"][
+                0
+            ]["rules"]
         rule_deadline = time.monotonic() + 60
         while True:
             rule_groups = http(prometheus, "/api/v1/rules")["data"]["groups"]
@@ -879,6 +945,15 @@ def verify_http():
             and datasource["type"] == "prometheus",
             "Grafana datasource differs",
         )
+        try:
+            health = http(grafana, "/api/datasources/uid/fraud-prometheus/health", auth=True)
+        except HTTPError as exc:
+            raise ValueError(
+                "Grafana Prometheus plugin health failed (HTTP "
+                + str(exc.code)
+                + "); inspect owned Grafana startup/plugin logs before retrying"
+            ) from exc
+        f.require(health.get("status") == "OK", "Grafana Prometheus plugin is not healthy")
         # Exercise Grafana's authenticated datasource proxy, not only its configuration.
         proxied = http(
             grafana,

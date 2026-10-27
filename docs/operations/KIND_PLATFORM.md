@@ -50,9 +50,9 @@ Credenciais e kubeconfig ficam privados; não devem ser commitados.
    com os bundles aceitos. Execute só quando precisar produzir/verificar saídas.
 5. Replay: `scripts.platform.kind_replay validate`, `build` e ensaio sintético
    separado. O teste termina o processamento e preserva seu PVC para inspeção.
-6. Serving: `scripts.platform.kind_serving validate`, `prepare`, `up`, com a
-   entrega qualificada e os hashes esperados explícitos. Não reconstrua o runtime
-   para contornar uma divergência de identidade.
+6. Serving canônico: execute a primeira rodada rastreada e seus gates pelo
+   [fluxo Bronze → champion](OPERATIONAL_ROUND.md); `round-deploy` instala
+   `fraud-detector`. A release sintética antiga não faz parte da instalação.
 7. Observabilidade: `scripts.platform.kind_observability validate`, `init`,
    `prepare` com estado concluído e ausência de writers, `build`, `up`.
 8. Operação: prepare um baseline com recibo de tracking explícito e faça os gates
@@ -72,7 +72,6 @@ Para conferir o ambiente que já existe:
 poetry run python -m scripts.platform.kind_operations status &&
 poetry run python -m scripts.platform.kind_foundation status &&
 poetry run python -m scripts.platform.kind_tracking status &&
-poetry run python -m scripts.platform.kind_serving status &&
 poetry run python -m scripts.platform.kind_observability status
 ```
 
@@ -128,3 +127,21 @@ a avaliação temporal estão aceitos em 2026-10-22. Eles consultam evidências
 identificadas, sem declarar uma sessão contínua já concluída. A consolidação
 revisará também atalhos de serving inicial versus champion ativo.
 [Guia de responsabilidades, dados e próximos critérios](PRODUCT_OPERATIONS.md).
+
+## Observabilidade da sessão corrente
+
+[SESSION_MONITORING.md](SESSION_MONITORING.md) liga a fila corrente ao
+Prometheus/Grafana existentes. Sua habilitação conserva imagens/PVCs históricos
+e requer novo baseline de configuração; preserve o baseline anterior como
+evidência da topologia anterior. O observador é separado do produtor e não
+controla tráfego, treino ou Registry.
+
+## Configuração de sessão aceita em 2026-10-24
+
+O monitoramento da mesma sessão passou no ensaio nativo e na conferência visual
+do autor. O novo baseline é
+`data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json`,
+SHA-256 `676e04b92c9d8e479ce598a5dd348c13b9db0755fc89bba918d415f14df0ac9d`.
+A checagem corrente e os gates do portal/desempenho passaram, sem treino ou
+alteração do champion. Os baselines anteriores permanecem históricos.
+[Registro do aceite](../../references/evidence/session_monitoring_author_validation_2026-10-24.json).

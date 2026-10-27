@@ -2,16 +2,17 @@
 # Serialize explicit multiple goals even when the caller supplies -j.
 .NOTPARALLEL:
 POETRY ?= poetry
+HELM ?= helm
 PLATFORM_GRAFANA_PORT ?= 13001
 export PLATFORM_BASELINE PLATFORM_TRACKING_REPORT PLATFORM_NO_OTHER_WRITERS
-export PLATFORM_DELIVERY PLATFORM_SOURCE_SHA PLATFORM_DESCRIPTOR_SHA256 PLATFORM_STATE
+export PLATFORM_STATE
 export PLATFORM_GRAFANA_PORT
 
 .PHONY: platform-status platform-host-check platform-templates platform-foundation platform-tracking
-.PHONY: platform-datasets platform-data-jobs platform-replay-test platform-serving-prepare
-.PHONY: platform-serving-up platform-rollout-test platform-monitoring-prepare platform-monitoring-up
+.PHONY: platform-datasets platform-data-jobs platform-replay-test
+.PHONY: platform-monitoring-prepare platform-monitoring-up
 .PHONY: platform-grafana platform-mlflow platform-api platform-baseline platform-stop platform-start
-.PHONY: platform-verify platform-reboot-verify platform-operations-test
+.PHONY: platform-check platform-verify platform-reboot-verify platform-operations-test
 
 ## Inspect only the owned node/resources, including a stopped node; not an HTTP health gate
 platform-status:
@@ -27,7 +28,8 @@ platform-templates:
 	$(POETRY) run python -m scripts.platform.kind_tracking validate
 	$(POETRY) run python -m scripts.platform.kind_pipeline validate
 	$(POETRY) run python -m scripts.platform.kind_replay validate
-	$(POETRY) run python -m scripts.platform.kind_serving validate
+	$(HELM) lint --strict infra/helm/fraud-serving --kube-version 1.35.8
+	$(HELM) template fraud-detector infra/helm/fraud-serving --kube-version 1.35.8 >/dev/null
 	$(POETRY) run python -m scripts.platform.kind_observability validate
 
 ## Initial foundation provisioning: initialize/create the dedicated cluster and install Helm foundation
@@ -62,19 +64,6 @@ platform-replay-test:
 	$(POETRY) run python -m scripts.platform.kind_replay build
 	$(POETRY) run python -m scripts.platform.kind_replay rehearse
 
-## Bind a qualified delivery; requires PLATFORM_DELIVERY, PLATFORM_SOURCE_SHA, PLATFORM_DESCRIPTOR_SHA256
-platform-serving-prepare:
-	@: "$${PLATFORM_DELIVERY:?Set PLATFORM_DELIVERY}" "$${PLATFORM_SOURCE_SHA:?Set PLATFORM_SOURCE_SHA}" "$${PLATFORM_DESCRIPTOR_SHA256:?Set PLATFORM_DESCRIPTOR_SHA256}"
-	$(POETRY) run python -m scripts.platform.kind_serving prepare --directory "$${PLATFORM_DELIVERY}" --expected-source-sha "$${PLATFORM_SOURCE_SHA}" --expected-descriptor-sha256 "$${PLATFORM_DESCRIPTOR_SHA256}"
-
-## Install or reconcile serving from its existing verified preparation
-platform-serving-up:
-	$(POETRY) run python -m scripts.platform.kind_serving up
-
-## Interrupt the synthetic candidate and exercise blue/green plus native Helm rollback
-platform-rollout-test:
-	$(POETRY) run python -m scripts.platform.kind_serving rehearse
-
 ## Prepare a completed replay copy; requires PLATFORM_STATE and PLATFORM_NO_OTHER_WRITERS=1
 platform-monitoring-prepare:
 	@: "$${PLATFORM_STATE:?Set PLATFORM_STATE}"
@@ -95,11 +84,11 @@ platform-grafana:
 platform-mlflow:
 	$(POETRY) run python -m scripts.platform.local_access mlflow
 
-## Open/check the existing synthetic API through its gateway; Ctrl+C closes this forward
+## Open/check the active champion through its gateway, using Registry and deployment identity
 platform-api:
 	$(POETRY) run python -m scripts.platform.local_access api
 
-## Check functional readbacks and save a new baseline; requires PLATFORM_BASELINE and PLATFORM_TRACKING_REPORT
+## Check active champion and functional readbacks; save a new canonical v2 baseline; requires PLATFORM_BASELINE and PLATFORM_TRACKING_REPORT
 platform-baseline:
 	@: "$${PLATFORM_BASELINE:?Set PLATFORM_BASELINE}" "$${PLATFORM_TRACKING_REPORT:?Set PLATFORM_TRACKING_REPORT}"
 	$(POETRY) run python -m scripts.platform.kind_operations prepare --baseline "$${PLATFORM_BASELINE}" --tracking-report "$${PLATFORM_TRACKING_REPORT}"
@@ -110,11 +99,16 @@ platform-stop:
 	@test "$${PLATFORM_NO_OTHER_WRITERS}" = 1 || { echo 'Set PLATFORM_NO_OTHER_WRITERS=1 after stopping writers'; exit 2; }
 	$(POETRY) run python -m scripts.platform.kind_operations stop --baseline "$${PLATFORM_BASELINE}" --no-other-writers
 
-## Start the same node and restore saved replicas; requires PLATFORM_BASELINE and PLATFORM_NO_OTHER_WRITERS=1
+## Start the same node and restore saved replicas, including inactive-slot zero; requires PLATFORM_BASELINE and PLATFORM_NO_OTHER_WRITERS=1
 platform-start:
 	@: "$${PLATFORM_BASELINE:?Set PLATFORM_BASELINE}"
 	@test "$${PLATFORM_NO_OTHER_WRITERS}" = 1 || { echo 'Set PLATFORM_NO_OTHER_WRITERS=1 after stopping writers'; exit 2; }
 	$(POETRY) run python -m scripts.platform.kind_operations start --baseline "$${PLATFORM_BASELINE}" --no-other-writers
+
+## Check current owned topology and functional readbacks; no stop/start or reboot required
+platform-check:
+	@: "$${PLATFORM_BASELINE:?Set PLATFORM_BASELINE}"
+	$(POETRY) run python -m scripts.platform.kind_operations check --baseline "$${PLATFORM_BASELINE}"
 
 ## Verify the recorded stop/start against PLATFORM_BASELINE; no new interruption
 platform-verify:

@@ -1,0 +1,17 @@
+{
+  "schema": "fraud_unified_portal_preparation_v1",
+  "prepared_on": "2026-10-24",
+  "basis": "author d7b7bf3 plus accepted session-monitoring documentation closure",
+  "status": "prepared_native_acceptance_pending",
+  "scope": "single isolated Streamlit app with explicitly bound current session and verified snapshot/performance evidence",
+  "canonical_port": 18501,
+  "new_infrastructure_service": false,
+  "accepted_session_source_code_changed": false,
+  "model_loaded": false,
+  "champion_modified": false,
+  "source_snapshot_or_performance_rebuilt": false,
+  "SHAP_reuse": "only exact request/response, model and release identity with verified snapshot manifest provenance",
+  "native_Streamlit_AppTest_validated": false,
+  "native_browser_review_validated": false,
+  "different_weight_successor_promotion_and_rollback_validated": false
+}

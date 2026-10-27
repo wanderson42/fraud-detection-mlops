@@ -3,8 +3,9 @@
 **Estado: aceite nativo e conferência visual aprovados em 2026-10-21.** Exporter, Prometheus
 e Grafana usam uma release Helm separada, `fraud-observability`, no cluster e
 namespace `fraud-platform`. Não altera Compose, fundação, MLflow, Jobs, replay
-ou serving existentes. O recorte de observabilidade está concluído; a retomada
-após reboot e o fechamento integrado continuam pendentes.
+ou serving existentes. A observabilidade tem aceite próprio de 2026-10-21; a
+parada/subida do produto canônico, incluindo o proxy após reinício, foi aceita
+em 2026-10-23. O reboot desse estado canônico não foi executado neste aceite.
 
 ## Aceite nativo e visual — 2026-10-21
 
@@ -191,3 +192,55 @@ preservados; atualizar um painel não exige rebuild da imagem.
 Após aplicar, continuar de `up`, `status` e `tox -e kind-observability`.
 Não repetir `init`, `prepare` ou build para contornar esta falha. O aceite nativo foi aprovado após essa correção. Se outra chamada Helm falhar, o novo erro e o recibo de
 instalação fornecerão o diagnóstico nativo.
+
+
+## Plugins embarcados e retomada do Grafana
+
+O chart usa a imagem por identidade e mantém o filesystem raiz somente de leitura.
+`GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES=false` desativa a verificação informativa;
+não desativa a atualização do preinstaller. O chart também define
+`GF_PLUGINS_PREINSTALL_AUTO_UPDATE=false`, para conservar os plugins embarcados
+na imagem durante inicializações e retomadas. Atualizações serão revisadas com a
+imagem/configuração, sem depender do catálogo externo no instante do boot.
+
+O gate exige saúde do datasource Prometheus e consulta autenticada pelo proxy,
+além da existência de sua configuração. HTTP 200 em `/api/health` não garante que
+o plugin esteja registrado. `plugin.notRegistered` ou `Unable to find datasource
+plugin` devem produzir falha, sem contornar o proxy consultando somente Prometheus.
+
+O diagnóstico nativo de 2026-10-23 mostrou Grafana 13.2.4 saudável e datasource
+existente, mas plugin sem registro. Há um bug upstream compatível: a atualização
+pode descarregar o plugin antes de falhar na instalação. A associação com esse
+mecanismo é uma hipótese sustentada pelo chart e pelo relato upstream; os logs de
+inicialização do autor ainda são necessários para atribuir a causa exata.
+
+Referências: [opções de plugins](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#preinstall_auto_update)
+e [bug do atualizador](https://github.com/grafana/grafana/issues/132528).
+
+Após aplicar o código, reconcilie pelo controlador existente:
+
+```bash
+poetry run python -m scripts.platform.kind_observability validate &&
+poetry run python -m scripts.platform.kind_observability up
+```
+
+Isso atualiza a release Helm de observabilidade e recria Grafana com o novo env,
+preservando imagens e PVCs. Depois confira `verify_http()` por leitura. O aceite
+nativo da correção e da parada/subida foi concluído em 2026-10-23: proxy, regras
+e dashboards aprovados depois do reinício no mesmo ciclo canônico. Baseline anterior à mudança
+de código/spec fica preservado; o próximo ensaio cria outro. Não edite o JSON.
+
+[Evidência do ciclo canônico e proxy após reinício](../../references/evidence/canonical_lifecycle_author_validation_2026-10-23.json).
+
+## Extensão para a fila corrente
+
+A configuração padrão preserva o replay concluído. A extensão opcional
+`sessionTelemetry` adiciona um receiver stdlib ao pod exporter existente, um job
+`fraud-product-session`, duas regras e o dashboard `fraud-product-session`.
+Não altera as imagens históricas, dados de origem ou PVCs. Sua preparação e
+aceite próprios estão em [SESSION_MONITORING.md](SESSION_MONITORING.md).
+`kind_observability up` conserva a extensão habilitada pelo recibo privado,
+sem reverter silenciosamente seus valores Helm. `verify_http` valida ambos os
+targets e as dez regras quando habilitada; os quatro painéis anteriores
+continuam verificando a origem histórica. Um baseline anterior à extensão
+representa a configuração anterior e deve ser preservado.

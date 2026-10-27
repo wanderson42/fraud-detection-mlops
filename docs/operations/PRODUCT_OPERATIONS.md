@@ -2,19 +2,18 @@
 
 ## Onde estamos
 
-A infraestrutura KinD/Helm e a recuperação operacional foram aceitas. A rodada
-canônica recompôs dados, registrou candidatos com Inputs e colocou o champion
-identificado na API. O fluxo HTTP causal aceitou 200 decisões e seu feedback.
-O portal consulta esses casos e cinco explicações. A avaliação completa das
-67.255 transações de validação foi conciliada com MLflow e aceita funcional e
-visualmente pelo autor em 2026-10-22. Esses recortes estão encerrados.
+A infraestrutura KinD/Helm, a rodada canônica e o champion identificado na API
+foram aceitos. A sessão ampliada conciliou 2.001 decisões HTTP, 81 alertas e
+feedback; seu monitoramento no Prometheus/Grafana e a navegação no portal único
+foram aceitos. O portal também conserva os 200 casos de evidência, cinco
+explicações e a avaliação de 67.255 transações. A leitura da sessão concluída
+no monitor não comprova por si só chegadas simultâneas no ensaio nativo.
 
-Falta consolidar uma **sessão operacional contínua e reproduzível**: produtor
-liberando eventos em ritmo controlado, processamento pelo champion, fila que
-acompanha o avanço, feedback posterior e observabilidade da mesma sessão.
-O portal atual é um snapshot e o monitoramento KinD aceito usa uma cópia de
-replay concluído. Mantê-los abertos simultaneamente não comprova atualização
-contínua nem que estejam mostrando a mesma execução.
+A redução conservadora do runtime da API e sua qualificação em Docker estão
+aceitas. O recorte atual prepara sua implantação e reversão controladas no KinD,
+com os mesmos pesos e alias, pelo fluxo de [manutenção do serving](SERVING_RECOVERY.md).
+O aceite nativo dessa manutenção permanece pendente. A promoção recorrente de
+um sucessor com pesos diferentes continua condicionada a candidato qualificado.
 
 ## Serviços conectados, responsabilidades distintas
 
@@ -47,12 +46,47 @@ iniciar dados ou administrar a infraestrutura.
 | `product-*` | Eventos causais pela API, decisões persistidas e verificação |
 | `portal-*` | Preparação e consulta de casos e avaliação pinados |
 
-Há atalhos de ensaios anteriores ao champion canônico. Por exemplo,
-`platform-api` usa o plano de entrega do serving inicial, enquanto `round-api`
-usa a rodada canônica. Eles não devem ser apresentados como equivalentes. A
-consolidação deve resolver a identidade ativa de forma única e distinguir
-operação diária, primeira instalação e ensaios de falha. Nenhum atalho será
-removido antes de revisar dependências e preservar o acesso às evidências.
+`make platform-api` lê o deployment ativo em `model-updates/current.json` e usa
+os gates compartilhados para conferir Registry, slot, imagens e identidade HTTP.
+Não escolhe o modelo por nome de algoritmo nem pelo ID da primeira rodada.
+`round-api` permanece como alias de compatibilidade para esse mesmo acesso;
+`ROUND_ID` não seleciona um deployment antigo nesse comando. A instalação sintética
+foi aposentada e seu acesso foi retirado. A ausência
+ou divergência do deployment ativo interrompe o acesso, sem fallback sintético.
+
+A identidade é conferida ao abrir e fechar o acesso. Uma promoção ou manutenção
+posterior exige reabrir o comando para obter uma verificação atualizada. O acesso
+não bloqueia deploys nem modifica tráfego, replicas ou aliases.
+
+`make help` mostra os acessos e comandos cotidianos. `make help-all` mantém o
+catálogo completo de instalação, ciência e ensaios. Os requisitos de baseline e
+writers continuam obrigatórios para parada/subida. A [primeira simplificação](CODEBASE_SIMPLIFICATION.md)
+registra as remoções e as dependências que impedem apagar diretórios inteiros.
+
+## Acessos em segundo plano
+
+`make access-up` abre API, MLflow, Grafana e o portal preparado com `nohup`.
+`make access-status` mostra os processos e a disponibilidade HTTP. Cada acesso
+pode ser iniciado, inspecionado e encerrado individualmente; o [guia de acessos](LOCAL_ACCESS.md)
+lista os serviços, logs e parâmetros. Isso substitui a necessidade de deixar um
+terminal aberto por interface, sem iniciar outra cópia dos workloads do cluster.
+Os comandos em primeiro plano continuam disponíveis para diagnóstico.
+
+## Ciclo de vida do deployment ativo
+
+`platform-baseline`, `platform-check`, `platform-stop`, `platform-start` e
+`platform-verify` usam o
+champion ativo `fraud-detector`, com o mesmo gate compartilhado de `platform-api`.
+O baseline v2 registra o estado ativo e cada contagem de réplicas; retomar mantém
+zero no slot inativo. A release sintética foi retirada; o plano atual tem nove
+controladores e um baseline próprio. `platform-check` confere o estado atual;
+`platform-verify` exige o ciclo controlado de parada/subida neste boot.
+
+O [guia de ciclo de vida](KIND_OPERATIONS.md) concentra preparação, parada,
+retomada, verificação e reboot. Baselines antigos são preservados e não convertidos.
+O ciclo canônico foi aceito em 2026-10-23: mesmo node/volumes, green em zero
+e identidade Registry/HTTP e proxy Grafana conferidos após a retomada. Antes de interromper, encerre acessos e writers; depois, reabra com
+`access-up`. Isso não inicia a chegada contínua de transações.
 
 ## Quem faz os dados chegarem
 
@@ -107,7 +141,69 @@ Terraform permanece posterior à consolidação funcional.
 
 ## Organização do trabalho
 
-Fechar a documentação/evidência na branch `feat/kind-helm-serving`; revisar e
-integrar o trabalho antes de iniciar a implementação da sessão operacional em
-uma branch dedicada, por exemplo `feat/fraud-operations-demo`, criada da main
-atualizada após o merge. A criação/limpeza de branches não faz parte deste pacote.
+O marco KinD/Helm e o aceite do portal foram integrados à main. A consolidação
+ocorre em `feat/fraud-operations-demo`, começando pela revisão dos comandos e
+pela retirada de uma transição de uso único já aplicada. A chegada gradual e a fila corrente foram validadas em uma sessão de 200 decisões.
+A ampliação foi aceita com 2.001 decisões. A ligação das métricas à mesma sessão foi aceita nativa e visualmente em 2026-10-24.
+
+## Sessão de chegada gradual
+
+O primeiro recorte da sessão está preparado em [PRODUCT_SESSION.md](PRODUCT_SESSION.md):
+`session-prepare`, `session-run`, `session-pause`, `session-status`, `session-feedback`,
+`session-verify` e `session-open`. Ele liga o produtor à API e à fila corrente,
+com checkpoint próprio e atualização automática. O ensaio nativo de 200 decisões foi aceito pelo autor em 2026-10-23. A integração Prometheus/Grafana da mesma sessão teve aceite nativo e visual
+em 2026-10-24; os quatro dashboards anteriores preservam a fonte do replay concluído.
+
+## Sessões ampliadas
+
+O ensaio de 200 decisões foi aceito pelo autor em 2026-10-23. [Sessões ampliadas](PRODUCT_SESSION_SCALE.md) permitem nova janela/volume, fila paginada e medição por fase, preservando o checkpoint anterior. A ampliação foi aceita com 2.001 decisões. [Monitoramento da mesma sessão](SESSION_MONITORING.md) possui procedimento de instalação, coleta e recuperação; seu aceite nativo e visual foi confirmado em 2026-10-24.
+
+## Fila e observabilidade com a mesma identidade
+
+O produtor continua responsável pela chegada; o analista recebe os casos sem
+solicitar transações. O operador usa `session-monitor-watch` para observar o
+checkpoint e publicar apenas agregados. Prometheus coleta o job
+`fraud-product-session`; Grafana apresenta `fraud-product-session`. A sessão,
+o recibo, os pesos e a release identificam o vínculo. Os painéis anteriores
+continuam apontando ao replay concluído, com outra origem explícita.
+
+O observador não inicia dados, treina, pontua ou altera a fila. A fonte perde
+validade após 30 s sem publicação. Uma sessão concluída pode ser observada
+novamente; isso atualiza a leitura, não cria novos eventos.
+[Procedimento principal desta integração](SESSION_MONITORING.md).
+
+## Configuração operacional aceita
+
+O baseline atual é
+`data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json`,
+SHA-256 `676e04b92c9d8e479ce598a5dd348c13b9db0755fc89bba918d415f14df0ac9d`.
+`platform-check`, `portal-verify` e `portal-performance-verify` passaram.
+O observador continua necessário para manter a coleta da sessão atualizada.
+Este fechamento documental não altera configuração nem pede outro baseline.
+
+A próxima entrega é **um único portal Streamlit** com navegação entre sessão
+corrente, investigação e evidências verificadas. A sessão exibida e as métricas
+avaliadas terão suas origens identificadas: os 200 casos do snapshot e a validação
+de 67.255 transações não serão apresentados como a janela corrente de 2.001 decisões.
+Grafana mantém a função operacional; MLflow mantém linhagem e governança.
+
+## Portal único — preparação em 2026-10-24
+
+A navegação da sessão e das evidências foi consolidada no Streamlit existente.
+`portal-session-link` vincula a sessão; `portal-open` e `access-start
+ACCESS_SERVICE=portal` abrem a mesma aplicação em 18501. Gráficos, contexto e
+investigação usam apresentação compartilhada. O produtor, a API, o observador,
+Grafana e MLflow conservam suas responsabilidades.
+[Procedimento e aceite](UNIFIED_PORTAL.md). O aceite nativo e visual foi concluído pelo autor em 2026-10-24.
+
+## Portal consolidado e próximo foco operacional
+
+O portal único e seu cabeçalho refinado tiveram aceite funcional/visual do autor.
+O acesso em 18501 é a entrada diária do analista. O produtor e o observador
+continuam independentes da UI; Grafana atende à operação e MLflow à equipe de ML.
+O baseline corrente foi preservado. [Aceite](../../references/evidence/unified_portal_author_validation_2026-10-24.json).
+
+O próximo foco é medir o footprint das imagens antes de alterar builds ou
+remover imagens históricas. A revisão inicial distingue runtime de API, imagens
+científicas de jobs, serviços de terceiros e ambiente local do portal.
+[Inventário e critérios](IMAGE_FOOTPRINT.md).

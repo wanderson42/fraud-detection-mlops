@@ -1,0 +1,15 @@
+{
+  "schema": "fraud_tracking_baseline_source_transition_v1",
+  "basis_commit": "35b6344",
+  "scope": "read the existing exact committed tracking-controller transition when creating new operational baselines; no historical report rewrite",
+  "changes": {
+    "scripts/platform/kind_operations.py": {
+      "before": "21e3315198d797c5dfa4de03e55ff268e6f292cb3dc8d94beaf2d585c5e89e66",
+      "after": "50daae56f27668113ae03443811d5bad90ec0fcf78516dc8ca35f310eefa854e"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "e41d62996f4a94701313160396a5d2bc955484e0065fd348962af5d5f54ea11d",
+      "after": "ca92c178bc9222ec6992e5514f126557afd8b2a09cac1e1e1b132d96caaa7d03"
+    }
+  }
+}

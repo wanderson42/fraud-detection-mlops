@@ -25,36 +25,21 @@ def work(key):
 
 
 def legacy_compatible(base):
-    """Allow reviewed catalogue/docs extensions; never rewrite the accepted receipt."""
-    extension = json.loads((f.ROOT / "references/model_update_compatibility_v1.json").read_bytes())
-    current = c.pins()
-    expected = dict(base["source_pins"])
-    changes = extension["allowed_changes"]
+    """Read the accepted initial round through the reviewed source compatibility boundary."""
+    source_compatibility.accept(base["source_pins"], c.pins(), f.ROOT)
     p.require(
-        set(changes) == {"README.md", "references/persistence_catalogue_v1.json"},
-        "Only catalogue and documentation extensions are authorized",
-    )
-    for name, hashes in changes.items():
-        p.require(
-            expected.get(name) == hashes["before"] and current.get(name) == hashes["after"],
-            "Unreviewed documentation/catalogue transition",
-        )
-        expected[name] = hashes["after"]
-    p.require(
-        current == expected
-        and base["node_uid"] == f.owner()["node_uid"]
+        base["node_uid"] == f.owner()["node_uid"]
         and base["tracking_deployment_uid"] == kind_tracking.inventory()["deployment_uid"],
-        "Accepted first-round code, contracts or ownership changed",
+        "Accepted first-round ownership changed",
     )
 
 
 def pins():
     values = c.pins()
     # Scientific/runtime inputs are frozen; later documentation closure is not a model change.
-    values.pop("README.md")
-    values.pop("references/persistence_catalogue_v1.json")
+    values.pop("README.md", None)
+    values.pop("references/persistence_catalogue_v1.json", None)
     for name in [
-        "references/model_update_compatibility_v1.json",
         "references/model_update_policy_v1.json",
         "references/model_update_policy_search_v1.json",
         "scripts/platform/source_compatibility.py",

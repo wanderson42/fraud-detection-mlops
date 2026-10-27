@@ -1,0 +1,45 @@
+{
+  "schema": "fraud_product_session_author_validation_v1",
+  "validated_on": "2026-10-23",
+  "implementation_commit": "3675dc9",
+  "status": "accepted_by_author_native_output",
+  "session_id": "arrival-v1",
+  "session_sha256": "cff9a122be56eb4201af2194af2a941b4b74f4e3bf4c93a8e93e16efb24fab5b",
+  "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+  "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+  "checkpoint_sha256": "80ea1968068d490bb5d9cd99369ff106fa18d33e223fa86900753b619b898b8f",
+  "counts": {
+    "events": 269334,
+    "transactions": 134667,
+    "feedback": 134667,
+    "decisions": 200,
+    "alert_decisions": 200,
+    "alerts": 13
+  },
+  "HTTP_receipts": 200,
+  "causal_requests_and_triage_rebuilt": true,
+  "source_model_scores_reused": false,
+  "pause_then_resume_then_delayed_feedback_validated": true,
+  "completed_reuse": {
+    "new_decisions": 0,
+    "scoring_HTTP_attempts": 0
+  },
+  "native_test": {
+    "passed": 1,
+    "seconds": 568.76,
+    "tox_total_seconds": 583.18
+  },
+  "unchanged_portal_manifest_sha256": "ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af",
+  "unchanged_performance_manifest_sha256": "6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475",
+  "performance_validation_rows": 67255,
+  "visual_evidence": {
+    "provided_screenshot": "screencapture-127-0-0-1-18502-2026-10-23-14_22_27.png",
+    "review_scope": "provided final-state screenshot; concluded status, counts, queue and model identity visible; no new live browser run",
+    "native_receipt_visual_flag_rewritten": false
+  },
+  "same_session_Grafana_validated": false,
+  "champion_modified": false,
+  "fit_executed": false,
+  "new_independent_quality_confirmation": false,
+  "successor_promotion_validated": false
+}

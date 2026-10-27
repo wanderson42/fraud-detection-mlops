@@ -1,0 +1,90 @@
+{
+  "schema": "fraud_synthetic_serving_code_retirement_preparation_v1",
+  "date": "2026-10-23",
+  "basis_reported_native_commit": "23a15c9",
+  "native_retirement_already_verified": true,
+  "native_retirement_evidence": "references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json",
+  "audit": {
+    "basis_source_files_verified": 782,
+    "removed_files": [
+      "scripts/platform/kind_serving.py",
+      "scripts/platform/kind_serving_seed.py",
+      "tests/infra/live/test_kind_serving_live.py",
+      "tests/infra/test_kind_serving.py",
+      "scripts/platform/kind_serving_delivery.py"
+    ],
+    "runtime_files_removed": 3,
+    "test_files_removed": 2,
+    "new_runtime_files": 0,
+    "runtime_lines_net_removed": 1013,
+    "test_lines_net_removed": 457,
+    "HTTP_gate_function_ASTs_unchanged": true,
+    "scientific_package_policies_contracts_locks_unchanged": true,
+    "retired_imports_remaining": false,
+    "execution_profiles": {
+      "round": {
+        "before": 167,
+        "after": 166,
+        "accepted": true
+      },
+      "updates": {
+        "before": 187,
+        "after": 186,
+        "accepted": true
+      },
+      "product": {
+        "before": 193,
+        "after": 192,
+        "accepted": true
+      },
+      "operations": {
+        "before": 195,
+        "after": 193,
+        "accepted": true
+      },
+      "replay": {
+        "before": 106,
+        "after": 106,
+        "accepted": true
+      }
+    }
+  },
+  "validation": {
+    "targeted_regression": "427 passed, 10 skipped, 56 warnings, 12 subtests in 62.86s",
+    "full_suite": "1650 passed, 51 skipped, 166 warnings, 12 subtests passed in 785.80s (0:13:05)",
+    "ruff": "passed",
+    "format": "passed",
+    "tracking_review": {
+      "source_files_scanned": 194,
+      "declared_consumers": 29,
+      "issues": 0
+    },
+    "make_entrypoints_after_final_shared_chart_validation": "25 passed, 12 subtests in 0.73s",
+    "shared_chart_lint_and_template": "passed",
+    "installer_checks": [
+      "native retirement prerequisite required",
+      "failed native receipt refused",
+      "unknown worktree/index and symlinks refused",
+      "failure after deletion restores deleted and overwritten source",
+      "idempotency",
+      "Git index preserved",
+      "exact new transition must be committed",
+      "five actual prior profiles accepted after scoped commit; unknown contract rejected",
+      "editor and private data excluded from commit"
+    ]
+  },
+  "daily_check": {
+    "command": "make platform-check PLATFORM_BASELINE=<explicit saved baseline>",
+    "writes": "new private check receipt and existing temporary readback probes only",
+    "requires_current_boot_stop_start_receipt": false,
+    "claims_new_stop_start_or_reboot": false,
+    "model_retrained": false,
+    "champion_modified": false
+  },
+  "old_receipts_modified": false,
+  "native_readbacks_after_repository_code_removal_verified": false,
+  "CI_delivery_consumer_preserved": true,
+  "new_runtime_module_added": false,
+  "different_weight_successor_promotion_rollback_validated": false,
+  "status": "implementation_locally_verified"
+}

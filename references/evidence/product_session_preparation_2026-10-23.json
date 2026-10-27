@@ -1,0 +1,53 @@
+{
+  "schema": "fraud_product_session_preparation_v1",
+  "status": "prepared_native_acceptance_pending",
+  "prepared_on": "2026-10-23",
+  "source_basis": "author-reported 952bf4d, exact accepted patch hashes and locale fix",
+  "scope": "paced_champion_HTTP_arrivals_durable_triage_and_consistent_readonly_live_queue",
+  "reused_engine": "scripts.product_flow.ledger.HTTPReplay; inherited causal handle and independent verifier",
+  "source_policy_unchanged": true,
+  "historical_snapshots_unchanged": true,
+  "new_infrastructure_services": [],
+  "native_KinD_validated": false,
+  "visual_native_review_validated": false,
+  "same_session_Prometheus_Grafana_validated": false,
+  "successor_promotion_validated": false,
+  "champion_modified": false,
+  "fit_executed": false,
+  "local_checks": {
+    "session_tests": {
+      "passed": 20,
+      "skipped": 1,
+      "seconds": 5.64
+    },
+    "related_regression": {
+      "passed": 62,
+      "skipped": 1,
+      "subtests": 12,
+      "seconds": 20.56
+    },
+    "isolated_portal_UI": {
+      "passed": 31,
+      "seconds": 3.74
+    },
+    "full_suite": {
+      "passed": 1664,
+      "skipped": 51,
+      "warnings": 166,
+      "subtests": 12,
+      "seconds": 689.86,
+      "note": "Full suite plus focused final session and isolated UI checks; native KinD gate remains pending"
+    },
+    "guarded_package": [
+      "clean_apply",
+      "idempotence",
+      "preserved_unrelated_index_and_mlruns",
+      "refused_modified_worktree",
+      "refused_modified_index",
+      "refused_modified_dependency",
+      "refused_symlinks",
+      "rollback_after_injected_write_failure"
+    ]
+  },
+  "runbook": "docs/operations/PRODUCT_SESSION.md"
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "fraud_python_bytecode_source_transition_v1",
+  "basis_commit": "fd8ced7b0fe13ec0069694fb65bbe61c8cebf471",
+  "scope": "same dependency pins and image role; skip bytecode compilation for future builds; existing images and receipts retained",
+  "old_receipts_rewritten": false,
+  "live_images_changed": false,
+  "changes": {
+    "infra/kind/tracking/Dockerfile": {
+      "before": "e0e7646cb0571ccd814ffa06a9e7894bf7bdd8797fc9e54893b61da595b833c9",
+      "after": "733caa26096e8541a3a2d6ac3f766410315687e5d102a9e7a7faa8ac23f98e34"
+    },
+    "infra/kind/round/Dockerfile": {
+      "before": "161fdb361a710bb1f18a50d4be01b7d6737e886ce612912c6f0eb8d3485a35be",
+      "after": "c85084dcf3419b8284815b02d43b9bcddb7c7fd7a53576e660d7a993509f89e6"
+    },
+    "scripts/platform/kind_tracking.py": {
+      "before": "fa674f4ad5e77e0cafb0bb225e1469501068d153864ee31f71abc9bfc34aaab7",
+      "after": "1d0326f748b39b494b1bed384ef161c67e83bccb6553b027f8b578019f934c57"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "a6a06a37381197c5351e51ab6d5f989908af906cd9897c9896e9d7d98696f70f",
+      "after": "e41d62996f4a94701313160396a5d2bc955484e0065fd348962af5d5f54ea11d"
+    }
+  }
+}

@@ -676,3 +676,29 @@ modelo/release da consulta de 200 casos. O portal continua lendo snapshots;
 o monitoramento KinD aceito consulta uma cópia de replay concluído. O próximo
 recorte liga a chegada gradual de eventos, a fila e a observabilidade de uma
 mesma sessão. [Responsabilidades e critério](operations/PRODUCT_OPERATIONS.md).
+
+### Serving operacional após a simplificação
+
+A instalação sintética `fraud-serving` foi aposentada em 2026-10-23. O destino
+ativo é `fraud-detector`; os gates HTTP compartilhados e a qualificação/consumo
+sintéticos da CI foram preservados. A checagem cotidiana é `platform-check`, com
+o baseline reduzido identificado no guia operacional. Não é um novo ensaio de
+parada/subida nem promoção de sucessor. [Evidência](../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).
+
+## Projeção operacional da sessão
+
+O observador lê somente agregados em uma transação do mesmo checkpoint que
+alimenta a fila. A projeção autenticada entra em um container stdlib no exporter
+da release existente, coletado pelo job `fraud-product-session`. Um vínculo
+explícito identifica sessão, recibo, pesos e release. O receiver é volátil e
+vence a fonte após 30 s; nenhuma transação, feature ou rótulo entra no Prometheus.
+Os jobs e painéis históricos mantêm sua origem.
+[Instalação e operação](operations/SESSION_MONITORING.md).
+
+## Interface única do analista
+
+O Streamlit existente recebe um vínculo privado, com digest externo, para a
+sessão atual. Usa o leitor causal aceito e uma apresentação compartilhada de
+investigação. Snapshot e avaliação continuam com manifests próprios. A UI
+permanece isolada do runtime científico; não carrega modelos, publica feedback
+ou comanda ingestão/promoção. [Operação](operations/UNIFIED_PORTAL.md).

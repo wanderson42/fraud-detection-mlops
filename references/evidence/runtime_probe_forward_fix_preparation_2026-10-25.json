@@ -1,0 +1,25 @@
+{
+  "schema": "fraud_runtime_probe_forward_fix_preparation_v1",
+  "date": "2026-10-25",
+  "basis_commit": "e49d570",
+  "status": "prepared_native_same_id_resume_pending",
+  "cause": "canonical-only forward helper used for an isolated probe",
+  "scope": "exact owned probe forward and compatible interrupted-draft resume",
+  "canonical_forward_guard_changed": false,
+  "model_weights_changed": false,
+  "champion_modified": false,
+  "canonical_deployment_changed": false,
+  "old_preparing_receipt_rewritten": false,
+  "expired_probe_retained_for_diagnostics": true,
+  "renewal_changes_only_unaccepted_probe_pointers": true,
+  "local_validation": {
+    "focused_tests_passed": 35,
+    "focused_tests_deselected": 1,
+    "scope": "isolated protocol tests, process cleanup, UID/spec/phase rejection, journaled probe renewal and bounded source compatibility; runtime apply/rollback regression",
+    "ruff_check": true,
+    "ruff_format": true
+  },
+  "native_kind_resume_validated": false,
+  "native_kind_apply_validated": false,
+  "native_kind_rollback_validated": false
+}
