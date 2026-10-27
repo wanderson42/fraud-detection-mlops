@@ -98,6 +98,15 @@ TRACKING_BASELINE_ALLOWED = {
 }
 
 
+# Aggregate counts keep their units; this exact change accepts valid multi-day
+# customer-day alerts. It does not claim old receiver images contain the fix.
+SESSION_COUNTS_TRANSITION = "references/session_counts_source_transition_v1.json"
+SESSION_COUNTS_ALLOWED = {
+    "scripts/session_monitoring/contract.py",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -180,6 +189,11 @@ def accept(saved, current, root):
             TRACKING_BASELINE_TRANSITION,
             "fraud_tracking_baseline_source_transition_v1",
             TRACKING_BASELINE_ALLOWED,
+        ),
+        (
+            SESSION_COUNTS_TRANSITION,
+            "fraud_session_counts_source_transition_v1",
+            SESSION_COUNTS_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

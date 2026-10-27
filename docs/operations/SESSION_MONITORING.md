@@ -213,3 +213,40 @@ configuração corrente, sem ampliar o aceite para outro stop/start, reboot,
 chegada concorrente no KinD ou firing de alertas. A promoção de sucessor com
 pesos diferentes continua dependente de candidato qualificado. O próximo recorte
 é reunir a fila corrente e as evidências em um único portal Streamlit.
+
+## Contagem em janelas com vários dias
+
+`customers` conta clientes distintos em toda a sessão. `alerts` conta os alertas
+persistidos pela política de primeiro cruzamento por **cliente/dia**. Um cliente
+pode gerar alertas em dias diferentes; por isso o total de alertas pode superar
+o de clientes distintos. Ambos devem ser limitados pelo total de decisões,
+separadamente. O orçamento diário e a deduplicação por cliente/dia continuam
+sendo aplicados pelo motor de triagem; esta validação agregada não os substitui.
+
+A correção de 2026-10-27 mantém campos, unidades, rótulos e política. A transição
+exata commitada permite ler recibos anteriores sem reescrevê-los. Isso **não**
+atualiza os bytes da imagem antiga: o receiver implantado precisa de uma imagem
+nova para aceitar o caso multidiário corrigido.
+
+O pacote temporário `fraud-session-counts-fix` prepara essa manutenção na sessão
+completa já aceita. Encerre o `session-monitor-watch` com Ctrl+C antes do preparo
+ou da aplicação. A ferramenta usa os locks existentes, preserva os arquivos da
+sessão e os três ponteiros anteriores byte a byte no plano privado, qualifica a
+nova imagem em Docker e carrega-a no mesmo node. O preparo não troca o Deployment;
+retorna digests distintos para aplicar e reverter. A ferramenta também fica em
+`observability/session-monitoring/maintenance/<id>/tool/maintain.py`.
+
+Após aprovação, o journal permite retomar uma publicação parcial dos ponteiros
+`image.json`, `enabled.json` e `prepared.json`, e o Helm troca somente a imagem do
+sidecar de sessão. A conferência inclui identidade CRI, topologia, fontes da
+sessão, readbacks funcionais e publicação dos agregados reais no Prometheus e
+Grafana. O rollout pode interromper brevemente a coleta; não implanta novamente
+a API nem altera pesos, champion ou limiar. A imagem anterior permanece no node.
+Rollback restaura os ponteiros originais e a imagem anterior, limitado à mesma
+sessão preservada usada no preparo.
+
+Depois do aceite, crie uma nova baseline; preserve a anterior como histórica.
+A regressão local usa dois clientes em dois dias, quatro decisões e quatro
+alertas. A qualificação da imagem usa o mesmo caso sintético. O ensaio nativo de
+manutenção lê a sessão concluída: não comprova novas chegadas multidiárias.
+O PR permanece em rascunho até a atualização nativa e seus checks serem aceitos.

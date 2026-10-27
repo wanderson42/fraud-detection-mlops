@@ -97,7 +97,8 @@ def validate(value, expected, now):
         "Capture exceeded",
     )
     require(
-        counts["alerts"] <= counts["customers"] <= counts["decisions"]
+        counts["alerts"] <= counts["decisions"]
+        and counts["customers"] <= counts["decisions"]
         and counts["decision_feedback"] <= counts["decisions"]
         and counts["feedback"] <= counts["transactions"] <= counts["events"],
         "Inconsistent counts",

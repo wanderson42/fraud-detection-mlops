@@ -1,0 +1,20 @@
+{
+  "schema": "fraud_session_counts_fix_preparation_v1",
+  "date": "2026-10-27",
+  "basis_commit": "bb4b53de347f56d2378281366250c81e4a829765",
+  "finding": "distinct customers and customer-day alerts have different units across multiple days",
+  "fix": "alerts and distinct customers are bounded independently by decisions; daily budget and deduplication remain in the triage engine",
+  "source_compatibility": "exact committed aggregate-validation transition; original image receipt still identifies old image bytes",
+  "local_validation": {
+    "project_tests_passed": 145,
+    "project_tests_skipped": 6,
+    "external_maintenance_tool_tests_passed": 18,
+    "real_Helm_template_image_only_difference_verified": true,
+    "actual_candidate_Docker_execution": false,
+    "native_Kind_execution": false
+  },
+  "native_maintenance_status": "pending_prepare_approval_apply_verify",
+  "champion_modified": false,
+  "accepted_sessions_modified": false,
+  "native_multiday_arrivals_validated": false
+}
