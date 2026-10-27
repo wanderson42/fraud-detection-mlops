@@ -1,0 +1,54 @@
+{
+  "schema": "fraud_live_sqlite_busy_fix_preparation_v1",
+  "status": "local_correction_verified_native_resume_pending",
+  "date": "2026-10-27",
+  "author_base_commit": "098ae2f",
+  "integrated_source_commit": "e53d3e3be4c2957827e50e7947178a2fa2af944a",
+  "observed_native_failure": {
+    "exception": "sqlite3.OperationalError: database is locked",
+    "location": "scripts/product_session/reader.py: SELECT identity",
+    "phase": "first / context warmup",
+    "last_displayed_events": 114831,
+    "last_displayed_decisions": 0,
+    "test_elapsed_seconds": 249.93,
+    "accepted": false,
+    "source_log_sha256": "c5b06fc5a6ade7f347b294d746e628fcbcdf3a337be580a2679ac88fe6146866",
+    "final_checkpoint_counts": "not supplied; preserve and read natively"
+  },
+  "correction": {
+    "scope": "read-only portal and host collector; complete operation retry for SQLite BUSY or LOCKED only",
+    "retry_budget_seconds": 15,
+    "existing_sqlite_call_timeout_seconds": 2,
+    "dirty_reads": false,
+    "cached_fallback": false,
+    "journal_mode_changed": false,
+    "receiver_image_changed": false,
+    "producer_changed": false
+  },
+  "local_validation": {
+    "focused_tests_passed": 157,
+    "focused_tests_skipped": 4,
+    "UI_tests_passed": 46,
+    "ruff_check": "passed",
+    "ruff_format": "501 files formatted",
+    "real_exclusive_writer_lock_seconds": 2.4,
+    "timeout_and_other_error_rejection_verified": true,
+    "exact_committed_legacy_and_scale_source_compatibility_verified": true
+  },
+  "native_validation": {
+    "resume_executed": false,
+    "daily_live_acceptance": false,
+    "visual_acceptance": false
+  },
+  "resume": {
+    "session_id": "arrivals-day-v1",
+    "session_sha256": "a95f3da1480a87ca23414c84b70d0765808368466fe04c29fa630de9667c5ba6",
+    "baseline": "data/storage/kind-platform/operations/baseline-arrivals-day-v1.json",
+    "baseline_sha256": "62152f69c976f4a4c965d04823eb1f9bea41640b960e86f8dd241e1a8f5226ba",
+    "preserve_checkpoint_and_progress": true,
+    "reprepare_or_rebind_required": false,
+    "image_rebuild_required": false
+  },
+  "champion_modified": false,
+  "fit_executed": false
+}

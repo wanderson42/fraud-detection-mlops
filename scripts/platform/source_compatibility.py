@@ -107,6 +107,15 @@ SESSION_COUNTS_ALLOWED = {
 }
 
 
+SESSION_BUSY_TRANSITION = "references/session_busy_operational_source_transition_v1.json"
+SESSION_BUSY_ALLOWED = {
+    "scripts/product_session/reader.py",
+    "scripts/product_session/configuration.py",
+    "scripts/session_monitoring/collector.py",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -194,6 +203,11 @@ def accept(saved, current, root):
             SESSION_COUNTS_TRANSITION,
             "fraud_session_counts_source_transition_v1",
             SESSION_COUNTS_ALLOWED,
+        ),
+        (
+            SESSION_BUSY_TRANSITION,
+            "fraud_session_busy_operational_source_transition_v1",
+            SESSION_BUSY_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

@@ -1,6 +1,7 @@
 """Consistent, read-only live views; usable in the isolated portal runtime."""
 
 from contextlib import closing
+from functools import wraps
 import hashlib
 import json
 from pathlib import Path
@@ -20,6 +21,31 @@ def checked(path):
     return path
 
 
+def retry_busy(function):
+    """Retry an entire read transaction; never return a partial or cached view."""
+
+    @wraps(function)
+    def bounded(*args, **kwargs):
+        deadline = time.monotonic() + 15
+        while True:
+            try:
+                return function(*args, **kwargs)
+            except sqlite3.OperationalError as exc:
+                code = getattr(exc, "sqlite_errorcode", None)
+                if code is None or (code & 255) not in {
+                    sqlite3.SQLITE_BUSY,
+                    sqlite3.SQLITE_LOCKED,
+                }:
+                    raise
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise
+                time.sleep(min(0.05, remaining))
+
+    return bounded
+
+
+@retry_busy
 def read(folder, expected, *, page=1, page_size=100, only_alerts=False):
     if (
         type(page) is not int

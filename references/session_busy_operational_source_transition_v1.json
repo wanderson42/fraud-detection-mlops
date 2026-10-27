@@ -1,0 +1,22 @@
+{
+  "schema": "fraud_session_busy_operational_source_transition_v1",
+  "scope": "host-only read retries; monitor receiver runtime bytes unchanged",
+  "changes": {
+    "scripts/product_session/reader.py": {
+      "before": "9af41bf272b19fa7d1ab8c89b328332aac549c86b092a544f3906c765e1315ad",
+      "after": "e9110515578ac3b03740012838aaca6ae4995c99311b040f6733f8ea1d64a6ce"
+    },
+    "scripts/product_session/configuration.py": {
+      "before": "691a5c447c073f762899b8d0e123c5036f0189c57141a371983bd91475523462",
+      "after": "9f5674c1580f08dbc1c374b8f22bfe1dcf47a26c5a3f9afc06fb6497a0ab7b56"
+    },
+    "scripts/session_monitoring/collector.py": {
+      "before": "d13be73e76614351d030516cec2bb3aa22b34ca652215a7f684596629d52a914",
+      "after": "d62c9e644e279b3c875f4fdfe0ec2fd1e8853e2579fa64616f2f237ab80dcad5"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "8f79f3dc708c9591a1ddb01adab15d2eb612dcfef35486e33afde4957ad1c629",
+      "after": "fcb34425e3f21edba1d7e9f80b584e70d2ca409db4acb3ee3f70e62c3835841e"
+    }
+  }
+}

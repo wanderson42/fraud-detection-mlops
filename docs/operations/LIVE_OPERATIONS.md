@@ -153,3 +153,43 @@ separadamente após a confirmação do autor.
 O recorte encerra quando o gate nativo e a conferência visual forem aprovados.
 Instalação limpa e promoção/rollback de sucessor com pesos diferentes continuam
 como entregas separadas; o gate de qualidade não é afrouxado para produzir promoção.
+
+
+## Leitura concorrente e bloqueio temporário do SQLite
+
+O primeiro ensaio diário do autor parou no aquecimento, ainda com zero decisões
+HTTP, porque uma leitura recebeu `SQLITE_BUSY` após o timeout inicial de 2 s.
+O checkpoint e o diário de fases foram preservados; esse resultado não fecha o
+aceite nativo. O erro não indica, por si só, corrupção nem falha do modelo.
+
+Portal e coletor agora repetem a operação de leitura inteira apenas para os
+códigos SQLite BUSY/LOCKED, com orçamento de tentativas de 15 s (uma chamada
+SQLite já em curso pode consumir até mais 2 s do timeout existente). Cada
+falha fecha a conexão e descarta o resultado parcial antes da próxima tentativa.
+Não há leitura suja, uso de cache como evidência, alteração do journal ou escrita
+no checkpoint. Erros de identidade, integridade e schema continuam sendo erros;
+o tratamento curto da criação inicial do schema no ensaio permanece separado.
+
+As transições de fontes são exatas e devem ser commitadas. Conservam recibos
+legados, sessões expandidas, baseline e vínculo do monitor; o código do receiver
+na imagem não mudou. Não é necessário reconstruir ou reimplantar imagens.
+
+Após aplicar, testar e commitar a correção, reabra somente o portal e confira a
+baseline já registrada. Não prepare outra sessão, não apague o checkpoint e não
+recrie os vínculos:
+
+```bash
+make access-stop ACCESS_SERVICE=portal &&
+make access-up &&
+make platform-check \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-arrivals-day-v1.json &&
+make session-live-test \
+  LIVE_SESSION_ID=arrivals-day-v1 \
+  LIVE_BASELINE=data/storage/kind-platform/operations/baseline-arrivals-day-v1.json \
+  SESSION_NO_OTHER_WRITERS=1
+```
+
+Mantenha o watcher externo encerrado. O ensaio retoma o mesmo checkpoint e o
+mesmo `live-progress.json`; as fases só são aceitas após a verificação nativa.
+Se o bloqueio persistir além do prazo, a operação falha e conserva os recursos
+para diagnóstico, em vez de atribuir sucesso a uma leitura antiga.

@@ -1,0 +1,18 @@
+{
+  "schema": "fraud_session_busy_source_transition_v1",
+  "scope": "exact bounded read-only SQLite busy retry; receipts, inputs, checkpoint and producer semantics preserved",
+  "before": {
+    "__init__.py": "55aa061fb2b35f6e6e773c62c6302b599c89ef5dc4b6f5724d213775c3ff428b",
+    "reader.py": "9af41bf272b19fa7d1ab8c89b328332aac549c86b092a544f3906c765e1315ad",
+    "app.py": "c01f2bebe180ee14505eaed2d8d51183a839f29f05f399f0393376fad836de03",
+    "controller.py": "adb36fd872facffed1bc6c10de1b32a99589bdf10bafccc80e7f48a075d936d8",
+    "configuration.py": "691a5c447c073f762899b8d0e123c5036f0189c57141a371983bd91475523462"
+  },
+  "after": {
+    "__init__.py": "55aa061fb2b35f6e6e773c62c6302b599c89ef5dc4b6f5724d213775c3ff428b",
+    "reader.py": "e9110515578ac3b03740012838aaca6ae4995c99311b040f6733f8ea1d64a6ce",
+    "app.py": "c01f2bebe180ee14505eaed2d8d51183a839f29f05f399f0393376fad836de03",
+    "controller.py": "adb36fd872facffed1bc6c10de1b32a99589bdf10bafccc80e7f48a075d936d8",
+    "configuration.py": "9f5674c1580f08dbc1c374b8f22bfe1dcf47a26c5a3f9afc06fb6497a0ab7b56"
+  }
+}
