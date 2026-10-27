@@ -246,11 +246,19 @@ def tracking_report(path):
         and result.get("status") == "success",
         "A successful existing KinD tracking rehearsal is required",
     )
-    f.require(
-        result["controller_sha256"] == tracking.sha(f.ROOT / "scripts/platform/kind_tracking.py")
-        and result["client_sha256"]
-        == tracking.sha(f.ROOT / "scripts/platform/kind_tracking_client.py"),
-        "Tracking report source identity differs",
+    source_compatibility.accept(
+        {
+            "scripts/platform/kind_tracking.py": result["controller_sha256"],
+            "scripts/platform/kind_tracking_client.py": result["client_sha256"],
+        },
+        {
+            name: tracking.sha(f.ROOT / name)
+            for name in (
+                "scripts/platform/kind_tracking.py",
+                "scripts/platform/kind_tracking_client.py",
+            )
+        },
+        f.ROOT,
     )
     selected = {
         key: result[key] for key in ("run_id", "model_uri", "model_artifact_uri", "model_sha256")

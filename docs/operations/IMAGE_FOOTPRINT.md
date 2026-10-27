@@ -446,3 +446,42 @@ rollback têm autorizações distintas, retomada e gates; não alteram o champio
 A imagem anterior permanece disponível. A aplicação `api-trim-v2` e os readbacks
 foram aceitos no KinD. A reversão verificada é a de `api-trim-v1`, após apply
 falho; os dois resultados permanecem distintos no recibo consolidado.
+
+
+## Preparação da manutenção do MLflow ativo
+
+O pacote de manutenção temporário usa a imagem já qualificada, sem rebuild.
+O preparo faz o check do baseline atual, carrega a candidata no node pelo loader
+single-platform existente, renderiza o chart com tag `fraud-kind-tracking:<32 hex>`
+e registra os valores anteriores e a identidade do Deployment. Não troca o
+Deployment no preparo. O digest de aprovação vincula fontes, ferramentas,
+baseline, qualificação e fingerprints dos dados observados.
+
+A leitura dos metadados usa uma transação PostgreSQL somente leitura com
+snapshot repetível; os recibos contêm contagens e hashes por tabela, não linhas.
+A leitura S3 percorre todos os objetos do bucket dedicado do MLflow, em blocos,
+sem carregar o modelo ou modificar objetos. A manutenção exige ausência de
+outros writers durante preparo/aplicação/verificação. Os demais buckets e PVCs
+não são alterados. Estes fingerprints são uma verificação de preservação,
+**não um backup** ou ensaio de restore.
+
+A troca mantém o chart, configuração e Secret; só a imagem muda. O chart usa
+Recreate, portanto haverá possível indisponibilidade breve do MLflow. A API
+continua com os mesmos pesos locais e não recebe nova implantação. Após readiness
+e identidade CRI, o fluxo publica atomicamente o recibo da imagem de tracking e
+compara metadados, objetos e readbacks funcionais. Falhas preservam o estado e os
+recibos; rollback tem aprovação distinta. O recibo original da imagem é preservado
+byte a byte em `original-image.json`. O baseline anterior não é sobrescrito;
+um novo baseline será criado após o aceite da aplicação ou do rollback.
+
+As ferramentas ficam também na pasta privada da manutenção, em `tool/`, com
+hashes vinculados ao preparo, para não depender da permanência de `/tmp`.
+Uma etapa interrompida pode ser retomada com o mesmo ID enquanto seus vínculos
+forem válidos. Uma manutenção revertida não é reaberta para novo apply.
+
+A preparação corrige ainda o leitor de relatórios usados para novos baselines:
+ele reconhece a transição exata já commitada do controlador de tracking,
+conservando a identidade do cliente e o relatório histórico. Não exige refazer
+um treino ou ensaio antigo apenas porque o leitor operacional mudou.
+
+[Preparação e limites de validação](../../references/evidence/tracking_runtime_maintenance_preparation_2026-10-27.json).

@@ -114,6 +114,11 @@ def test_exact_transition_preserves_receipts_but_rejects_science_change():
         if name in bytecode["changes"]:
             assert bytecode["changes"][name]["before"] == digest
             expected[name] = bytecode["changes"][name]["after"]
+    baseline_fix = json.loads((ROOT / compatibility.TRACKING_BASELINE_TRANSITION).read_bytes())
+    for name, digest in expected.items():
+        if name in baseline_fix["changes"]:
+            assert baseline_fix["changes"][name]["before"] == digest
+            expected[name] = baseline_fix["changes"][name]["after"]
     assert all(digest == k.state.sha(ROOT / name) for name, digest in expected.items())
 
 

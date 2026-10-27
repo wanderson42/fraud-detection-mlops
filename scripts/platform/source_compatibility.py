@@ -91,6 +91,13 @@ BYTECODE_ALLOWED = {
 }
 
 
+TRACKING_BASELINE_TRANSITION = "references/tracking_baseline_source_transition_v1.json"
+TRACKING_BASELINE_ALLOWED = {
+    "scripts/platform/kind_operations.py",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -168,6 +175,11 @@ def accept(saved, current, root):
             BYTECODE_TRANSITION,
             "fraud_python_bytecode_source_transition_v1",
             BYTECODE_ALLOWED,
+        ),
+        (
+            TRACKING_BASELINE_TRANSITION,
+            "fraud_tracking_baseline_source_transition_v1",
+            TRACKING_BASELINE_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

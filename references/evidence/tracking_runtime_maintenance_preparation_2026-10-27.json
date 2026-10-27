@@ -1,0 +1,22 @@
+{
+  "schema": "fraud_tracking_runtime_maintenance_preparation_v1",
+  "date": "2026-10-27",
+  "basis_commit": "35b6344",
+  "candidate_docker_identity": "sha256:8e69f6abbe57055d79edf5987c8e63ae92af7aba9d0056c7bb1453fb12c5b797",
+  "status": "prepared_native_tracking_maintenance_pending",
+  "scope": "temporary explicit approved same-version MLflow runtime swap; no new permanent service or model promotion controller",
+  "persistent_fix": "tracking report source validation accepts only committed exact controller transitions; historical reports unchanged",
+  "readback": "read-only repeatable-read public tracking table fingerprints and full dedicated MLflow bucket content hashes; existing API/Registry/monitoring readbacks reused",
+  "local_validation": {
+    "repository_tests_passed": 179,
+    "repository_tests_skipped": 1,
+    "external_tool_tests_passed": 12,
+    "external_scope": "transaction/rollback/interruptions, wrong image and readiness, resource/spec guards, metadata drift rejection, real Helm rendering, paginated streamed S3 readback with empty object",
+    "native_Docker_or_Kind_execution_in_preparation": false
+  },
+  "live_deployment_changed": false,
+  "champion_modified": false,
+  "baseline_modified": false,
+  "old_image_receipt_preserved": true,
+  "full_SQL_query_not_executed_locally": true
+}

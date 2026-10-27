@@ -95,6 +95,7 @@ def refactor(tmp_path):
         compat.PROBE_FORWARD_TRANSITION,
         compat.RUNTIME_TAG_TRANSITION,
         compat.BYTECODE_TRANSITION,
+        compat.TRACKING_BASELINE_TRANSITION,
     ):
         src = ROOT / name
         transitions.append(json.loads(src.read_bytes()))
@@ -239,3 +240,49 @@ def test_baseline_reader_reaches_committed_compatibility_and_preserves_receipt(
     with pytest.raises(ValueError, match="Scientific"):
         operations.read_baseline(path)
     assert path.read_bytes() == original
+
+
+def test_tracking_report_reader_accepts_committed_controller_recipe_transition(
+    refactor, monkeypatch
+):
+    from scripts.platform import kind_operations as ops
+    from scripts.platform import kind_tracking as tracking
+
+    from fraud_detection_mlops.storage import managed_paths
+
+    root, transitions = refactor
+    controller = "scripts/platform/kind_tracking.py"
+    client = "scripts/platform/kind_tracking_client.py"
+    path = root / client
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes((ROOT / client).read_bytes())
+    bytecode = next(
+        value
+        for value in transitions
+        if value["schema"] == "fraud_python_bytecode_source_transition_v1"
+    )
+    report = {
+        "schema": "fraud_kind_tracking_rehearsal_v1",
+        "status": "success",
+        "controller_sha256": bytecode["changes"][controller]["before"],
+        "client_sha256": tracking.sha(path),
+        "run_id": "a" * 32,
+        "model_uri": "models:/m-" + "b" * 32,
+        "model_artifact_uri": "mlflow-artifacts:/1/models/m-" + "b" * 32 + "/artifacts",
+        "model_sha256": "c" * 64,
+    }
+    target = root / "data/storage/tracking-report.json"
+    target.parent.mkdir(parents=True)
+    target.write_text(json.dumps(report))
+    original = target.read_bytes()
+    monkeypatch.setattr(managed_paths, "DATA_DIR", root / "data")
+    monkeypatch.setattr(ops.f, "ROOT", root)
+    with pytest.raises(ValueError, match="Commit"):
+        ops.tracking_report(target)
+    commit(root)
+    assert ops.tracking_report(target)["record"]["run_id"] == report["run_id"]
+    assert target.read_bytes() == original
+    report["client_sha256"] = "e" * 64
+    target.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="Scientific"):
+        ops.tracking_report(target)
