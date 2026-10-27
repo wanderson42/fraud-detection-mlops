@@ -1,0 +1,75 @@
+{
+  "schema": "fraud_python_bytecode_author_validation_v1",
+  "date": "2026-10-27",
+  "source_commit": "fd8ced7b0fe13ec0069694fb65bbe61c8cebf471",
+  "source": "author supplied comparison and isolated qualification CLI JSON; original qualification file hash not supplied",
+  "status": "image_reduction_and_isolated_functional_qualification_accepted_live_tracking_rollout_pending",
+  "change": "pip install --no-compile only; dependencies, versions, base digest and role preserved",
+  "comparison_sha256": "6d669e1d0be3ef15107023d9dca1bea5245f61568170586e56f31a24139b6e11",
+  "images": {
+    "mlflow": {
+      "before_id": "sha256:67b168a45d94807739689eadcb78bdce43167477cb6f7eca776a000e44ca1c7c",
+      "candidate_id": "sha256:8e69f6abbe57055d79edf5987c8e63ae92af7aba9d0056c7bb1453fb12c5b797",
+      "before_bytes": 310302710,
+      "candidate_bytes": 246885278,
+      "reduction_bytes": 63417432,
+      "reduction_percent": 20.437279455277718
+    },
+    "training": {
+      "before_id": "sha256:9e1822e18983fa99ad36c983d93e578c16f4039fd3a6b8a71c355571197eca88",
+      "candidate_id": "sha256:751f115301aa1109cbda1a61ca7ff155c4ef26e81f9e70d95998207ed6f291eb",
+      "before_bytes": 313902517,
+      "candidate_bytes": 248976607,
+      "reduction_bytes": 64925910,
+      "reduction_percent": 20.683462694247844
+    }
+  },
+  "same_distribution_versions": true,
+  "same_python_and_platform": true,
+  "qualification": {
+    "schema": "fraud_bytecode_isolated_qualification_v1",
+    "status": "success",
+    "postgres_image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+    "rustfs_image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c",
+    "postgres_ready": true,
+    "rustfs_ready": true,
+    "fixture_rows": 256,
+    "synthetic_HGB_trained": true,
+    "run_id": "cda6d1bc110b49cab36f335ad7061ab6",
+    "registered_model": "bytecode-synthetic-model",
+    "version": "1",
+    "alias": "qualification",
+    "model_uri": "models:/m-adc27dea19034752b6246f205afc2bf9",
+    "artifact_sha256": "0be5109c7d22bcc8ee7c0f7c722ac2ed7be85b3a50d2e3602f33f679c1ac2985",
+    "reload_parity_verified": true,
+    "client_without_database_or_S3_credentials": true,
+    "after_restart": {
+      "run_metadata_verified": true,
+      "metric_history_rows": 2,
+      "registry_alias_verified": true,
+      "artifact_proxy_bytes_verified": true,
+      "fresh_client_model_reload_verified": true
+    },
+    "independent_storage": {
+      "PostgreSQL_rows_verified": true,
+      "S3_object_bytes_verified": true
+    },
+    "cleanup_errors": []
+  },
+  "incorporation_local_tests": {
+    "passed": 158,
+    "skipped": 1,
+    "ruff_check": true,
+    "ruff_format": true,
+    "scope": "tracking source/ownership/chart, exact source compatibility, serving recovery, session monitoring and persistence inventory"
+  },
+  "scope": "controlled Docker image-size comparison and isolated synthetic functional check, not exclusive physical disk savings or live KinD acceptance",
+  "dependencies_removed": false,
+  "third_party_test_sources_removed": false,
+  "historical_model_refit": false,
+  "live_deployment_modified": false,
+  "live_champion_modified": false,
+  "native_Kind_acceptance": false,
+  "new_stop_start_or_reboot_validated": false,
+  "next": "controlled replacement of live tracking runtime with previous image available and metadata/artifact readbacks; training recipe used for future runs"
+}

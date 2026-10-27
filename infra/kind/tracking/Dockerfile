@@ -2,7 +2,7 @@ FROM python:3.14.4-slim@sha256:2ca02f32b4d9d893863367ce07ec1972819f476dd38d8612f
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 HOME=/tmp \
     MLFLOW_DISABLE_TELEMETRY=true MLFLOW_DISABLE_AGENT_HINT=1
 COPY infra/tracking/requirements.txt /tmp/requirements.txt
-RUN python -m pip install --no-cache-dir --require-hashes -r /tmp/requirements.txt && rm /tmp/requirements.txt
+RUN python -m pip install --no-cache-dir --no-compile --require-hashes -r /tmp/requirements.txt && rm /tmp/requirements.txt
 WORKDIR /app
 COPY scripts/platform/kind_tracking_storage.py /app/kind_tracking_storage.py
 USER 65532:65532

@@ -82,6 +82,15 @@ RUNTIME_TAG_ALLOWED = {
 }
 
 
+BYTECODE_TRANSITION = "references/python_bytecode_source_transition_v1.json"
+BYTECODE_ALLOWED = {
+    "infra/kind/tracking/Dockerfile",
+    "infra/kind/round/Dockerfile",
+    "scripts/platform/kind_tracking.py",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -154,6 +163,11 @@ def accept(saved, current, root):
             RUNTIME_TAG_TRANSITION,
             "fraud_runtime_tag_source_transition_v1",
             RUNTIME_TAG_ALLOWED,
+        ),
+        (
+            BYTECODE_TRANSITION,
+            "fraud_python_bytecode_source_transition_v1",
+            BYTECODE_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

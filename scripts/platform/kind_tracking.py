@@ -17,6 +17,7 @@ import time
 from uuid import uuid4
 
 from scripts.platform import kind_foundation as f
+from scripts.platform import source_compatibility
 
 RELEASE = "fraud-tracking"
 SECRET = "fraud-kind-tracking-credentials"
@@ -121,10 +122,12 @@ def build():
 def image_record():
     value = json.loads(f.managed_destination(work() / "image.json", "storage").read_text())
     f.require(value.get("schema") == "fraud_kind_tracking_image_v1", "Invalid image receipt")
-    f.require(
-        value["source_pins"] == pins(),
-        "Image sources changed; preserve the old image receipt for review",
-    )
+    try:
+        source_compatibility.accept(value["source_pins"], pins(), f.ROOT)
+    except ValueError as exc:
+        raise ValueError(
+            "Image sources changed; preserve the old image receipt for review"
+        ) from exc
     f.require(value["node_uid"] == f.owner()["node_uid"], "Image belongs to another node")
     f.require(
         bool(re.fullmatch(r"fraud-kind-tracking:[a-f0-9]{32}", value["image"])),

@@ -156,6 +156,7 @@ def test_completed_HTTP_flow_receipt_and_ledger_survive_operational_transition(
             source_compatibility.RUNTIME_TRANSITION,
             source_compatibility.PROBE_FORWARD_TRANSITION,
             source_compatibility.RUNTIME_TAG_TRANSITION,
+            source_compatibility.BYTECODE_TRANSITION,
         )
     ]
     current_pins = flow.pins()

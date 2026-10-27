@@ -1,5 +1,53 @@
 # Footprint das imagens da infraestrutura
 
+
+## MLflow e treino: redução medida e qualificação isolada aceita
+
+No comparativo do commit `fd8ced7`, acrescentar somente `--no-compile` ao
+`pip install` reduziu as duas imagens, mantendo as versões instaladas, Python,
+plataforma, base e fontes de cada papel:
+
+| Papel | Antes | Candidata | Redução |
+| --- | --- | --- | --- |
+| MLflow | 310.302.710 bytes | 246.885.278 bytes | 63.417.432 bytes — 20,44% |
+| Treino | 313.902.517 bytes | 248.976.607 bytes | 64.925.910 bytes — 20,68% |
+
+As contagens são de `docker image inspect Size`; não são espaço exclusivo
+liberado no daemon. O bytecode lógico não equivale diretamente ao tamanho da
+imagem e não deve ser somado às medidas RECORD. A diminuição de bytes em
+caminhos de testes é compatível com não gerar seu bytecode; os fontes de testes
+de terceiros não foram removidos. O pip, as bibliotecas científicas e seus
+metadados permanecem. Bytecode herdado da base pode continuar presente.
+
+A qualificação das candidatas executou um HGB sintético de 256 linhas pelo
+contrato do projeto, registro com skops/allowlist existente, tracking e Registry,
+proxy HTTP de artefatos S3, reinício do MLflow temporário e leitura por outro
+cliente sem credenciais de banco/S3. Passaram metadados, duas observações de
+métrica, alias `qualification`, bytes de artefato e paridade de recarga. A
+conferência independente confirmou registros no PostgreSQL e bytes no RustFS.
+A limpeza terminou sem erros. O banco, bucket e Registry eram temporários e
+não alteraram o champion ou o histórico operacional. Não se inferem melhoria
+de latência, economia de RAM ou novo resultado de qualidade a partir desse teste.
+
+Os Dockerfiles de `infra/kind/tracking` e `infra/kind/round` incorporam a flag
+para próximos builds. As imagens atualmente implantadas e os recibos antigos
+continuam preservados. O leitor do tracking aceita em memória apenas a transição
+exata e commitada declarada em
+`references/python_bytecode_source_transition_v1.json`; isso não transforma a
+imagem antiga em otimizada. Dependências, contratos e fitters continuam fixados.
+A declaração também permite consultar perfis operacionais já aceitos sem
+reescrever fontes, recibos ou o baseline.
+
+**Estado:** redução e qualificação funcional isolada aceitas. A troca da imagem
+do MLflow ativo ainda está pendente de manutenção controlada, com imagem anterior
+disponível e readbacks do histórico/Registry/artefatos. Não se altera o ponteiro
+`tracking/image.json` manualmente nem se força um rebuild sobre o recibo antigo.
+O runtime de treino é usado por próximos Jobs; não há serviço de treino
+permanente para reiniciar nem necessidade de repetir a rodada histórica.
+
+[Evidência consolidada](../../references/evidence/python_bytecode_author_validation_2026-10-27.json).
+
+
 ## Aceite atual: API otimizada implantada e verificada no KinD
 
 A primeira redução da imagem da API está **medida, qualificada em Docker e

@@ -109,6 +109,11 @@ def test_exact_transition_preserves_receipts_but_rejects_science_change():
         if name in tag_fix["changes"]:
             assert tag_fix["changes"][name]["before"] == digest
             expected[name] = tag_fix["changes"][name]["after"]
+    bytecode = json.loads((ROOT / compatibility.BYTECODE_TRANSITION).read_bytes())
+    for name, digest in expected.items():
+        if name in bytecode["changes"]:
+            assert bytecode["changes"][name]["before"] == digest
+            expected[name] = bytecode["changes"][name]["after"]
     assert all(digest == k.state.sha(ROOT / name) for name, digest in expected.items())
 
 
