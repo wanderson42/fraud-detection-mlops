@@ -7,8 +7,8 @@ import pytest
 from scripts.platform import kind_observability as k
 
 
-@pytest.fixture
-def inventory(monkeypatch):
+@pytest.fixture(params=[False, True], ids=["without_session", "with_session"])
+def inventory(monkeypatch, request):
     objects, pods = {}, {}
     images = {}
     for role in k.ROLES:
@@ -56,12 +56,43 @@ def inventory(monkeypatch):
             "status": {"phase": "Bound"},
             "spec": {"volumeName": "volume-" + role},
         }
+    # Keep this offline gate independent of the operator's enabled.json and
+    # image receipts; exercise both topologies using synthetic sidecar state.
+    telemetry = {"image": "locked:session"} if request.param else None
+    monkeypatch.setattr(k, "session_telemetry", lambda: telemetry)
+
+    def unexpected_host_read():
+        pytest.fail("Readiness fixture attempted to read live platform state")
+
+    monkeypatch.setattr(k, "work", unexpected_host_read)
+    monkeypatch.setattr(k.f, "owner", unexpected_host_read)
+    if telemetry:
+        from scripts.session_monitoring import controller
+
+        monkeypatch.setattr(
+            controller,
+            "image_record",
+            lambda: {"loaded_identities": ["sha256:" + "c" * 64]},
+        )
+        pods["exporter"]["spec"]["containers"].append(
+            {"name": "session-exporter", "image": telemetry["image"]}
+        )
+        pods["exporter"]["status"]["containerStatuses"].append(
+            {
+                "name": "session-exporter",
+                "ready": True,
+                "restartCount": 3,
+                "state": {"running": {"startedAt": "2026-10-27T12:00:00Z"}},
+                "imageID": "sha256:" + "c" * 64,
+            }
+        )
     monkeypatch.setattr(k, "image_record", lambda: {"images": images})
     monkeypatch.setattr(k, "owned", lambda value: value)
     monkeypatch.setattr(k, "validate_exporter_mount", lambda pod: None)
     monkeypatch.setattr(k, "get", lambda kind, name: objects[kind, name])
 
     def query(*args, **kwargs):
+        assert args[:3] == ("get", "pods", "-l"), args
         selector = args[args.index("-l") + 1]
         role = selector.rsplit("=", 1)[1]
         return SimpleNamespace(stdout=json.dumps({"items": [pods[role]]}))
@@ -105,3 +136,19 @@ def test_current_failures_and_identity_mismatches_remain_blocked(inventory, fail
         k.inventory()
     if failure in {"not_ready", "waiting", "terminated", "phase", "pod_condition"}:
         assert "grafana" in str(error.value) and "restartCount" in str(error.value)
+
+
+@pytest.mark.parametrize("inventory", [True], indirect=True, ids=["with_session"])
+@pytest.mark.parametrize("failure", ["not_ready", "image", "missing"])
+def test_session_sidecar_failures_remain_blocked(inventory, failure):
+    pods, _ = inventory
+    statuses = pods["exporter"]["status"]["containerStatuses"]
+    assert len(statuses) == 2
+    if failure == "not_ready":
+        statuses[1]["ready"] = False
+    elif failure == "image":
+        statuses[1]["imageID"] = "sha256:" + "d" * 64
+    else:
+        statuses.pop()
+    with pytest.raises(ValueError, match="Session telemetry image/readiness differs"):
+        k.inventory()
