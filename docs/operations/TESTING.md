@@ -1643,3 +1643,22 @@ Uma verificação após apply não comprova rollback. Somente registre cada etap
 que tiver sido executada. A manutenção usa os mesmos pesos e não substitui o
 aceite pendente de promoção recorrente com pesos diferentes. Após a implantação
 aceita, emita novo baseline com o fluxo canônico, conservando o anterior.
+
+
+## Jornada diária integrada — preparação em 2026-10-27
+
+O ambiente opt-in `live-operations` executa uma sessão diária nova, com produtor,
+leitura concorrente e Prometheus/Grafana da mesma identidade. O portal é sondado
+por AppTest no runtime já isolado de `portal-ui`, durante a chegada e na pausa.
+[Pré-requisitos, vínculos e sequência](LIVE_OPERATIONS.md).
+
+O gate nativo permanece pulado na suíte geral; exige declaração de writers,
+sessão diária preparada, vínculos explícitos, UI instalada e baseline da
+configuração atual. Não prepare nem inicie o produtor implicitamente pelo pytest.
+As helpers locais exercitam SQLite/HTTP concorrentes e propagação de falhas;
+a UI sintética exercita o probe. Isso não substitui o aceite no KinD.
+
+O teste nativo reconcilia toda a janela, prova expiração/retomada da coleta com
+API disponível, verifica ocultação do feedback antes de sua disponibilidade e
+preserva as fontes aceitas. A prova visual no navegador permanece separada.
+Não afrouxa o gate de promoção nem comprova qualidade independente ou SLA.

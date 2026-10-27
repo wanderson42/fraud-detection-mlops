@@ -44,3 +44,9 @@ atual após a retirada sintética está identificado no guia operacional.
 `session.mk` separa a sessão de chegada gradual dos snapshots aceitos: preparar, executar/retomar, pausar, consultar, avançar feedback, verificar e abrir a fila corrente. Guia: `docs/operations/PRODUCT_SESSION.md`.
 
 `session-prepare-expanded` exige novo ID e declara início, fim exclusivo e volume nominal; os comandos `session-run`, `session-pause`, `session-feedback`, `session-verify` e `session-open` continuam os mesmos.
+
+
+A jornada diária usa `session-daily-prepare` (captura, sem iniciar chegadas) e
+`session-live-test` (ensaio opt-in depois de vincular portal/monitor e salvar o
+baseline). O ensaio controla produtor e observador; não mantenha outro watcher.
+[Sequência completa](../../docs/operations/LIVE_OPERATIONS.md).

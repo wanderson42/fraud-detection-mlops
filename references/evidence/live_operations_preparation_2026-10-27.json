@@ -1,0 +1,48 @@
+{
+  "schema": "fraud_live_operations_preparation_v1",
+  "status": "prepared_native_acceptance_pending",
+  "source_commit": "e53d3e3be4c2957827e50e7947178a2fa2af944a",
+  "scope": "full_daily_finite_replay_concurrent_HTTP_arrivals_isolated_portal_navigation_and_same_session_Prometheus_Grafana",
+  "local_validation": {
+    "focused_tests_passed": 130,
+    "focused_tests_skipped": 6,
+    "subtests_passed": 12,
+    "portal_UI_tests_passed": 46,
+    "ruff_check": "passed",
+    "ruff_format": "500 files formatted",
+    "native_opt_in_default_skipped": true
+  },
+  "source_and_image_changes": {
+    "production_python_sources_changed": false,
+    "images_rebuilt": false,
+    "charts_changed": false
+  },
+  "native_validation": {
+    "executed": false,
+    "live_arrivals_validated": false,
+    "browser_visual_review_validated": false,
+    "alert_firing_validated": false,
+    "new_stop_start_or_reboot_validated": false
+  },
+  "preservation": {
+    "accepted_200_and_2001_sessions": "read_only_hash_verified_by_native_gate",
+    "model_weights": "unchanged",
+    "performance_evidence": "preserved",
+    "source_window": "previously_observed_not_new_holdout"
+  },
+  "expected_operator_sequence": [
+    "commit_reviewed_sources",
+    "prepare_new_full_day",
+    "explicit_monitor_and_portal_binding",
+    "prepare_new_baseline",
+    "run_opt_in_gate",
+    "human_browser_review",
+    "restart_regular_watch"
+  ],
+  "limitations": [
+    "Native runtime not available in preparation environment",
+    "Synthetic delayed feedback is dataset feedback, not analyst verdict",
+    "Completed session reuse does not create new live arrivals",
+    "AP and operational cost effectiveness are not inferred from this rehearsal"
+  ]
+}

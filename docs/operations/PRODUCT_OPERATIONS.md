@@ -1,209 +1,125 @@
-# Operação do produto: responsabilidades e próxima consolidação
+# Operação do produto de detecção de fraude
 
-## Onde estamos
+Atualizado em **2026-10-27**, após integração do PR #11 e CI da main aprovado.
+Este é o guia principal de operação. Os runbooks especializados detalham os
+comandos; o [roadmap](../project/ROADMAP.md) registra prioridades e aceites.
 
-A infraestrutura KinD/Helm, a rodada canônica e o champion identificado na API
-foram aceitos. A sessão ampliada conciliou 2.001 decisões HTTP, 81 alertas e
-feedback; seu monitoramento no Prometheus/Grafana e a navegação no portal único
-foram aceitos. O portal também conserva os 200 casos de evidência, cinco
-explicações e a avaliação de 67.255 transações. A leitura da sessão concluída
-no monitor não comprova por si só chegadas simultâneas no ensaio nativo.
+## Estado atual
 
-A redução conservadora do runtime da API e sua qualificação em Docker estão
-aceitas. O recorte atual prepara sua implantação e reversão controladas no KinD,
-com os mesmos pesos e alias, pelo fluxo de [manutenção do serving](SERVING_RECOVERY.md).
-O aceite nativo dessa manutenção permanece pendente. A promoção recorrente de
-um sucessor com pesos diferentes continua condicionada a candidato qualificado.
+| Entrega | Estado |
+| --- | --- |
+| Dados e modelos | Bronze/Silver/Gold com contratos e linhagem; rodada canônica e champion identificado na API aceitos |
+| Produto | Sessão de 2.001 decisões/81 alertas, pausa/retomada e feedback reconciliados; portal único aceito funcional e visualmente |
+| Transparência | 200 casos de evidência, cinco explicações verificadas e avaliação de 67.255 transações com modelo/dataset/política identificados |
+| Monitoramento | Mesma sessão concluída ligada ao Prometheus/Grafana; expiração/retomada aceitas; receiver corrigido para contagem cliente/dia |
+| Runtimes | API e MLflow menores, aplicados e verificados no KinD; imagem de treinamento qualificada em ambiente isolado |
+| Integração | PR #11 integrado em `e53d3e3`; testes locais e CI aprovados |
+| Próximo aceite | Jornada diária com chegadas, portal e métricas simultâneos, conforme [LIVE_OPERATIONS.md](LIVE_OPERATIONS.md) |
 
-## Serviços conectados, responsabilidades distintas
+O baseline aceito antes de preparar outra sessão é
+`data/storage/kind-platform/operations/baseline-session-counts-v1.json`.
+Novos vínculos de monitoramento alteram a configuração: salve outro baseline,
+sem sobrescrever o anterior. A [evidência do receiver](../../references/evidence/session_counts_author_validation_2026-10-27.json)
+registra a referência atual. Os aceites históricos não são reabertos por esta organização.
+
+## Usuários e entregas conectadas
 
 | Usuário | Entrega no projeto |
 | --- | --- |
-| Sistema transacional | API de pontuação com contrato e modelo identificado |
-| Analista de fraude | Portal: fila, contexto, triagem, explicação e feedback disponível |
-| Equipe de operação | Grafana: disponibilidade, erros, atrasos e indicadores de monitoramento |
-| Equipe de ML | MLflow e fluxo governado: linhagem, comparação, qualificação e implantação |
-| Gestor de risco | Visão resumida da operação e da capacidade de investigação |
+| Sistema transacional | API de pontuação com contrato, pesos e release identificados |
+| Analista de fraude | Portal Streamlit: fila priorizada, contexto, triagem, explicação disponível e feedback posterior |
+| Equipe de operação | Grafana: disponibilidade, coleta, progresso, erros e indicadores de monitoramento |
+| Equipe de ML | MLflow e fluxo governado: linhagem, comparação, qualificação e implantação controlada |
+| Gestor de risco | Visão resumida da operação, métricas avaliadas e capacidade de investigação |
 
-A tabela organiza tarefas, não cinco sistemas isolados. Pesos/release, datasets,
-IDs de transação, decisões e recibos ligam as entregas. MLflow fornece linhagem e
-Registry ao fluxo de implantação; não recebe transações para investigá-las. A API
-pontua features identificadas; a política e o ledger persistem a triagem. Grafana
-consulta métricas; o portal consulta casos e evidência. O modelo não cria o fluxo
-de dados nem assume a decisão sobre pagamentos.
+O produtor recebe transações, monta features disponíveis naquele instante, chama
+a API e persiste decisões/alertas. A política determina o encaminhamento; o modelo
+fornece ranking, não um veredito automático. O analista consulta o que chegou;
+não precisa solicitar novos dados. Iniciar, pausar e retomar a demonstração são
+responsabilidades do operador. Feedback posterior não participa retroativamente
+da decisão ou da explicação.
 
-## Centralização operacional
+MLflow fornece linhagem e Registry. O portal lê casos e evidências. Grafana lê
+métricas. Pesos/release, datasets e identidades das sessões ligam essas entregas.
+A interface não carrega modelos, treina, altera tráfego ou administra o cluster.
 
-Make é o ponto de entrada para o operador; os CLIs mantêm checagens, ownership,
-locks e recibos. Helm descreve os workloads no cluster. Grafana observa a saúde,
-sem virar um controlador de deploy. Streamlit serve o analista, sem precisar
-iniciar dados ou administrar a infraestrutura.
+## Comandos por finalidade
 
-| Família atual | Responsabilidade |
+| Finalidade | Entrada |
 | --- | --- |
-| `platform-*` | Fundação, inspeção, serviços, acessos e ensaios da plataforma |
-| `round-*` / atualização governada | Dados, treinamento, qualificação e serving canônico |
-| `product-*` | Eventos causais pela API, decisões persistidas e verificação |
-| `portal-*` | Preparação e consulta de casos e avaliação pinados |
+| Inspeção | `platform-status`, `platform-host-check`, `platform-check` |
+| Acessos em segundo plano | `access-up`, `access-status`, `access-logs`, `access-stop-all` |
+| Portal único | `portal-session-link`, `portal-session-verify`, `portal-open` |
+| Sessão | `session-prepare-expanded`, `session-run`, `session-pause`, `session-feedback`, `session-verify` |
+| Observação | `session-monitor-prepare`, `session-monitor-up`, `session-monitor-watch` |
+| Jornada diária integrada | `session-daily-prepare`, `session-live-test` |
+| Treinar e atualizar modelos | Famílias `round-*` e atualização governada; [MODEL_UPDATES.md](MODEL_UPDATES.md) |
+| Parada/subida planejada | `platform-stop`, `platform-start`, `platform-verify`; [KIND_OPERATIONS.md](KIND_OPERATIONS.md) |
+| Instalação e desenvolvimento | `make help-all`, [KIND_PLATFORM.md](KIND_PLATFORM.md), `validate`, `portal-ui-test` |
 
-`make platform-api` lê o deployment ativo em `model-updates/current.json` e usa
-os gates compartilhados para conferir Registry, slot, imagens e identidade HTTP.
-Não escolhe o modelo por nome de algoritmo nem pelo ID da primeira rodada.
-`round-api` permanece como alias de compatibilidade para esse mesmo acesso;
-`ROUND_ID` não seleciona um deployment antigo nesse comando. A instalação sintética
-foi aposentada e seu acesso foi retirado. A ausência
-ou divergência do deployment ativo interrompe o acesso, sem fallback sintético.
+Make centraliza as entradas; os CLIs aplicam locks, ownership, checagens e recibos.
+Helm descreve os workloads. O acesso `platform-api` verifica o deployment ativo,
+Registry, imagens e HTTP; não escolhe um algoritmo ou uma rodada antiga por nome.
+`round-api` permanece como compatibilidade para esse acesso canônico.
 
-A identidade é conferida ao abrir e fechar o acesso. Uma promoção ou manutenção
-posterior exige reabrir o comando para obter uma verificação atualizada. O acesso
-não bloqueia deploys nem modifica tráfego, replicas ou aliases.
+`access-up` abre API, MLflow, Grafana e portal com logs privados e processos
+identificados. Parar um acesso não para seu workload. [LOCAL_ACCESS.md](LOCAL_ACCESS.md)
+explica portas, logs e encerramento. O portal diário é o mesmo Streamlit em 18501;
+a entrada independente `session-open` é de compatibilidade.
 
-`make help` mostra os acessos e comandos cotidianos. `make help-all` mantém o
-catálogo completo de instalação, ciência e ensaios. Os requisitos de baseline e
-writers continuam obrigatórios para parada/subida. A [primeira simplificação](CODEBASE_SIMPLIFICATION.md)
-registra as remoções e as dependências que impedem apagar diretórios inteiros.
+## Iniciar, observar e encerrar
 
-## Acessos em segundo plano
+Com a plataforma já ativa:
 
-`make access-up` abre API, MLflow, Grafana e o portal preparado com `nohup`.
-`make access-status` mostra os processos e a disponibilidade HTTP. Cada acesso
-pode ser iniciado, inspecionado e encerrado individualmente; o [guia de acessos](LOCAL_ACCESS.md)
-lista os serviços, logs e parâmetros. Isso substitui a necessidade de deixar um
-terminal aberto por interface, sem iniciar outra cópia dos workloads do cluster.
-Os comandos em primeiro plano continuam disponíveis para diagnóstico.
+```bash
+make platform-check \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-session-counts-v1.json &&
+make access-up &&
+make access-status
+```
 
-## Ciclo de vida do deployment ativo
+Se já estiver operando outra configuração aceita, use seu baseline específico.
+Para a sessão de 2.001 decisões já concluída, `session-monitor-watch
+SESSION_MONITOR_ID=arrival-2k-v1` renova a coleta; não cria eventos. Depois de
+vincular outra sessão, use seu ID. Sem o observador, a fonte expira em até 30 s.
 
-`platform-baseline`, `platform-check`, `platform-stop`, `platform-start` e
-`platform-verify` usam o
-champion ativo `fraud-detector`, com o mesmo gate compartilhado de `platform-api`.
-O baseline v2 registra o estado ativo e cada contagem de réplicas; retomar mantém
-zero no slot inativo. A release sintética foi retirada; o plano atual tem nove
-controladores e um baseline próprio. `platform-check` confere o estado atual;
-`platform-verify` exige o ciclo controlado de parada/subida neste boot.
+Para uma nova jornada diária, siga [LIVE_OPERATIONS.md](LIVE_OPERATIONS.md):
+preparar dados, trocar vínculos explicitamente, reabrir acessos, salvar baseline
+e executar o ensaio. Não inicie um produtor em uma sessão reservada para o gate
+antes de executá-lo. O guia registra o ID, a janela e os pré-requisitos de cada fase.
 
-O [guia de ciclo de vida](KIND_OPERATIONS.md) concentra preparação, parada,
-retomada, verificação e reboot. Baselines antigos são preservados e não convertidos.
-O ciclo canônico foi aceito em 2026-10-23: mesmo node/volumes, green em zero
-e identidade Registry/HTTP e proxy Grafana conferidos após a retomada. Antes de interromper, encerre acessos e writers; depois, reabra com
-`access-up`. Isso não inicia a chegada contínua de transações.
+Para interromper a plataforma, pare produtores/observadores e acessos, declare
+a ausência de writers e siga o ciclo de vida com o baseline correto.
+`platform-check` confere o estado corrente. `platform-verify` exige o ciclo
+controlado de parada/subida; um check não comprova reboot ou recuperação de host.
+Os volumes e recibos não são removidos para iniciar outra demonstração.
 
-## Quem faz os dados chegarem
+## Dados, evidências e qualidade
 
-Na jornada desejada, transações surgem do sistema transacional. Um produtor ou
-integração as entrega ao executor causal, que monta features disponíveis naquele
-instante, chama a API e persiste decisão/alerta. O analista recebe a fila resultante.
-Atualizar a consulta pode buscar casos já processados; não deve fabricar ou
-solicitar que novas transações aconteçam. Iniciar/pausar uma demonstração pertence
-ao operador, com controles e identidade próprios.
+O Handbook contém 183 dias de dados simulados. Sessões reproduzem eventos em
+ordem causal, com ritmo configurável e feedback atrasado. Bronze/Silver/Gold
+preparam e identificam os datasets; não são reconstruídos integralmente para
+cada requisição de inferência. As features da sessão vêm do estado causal.
 
-Bronze/Silver/Gold são a cadeia de preparação e rastreabilidade dos dados. Não
-significa refazer Silver/Gold completos para cada transação durante a operação.
-As features online vêm do estado causal já existente; o treino e a avaliação
-continuam separados do caminho de pontuação.
+Reutilizar uma janela observada demonstra operação; não cria dados independentes
+para confirmar qualidade. Os 200 casos de evidência, a sessão corrente e a avaliação
+de 67.255 transações têm fontes e períodos próprios, identificados no portal.
+SHAP só é reutilizado por identidade exata de request/response, features, pesos e
+release. Ausência de explicação compatível não impede consultar o caso.
 
-## O que o Handbook permite demonstrar
+Os limiares de qualidade e promoção são específicos do laboratório. Custos de
+fraude/falsos positivos, capacidade de investigação e incerteza das métricas
+precisariam calibrá-los em outra operação. Ganho de 0,005 de AP, sozinho, não
+comprova significância estatística. Não se afirma economia financeira ou desempenho
+humano equivalente sem medição.
 
-O acervo disponível é histórico e finito: 183 dias de transações simuladas.
-Podemos reproduzi-lo em ordem temporal para simular chegada gradual, com ritmo
-configurável e checkpoint, sem depender de novas coletas ou dados pagos. O atual
-lote HTTP de 200 casos não é o limite do acervo. O replay anterior e esse lote
-não são novos dados independentes para confirmar qualidade.
+## Próximos aceites
 
-Uma sessão deve declarar origem, janela, modelo, contrato, política e ponto de
-retomada. Reutilizar períodos já observados é demonstração operacional, não novo
-holdout. A disponibilidade de uma janela ainda não consumida precisa ser conferida
-no protocolo antes de qualquer alegação de avaliação inédita. Rótulos devem
-continuar chegando no relógio definido pelo projeto, sete dias após a transação;
-a ordem causal não pode ser trocada para deixar o dashboard mais convincente.
+A jornada diária integrada está preparada, com aceite nativo pendente. O ensaio
+anterior do monitor usou uma sessão concluída; não substitui essa comprovação
+concorrente. Depois, será avaliada a reprodução em ambiente limpo e, sobre o
+fluxo estabilizado, Terraform como desfecho de IaC.
 
-## Próximo recorte e critério de encerramento
-
-O próximo recorte é **consolidação da demonstração operacional**, dentro do marco
-de simplificação e fechamento funcional. Ele reaproveita produtor/replay causal,
-API, ledger, Make, portal e observabilidade. Não exige adicionar broker, feature
-store, CT, outro modelo ou novo serviço de orquestração para começar.
-
-Critérios de aceite propostos para esse recorte:
-
-1. Um operador inicia uma sessão declarada e vê o modelo/release efetivo.
-2. Eventos chegam gradualmente e as decisões passam pela API, sem fallback local.
-3. Fila e métricas acompanham a mesma sessão/checkpoint; fontes e atualização ficam visíveis.
-4. Pausa/retomada preservam estado, contagens e identidades, sem duplicar alertas.
-5. Feedback fica disponível no relógio correto; explicações são capacidades opcionais verificadas.
-6. Um guia único distingue instalar, iniciar, acessar, pausar, retomar e parar.
-
-A avaliação temporal aceita permanece como evidência fixa. Consulta corrente,
-sessão operacional e reprocessamento demonstrativo devem ter identidades próprias.
-A ativação/rollback de sucessor com pesos diferentes continua condicionada a um
-candidato qualificado; não se altera o gate para produzir um evento de promoção.
-Terraform permanece posterior à consolidação funcional.
-
-## Organização do trabalho
-
-O marco KinD/Helm e o aceite do portal foram integrados à main. A consolidação
-ocorre em `feat/fraud-operations-demo`, começando pela revisão dos comandos e
-pela retirada de uma transição de uso único já aplicada. A chegada gradual e a fila corrente foram validadas em uma sessão de 200 decisões.
-A ampliação foi aceita com 2.001 decisões. A ligação das métricas à mesma sessão foi aceita nativa e visualmente em 2026-10-24.
-
-## Sessão de chegada gradual
-
-O primeiro recorte da sessão está preparado em [PRODUCT_SESSION.md](PRODUCT_SESSION.md):
-`session-prepare`, `session-run`, `session-pause`, `session-status`, `session-feedback`,
-`session-verify` e `session-open`. Ele liga o produtor à API e à fila corrente,
-com checkpoint próprio e atualização automática. O ensaio nativo de 200 decisões foi aceito pelo autor em 2026-10-23. A integração Prometheus/Grafana da mesma sessão teve aceite nativo e visual
-em 2026-10-24; os quatro dashboards anteriores preservam a fonte do replay concluído.
-
-## Sessões ampliadas
-
-O ensaio de 200 decisões foi aceito pelo autor em 2026-10-23. [Sessões ampliadas](PRODUCT_SESSION_SCALE.md) permitem nova janela/volume, fila paginada e medição por fase, preservando o checkpoint anterior. A ampliação foi aceita com 2.001 decisões. [Monitoramento da mesma sessão](SESSION_MONITORING.md) possui procedimento de instalação, coleta e recuperação; seu aceite nativo e visual foi confirmado em 2026-10-24.
-
-## Fila e observabilidade com a mesma identidade
-
-O produtor continua responsável pela chegada; o analista recebe os casos sem
-solicitar transações. O operador usa `session-monitor-watch` para observar o
-checkpoint e publicar apenas agregados. Prometheus coleta o job
-`fraud-product-session`; Grafana apresenta `fraud-product-session`. A sessão,
-o recibo, os pesos e a release identificam o vínculo. Os painéis anteriores
-continuam apontando ao replay concluído, com outra origem explícita.
-
-O observador não inicia dados, treina, pontua ou altera a fila. A fonte perde
-validade após 30 s sem publicação. Uma sessão concluída pode ser observada
-novamente; isso atualiza a leitura, não cria novos eventos.
-[Procedimento principal desta integração](SESSION_MONITORING.md).
-
-## Configuração operacional aceita
-
-O baseline atual é
-`data/storage/kind-platform/operations/baseline-session-monitoring-20261024.json`,
-SHA-256 `676e04b92c9d8e479ce598a5dd348c13b9db0755fc89bba918d415f14df0ac9d`.
-`platform-check`, `portal-verify` e `portal-performance-verify` passaram.
-O observador continua necessário para manter a coleta da sessão atualizada.
-Este fechamento documental não altera configuração nem pede outro baseline.
-
-A próxima entrega é **um único portal Streamlit** com navegação entre sessão
-corrente, investigação e evidências verificadas. A sessão exibida e as métricas
-avaliadas terão suas origens identificadas: os 200 casos do snapshot e a validação
-de 67.255 transações não serão apresentados como a janela corrente de 2.001 decisões.
-Grafana mantém a função operacional; MLflow mantém linhagem e governança.
-
-## Portal único — preparação em 2026-10-24
-
-A navegação da sessão e das evidências foi consolidada no Streamlit existente.
-`portal-session-link` vincula a sessão; `portal-open` e `access-start
-ACCESS_SERVICE=portal` abrem a mesma aplicação em 18501. Gráficos, contexto e
-investigação usam apresentação compartilhada. O produtor, a API, o observador,
-Grafana e MLflow conservam suas responsabilidades.
-[Procedimento e aceite](UNIFIED_PORTAL.md). O aceite nativo e visual foi concluído pelo autor em 2026-10-24.
-
-## Portal consolidado e próximo foco operacional
-
-O portal único e seu cabeçalho refinado tiveram aceite funcional/visual do autor.
-O acesso em 18501 é a entrada diária do analista. O produtor e o observador
-continuam independentes da UI; Grafana atende à operação e MLflow à equipe de ML.
-O baseline corrente foi preservado. [Aceite](../../references/evidence/unified_portal_author_validation_2026-10-24.json).
-
-O próximo foco é medir o footprint das imagens antes de alterar builds ou
-remover imagens históricas. A revisão inicial distingue runtime de API, imagens
-científicas de jobs, serviços de terceiros e ambiente local do portal.
-[Inventário e critérios](IMAGE_FOOTPRINT.md).
+Promoção e rollback de sucessor com pesos diferentes permanecem condicionados a
+candidato qualificado e aprovação explícita. Não é necessário buscar um vencedor
+artificial, afrouxar gates ou adicionar broker/feature store para este recorte.

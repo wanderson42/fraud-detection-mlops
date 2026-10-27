@@ -53,8 +53,9 @@ pesos; para acompanhar outro modelo, vincule a sessão correspondente.
 
 O vínculo anterior é arquivado. Reabra a interface após trocar o vínculo: um
 processo com digest antigo mostra erro em vez de mudar silenciosamente de fonte.
-Alterações deste portal não mudam a configuração do cluster; o baseline
-`baseline-session-monitoring-20261024.json` continua sendo a referência atual.
+Alterações deste portal não mudam a configuração do cluster. O baseline
+`baseline-session-monitoring-20261024.json` é histórico; a referência operacional
+vigente está no [guia principal](PRODUCT_OPERATIONS.md).
 
 ## Investigação e explicabilidade
 
@@ -153,9 +154,10 @@ sessão vinculada, investigação paginada e evidências com origens identificad
 A sessão conserva 2.001 decisões/81 alertas; o snapshot conserva 200 decisões/5
 explicações e a avaliação conserva 67.255 transações. O aceite não transforma
 esses conjuntos em uma avaliação única nem altera o champion.
-O baseline `baseline-session-monitoring-20261024.json` continua atual.
+O baseline da época, `baseline-session-monitoring-20261024.json`, permanece histórico.
+Consulte o [guia principal](PRODUCT_OPERATIONS.md) para a configuração atual.
 
-A revisão de tamanho da infraestrutura está em
-[IMAGE_FOOTPRINT.md](IMAGE_FOOTPRINT.md): há medidas de enxugamento nos builds,
-mas o inventário medido das imagens ativas, camadas compartilhadas e cache
-permanece como próximo recorte. Nenhuma imagem é reconstruída neste fechamento.
+O inventário e as otimizações aceitas da API/MLflow estão em
+[IMAGE_FOOTPRINT.md](IMAGE_FOOTPRINT.md). O próximo aceite é a
+[jornada diária integrada](LIVE_OPERATIONS.md), com chegadas e métricas simultâneas.
+Este guia conserva o aceite do portal; o ensaio novo não recria seus snapshots.

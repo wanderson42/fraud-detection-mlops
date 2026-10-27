@@ -1,5 +1,11 @@
 # Índice da documentação
 
+**Percurso atual (2026-10-27):** [operação do produto](operations/PRODUCT_OPERATIONS.md),
+[roadmap corrente](project/ROADMAP.md) e [jornada diária integrada](operations/LIVE_OPERATIONS.md).
+A implementação da jornada está preparada; seu aceite nativo permanece pendente.
+O [histórico do roadmap](project/ROADMAP_HISTORY.md) preserva os incrementos anteriores.
+
+
 Caminho principal de execução: nova rodada com linhagem dos datasets, comparação, promoção e serving.
 [Guia da rodada operacional](operations/OPERATIONAL_ROUND.md). Rodada inicial aceita pelo autor.
 [Sucessores: comparação, busca opcional e aprovação de tráfego](operations/MODEL_UPDATES.md); retenção nativa aceita; ativação de sucessor com pesos diferentes ainda pendente.
