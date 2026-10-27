@@ -1,10 +1,13 @@
 # Footprint das imagens da infraestrutura
 
-## Aceite atual: redução e qualificação em Docker, 2026-10-25
+## Aceite atual: API otimizada implantada e verificada no KinD
 
-A primeira redução da imagem da API está **medida e qualificada em Docker** com
-os mesmos pesos e manifesto do champion. A candidata ainda não foi implantada
-no KinD. A otimização do conjunto inteiro de imagens permanece em andamento.
+A primeira redução da imagem da API está **medida, qualificada em Docker e
+implantada no KinD**, na manutenção `api-trim-v2`, com os mesmos pesos e release
+do champion. A otimização do conjunto inteiro de imagens permanece em andamento.
+O baseline atual é `data/storage/kind-platform/operations/baseline-api-trim-v2.json`.
+O aceite da implantação e seus readbacks estão na
+[evidência consolidada](../../references/evidence/runtime_maintenance_author_validation_2026-10-25.json).
 
 | Medida | Baseline | Candidata | Redução |
 | --- | --- | --- | --- |
@@ -44,13 +47,77 @@ sob carga. As leituras de memória de 182,7 e 177,9 MiB são snapshots, não pic
 e não demonstram economia estável de RAM. Não houve nova avaliação global de
 qualidade, treinamento, alteração do champion ou promoção de sucessor.
 
-**Próximo aceite:** substituir o runtime canônico de forma controlada no KinD,
-conservar a release e os pesos, validar a API e a observabilidade e atualizar o
-baseline operacional após a implantação aceita. Essa mudança de runtime é
-independente da promoção recorrente de um modelo com pesos diferentes, cujo
-aceite continua condicionado a um candidato qualificado.
+**Implantação aceita:** a API e os readbacks passaram e o baseline foi atualizado.
+O rollback comprovado pertence à tentativa anterior `api-trim-v1`; não foi
+executado rollback de `api-trim-v2`. Essa manutenção é independente da promoção
+de um modelo com pesos diferentes, cujo aceite continua condicionado a um
+candidato qualificado. Não se repete treinamento para otimizar uma imagem.
 
 As seções seguintes conservam a revisão e o roteiro usados na preparação.
+
+
+## Auditoria do snapshot a501f75, 2026-10-27
+
+A revisão usa o archive do commit completo
+`a501f755e03c36e27ca02bb7010f9cc0478dcc27`, incluindo as correções da branch
+operacional. Lê fontes, requirements, locks e contextos; os tamanhos atuais dos
+demais componentes ainda precisam de coleta no Docker do autor.
+
+| Papel | Observação nas fontes atuais | Próxima decisão sustentada pela coleta |
+| --- | --- | --- |
+| API | Imagem menor já aplicada; PyArrow permanece no contrato | Não repetir esta redução nem quebrar contrato para diminuir bytes |
+| Tracking MLflow | 93 distribuições fixadas, incluindo MLflow completo, scikit-learn, PyArrow e Matplotlib | Medir tamanho; avaliar uma composição de servidor que preserve PostgreSQL, S3 proxy, Registry e readbacks |
+| Treino / atualização | 94 e 97 distribuições; as 94 do treino têm as mesmas versões na atualização; adicionais: Optuna, tqdm e colorlog | Medir bytes e camadas; avaliar camada comum sem unificar papéis nem forçar otimização de hiperparâmetros |
+| Pipeline científico / replay | 15 e 20 distribuições com requisitos próprios | Conservar causalidade, features e integridade; priorizar pelo peso medido |
+| Transporte / datasets | 7 distribuições do SDK S3, mesma base e instalação em vários Dockerfiles | Conferir reutilização efetiva de camadas antes de criar uma base comum |
+| Exporter / receiver da sessão | Só biblioteca padrão e COPY de fontes, sem pip install | Baixa oportunidade de recorte de dependências; medir base e conteúdo |
+| Carrier / gateway / bancos / Prometheus / Grafana / node | Imagens com papéis diferentes; terceiros fixados por digest | Inventariar antes de trocar variante; não usar tamanho do node como soma da aplicação |
+| Portal | Ambiente no host, sem imagem Docker nesta entrega | Não misturar sua venv com a contabilidade de imagens |
+
+Contagens de distribuições não são tamanhos nem prova de dependências inúteis.
+Requirements iguais podem compartilhar camadas; tags distintas podem apontar
+para o mesmo ID. A ausência de pods não torna uma imagem descartável: Jobs,
+rollback e recibos antigos podem precisar dela. Não há prune neste recorte.
+As allowlists já excluem dados e logs dos builds; algumas incluem mais fontes
+ou referências que os COPYs exigem. Reduzir esse contexto pode diminuir envio
+ao builder, mas não demonstra redução na imagem final.
+
+### Coleta consolidada
+
+```bash
+poetry run python -m scripts.platform.image_inventory \
+  --output data/reports/image-footprint/platform-v1
+```
+
+A coleta consulta o contexto `kind-fraud-platform`, namespace `fraud-platform`
+e o node Docker `fraud-platform-control-plane`; verifica o label de cluster
+antes de executar `crictl images` no node. Não cria contêiner de diagnóstico,
+não instala ou baixa imagens, não acessa dados/PVCs e não altera a plataforma.
+Usa o publicador de relatórios já existente e preserva diretórios anteriores.
+Para repetir, escolha outro ID de saída.
+
+O relatório agrupa aliases por ID no CRI e no Docker separadamente e vincula
+imagens a pods e templates de Deployments/StatefulSets/DaemonSets/Jobs/CronJobs,
+incluindo init containers e workloads com zero réplicas. Não inclui Secrets,
+env, comandos de containers ou anotações no relatório. Inclui também imagens
+locais `fraud-*`, referências dos locks e a imagem do node; outras imagens do
+host ficam fora dessa lista. Os totais de `docker system df` são globais, em
+texto formatado, incluindo outros projetos; não são economia atribuída à fraude.
+
+Uma referência indisponível no Docker do host não significa ausência no CRI.
+Imagens do CRI sem consumidor atual recebem classificação de retenção, nunca
+autorização de exclusão. O coletor repete a projeção dos consumidores ao final;
+se ela mudou, o relatório assinala essa condição e não representa uma topologia
+estável. A coleta não trava deploys: use um período sem alterações da plataforma.
+Os hashes dos arquivos de build identificam as fontes locais; `git_head` sozinho
+não afirma que o checkout está limpo. A coleta não inspeciona dependências
+instaladas; após selecionar um runtime Python, reutilize `image_footprint`
+com seu ID e o interpretador correto (em geral `/usr/local/bin/python` para os
+serviços Python em infra/kind; `/opt/runtime/bin/python` para a API).
+
+Envie `data/reports/image-footprint/platform-v1/report.json` para priorizar o
+próximo build comparativo. Não some Docker e CRI, nem some tamanhos das tags.
+Nenhuma otimização adicional ou troca de imagem foi aceita por este inventário.
 
 ## Revisão de fontes em 2026-10-24 (histórico da preparação)
 
@@ -319,7 +386,7 @@ não é obtida pela simples soma dos tamanhos de tags.
 com qualificação HTTP em Docker dos mesmos pesos. Os detalhes aceitos estão no
 início deste documento. O roteiro acima continua disponível para reprodução,
 usando novas tags e diretórios para preservar recibos anteriores. A implantação
-no KinD e seu baseline operacional correspondente permanecem como próximo aceite.
+no KinD e seu baseline foram aceitos posteriormente, conforme a seção inicial.
 
 
 ## Implantação da imagem qualificada
@@ -328,5 +395,6 @@ O fluxo de manutenção preparado em 2026-10-25 reutiliza a cadeia de recibos e 
 Helm canônico: [SERVING_RECOVERY.md](SERVING_RECOVERY.md#manutenção-do-runtime-da-api-com-os-mesmos-pesos).
 A preparação usa o recibo Docker e um pod isolado com os mesmos pesos. Apply e
 rollback têm autorizações distintas, retomada e gates; não alteram o champion.
-A imagem anterior permanece disponível. O aceite de implantação e reversão no
-KinD segue pendente de execução do autor; não foi deduzido do ensaio Docker.
+A imagem anterior permanece disponível. A aplicação `api-trim-v2` e os readbacks
+foram aceitos no KinD. A reversão verificada é a de `api-trim-v1`, após apply
+falho; os dois resultados permanecem distintos no recibo consolidado.

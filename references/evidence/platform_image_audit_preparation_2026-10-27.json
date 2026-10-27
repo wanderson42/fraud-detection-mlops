@@ -1,0 +1,64 @@
+{
+  "schema": "fraud_platform_image_audit_preparation_v1",
+  "date": "2026-10-27",
+  "source_commit": "a501f755e03c36e27ca02bb7010f9cc0478dcc27",
+  "source_archive_sha256": "bf81a621f187c53953a09ffa1683e416fba8964f45b2a23e6f862d37eb2d4fd7",
+  "scope": "static review of current branch archive and read-only host/CRI collection tooling",
+  "status": "prepared_native_inventory_pending",
+  "requirements": {
+    "infra/tracking/requirements.txt": {
+      "sha256": "9f09ef2ce4882ad71f8f2043f832a3761e0d2a10b867350f8f9b5fa36727bfa5",
+      "distribution_count": 93
+    },
+    "infra/kind/round/requirements.txt": {
+      "sha256": "19b6603f9ca970174f31c2f349296c0bd4bfe256ef49e619a43cfc2ec89988b3",
+      "distribution_count": 94
+    },
+    "infra/kind/model-updates/requirements.txt": {
+      "sha256": "f327299bebd5989ccff9b2743a922b916f481b31c5a6776eb888aa13c127cb79",
+      "distribution_count": 97
+    },
+    "infra/kind/pipeline/requirements-science.txt": {
+      "sha256": "0b7bf1ccb1b5e9ef6ef2303e8a6d77c3507bb07a3e87545fc046f6bfb033fa9d",
+      "distribution_count": 15
+    },
+    "infra/kind/replay/requirements.txt": {
+      "sha256": "f9045b5834be3f46dde0ecc13f5987465ba5cfd91bd1ad673c8b1bdab5e85aa8",
+      "distribution_count": 20
+    },
+    "infra/observability/storage-requirements.txt": {
+      "sha256": "712d15d78b8415efc8f0bdcfd7992a122da3ca060b6d9cdab55d5090b2c358bb",
+      "distribution_count": 7
+    }
+  },
+  "training_update_overlap": {
+    "same_name_and_version": 94,
+    "additional_update_distributions": [
+      "optuna",
+      "tqdm",
+      "colorlog"
+    ]
+  },
+  "findings": [
+    "Tracking installs full MLflow with scientific and plotting dependencies; server-specific composition requires measurement and functionality gates",
+    "Training/update dependency layers overlap; no byte savings inferred from dependency counts",
+    "Exporters and session receiver use Python stdlib without pip install",
+    "Source allowlists already restrict build contexts; context size is not final image size",
+    "Portal is a host environment, not a deployed Docker image",
+    "IMAGE_FOOTPRINT updated to reflect accepted api-trim-v2 and current baseline"
+  ],
+  "local_validation": {
+    "tests_passed": 77,
+    "scope": "collector fixtures, existing footprint publisher/probe tests, source compatibility, managed paths and persistence inventory in git fixture of supplied archive",
+    "ruff_check": true,
+    "ruff_format": true
+  },
+  "native_inventory_executed": false,
+  "Dockerfiles_changed": false,
+  "dependencies_changed": false,
+  "deployment_modified": false,
+  "baseline_modified": false,
+  "champion_modified": false,
+  "image_prune_authorized": false,
+  "new_optimization_validated": false
+}
