@@ -211,8 +211,9 @@ não são tratados como correções deste fechamento.
 O baseline novo e os gates do portal/desempenho passaram. Isso registra a
 configuração corrente, sem ampliar o aceite para outro stop/start, reboot,
 chegada concorrente no KinD ou firing de alertas. A promoção de sucessor com
-pesos diferentes continua dependente de candidato qualificado. O próximo recorte
-é reunir a fila corrente e as evidências em um único portal Streamlit.
+pesos diferentes continua dependente de candidato qualificado. O recorte
+de unificação da fila corrente e das evidências foi concluído posteriormente;
+consulte [UNIFIED_PORTAL.md](UNIFIED_PORTAL.md).
 
 ## Contagem em janelas com vários dias
 
@@ -249,4 +250,31 @@ Depois do aceite, crie uma nova baseline; preserve a anterior como histórica.
 A regressão local usa dois clientes em dois dias, quatro decisões e quatro
 alertas. A qualificação da imagem usa o mesmo caso sintético. O ensaio nativo de
 manutenção lê a sessão concluída: não comprova novas chegadas multidiárias.
-O PR permanece em rascunho até a atualização nativa e seus checks serem aceitos.
+A atualização nativa foi aceita conforme a seção abaixo. A integração do PR
+depende dos checks da revisão atual e da conclusão da revisão de código.
+
+
+## Aceite nativo da correção de contagem — 2026-10-27
+
+A manutenção `session-counts-v1` aplicou e verificou a imagem
+`fraud-session-monitor:e0579d2a069343c18664844155b648c2` no KinD. A qualificação
+executada dentro da candidata aceitou o caso sintético com dois clientes,
+quatro decisões e quatro alertas em dois dias, mantendo as rejeições de
+contagens superiores ao total de decisões.
+
+Os readbacks nativos conservaram a sessão `arrival-2k-v1`: 272.936 eventos,
+136.468 transações, 2.001 decisões/recibos HTTP, 81 alertas e 1.561 clientes.
+Os bytes aceitos da sessão permaneceram iguais. Prometheus/Grafana confirmaram
+o vínculo da mesma sessão; portal e desempenho também passaram, com o mesmo
+champion, pesos e release. O observador foi iniciado novamente para esse vínculo.
+
+O baseline corrente é
+`data/storage/kind-platform/operations/baseline-session-counts-v1.json`, SHA-256
+`48e19d7ddce6a7b283732d34e0ccd2823ad6a134b4ede1e54b446fef5efee770`.
+O check confirmou topologia e readbacks atuais, preservando a baseline anterior.
+Não houve novo stop/start, reboot, treinamento ou alteração do champion.
+
+A manutenção não executou rollback nativo nem novas chegadas multidiárias. O caso
+multidiário foi verificado nos testes e dentro da imagem candidata; o ensaio no
+KinD verificou a substituição do receiver e a sessão diária já concluída. Essa
+distinção permanece no [recibo de aceite](../../references/evidence/session_counts_author_validation_2026-10-27.json).
