@@ -1,7 +1,7 @@
 # Footprint das imagens da infraestrutura
 
 
-## MLflow e treino: redução medida e qualificação isolada aceita
+## MLflow ativo otimizado; treino qualificado em ambiente isolado
 
 No comparativo do commit `fd8ced7`, acrescentar somente `--no-compile` ao
 `pip install` reduziu as duas imagens, mantendo as versões instaladas, Python,
@@ -30,20 +30,30 @@ não alteraram o champion ou o histórico operacional. Não se inferem melhoria
 de latência, economia de RAM ou novo resultado de qualidade a partir desse teste.
 
 Os Dockerfiles de `infra/kind/tracking` e `infra/kind/round` incorporam a flag
-para próximos builds. As imagens atualmente implantadas e os recibos antigos
-continuam preservados. O leitor do tracking aceita em memória apenas a transição
+para próximos builds. A candidata do MLflow foi aplicada ao tracking ativo pela
+manutenção `tracking-bytecode-v1`; a imagem anterior e seus recibos continuam
+preservados. O leitor do tracking aceita em memória apenas a transição
 exata e commitada declarada em
 `references/python_bytecode_source_transition_v1.json`; isso não transforma a
 imagem antiga em otimizada. Dependências, contratos e fitters continuam fixados.
 A declaração também permite consultar perfis operacionais já aceitos sem
 reescrever fontes, recibos ou o baseline.
 
-**Estado:** redução e qualificação funcional isolada aceitas. A troca da imagem
-do MLflow ativo ainda está pendente de manutenção controlada, com imagem anterior
-disponível e readbacks do histórico/Registry/artefatos. Não se altera o ponteiro
-`tracking/image.json` manualmente nem se força um rebuild sobre o recibo antigo.
-O runtime de treino é usado por próximos Jobs; não há serviço de treino
-permanente para reiniciar nem necessidade de repetir a rodada histórica.
+**Estado:** redução e qualificação isolada aceitas para ambas as imagens; troca
+do MLflow ativo aplicada e verificada no KinD em 2026-10-27. As 65 tabelas de
+metadados e os 711 objetos do bucket dedicado mantiveram seus fingerprints.
+Registry, API, portal e evidências de desempenho passaram nas leituras funcionais,
+sem mudança do champion. O runtime de treino será usado por próximos Jobs;
+sua execução em nova rodada no KinD continua um aceite separado. Não há serviço
+de treino permanente para reiniciar nem necessidade de repetir a rodada histórica.
+
+O baseline operacional atual é
+`data/storage/kind-platform/operations/baseline-tracking-bytecode-v1.json`.
+O check confirmou a topologia e as leituras funcionais atuais. Não representa
+novo aceite de stop/start ou reboot. Não foi executado rollback nativo desta
+manutenção do tracking; a reversão continua disponível com aprovação própria.
+
+[Aceite nativo do tracking](../../references/evidence/tracking_runtime_maintenance_author_validation_2026-10-27.json).
 
 [Evidência consolidada](../../references/evidence/python_bytecode_author_validation_2026-10-27.json).
 
@@ -52,8 +62,10 @@ permanente para reiniciar nem necessidade de repetir a rodada histórica.
 
 A primeira redução da imagem da API está **medida, qualificada em Docker e
 implantada no KinD**, na manutenção `api-trim-v2`, com os mesmos pesos e release
-do champion. A otimização do conjunto inteiro de imagens permanece em andamento.
-O baseline atual é `data/storage/kind-platform/operations/baseline-api-trim-v2.json`.
+do champion. O baseline da época é
+`data/storage/kind-platform/operations/baseline-api-trim-v2.json`, preservado como
+histórico. O baseline atual inclui a manutenção posterior do tracking, descrita
+na seção anterior.
 O aceite da implantação e seus readbacks estão na
 [evidência consolidada](../../references/evidence/runtime_maintenance_author_validation_2026-10-25.json).
 
@@ -472,7 +484,7 @@ e identidade CRI, o fluxo publica atomicamente o recibo da imagem de tracking e
 compara metadados, objetos e readbacks funcionais. Falhas preservam o estado e os
 recibos; rollback tem aprovação distinta. O recibo original da imagem é preservado
 byte a byte em `original-image.json`. O baseline anterior não é sobrescrito;
-um novo baseline será criado após o aceite da aplicação ou do rollback.
+um novo baseline foi criado após o aceite da aplicação, sem sobrescrever o anterior.
 
 As ferramentas ficam também na pasta privada da manutenção, em `tool/`, com
 hashes vinculados ao preparo, para não depender da permanência de `/tmp`.
@@ -485,3 +497,17 @@ conservando a identidade do cliente e o relatório histórico. Não exige refaze
 um treino ou ensaio antigo apenas porque o leitor operacional mudou.
 
 [Preparação e limites de validação](../../references/evidence/tracking_runtime_maintenance_preparation_2026-10-27.json).
+
+
+## Encerramento deste recorte de otimização
+
+O recorte está concluído: a API otimizada e o MLflow otimizado estão ativos no
+KinD, e o build de treino foi reduzido e qualificado em ambiente isolado.
+Otimizações adicionais dependem de um gargalo medido; não são requisito para
+continuar a entrega do produto. Não foram removidos volumes, caches ou imagens,
+nem se atribui a soma dos tamanhos das tags a espaço exclusivo recuperado.
+
+A redução de tamanho não comprova melhoria de latência ou memória. Este aceite
+não promove um novo modelo: implantação e rollback de um sucessor com pesos
+diferentes continuam condicionados a um candidato qualificado e à aprovação
+prevista na política de modelos.
