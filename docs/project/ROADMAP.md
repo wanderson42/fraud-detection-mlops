@@ -1,7 +1,7 @@
 # Roadmap — Fraud Detection MLOps
 
-Atualizado em **2026-10-27** após integração do PR #11 (`e53d3e3`) e CI da main
-aprovado. O [guia operacional principal](../operations/PRODUCT_OPERATIONS.md)
+Atualizado em **2026-10-27** com aceite da jornada diária na branch posterior
+ao PR #11. A integração `e53d3e3` e seu CI permanecem como marco histórico. O [guia operacional principal](../operations/PRODUCT_OPERATIONS.md)
 concentra o percurso do operador. Os incrementos e resultados anteriores estão
 preservados no [histórico do roadmap](ROADMAP_HISTORY.md).
 
@@ -19,35 +19,36 @@ O modelo não assume sozinho a decisão sobre pagamentos.
 | --- | --- |
 | Dados e rodada canônica | Bronze/Silver/Gold identificados, três candidatos com Inputs, champion e API com os mesmos pesos; [rodada](../operations/OPERATIONAL_ROUND.md) |
 | Governança de candidatos | Retenção nativa do champion nas rodadas fixa e de busca; [atualizações](../operations/MODEL_UPDATES.md) |
-| Sessão causal pela API | Pausa/retomada, feedback, reconciliação e 2.001 decisões; [escala](../operations/PRODUCT_SESSION_SCALE.md) |
+| Jornada diária pela API | 9.619 decisões/100 alertas, contexto causal, pausa/retomada, feedback e reconciliação; [aceite](../operations/LIVE_OPERATIONS.md#aceite-nativo-e-visual-final--2026-10-27) |
 | Portal e transparência | Portal único aceito funcional/visualmente; sessão, 200 casos/cinco explicações e avaliação de 67.255 transações com origens explícitas; [portal](../operations/UNIFIED_PORTAL.md) |
-| Monitoramento | Mesma sessão concluída no Prometheus/Grafana, expiração/retomada e receiver corrigido; [operação](../operations/SESSION_MONITORING.md) |
+| Monitoramento | Mesma sessão diária durante as chegadas no Prometheus/Grafana, expiração/retomada e API disponível; [operação](../operations/SESSION_MONITORING.md) |
 | Ciclo de vida | Parada/subida canônica no mesmo node/volumes; reboot planejado no escopo histórico registrado; [runbook](../operations/KIND_OPERATIONS.md) |
 | Simplificação | Entradas Make por finalidade, IO/CRI compartilhados, importador concluído e serving sintético aposentados; [revisão](../operations/CODEBASE_SIMPLIFICATION.md) |
 | Footprint | API e MLflow reduzidos, aplicados e verificados; treino reduzido e qualificado em ambiente isolado; [medidas](../operations/IMAGE_FOOTPRINT.md) |
 | Integração | PR #11 integrado; 1.788 testes locais e 44 testes de UI aprovados, CI da branch e da main aprovados |
 
-A baseline aceita em 2026-10-27 é `baseline-session-counts-v1.json`. Ela confere
-configuração e readbacks correntes; não acrescenta um novo ensaio de reboot.
-Os aceites mantêm seus escopos: uma sessão concluída monitorada não comprova
-chegadas simultâneas; manutenção de runtime não promove um sucessor de modelo.
+A baseline corrente é `baseline-arrivals-day-v1.json`; confira o caminho e o
+SHA no [guia operacional](../operations/PRODUCT_OPERATIONS.md). O aceite diário
+inclui chegadas simultâneas verificadas pelo gate, AppTest durante a produção e
+revisão visual humana do estado final do portal. Não acrescenta stop/start,
+reboot, firing de notificação ou confirmação independente de qualidade.
 
 ## Backlog ordenado
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — preparado | Jornada diária integrada | Um dia completo disponível pela API; portal e métricas avançando simultaneamente; pausa/retomada, expiração da coleta com API disponível, feedback causal e reconciliação final; [ensaio](../operations/LIVE_OPERATIONS.md) |
-| 2 — posterior | Reprodução em ambiente limpo | Instalação e jornada reproduzidas em destino isolado, sem remover o ambiente aceito; fechar lacunas efetivamente encontradas |
-| 3 — posterior | Terraform | Declarar o ambiente estabilizado, com providers/locks/state protegidos e plano/apply conferidos; reutilizar Helm |
+| 1 — próximo | Reprodução em ambiente limpo | Instalação e jornada reproduzidas em destino isolado, sem remover o ambiente aceito; fechar lacunas efetivamente encontradas |
+| 2 — posterior | Terraform | Declarar o ambiente estabilizado, com providers/locks/state protegidos e plano/apply conferidos; reutilizar Helm |
 | Condicionado | Sucessor do champion | Candidato qualificado, aprovação, ativação/rollback com pesos diferentes e recuperação coerente no KinD; gates permanecem inalterados |
 
 ## Próxima entrega concreta
 
-A implementação do ensaio diário está preparada. O aceite nativo depende da
-execução pelo autor, seguido da conferência visual no portal e Grafana. O ensaio
-usa uma sessão nova e preserva as sessões de 200 e 2.001 decisões e seus recibos.
-Não exige novo modelo, broker, feature store ou orquestrador.
-A janela já observada é uma demonstração operacional, não um holdout inédito.
+Concluir revisão, CI e integração da branch da jornada diária. Em seguida,
+definir e executar uma reprodução limpa em destino isolado, preservando o
+cluster atual. O aceite exigirá fontes/dependências identificadas, instalação,
+API, dados, tracking, portal e métricas coerentes, com relatório das etapas e
+das lacunas encontradas. Não é uma autorização para apagar ou substituir o
+ambiente já aceito. A janela reutilizada demonstra operação, não novo holdout.
 
 ## Simplificação após maturação da infraestrutura
 

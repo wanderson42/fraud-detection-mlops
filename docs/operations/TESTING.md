@@ -1662,3 +1662,22 @@ O teste nativo reconcilia toda a janela, prova expiração/retomada da coleta co
 API disponível, verifica ocultação do feedback antes de sua disponibilidade e
 preserva as fontes aceitas. A prova visual no navegador permanece separada.
 Não afrouxa o gate de promoção nem comprova qualidade independente ou SLA.
+
+
+### Jornada diária: aceite nativo e revisão visual final — 2026-10-27
+
+O autor executou `live-operations`: 1 teste passou em 1.086,28 s após retomada
+do checkpoint. Foram reconciliadas 9.619 decisões/recibos HTTP e 100 alertas.
+O gate comprovou UI automatizada e métricas durante as chegadas, pausa em 500,
+expiração/recuperação da coleta com API disponível, feedback atrasado e
+reutilização concluída sem novas pontuações. Preservou fontes aceitas e champion.
+
+A correção de leitura ocupada passou em regressão local de 157 testes (4 pulados)
+e 46 testes de UI, incluindo bloqueio real superior ao timeout antigo. Esses
+resultados de preparação não são apresentados como nova suíte completa do autor.
+O relatório nativo também não é reescrito: a confirmação humana e a captura do
+estado final estão referenciadas no [recibo separado](../../references/evidence/live_operations_author_validation_2026-10-27.json).
+
+O perfil continua opt-in; a suíte geral não inicia a operação real. CI e integração
+da branch ainda precisam ser conferidos na revisão atual. Não houve novo aceite
+de reboot/stop-start, firing de notificação, promoção ou qualidade independente.

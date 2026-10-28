@@ -1,6 +1,7 @@
 # Operação do produto de detecção de fraude
 
-Atualizado em **2026-10-27**, após integração do PR #11 e CI da main aprovado.
+Atualizado em **2026-10-27**, com aceite nativo da jornada diária na branch
+posterior ao PR #11; o CI da main do PR #11 permanece como marco histórico.
 Este é o guia principal de operação. Os runbooks especializados detalham os
 comandos; o [roadmap](../project/ROADMAP.md) registra prioridades e aceites.
 
@@ -9,18 +10,20 @@ comandos; o [roadmap](../project/ROADMAP.md) registra prioridades e aceites.
 | Entrega | Estado |
 | --- | --- |
 | Dados e modelos | Bronze/Silver/Gold com contratos e linhagem; rodada canônica e champion identificado na API aceitos |
-| Produto | Sessão de 2.001 decisões/81 alertas, pausa/retomada e feedback reconciliados; portal único aceito funcional e visualmente |
+| Produto | Sessão diária de 9.619 decisões/100 alertas, pausa/retomada e feedback reconciliados; portal único com revisão visual final aceita |
 | Transparência | 200 casos de evidência, cinco explicações verificadas e avaliação de 67.255 transações com modelo/dataset/política identificados |
-| Monitoramento | Mesma sessão concluída ligada ao Prometheus/Grafana; expiração/retomada aceitas; receiver corrigido para contagem cliente/dia |
+| Monitoramento | Mesma sessão diária acompanhada durante chegadas no Prometheus/Grafana; expiração/retomada com API disponível aceitas |
 | Runtimes | API e MLflow menores, aplicados e verificados no KinD; imagem de treinamento qualificada em ambiente isolado |
 | Integração | PR #11 integrado em `e53d3e3`; testes locais e CI aprovados |
-| Próximo aceite | Jornada diária com chegadas, portal e métricas simultâneos, conforme [LIVE_OPERATIONS.md](LIVE_OPERATIONS.md) |
+| Próximo aceite | Reprodução em ambiente limpo e isolado, preservando este ambiente aceito |
 
-O baseline aceito antes de preparar outra sessão é
-`data/storage/kind-platform/operations/baseline-session-counts-v1.json`.
-Novos vínculos de monitoramento alteram a configuração: salve outro baseline,
-sem sobrescrever o anterior. A [evidência do receiver](../../references/evidence/session_counts_author_validation_2026-10-27.json)
-registra a referência atual. Os aceites históricos não são reabertos por esta organização.
+O baseline corrente é
+`data/storage/kind-platform/operations/baseline-arrivals-day-v1.json`, SHA-256
+`62152f69c976f4a4c965d04823eb1f9bea41640b960e86f8dd241e1a8f5226ba`.
+O [recibo da jornada](../../references/evidence/live_operations_author_validation_2026-10-27.json)
+registra o relatório nativo, a confirmação visual separada e o observador
+reiniciado pelo operador. As baselines e sessões anteriores são históricas e
+permanecem preservadas. Não há novo aceite de stop/start ou reboot.
 
 ## Usuários e entregas conectadas
 
@@ -73,14 +76,14 @@ Com a plataforma já ativa:
 
 ```bash
 make platform-check \
-  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-session-counts-v1.json &&
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-arrivals-day-v1.json &&
 make access-up &&
 make access-status
 ```
 
 Se já estiver operando outra configuração aceita, use seu baseline específico.
-Para a sessão de 2.001 decisões já concluída, `session-monitor-watch
-SESSION_MONITOR_ID=arrival-2k-v1` renova a coleta; não cria eventos. Depois de
+Para a sessão diária já concluída, `session-monitor-watch
+SESSION_MONITOR_ID=arrivals-day-v1` renova a coleta; não cria eventos. Depois de
 vincular outra sessão, use seu ID. Sem o observador, a fonte expira em até 30 s.
 
 Para uma nova jornada diária, siga [LIVE_OPERATIONS.md](LIVE_OPERATIONS.md):
@@ -115,10 +118,13 @@ humano equivalente sem medição.
 
 ## Próximos aceites
 
-A jornada diária integrada está preparada, com aceite nativo pendente. O ensaio
-anterior do monitor usou uma sessão concluída; não substitui essa comprovação
-concorrente. Depois, será avaliada a reprodução em ambiente limpo e, sobre o
-fluxo estabilizado, Terraform como desfecho de IaC.
+A jornada diária foi aceita com produção, UI automatizada e métricas simultâneas,
+seguida de revisão visual final do portal. O relatório automatizado original não
+foi alterado para registrar essa revisão humana.
+
+A próxima entrega é reproduzir instalação e jornada em ambiente limpo, isolado
+do cluster e dos dados aceitos. Depois, sobre esse fluxo validado, Terraform
+consolidará a IaC. O CI e a integração desta branch continuam sendo gates próprios.
 
 Promoção e rollback de sucessor com pesos diferentes permanecem condicionados a
 candidato qualificado e aprovação explícita. Não é necessário buscar um vencedor

@@ -3,7 +3,9 @@
 Este recorte verifica uma sessão nova com um dia completo do Handbook enquanto
 produtor, fila do portal único e métricas da mesma sessão avançam. Reutiliza os
 CLIs e os serviços já aceitos; não cria broker, serviço, imagem ou controlador.
-A implementação está preparada; o aceite nativo desta jornada permanece pendente.
+O ensaio nativo foi aceito após a correção de leitura concorrente; o autor
+confirmou a revisão visual do estado final do portal. O [recibo separado](../../references/evidence/live_operations_author_validation_2026-10-27.json)
+preserva o relatório automatizado original e os limites desse aceite.
 
 O operador inicia o produtor. O sistema transacional é representado pelo replay
 temporal; o analista recebe a fila sem pedir novos dados. A sessão registra a
@@ -150,7 +152,8 @@ a identidade no portal/Grafana, a pausa, a fonte expirada e sua recuperação. O
 AppTest não equivale a uma inspeção visual no navegador; esse aceite será registrado
 separadamente após a confirmação do autor.
 
-O recorte encerra quando o gate nativo e a conferência visual forem aprovados.
+O gate nativo e a conferência visual final foram aceitos; consulte a seção de
+aceite abaixo. CI e integração da branch continuam como gates separados.
 Instalação limpa e promoção/rollback de sucessor com pesos diferentes continuam
 como entregas separadas; o gate de qualidade não é afrouxado para produzir promoção.
 
@@ -193,3 +196,41 @@ Mantenha o watcher externo encerrado. O ensaio retoma o mesmo checkpoint e o
 mesmo `live-progress.json`; as fases só são aceitas após a verificação nativa.
 Se o bloqueio persistir além do prazo, a operação falha e conserva os recursos
 para diagnóstico, em vez de atribuir sucesso a uma leitura antiga.
+
+
+## Aceite nativo e visual final — 2026-10-27
+
+A sessão `arrivals-day-v1`, SHA
+`a95f3da1480a87ca23414c84b70d0765808368466fe04c29fa630de9667c5ba6`,
+reconciliou 288.172 eventos, 144.086 transações de contexto/janela, 9.619
+novas decisões/recibos HTTP e 100 alertas. Os feedbacks foram drenados somente
+após a conferência de que os das decisões do dia ainda estavam ocultos.
+
+O produtor pausou em 500 decisões. O gate conferiu contagens estáveis, navegação
+isolada do portal, expiração da fonte, API disponível e recuperação da coleta.
+Na retomada, o AppTest observou 620 decisões entre leituras de 616 e 622.
+O relatório registra 75 amostras de métricas, das quais 71 têm contagem positiva
+e parcial enquanto o produtor estava em andamento. A reconciliação final passou;
+a reutilização da sessão concluída fez zero novas tentativas de pontuação.
+
+Foram 9.619 medidas HTTP: p50 de 10,66 ms, p95 de 23,90 ms e máximo de 47,72 ms,
+no escopo cliente HTTP do relatório. O ensaio retomado passou em 1.086,28 s;
+essa duração inclui pacing, contexto restante, feedback e verificações e exclui
+a tentativa anterior que falhou. Não é benchmark de inicialização fria ou SLA.
+
+O autor confirmou a revisão visual final do portal e forneceu captura com
+9.619/9.619 decisões, 100 alertas, 3.746 clientes distintos e 9.619 feedbacks de
+decisões. O teste automatizado conserva `browser_visual_review_validated=false`;
+a confirmação humana está no recibo separado, sem reescrever o resultado.
+O aceite não registra inspeção humana de todos os estados intermediários nem
+revisão visual específica do Grafana. Seus readbacks da mesma sessão foram
+verificados pelo gate nativo.
+
+O operador reiniciou `session-monitor-watch SESSION_MONITOR_ID=arrivals-day-v1`
+com o mesmo vínculo. Sessões anteriores, snapshots, avaliação completa, pesos
+e release permaneceram preservados. A baseline corrente é
+`baseline-arrivals-day-v1.json`, com caminho/SHA no guia principal.
+
+Este fechamento documenta resultados informados pelo autor; não executa outra
+jornada. Não cria qualidade independente, promoção, reboot ou firing de alertas.
+Próximo: revisão/CI/integração e depois reprodução em ambiente limpo e isolado.

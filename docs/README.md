@@ -2,7 +2,8 @@
 
 **Percurso atual (2026-10-27):** [operação do produto](operations/PRODUCT_OPERATIONS.md),
 [roadmap corrente](project/ROADMAP.md) e [jornada diária integrada](operations/LIVE_OPERATIONS.md).
-A implementação da jornada está preparada; seu aceite nativo permanece pendente.
+A jornada passou no KinD com 9.619 decisões e 100 alertas; a revisão visual final
+do portal foi confirmada pelo autor. Próximo: reprodução em ambiente limpo.
 O [histórico do roadmap](project/ROADMAP_HISTORY.md) preserva os incrementos anteriores.
 
 
