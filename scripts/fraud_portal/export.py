@@ -13,7 +13,9 @@ from scripts.platform import kind_foundation as f
 from scripts.product_flow import controller as flow
 from scripts.product_flow.http_scoring import checked_response, digest
 
-from fraud_detection_mlops.data.datasets.native_replay_dataset import readonly_connection
+from fraud_detection_mlops.data.datasets.native_replay_dataset import (
+    readonly_connection,
+)
 from fraud_detection_mlops.serving.model_release import ReleaseManifest
 from fraud_detection_mlops.serving.request_schema import ScoreRequest
 from fraud_detection_mlops.streaming.replay.native_causal_replay import job_lock
@@ -22,10 +24,20 @@ from fraud_detection_mlops.streaming.replay.native_causal_replay import job_lock
 def prepare(root, key, flow_id, explanation_id, explanation_sha, no_other_writers):
     data.require(no_other_writers, "Declare PRODUCT_NO_OTHER_WRITERS=1")
     source, value = flow.work(flow_id), flow.read(flow_id)
+    source_files = explanations.source_files
+    session_source = False
     if explanation_id is None:
         data.require(explanation_sha is None, "Não informe digest sem relatório")
         # Snapshot verification checks the accepted checkpoint without invoking an explainer.
-        explanations.snapshot(flow_id, 1)
+        legacy = source / "rehearsal.json"
+        if legacy.exists() or legacy.is_symlink():
+            explanations.snapshot(flow_id, 1)
+        else:
+            from scripts.fraud_portal import session_acceptance
+
+            session_acceptance.snapshot(flow_id, value)
+            source_files = session_acceptance.source_files
+            session_source = True
         explained, report_result = {}, {"case_count": 0}
     else:
         report_result = explanations.verify(explanation_id, explanation_sha)
@@ -36,7 +48,7 @@ def prepare(root, key, flow_id, explanation_id, explanation_sha, no_other_writer
             c["request"]["transaction_id"]: c
             for c in json.loads((report_dir / "cases.json").read_bytes())
         }
-    before = explanations.source_files(source)
+    before = source_files(source)
     manifest = ReleaseManifest.model_validate(value["release_manifest"])
     cases = []
     with (
@@ -81,7 +93,7 @@ def prepare(root, key, flow_id, explanation_id, explanation_sha, no_other_writer
             cases.append(case)
         conn.execute("COMMIT")
     data.require(
-        before == explanations.source_files(source) and flow.read(flow_id) == value,
+        before == source_files(source) and flow.read(flow_id) == value,
         "Fonte alterada durante a preparação do portal",
     )
     data.require(
@@ -101,6 +113,8 @@ def prepare(root, key, flow_id, explanation_id, explanation_sha, no_other_writer
         "alert_policy": value["alert_policy"],
         "cases": cases,
     }
+    if session_source:
+        payload["source_acceptance"] = "reconciled_session_not_product_pause_resume_rehearsal"
     directory = f.managed_destination(root / "data/reports/fraud-portal" / key, "reports")
     directory.parent.mkdir(parents=True, exist_ok=True)
     if directory.exists():
@@ -141,7 +155,8 @@ def prepare(root, key, flow_id, explanation_id, explanation_sha, no_other_writer
     access.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
     if access.exists():
         data.require(
-            json.loads(access.read_bytes()) == receipt, "Configuração do portal divergente"
+            json.loads(access.read_bytes()) == receipt,
+            "Configuração do portal divergente",
         )
     else:
         f.private_json(access, receipt)
