@@ -1,5 +1,14 @@
 # Fraud Detection MLOps
 
+**Operação atual:** [guia principal](docs/operations/PRODUCT_OPERATIONS.md) e
+[roadmap](docs/project/ROADMAP.md). PR #11 integrado e CI aprovado; portal único,
+sessão causal, monitoramento e runtimes otimizados aceitos. A
+[jornada diária com chegadas simultâneas](docs/operations/LIVE_OPERATIONS.md)
+passou no KinD com 9.619 decisões/100 alertas, pausa/retomada e revisão visual
+final do portal; [recibo de aceite](references/evidence/live_operations_author_validation_2026-10-27.json).
+O próximo recorte é a reprodução em ambiente limpo e isolado.
+
+
 Rodada canônica aceita no KinD: Bronze → Jobs Silver/Gold → três candidatos com datasets registrados → HGB versão 1 em `fraud-detector@champion` → API e rollback verificados.
 [Sucessores com busca opcional e aprovação explícita de tráfego](docs/operations/MODEL_UPDATES.md): retenção nativa de candidatos aceita nas rodadas fixa e de busca; ativação de um sucessor com pesos diferentes ainda pendente.
 [Guia da rodada operacional](docs/operations/OPERATIONAL_ROUND.md).

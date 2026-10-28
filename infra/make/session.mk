@@ -45,3 +45,19 @@ SESSION_TARGET_DECISIONS ?= 2000
 session-prepare-expanded:
 	@test "$(SESSION_NO_OTHER_WRITERS)" = 1 || { echo 'Set SESSION_NO_OTHER_WRITERS=1'; exit 2; }
 	$(POETRY) run python -m scripts.product_session.controller prepare --session-id "$(SESSION_ID)" --source-state "$(SESSION_SOURCE_STATE)" --start "$(SESSION_START)" --end "$(SESSION_END)" --target-decisions "$(SESSION_TARGET_DECISIONS)" --no-other-writers
+
+
+LIVE_SESSION_ID ?= arrivals-day-v1
+LIVE_SESSION_START ?= 2018-09-16T00:00:00
+LIVE_SESSION_END ?= 2018-09-17T00:00:00
+LIVE_BASELINE ?= data/storage/kind-platform/operations/baseline-arrivals-day-v1.json
+.PHONY: session-daily-prepare session-live-test
+## Prepare the full available daily window in a NEW session; does not start arrivals
+session-daily-prepare:
+	@test "$(SESSION_NO_OTHER_WRITERS)" = 1 || { echo 'Set SESSION_NO_OTHER_WRITERS=1'; exit 2; }
+	$(POETRY) run python -m scripts.product_session.controller prepare --session-id "$(LIVE_SESSION_ID)" --source-state "$(SESSION_SOURCE_STATE)" --start "$(LIVE_SESSION_START)" --end "$(LIVE_SESSION_END)" --target-decisions 50000 --no-other-writers
+
+## Run opt-in live daily rehearsal; bind portal/monitor, stop external watcher and save its baseline first
+session-live-test:
+	@test "$(SESSION_NO_OTHER_WRITERS)" = 1 || { echo 'Set SESSION_NO_OTHER_WRITERS=1'; exit 2; }
+	FRAUD_LIVE_SESSION_ID="$(LIVE_SESSION_ID)" FRAUD_LIVE_BASELINE="$(LIVE_BASELINE)" FRAUD_SESSION_NO_OTHER_WRITERS=1 FRAUD_PORTAL_ID="$(PORTAL_ID)" .venv/bin/python -m tox -e live-operations

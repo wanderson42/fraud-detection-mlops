@@ -1,0 +1,212 @@
+{
+  "schema": "fraud_live_operations_author_validation_v1",
+  "status": "native_journey_accepted_with_separate_author_portal_visual_review",
+  "date": "2026-10-27",
+  "session_id": "arrivals-day-v1",
+  "session_sha256": "a95f3da1480a87ca23414c84b70d0765808368466fe04c29fa630de9667c5ba6",
+  "binding": {
+    "session_id": "arrivals-day-v1",
+    "session_sha256": "a95f3da1480a87ca23414c84b70d0765808368466fe04c29fa630de9667c5ba6",
+    "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+    "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+    "expected_events": 288172,
+    "expected_decisions": 9619
+  },
+  "window": {
+    "start": "2018-09-16T00:00:00",
+    "end_exclusive": "2018-09-17T00:00:00",
+    "target_decisions": 50000,
+    "eligible_transactions": 9619,
+    "limits_sha256": "79d75b457391d74dc67fcde8fce38dd859f05116b25edee7676754fe1f9215e7"
+  },
+  "native_evidence": {
+    "report": "data/storage/kind-platform/product-flow/session-arrivals-day-v1/native-live-rehearsal.json",
+    "source_transcript_sha256": "fbdb4db8087c3aed186882bb85106ba76eb907e4758d9c1d89ff09d2755cd124",
+    "parsed_report_canonical_sha256": "119ca34a2d6df3cbe348c1910869960655b2e8dc12f7f6bfb1fde9890a6a1dad",
+    "digest_scope": "canonical JSON parsed from author terminal transcript; not a claim about original report file bytes",
+    "test_passed": true,
+    "test_elapsed_seconds": 1086.28,
+    "timing_scope": "successful resumed rehearsal; excludes the earlier failed invocation; not API latency or cold-start benchmark",
+    "verification": {
+      "schema": "fraud_product_flow_verification_v1",
+      "status": "product_flow_reconciled",
+      "flow_id": "session-arrivals-day-v1",
+      "counts": {
+        "events": 288172,
+        "transactions": 144086,
+        "feedback": 144086,
+        "decisions": 9619,
+        "alert_decisions": 9619,
+        "alerts": 100
+      },
+      "HTTP_receipts": 9619,
+      "causal_requests_and_triage_rebuilt": true,
+      "source_model_scores_reused": false,
+      "feedback_transactions": 144086,
+      "alerts_with_positive_transaction_feedback": 10,
+      "model_sha256": "6dad9a78a5da0bda34cae6957b0ddbe391ecd848fbbc6604ae930bea3501370b",
+      "serving_release_id": "e8350e0a841f4136983e0d905068a743",
+      "threshold_scope": "explicit_HTTP_integration_threshold_not_cost_calibrated_or_old_model_threshold",
+      "checkpoint_sha256": "31bc47aa7cf9840334935da674fe6a4a3bd9a42d29ec3834f4778431c2e7c1b1",
+      "fit_executed": false,
+      "new_independent_quality_confirmation": false,
+      "champion_modified": false,
+      "production_promotion": false,
+      "verification_elapsed_seconds": 15.646056288998807,
+      "HTTP_latency_ms": {
+        "measurements": 9619,
+        "p50": 10.66382599674398,
+        "p95": 23.897699900408043,
+        "maximum": 47.71555699699093,
+        "scope": "client HTTP request including bounded retries, excludes warmup, pacing and independent verification"
+      }
+    },
+    "stages": {
+      "first": {
+        "status": "paused",
+        "champion_modified": false,
+        "fit_executed": false,
+        "elapsed_seconds": 142.83282767399942,
+        "phase_elapsed_seconds": {
+          "warmup": 106.43369878300291,
+          "arrivals": 36.39912747799826,
+          "feedback": 0.0
+        },
+        "scoring_HTTP_attempts": 500,
+        "process_lifetime_peak_rss_kib": 714440,
+        "rss_scope": "Linux process lifetime high water mark, not incremental session allocation",
+        "timing_scope": "invocation wall time; arrivals include deliberate pacing and interleaved mature feedback"
+      },
+      "ui_paused": {
+        "status": "live_portal_AppTest_verified",
+        "session_sha256": "a95f3da1480a87ca23414c84b70d0765808368466fe04c29fa630de9667c5ba6",
+        "displayed_decisions": 500,
+        "committed_before": 500,
+        "committed_after": 500,
+        "pagination_and_evidence_navigation_verified": true,
+        "static_sources_unchanged": true,
+        "browser_visual_review_validated": false
+      },
+      "collection_recovery": {
+        "source_expiry_and_recovery_verified": true,
+        "paused_counts_unchanged": true,
+        "API_ready_during_expiry": true
+      },
+      "ui_running": {
+        "status": "live_portal_AppTest_verified",
+        "session_sha256": "a95f3da1480a87ca23414c84b70d0765808368466fe04c29fa630de9667c5ba6",
+        "displayed_decisions": 620,
+        "committed_before": 616,
+        "committed_after": 622,
+        "pagination_and_evidence_navigation_verified": true,
+        "static_sources_unchanged": true,
+        "browser_visual_review_validated": false
+      },
+      "arrivals": {
+        "status": "awaiting_feedback",
+        "champion_modified": false,
+        "fit_executed": false,
+        "elapsed_seconds": 683.3917470430024,
+        "phase_elapsed_seconds": {
+          "warmup": 0.06557260700355982,
+          "arrivals": 683.326173675996,
+          "feedback": 0.0
+        },
+        "scoring_HTTP_attempts": 9119,
+        "process_lifetime_peak_rss_kib": 1021588,
+        "rss_scope": "Linux process lifetime high water mark, not incremental session allocation",
+        "timing_scope": "invocation wall time; arrivals include deliberate pacing and interleaved mature feedback"
+      },
+      "feedback_hidden_before_drain": true,
+      "feedback": {
+        "status": "complete",
+        "champion_modified": false,
+        "fit_executed": false,
+        "elapsed_seconds": 115.59026001400343,
+        "phase_elapsed_seconds": {
+          "warmup": 0.0,
+          "arrivals": 0.0,
+          "feedback": 115.59025963900058
+        },
+        "scoring_HTTP_attempts": 0,
+        "process_lifetime_peak_rss_kib": 1089556,
+        "rss_scope": "Linux process lifetime high water mark, not incremental session allocation",
+        "timing_scope": "invocation wall time; arrivals include deliberate pacing and interleaved mature feedback"
+      }
+    },
+    "completed_reuse": {
+      "status": "complete",
+      "champion_modified": false,
+      "fit_executed": false,
+      "elapsed_seconds": 0.12121707299957052,
+      "phase_elapsed_seconds": {
+        "warmup": 0.0,
+        "arrivals": 0.0,
+        "feedback": 0.12121658700198168
+      },
+      "scoring_HTTP_attempts": 0,
+      "process_lifetime_peak_rss_kib": 1363032,
+      "rss_scope": "Linux process lifetime high water mark, not incremental session allocation",
+      "timing_scope": "invocation wall time; arrivals include deliberate pacing and interleaved mature feedback"
+    },
+    "observations": {
+      "total": 75,
+      "positive_partial_running_samples": 71,
+      "minimum_live_prometheus_decisions": 94.0,
+      "maximum_live_prometheus_decisions": 9513.0
+    },
+    "accepted_sources_sha256": {
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrivals-day-v1/session.json": "a95f3da1480a87ca23414c84b70d0765808368466fe04c29fa630de9667c5ba6",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrivals-day-v1/input.json": "f103f238b95e8e095ebc0f55df3bcef3416e40084635a364c19df4b01c9c51cf",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrivals-day-v1/events.sqlite": "737b786ccb6b3ddbff646ce585414e883e6dc28e0382ee6d5cde84ce40e45164",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrival-v1/session.json": "cff9a122be56eb4201af2194af2a941b4b74f4e3bf4c93a8e93e16efb24fab5b",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrival-v1/input.json": "80b1362823ecaadd5a3d7600efe870ede432fd7fd22f184d2936dc117b101a24",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrival-v1/checkpoint.sqlite": "80ea1968068d490bb5d9cd99369ff106fa18d33e223fa86900753b619b898b8f",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrival-v1/native-rehearsal.json": "07c7d59c6360cb9507633e7c60a1676d668ef800b402319c9c5a0664e5c8c9e1",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrival-2k-v1/session.json": "f82d8fb8c2e25f533c31d03f7dc430b4a15ef2761758840506a7136de94edf3e",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrival-2k-v1/input.json": "10f5a1aa1dc92003645b9a34cf23e6ce0875415a5a5f64554793cfbd3cf0ae60",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrival-2k-v1/checkpoint.sqlite": "bee291fd343c6f6c9af9487d33b23093ff703e1cab3dadc19450b53967bae17b",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/storage/kind-platform/product-flow/session-arrival-2k-v1/native-scale-rehearsal.json": "5fd87cee105c9c06f60bc6a4854551fb72ca34caf1210135d0a4104d9e14f45d",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/reports/fraud-portal/investigation-v1/manifest.json": "ea62fd7869f8ffc8e5e6cf4aaec907acaf9752229d9642760d659f3a496550af",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/reports/fraud-portal/investigation-v1/snapshot.json": "637533edb5ac3f82204c8f3f3d999b39e8d80e470a10a8f80a07cdc99064ca95",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/reports/fraud-portal/performance/validation-v1/manifest.json": "6884e24545843d7c82368e9af180132ba975f67ceaec4b3dc338e9bee375a475",
+      "/home/wanderson/Documentos/fraud-detection-mlops/data/reports/fraud-portal/performance/validation-v1/performance.json": "75a0dd4915adb4f47df7c33dbe67aff7da76f13332d5973d3cdfed9ddaab8263"
+    },
+    "original_browser_visual_review_validated": false,
+    "original_report_modified": false
+  },
+  "author_visual_review": {
+    "portal_final_state_accepted": true,
+    "source": "author confirmation tudo certo and supplied final portal screenshot",
+    "screenshot_sha256": "61030b171b96bd8f1bff4fa35138f970273dec84688cca03dbd41c42f0c71c7b",
+    "displayed_decisions": 9619,
+    "displayed_alerts": 100,
+    "displayed_distinct_customers": 3746,
+    "displayed_decision_feedback": 9619,
+    "intermediate_live_states_human_visual_proof_recorded": false,
+    "specific_Grafana_browser_visual_proof_recorded": false,
+    "scope": "final portal readability and completed session; automated AppTest during live arrivals and native Grafana readbacks have separate evidence"
+  },
+  "current_operations": {
+    "baseline": "data/storage/kind-platform/operations/baseline-arrivals-day-v1.json",
+    "baseline_sha256": "62152f69c976f4a4c965d04823eb1f9bea41640b960e86f8dd241e1a8f5226ba",
+    "watch_command": "make session-monitor-watch SESSION_MONITOR_ID=arrivals-day-v1",
+    "watcher_started": "operator reported observing_session with matching binding"
+  },
+  "live_arrivals_native_validated": true,
+  "same_session_Grafana_validated": true,
+  "isolated_live_portal_navigation_validated": true,
+  "champion_modified": false,
+  "fit_executed": false,
+  "new_independent_quality_confirmation": false,
+  "new_stop_start_or_reboot_acceptance": false,
+  "alert_notification_firing_validated": false,
+  "clean_environment_reproduction_validated": false,
+  "new_branch_CI_or_merge_claimed": false,
+  "limits": [
+    "Finite previously observed Handbook window, not new holdout",
+    "0.5 threshold and daily budget are integration policy, not cost calibration",
+    "No production-scale SLA or human-cost equivalence established",
+    "Success of recovery does not prove the earlier SQLite lock never recurs beyond bounded retry"
+  ]
+}

@@ -47,8 +47,10 @@ sem mudança do champion. O runtime de treino será usado por próximos Jobs;
 sua execução em nova rodada no KinD continua um aceite separado. Não há serviço
 de treino permanente para reiniciar nem necessidade de repetir a rodada histórica.
 
-O baseline operacional atual é
+O baseline do fechamento desta manutenção é
 `data/storage/kind-platform/operations/baseline-tracking-bytecode-v1.json`.
+A configuração vigente após manutenções posteriores está no
+[guia operacional principal](PRODUCT_OPERATIONS.md).
 O check confirmou a topologia e as leituras funcionais atuais. Não representa
 novo aceite de stop/start ou reboot. Não foi executado rollback nativo desta
 manutenção do tracking; a reversão continua disponível com aprovação própria.

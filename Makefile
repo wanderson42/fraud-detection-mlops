@@ -29,7 +29,8 @@ help:
 	  'Parar/subir: platform-stop | platform-start (requerem baseline salvo e declaração de writers)' \
 	  'Desenvolver: validate | portal-ui-test' \
 	  'Background:  access-up | access-status | access-logs | access-stop-all' \
-	  'Sessão:      session-prepare | session-run | session-pause | session-status | session-open' \
+	  'Sessão:      session-prepare | session-run | session-pause | session-status | session-verify' \
+	  'Jornada:     session-daily-prepare | session-live-test (opt-in)' \
 	  'Monitorar:   session-monitor-watch | session-monitor-rehearse' \
 	  'Catálogo:    make help-all' \
 	  'Guia:       docs/operations/PRODUCT_OPERATIONS.md'

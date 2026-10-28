@@ -127,7 +127,8 @@ O warmup inicial de 369,42 s é reconstrução de contexto; não é latência de
 A reexecução completa fez zero novas chamadas HTTP e a sessão de 200 permaneceu
 inalterada. [Evidência](../../references/evidence/product_session_scale_author_validation_2026-10-23.json).
 
-O novo [monitoramento da mesma sessão](SESSION_MONITORING.md) está preparado para
-aceite nativo separado. Os quatro dashboards históricos preservam sua fonte.
-A unificação do portal permanece planejada. O teste não valida CT nem
-promoção/rollback de sucessor com pesos diferentes.
+O [monitoramento da mesma sessão](SESSION_MONITORING.md) e o
+[portal único](UNIFIED_PORTAL.md) foram aceitos separadamente. Os dashboards
+históricos preservam sua fonte. A [jornada diária integrada](LIVE_OPERATIONS.md)
+verificará chegadas e observação simultâneas; seu aceite nativo está pendente.
+O teste de escala não valida CT ou promoção/rollback de sucessor com pesos diferentes.

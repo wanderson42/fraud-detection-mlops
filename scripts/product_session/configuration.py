@@ -32,22 +32,31 @@ def accept(saved):
     current = code_pins()
     if saved == current:
         return
-    path = f.ROOT / TRANSITION
-    flow.p.require(path.is_file(), "Session code identity changed; no reviewed transition")
-    declaration = json.loads(reader.checked(path).read_bytes())
-    committed = subprocess.run(
-        ["git", "show", "HEAD:" + TRANSITION], cwd=f.ROOT, capture_output=True, check=False
-    )
-    flow.p.require(
-        committed.returncode == 0 and committed.stdout == path.read_bytes(),
-        "Commit the reviewed session source transition",
-    )
-    flow.p.require(
-        declaration["schema"] == "fraud_product_session_scale_source_transition_v1"
-        and declaration["before"] == saved
-        and declaration["after"] == current,
-        "Session code identity changed outside the exact reviewed transition",
-    )
+    # Advance only exact committed maps, keeping legacy and scale receipts immutable.
+    for name, schema in (
+        (TRANSITION, "fraud_product_session_scale_source_transition_v1"),
+        (
+            "references/session_busy_source_transition_v1.json",
+            "fraud_session_busy_source_transition_v1",
+        ),
+    ):
+        path = f.ROOT / name
+        if not path.is_file():
+            continue
+        declaration = json.loads(reader.checked(path).read_bytes())
+        if declaration.get("schema") != schema or declaration.get("before") != saved:
+            continue
+        committed = subprocess.run(
+            ["git", "show", "HEAD:" + name], cwd=f.ROOT, capture_output=True, check=False
+        )
+        flow.p.require(
+            committed.returncode == 0 and committed.stdout == path.read_bytes(),
+            "Commit the reviewed session source transition",
+        )
+        saved = declaration["after"]
+        if saved == current:
+            return
+    raise ValueError("Session code identity changed outside the exact reviewed transition")
 
 
 def bounds(start, end, target, limits):

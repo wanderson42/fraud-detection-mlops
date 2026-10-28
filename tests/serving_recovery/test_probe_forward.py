@@ -188,7 +188,7 @@ def test_fix_transition_accepts_exact_old_draft_sources_without_rewriting_them(t
 
     root = tmp_path / "reviewed"
     root.mkdir()
-    declaration = json.loads((m.f.ROOT / compat.SESSION_COUNTS_TRANSITION).read_text())
+    declaration = json.loads((m.f.ROOT / compat.SESSION_BUSY_TRANSITION).read_text())
     old = {"scientific-contract": "same"}
     current = dict(old)
     for name, hashes in declaration["changes"].items():
@@ -198,7 +198,7 @@ def test_fix_transition_accepts_exact_old_draft_sources_without_rewriting_them(t
         target.write_bytes(source.read_bytes())
         old[name] = hashes["before"]
         current[name] = hashes["after"]
-    target = root / compat.SESSION_COUNTS_TRANSITION
+    target = root / compat.SESSION_BUSY_TRANSITION
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(declaration))
     draft = root / "runtime-preparing.json"
@@ -237,13 +237,13 @@ def test_reviewed_fix_resumes_original_draft_with_same_node_image_and_unchanged_
     folder, _value, mutations = intent
     folder.chmod(0o700)
     source_root = m.f.ROOT
-    declaration = json.loads((source_root / compat.SESSION_COUNTS_TRANSITION).read_text())
+    declaration = json.loads((source_root / compat.SESSION_BUSY_TRANSITION).read_text())
     approved_root = tmp_path / "committed-fix"
     for name in declaration["changes"]:
         target = approved_root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes((source_root / name).read_bytes())
-    target = approved_root / compat.SESSION_COUNTS_TRANSITION
+    target = approved_root / compat.SESSION_BUSY_TRANSITION
     target.parent.mkdir(parents=True)
     target.write_text(json.dumps(declaration))
     subprocess.run(["git", "init", "-q", str(approved_root)], check=True)

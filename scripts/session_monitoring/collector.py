@@ -7,7 +7,7 @@ import sqlite3
 import time
 from urllib.parse import quote
 
-from scripts.product_session.reader import checked, sha
+from scripts.product_session.reader import checked, retry_busy, sha
 from scripts.session_monitoring import contract as c
 
 
@@ -29,6 +29,7 @@ def identity(directory):
     ), value
 
 
+@retry_busy
 def collect(directory, expected, now=None):
     now = time.time() if now is None else now
     actual, source = identity(directory)
