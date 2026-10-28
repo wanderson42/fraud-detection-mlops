@@ -129,6 +129,11 @@ def test_exact_transition_preserves_receipts_but_rejects_science_change():
         if name in busy_fix["changes"]:
             assert busy_fix["changes"][name]["before"] == digest
             expected[name] = busy_fix["changes"][name]["after"]
+    session_only = json.loads((ROOT / compatibility.SESSION_ONLY_TRANSITION).read_bytes())
+    for name, digest in expected.items():
+        if name in session_only["changes"]:
+            assert session_only["changes"][name]["before"] == digest
+            expected[name] = session_only["changes"][name]["after"]
     assert all(digest == k.state.sha(ROOT / name) for name, digest in expected.items())
 
 

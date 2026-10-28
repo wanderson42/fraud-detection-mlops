@@ -58,6 +58,7 @@ def inventory(monkeypatch, request):
         }
     # Keep this offline gate independent of the operator's enabled.json and
     # image receipts; exercise both topologies using synthetic sidecar state.
+    monkeypatch.setattr(k, "session_only", lambda: False)
     telemetry = {"image": "locked:session"} if request.param else None
     monkeypatch.setattr(k, "session_telemetry", lambda: telemetry)
 

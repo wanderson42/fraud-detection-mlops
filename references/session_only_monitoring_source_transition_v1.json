@@ -1,0 +1,38 @@
+{
+  "schema": "fraud_session_only_monitoring_source_transition_v1",
+  "scope": "exact_operational_host_and_chart_transition_scientific_and_receiver_server_contracts_unchanged",
+  "changes": {
+    "scripts/platform/kind_observability.py": {
+      "before": "0468591896df5326972486cb3ba31f546a3061410e9cea4d1e77636e99733d12",
+      "after": "ed71dbe6e41ad1828b2d78add7a8f75a920defdeac2e8ee541e1dbba29250694"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "fcb34425e3f21edba1d7e9f80b584e70d2ca409db4acb3ee3f70e62c3835841e",
+      "after": "258aa9895e0b8ca6e31390d709c1d5ca27a1fc27bfb9c6df2c3ddbd81093a9f4"
+    },
+    "scripts/session_monitoring/controller.py": {
+      "before": "f97fb041e166a5fd618f65ef454475ed3686fba5d591eb65ec4303c3868d776f",
+      "after": "75f3e812ccdbdc936955e45389e43ebf46527e4e80581a23451b2b6890fd516a"
+    },
+    "infra/helm/fraud-observability/templates/config.yaml": {
+      "before": "9081f2eecb8b74e30534bdd62b05de5943ea7dbe1585f5ee458f157805838b13",
+      "after": "76fb794753657d1be22fd46071bf636ebf547676fd68b4a9866ffba100c88eba"
+    },
+    "infra/helm/fraud-observability/templates/storage.yaml": {
+      "before": "e73bae9a7ef3c0e60b758d6e0efad7c83d8c5fbe938a6561d5dc3362216d3b54",
+      "after": "5907349377cace9e547eb7999d22abad2db9a074e55e303bd1d8a34eaacbbd9a"
+    },
+    "infra/helm/fraud-observability/templates/workloads.yaml": {
+      "before": "4423fc6f972b2c30e1a9bb2adabc998f3e5b0cacff71f027d18635e73b0d53c4",
+      "after": "a47fac032be2546870845912472a3a97758cf0ce02a4c9537de5d0981f853188"
+    },
+    "infra/helm/fraud-observability/values.yaml": {
+      "before": "70612349520497e1728e3494e157a605b73686b6e2c5b6039f5646a6736e23b6",
+      "after": "0835867f645d3332bde57bae54baebaed07927e8e0f0c968e29b75d48f7b9d4c"
+    },
+    "infra/helm/fraud-observability/values.schema.json": {
+      "before": "928b30631befb145a0c27216aabeef73a4c21e418817a2d2344032a55c56e458",
+      "after": "4d5a0419bb1d6fc58d5e135137a75de70642cce6eaa6e7850d6b563680c6f3b4"
+    }
+  }
+}

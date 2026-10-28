@@ -1,0 +1,10 @@
+{
+  "schema": "fraud_session_only_monitoring_preparation_v1",
+  "status": "prepared_not_native_accepted",
+  "base_commit": "6c01e44d48f694c7218446f917491e3329029f83",
+  "focused_tests_passed": 109,
+  "real_Helm_rendering_tested": true,
+  "native_VM_installation_validated": false,
+  "champion_modified": false,
+  "existing_legacy_profile_preserved": true
+}

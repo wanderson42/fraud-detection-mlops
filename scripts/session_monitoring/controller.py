@@ -202,6 +202,10 @@ def prepare(key, previous_sha=None):
 
 
 def up():
+    if k.session_only():
+        from scripts.platform import session_observability
+
+        return session_observability.install(session_observability.profile()["session_id"])
     committed()
     active_before = session.flow.active()
     proposed = json.loads((work() / "prepared.json").read_bytes())
@@ -394,6 +398,10 @@ def check_projection(uri, prom, graf, value, valid):
 
 
 def rehearse(key):
+    if k.session_only():
+        from scripts.platform import session_observability
+
+        return session_observability.rehearse(key)
     active_before = session.flow.active()
     directory, binding = bound(key)
     accepted = [
