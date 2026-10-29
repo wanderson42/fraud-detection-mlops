@@ -1,5 +1,53 @@
 # Reprodução limpa na VM — estado em 2026-10-29
 
+## Aceite do ciclo planejado na VM — 2026-10-29
+
+O autor aplicou a correção em `92ba7b3`, na branch `fix/vm-lifecycle-profile`,
+e informou 113 testes aprovados em 2,88 s (tox 6,65 s). Depois criou a baseline,
+executou parada/subida/verificação e retomou os serviços do host e o portal.
+A evidência é a saída nativa fornecida pelo autor; não é execução do assistente.
+CI e merge dessa correção ainda não são afirmados neste registro.
+
+| Recibo | Identidade |
+| --- | --- |
+| Baseline | `baseline-vm-session-shap-v1.json` |
+| SHA-256 da baseline | `ea4cd947fe236b7ffa42f34ee3174c16319ef056957546545c3d35a000aa9aac` |
+| Parada | `stop-212763fa4ca245d3b12eebc206518ed7.json`, status stopped |
+| Subida | `start-0a7bd68b097d403fa6f3c3890bc1123c.json`, status started |
+| Verificação | `verify-cddcb0783a764b67bfecd04155ad6b46.json`, status verified |
+
+Os arquivos ficam em `data/storage/kind-platform/operations/`, fora do Git.
+O recibo documental aponta para as identidades acima sem substituir os originais.
+O nó foi parado de fato e retomado com o mesmo container, node UID e engine;
+os quatro volumes e o plano de réplicas foram preservados, incluindo green em zero.
+
+A verificação repetiu os readbacks de PostgreSQL/RustFS, histórico MLflow de dois
+pontos, objeto S3 de controle e API do champion versão 1/blue. A API manteve modelo
+`401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67`, release
+`308a1a82036a44e49d477a1b16747b6e`, score de controle 0,4178630794049542 e HTTP 422
+para entrada inválida. O objeto S3 de teste do tracking tem identidade própria;
+não é apresentado como os pesos do champion.
+
+O perfil somente sessão confirmou scrape, duas regras saudáveis, proxy Grafana
+e dashboard. Os serviços systemd foram retomados explicitamente: observador PID
+181897 e acesso Grafana PID 181898, ambos active/running e NRestarts=0; HTTP saudável.
+A sessão manteve cinco hashes aceitos e recursos protegidos, com 269.334 eventos,
+200 decisões, 199 clientes, 13 alertas e 200 feedbacks nas decisões. O portal
+investigation-shap-v1 voltou em 18501 (PID 184638); smoke confirmou cinco explicações.
+
+Houve inferências HTTP de controle durante o ciclo, fora do ledger da sessão.
+O `new_inferences_executed=false` do check do observador refere-se àquela
+verificação da sessão, não apaga as inferências de controle. Não houve fit, replay,
+promoção ou migração primária. O boot ID permaneceu
+`24524ae4-b9a4-464b-8f1a-a1319ffc2acd`: este ensaio não incluiu reboot.
+Os flags de reboot, restauração, firing e revisão visual dos recibos originais
+permanecem false. A revisão visual do portal anterior não é refeita pelo smoke.
+Logout/reboot já tinham evidências separadas; backup/restauração, perda do host e
+instalação integral continuam fora deste aceite. Não se infere SLA destes tempos.
+
+[Recibo documental](../../references/evidence/vm_lifecycle_author_validation_2026-10-29.json).
+
+
 ## Inventário operacional e preparação do ciclo — 2026-10-29
 
 Fonte: saídas de terminal fornecidas pelo autor. O inventário distinguiu os
@@ -29,7 +77,7 @@ A tentativa de baseline-vm-session-shap-v1 falhou em
 `dashboard_color_policy_verified`, por exigir no perfil somente sessão um campo
 de retorno exclusivo do replay. A correção preparada exige as confirmações do
 perfil real e transição exata de fontes. O comando não chegou a stop/start; o
-aceite funcional da nova baseline continua pendente. [Diagnóstico e procedimento](KIND_OPERATIONS.md#perfil-somente-sessão-na-vm--correção-preparada-em-2026-10-29).
+aceite funcional ficou inicialmente pendente e foi encerrado pelo ciclo registrado acima. [Diagnóstico e procedimento](KIND_OPERATIONS.md#perfil-somente-sessão-na-vm--correção-preparada-em-2026-10-29).
 
 ## Aceite nativo de SHAP e portal da sessão — 2026-10-29
 
@@ -307,8 +355,8 @@ reúne a origem e o escopo. Não substitui os recibos e bancos locais.
 1. Concluir inventário, acessos restantes e limites de recursos; supervisão já integrada no PR #14.
 2. Publicar e integrar o aceite do portal da sessão concluída com CI/PR próprios; desempenho, SHAP e navegação nativos já aceitos neste recorte.
 3. Qualificar instalação integral do produto a partir de checkout vazio.
-4. Definir/verificar baseline própria da VM quando seus pré-requisitos existirem.
-5. Ensaiar ciclo completo de parada/subida e backup/restauração separadamente; logout e reboot planejado foram aceitos no escopo acima.
+4. Publicar/integrar a correção e o aceite da baseline própria e do ciclo planejado da VM via CI/PR.
+5. Ensaiar backup/restauração separadamente; parada/subida planejada foi aceita, com logout e reboot em evidências próprias.
 6. Ensaiar novas chegadas e firing de alertas de monitoramento se incluídos no escopo.
 
 O relato antigo de 288.172 eventos da fonte em preparação não deve ser confundido

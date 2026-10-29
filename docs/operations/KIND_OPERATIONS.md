@@ -1,5 +1,17 @@
 # Ciclo operacional do produto no KinD
 
+## Aceite planejado da VM — 2026-10-29
+
+Após a correção do contrato do perfil, o autor criou a baseline própria, concluiu
+stop/start/verify e retomou observador, acesso Grafana e portal. Mesmo nó, quatro
+volumes, plano de réplicas, modelo/release e sessão foram preservados; green ficou
+em zero. A baseline tem SHA-256
+`ea4cd947fe236b7ffa42f34ee3174c16319ef056957546545c3d35a000aa9aac`.
+[Recibos e limites](VM_REPRODUCTION_PROGRESS.md#aceite-do-ciclo-planejado-na-vm--2026-10-29).
+Este ciclo incluiu inferências de controle, sem adicionar decisões à sessão;
+não incluiu reboot, backup/restauração ou nova avaliação de qualidade.
+
+
 ## Perfil somente sessão na VM — correção preparada em 2026-10-29
 
 O inventário nativo foi aceito como leitura de estado: nove controllers previstos,
@@ -38,8 +50,8 @@ make platform-baseline \
 A preparação faz inferências HTTP de controle fora do ledger da sessão e pode
 criar pods temporários de verificação de armazenamento; não faz fit, promoção ou
 parada do nó. Se o caminho já existir, preserve-o e confira sua origem em vez de
-reescrevê-lo. A aprovação nativa da correção e o ciclo completo ainda estão
-pendentes. Não execute stop/start como parte desta correção.
+reescrevê-lo. A correção passou no gate nativo e o ciclo planejado foi aceito posteriormente,
+como registrado acima. A preparação, sozinha, continua sem comprovar stop/start.
 
 No ciclo posterior, pare explicitamente os serviços de usuário e acessos locais
 antes da parada do cluster. Retome o observador e o Grafana supervisionado após o
