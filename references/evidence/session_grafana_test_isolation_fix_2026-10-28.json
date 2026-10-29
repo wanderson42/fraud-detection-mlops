@@ -1,0 +1,20 @@
+{
+  "schema": "fraud_session_grafana_test_isolation_fix_v1",
+  "status": "prepared_VM_retest_pending",
+  "observed_VM_failure": {
+    "passed": 207,
+    "failed": 2,
+    "skipped": 5,
+    "cause": "legacy unit tests inspected installed native session-only profile with synthetic owner"
+  },
+  "fix": "explicit synthetic legacy dispatch; native workspace access forbidden unless test supplies fixture; profile present and absent regression cases",
+  "runtime_or_chart_changed_by_fix": false,
+  "local_validation": {
+    "passed": 210,
+    "skipped": 5,
+    "warnings": 3
+  },
+  "native_retest_passed": false,
+  "deployment_modified": false,
+  "champion_modified": false
+}

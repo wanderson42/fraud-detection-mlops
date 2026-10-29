@@ -1,0 +1,1420 @@
+{
+  "schemaVersion": 39,
+  "refresh": "5s",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "tags": [
+    "fraud",
+    "session",
+    "semantic-colors"
+  ],
+  "uid": "fraud-kind-overview",
+  "title": "Fraud — plataforma e sessão identificada",
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Escopo da plataforma observada",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 5
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Sessão identificada pelo mesmo checkpoint, pesos e release do painel de investigação. A validade da coleta usa tempo de parede; eventos usam relógio histórico. Sem fonte válida, números ficam ausentes. Azul = informação; verde = condição verificada; amarelo = investigar; vermelho = violação; cinza = indisponível.\n\nReadiness dos pods é uma leitura Kubernetes pontual renovada pelo observador. Não comprova disponibilidade HTTP, uptime ou SLA. Restart é o contador dos pods atuais, não histórico completo.\n\nO papel api observa o slot blue; readiness não comprova a rota canônica ou a identidade do modelo atualmente servido."
+      }
+    },
+    {
+      "id": 2,
+      "title": "Coleta da sessão",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_source_valid",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Coleta inválida",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Coleta válida",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Idade da coleta",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 5,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_collection_age_seconds",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Decisões confirmadas",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 5,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_decisions and on(session_id,session_sha256) (fraud_session_source_valid == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Pod pronto — serving blue",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 11,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_api_ready and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Ausente ou não pronto",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Pronto",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "Pod pronto — gateway",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 11,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_gateway_ready and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Ausente ou não pronto",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Pronto",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "Pod pronto — tracking",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 11,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_tracking_ready and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Ausente ou não pronto",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Pronto",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 8,
+      "title": "Pod pronto — postgres",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 17,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_postgres_ready and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Ausente ou não pronto",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Pronto",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "Pod pronto — rustfs",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 17,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_rustfs_ready and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Ausente ou não pronto",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Pronto",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 10,
+      "title": "Pod pronto — receiver",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 17,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_receiver_ready and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Ausente ou não pronto",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Pronto",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 11,
+      "title": "Pod pronto — prometheus",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_prometheus_ready and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Ausente ou não pronto",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Pronto",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 12,
+      "title": "Pod pronto — grafana",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 23,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_grafana_ready and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "Ausente ou não pronto",
+                  "color": "red"
+                },
+                "1": {
+                  "text": "Pronto",
+                  "color": "green"
+                }
+              }
+            },
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 13,
+      "title": "Reinicializações observadas",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 29,
+        "w": 24,
+        "h": 3
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Consulte os contadores dos pods atuais. Um restart pode ser esperado após ensaio ou manutenção; o número sozinho não indica incidente."
+      }
+    },
+    {
+      "id": 14,
+      "title": "Restarts — serving blue",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 32,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_api_restarts and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 15,
+      "title": "Restarts — gateway",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 32,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_gateway_restarts and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 16,
+      "title": "Restarts — tracking",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 32,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_tracking_restarts and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 17,
+      "title": "Restarts — postgres",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 38,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_postgres_restarts and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 18,
+      "title": "Restarts — rustfs",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 38,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_rustfs_restarts and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 19,
+      "title": "Restarts — receiver",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 38,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_receiver_restarts and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 20,
+      "title": "Restarts — prometheus",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 44,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_prometheus_restarts and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 21,
+      "title": "Restarts — grafana",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 44,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_pod_grafana_restarts and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    }
+  ]
+}

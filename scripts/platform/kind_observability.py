@@ -384,6 +384,10 @@ def values(ready):
     if session_only():
         f.require(telemetry, "Session-only profile requires a prepared receiver")
         result["legacyReplay"] = False
+        from scripts.session_monitoring.components import enabled
+
+        if enabled():
+            result["sessionComponents"] = True
     if telemetry:
         result["sessionTelemetry"] = telemetry
     return result

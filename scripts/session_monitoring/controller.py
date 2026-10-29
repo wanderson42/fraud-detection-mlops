@@ -82,6 +82,12 @@ def token():
     return value["token"]
 
 
+def components_enabled():
+    from scripts.session_monitoring.components import enabled
+
+    return enabled()
+
+
 def reviewed_sources(saved):
     source_compatibility.accept(saved, pins(), f.ROOT)
     return True
@@ -95,6 +101,10 @@ def image_record():
         and value["owner_id"] == k.credentials()["owner_id"],
         "Monitoring image/source identity differs",
     )
+    if components_enabled():
+        from scripts.session_monitoring.components import capability
+
+        capability(value)
     loaded = inspect_image(value["image"])
     f.require(
         loaded["id"] in value["loaded_identities"]
@@ -340,7 +350,13 @@ def watch(key, interval=5):
             print(json.dumps({"status": "observing_session", "binding": binding}), flush=True)
             while True:
                 try:
-                    put(uri, "/projection", collector.collect(directory, binding))
+                    put(
+                        uri,
+                        "/projection",
+                        collector.collect(
+                            directory, binding, include_details=components_enabled()
+                        ),
+                    )
                 except ValueError, OSError, KeyError, TypeError:
                     put(uri, "/invalidate", {"binding": binding})
                     raise
@@ -419,7 +435,7 @@ def rehearse(key):
     )
     before = {p.name: reader.sha(p) for p in accepted}
     protected, inventory = k.protected_inventory(), k.inventory()
-    value = collector.collect(directory, binding)
+    value = collector.collect(directory, binding, include_details=components_enabled())
     f.require(
         value["counts"]["events"] == binding["expected_events"]
         and value["counts"]["decisions"] == binding["expected_decisions"],
@@ -436,7 +452,7 @@ def rehearse(key):
             )
             time.sleep(35)
             check_projection(uri, prom, graf, value, False)
-            value = collector.collect(directory, binding)
+            value = collector.collect(directory, binding, include_details=components_enabled())
             put(uri, "/projection", value)
             check_projection(uri, prom, graf, value, True)
     f.require(before == {p.name: reader.sha(p) for p in accepted}, "Accepted source bytes changed")

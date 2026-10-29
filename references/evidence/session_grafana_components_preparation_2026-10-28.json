@@ -1,0 +1,24 @@
+{
+  "schema": "fraud_session_grafana_components_preparation_v1",
+  "status": "prepared_not_native_accepted",
+  "source_archive_sha256": "f4e1d82b9d65466e62a1830983d0d438bcc481555934e6d94605f0b5d1aa2b64",
+  "tests": {
+    "passed": 209,
+    "skipped": 5,
+    "warnings": 3,
+    "scope": "session_monitoring_observability_source_compatibility_product_session_product_flow_session_acceptance",
+    "real_HTTP_receiver_and_checkpoint_tested": true,
+    "real_Helm_rendering_tested": true,
+    "rollout_failure_simulation_tested": true,
+    "byte_exact_recovery_tested": true
+  },
+  "original_session_dashboard_changed": false,
+  "legacy_dashboards_changed": false,
+  "new_microservice_added": false,
+  "native_Docker_candidate_built": false,
+  "native_Kind_acceptance": false,
+  "visual_review_validated": false,
+  "champion_modified": false,
+  "scientific_policy_changed": false,
+  "source_thresholds_or_window_sizes_changed": false
+}

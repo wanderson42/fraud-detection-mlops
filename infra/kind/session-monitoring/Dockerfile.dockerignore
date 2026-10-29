@@ -4,3 +4,4 @@
 !scripts/session_monitoring/__init__.py
 !scripts/session_monitoring/contract.py
 !scripts/session_monitoring/server.py
+!scripts/session_monitoring/details.py

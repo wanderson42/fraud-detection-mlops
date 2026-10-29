@@ -1,0 +1,78 @@
+{
+  "schema": "fraud_session_components_source_transition_v1",
+  "scope": "exact_optional_session_aggregate_and_dashboard_extension_no_scoring_or_model_policy_change",
+  "changes": {
+    "infra/helm/fraud-observability/files/components/features.json": {
+      "before": null,
+      "after": "400dcfcc0793b4c1eecb53d00a16dec51e8c914e4976379948b0c6f2d73cd5a6"
+    },
+    "infra/helm/fraud-observability/files/components/operations.json": {
+      "before": null,
+      "after": "e9673d85135111af9e73f5fc372f415f6d048847286c0d2516d7b352498a98be"
+    },
+    "infra/helm/fraud-observability/files/components/overview.json": {
+      "before": null,
+      "after": "e42f66c73ea53adece099d388d4d186ee7f2a4df0e372a24e782a076613131fa"
+    },
+    "infra/helm/fraud-observability/files/components/quality.json": {
+      "before": null,
+      "after": "114eaca9c5f0819a71c5a639e6ad151880674d11de739421402592e13e6a0b4d"
+    },
+    "infra/helm/fraud-observability/templates/config.yaml": {
+      "before": "76fb794753657d1be22fd46071bf636ebf547676fd68b4a9866ffba100c88eba",
+      "after": "c21e835f63888808be0bbe86043a537418b3865e4799a6a44368b3a29214bb44"
+    },
+    "infra/helm/fraud-observability/values.schema.json": {
+      "before": "4d5a0419bb1d6fc58d5e135137a75de70642cce6eaa6e7850d6b563680c6f3b4",
+      "after": "3f4c984a706a8c44ce01d5d8287ba89c8c95e9c9ccbf9bba58dc04955af580f9"
+    },
+    "infra/helm/fraud-observability/values.yaml": {
+      "before": "0835867f645d3332bde57bae54baebaed07927e8e0f0c968e29b75d48f7b9d4c",
+      "after": "3973314e20c989e51f2a41bcb3db9597720e98e829a465d778a8efd933d4dcca"
+    },
+    "infra/kind/session-monitoring/Dockerfile": {
+      "before": "d174b64a15f80e24cf14f81174da613ab092721881ddc95d7bf7c0aea349a72a",
+      "after": "b967f6ba85434911e819dc596232131ed4ca70ee1e6d5d20870b6ea04ad2123a"
+    },
+    "infra/kind/session-monitoring/Dockerfile.dockerignore": {
+      "before": "19aa295697856a5e79b8a140ce95b5e26d1cc55ea9dbb638f6543ccc771d9f01",
+      "after": "a00078646dc0714c70e6c474f753d84940e4c588938e124be2d42f3d9f635bc4"
+    },
+    "scripts/platform/kind_observability.py": {
+      "before": "ed71dbe6e41ad1828b2d78add7a8f75a920defdeac2e8ee541e1dbba29250694",
+      "after": "9a663a30d644ed8b84eef14f4124bd5a7411a29a434196c4642186abebdf87b4"
+    },
+    "scripts/platform/session_observability.py": {
+      "before": "ad532ddf73b5566b6078a264dcbfc359a0a90b98c3249d8460b070a0946867ea",
+      "after": "faaa10422eaf149dce57923dce815c0bd6142ef80f7811ce1a0a178f3318e92e"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "258aa9895e0b8ca6e31390d709c1d5ca27a1fc27bfb9c6df2c3ddbd81093a9f4",
+      "after": "4338ad479a03f7c76e678417a36b803d1bddef7349da839210634ef30dc28e56"
+    },
+    "scripts/session_monitoring/collector.py": {
+      "before": "d62c9e644e279b3c875f4fdfe0ec2fd1e8853e2579fa64616f2f237ab80dcad5",
+      "after": "922ab892fdc8b125d9b59d10c27e3d33dd763fb199399e93891f091047034569"
+    },
+    "scripts/session_monitoring/components.py": {
+      "before": null,
+      "after": "51784bb593a2599cc5b14b5da560f599e34f866efdac1e313056a397b9caa950"
+    },
+    "scripts/session_monitoring/contract.py": {
+      "before": "932a31f2a020ebbf20e905979ff7d1f2999f22073170c58670eac162842e2a88",
+      "after": "309a7dff4259b4b9945d9f6a10eba3b33d82b3b7c3d152dba5246220cb5b4a0b"
+    },
+    "scripts/session_monitoring/controller.py": {
+      "before": "75f3e812ccdbdc936955e45389e43ebf46527e4e80581a23451b2b6890fd516a",
+      "after": "e4d67514bf863503ed8c486c9ae43f5c7e3f17aae20bd1f2fc0b966f9dffde9e"
+    },
+    "scripts/session_monitoring/details.py": {
+      "before": null,
+      "after": "880be0e87f9663deb73c466ed6aa3cf78ad29896b609e5837412fcf1565f1265"
+    },
+    "scripts/session_monitoring/server.py": {
+      "before": "d969d54f41957c6653df8a07a10145e9428749a47fb8fa72279295b1329a1610",
+      "after": "570e3245aa37cd63c6d0c8d766ab2137ba816221918b2812266a6b648e30ec53"
+    }
+  }
+}

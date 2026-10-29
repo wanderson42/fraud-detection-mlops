@@ -1,0 +1,1105 @@
+{
+  "schemaVersion": 39,
+  "refresh": "5s",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "tags": [
+    "fraud",
+    "session",
+    "semantic-colors"
+  ],
+  "uid": "fraud-triage-quality",
+  "title": "Fraud — triagem com feedback da sessão",
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Qualidade da coorte observada",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 6
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Sessão identificada pelo mesmo checkpoint, pesos e release do painel de investigação. A validade da coleta usa tempo de parede; eventos usam relógio histórico. Sem fonte válida, números ficam ausentes. Azul = informação; verde = condição verificada; amarelo = investigar; vermelho = violação; cinza = indisponível.\n\nSomente decisões pontuadas nesta sessão com feedback causal amadurecido. Não representa o dia completo ou a validação global. Precisão/recall usam cliente-dia observado: positivo quando alguma transação pontuada desse cliente-dia é fraudulenta. AP usa transações. Sem denominador, a métrica permanece ausente."
+      }
+    },
+    {
+      "id": 2,
+      "title": "Decisões com feedback maduro",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 6,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_quality_mature_transactions and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Transações fraudulentas na coorte",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 6,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_quality_mature_fraud_transactions and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Cliente-dias alertados",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 6,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_quality_mature_alerts and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Cliente-dias positivos capturados",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_quality_captured_customer_days and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "Cliente-dias positivos não capturados",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 12,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_quality_missed_customer_days and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "Alertas sem positivo na coorte",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 12,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_quality_nonfraudulent_alert_customer_days and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 8,
+      "title": "precision — coorte da sessão",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 18,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_quality_precision and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 9,
+      "title": "recall — coorte da sessão",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 18,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_quality_recall and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 10,
+      "title": "average_precision — coorte da sessão",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 18,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_quality_average_precision and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 11,
+      "title": "Decisões — alert",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_triage_alert and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 12,
+      "title": "Decisões — below_threshold",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 24,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_triage_below_threshold and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 13,
+      "title": "Decisões — already_alerted",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 24,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_triage_already_alerted and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 14,
+      "title": "Decisões — budget_exhausted",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 30,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_triage_budget_exhausted and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 15,
+      "title": "Orçamento diário por cliente",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 0,
+        "y": 36,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_daily_customer_budget and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 16,
+      "title": "Datas com decisões observadas",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 8,
+        "y": 36,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_scoring_dates and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 17,
+      "title": "Divergência dos scores",
+      "type": "stat",
+      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "gridPos": {
+        "x": 16,
+        "y": 36,
+        "w": 8,
+        "h": 6
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "fraud-prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "fraud_session_detail_score_jensen_shannon and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1)",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          },
+          "noValue": "Indisponível / sem suporte",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "special",
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "Indisponível / sem suporte",
+                  "color": "gray"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "id": 18,
+      "title": "Suporte e política",
+      "type": "text",
+      "gridPos": {
+        "x": 0,
+        "y": 42,
+        "w": 24,
+        "h": 4
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "Divergência de scores compara primeiras e últimas 1.000 decisões sem sobreposição. Indisponível abaixo de 2.000. O threshold HTTP 0,5 é de integração, não calibrado por custo. Esta tela não aprova o modelo, altera política ou promove sucessor."
+      }
+    }
+  ]
+}

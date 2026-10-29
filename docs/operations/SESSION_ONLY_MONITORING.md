@@ -38,3 +38,10 @@ backup/restore, reboot, nem reprodução integral. Também não torna os comando
 legados de baseline/check compatíveis automaticamente com este perfil. A
 integração desse ciclo de vida e a supervisão do observador permanecem pendentes.
 O portal continua separado da coleta e suas evidências anteriores são preservadas.
+
+## Extensão dos quatro componentes do Grafana
+
+A extensão opcional mantém a sessão original e prepara quatro dashboards com
+fontes da sessão e readiness dos pods. Consulte
+[SESSION_GRAFANA_COMPONENTS.md](SESSION_GRAFANA_COMPONENTS.md) para preparação,
+aprovação, verificação e rollback. O aceite nativo da extensão é separado.

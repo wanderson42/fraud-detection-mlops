@@ -63,7 +63,7 @@ def binding(value):
 
 def validate(value, expected, now):
     require(
-        set(value)
+        set(value) - {"details"}
         == {
             "binding",
             "captured_at",
@@ -75,6 +75,22 @@ def validate(value, expected, now):
         },
         "Unexpected payload fields",
     )
+    if "details" in value:
+        from scripts.session_monitoring.details import validate as validate_details
+
+        validate_details(value["details"])
+        require(
+            value["details"]["quality_mature_transactions"] <= value["counts"]["decisions"],
+            "Quality cohort exceeds decisions",
+        )
+        require(
+            sum(
+                value["details"]["triage_" + name]
+                for name in ("alert", "below_threshold", "already_alerted", "budget_exhausted")
+            )
+            == value["counts"]["decisions"],
+            "Triage aggregates differ",
+        )
     binding(value["binding"])
     require(value["binding"] == expected, "Foreign session or model")
     require(

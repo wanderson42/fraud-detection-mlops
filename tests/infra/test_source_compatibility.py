@@ -99,6 +99,7 @@ def refactor(tmp_path):
         compat.SESSION_COUNTS_TRANSITION,
         compat.SESSION_BUSY_TRANSITION,
         compat.SESSION_ONLY_TRANSITION,
+        compat.COMPONENTS_TRANSITION,
     ):
         src = ROOT / name
         transitions.append(json.loads(src.read_bytes()))

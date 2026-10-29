@@ -72,6 +72,9 @@ data:
 {{- if .Values.legacyReplay }}
 {{ (.Files.Glob "files/dashboards/*.json").AsConfig | indent 2 }}
 {{- end }}
+{{- if .Values.sessionComponents }}
+{{ (.Files.Glob "files/components/*.json").AsConfig | indent 2 }}
+{{- end }}
 {{- if .Values.sessionTelemetry.enabled }}
   product-session.json: |
 {{ .Files.Get "files/session/dashboard.json" | indent 4 }}

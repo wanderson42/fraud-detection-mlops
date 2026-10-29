@@ -30,6 +30,12 @@ CHANGED = {
 }
 
 
+def components_enabled():
+    from scripts.session_monitoring.components import enabled
+
+    return enabled()
+
+
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -59,10 +65,12 @@ def profile():
     f.require(
         value.get("schema") == "fraud_session_only_observability_profile_v1"
         and value["owner_id"] == k.credentials()["owner_id"]
-        and value["node_uid"] == f.owner()["node_uid"]
-        and value["source_pins"] == source_pins(),
+        and value["node_uid"] == f.owner()["node_uid"],
         "Session-only profile ownership/source differs; preserve it",
     )
+    from scripts.platform.source_compatibility import accept
+
+    accept(value["source_pins"], source_pins(), f.ROOT)
     f.require(
         not (k.work() / "snapshot.json").exists(),
         "A legacy replay snapshot cannot share this profile",
@@ -306,6 +314,10 @@ def verify_http():
             and k.panel_contract(actual) == k.panel_contract(wanted),
             "Session dashboard differs",
         )
+    if components_enabled():
+        from scripts.session_monitoring.components import verify_dashboards
+
+        verify_dashboards()
     return {
         "scrape_target_verified": True,
         "healthy_alert_rules": len(loaded),
@@ -326,7 +338,7 @@ def rehearse(key):
     before = session_acceptance.source_files(directory)
     active = s.session.flow.active()
     inventory, protected = k.inventory(), k.protected_inventory()
-    projection = s.collector.collect(directory, binding)
+    projection = s.collector.collect(directory, binding, include_details=components_enabled())
     f.require(
         projection["counts"]["events"] == binding["expected_events"]
         and projection["counts"]["decisions"] == binding["expected_decisions"],
@@ -347,7 +359,9 @@ def rehearse(key):
             )
             time.sleep(35)
             s.check_projection(receiver, prometheus, grafana, projection, False)
-            projection = s.collector.collect(directory, binding)
+            projection = s.collector.collect(
+                directory, binding, include_details=components_enabled()
+            )
             s.put(receiver, "/projection", projection)
             s.check_projection(receiver, prometheus, grafana, projection, True)
     checks = verify_http()

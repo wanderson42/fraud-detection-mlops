@@ -137,7 +137,7 @@ def test_reviewed_source_transition_does_not_accept_runtime_change(monkeypatch):
     saved = {**current, **{name: value["before"] for name, value in transition.items()}}
     compatibility.accept(saved, current, bootstrap.f.ROOT)
     saved["scripts/session_monitoring/server.py"] = "0" * 64
-    with pytest.raises(ValueError, match="Scientific code"):
+    with pytest.raises(ValueError, match="Scientific code|Unreviewed operational"):
         compatibility.accept(saved, current, bootstrap.f.ROOT)
 
 

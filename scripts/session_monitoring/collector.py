@@ -30,11 +30,12 @@ def identity(directory):
 
 
 @retry_busy
-def collect(directory, expected, now=None):
+def collect(directory, expected, now=None, *, include_details=False):
     now = time.time() if now is None else now
     actual, source = identity(directory)
     c.require(actual == expected, "Prepared session identity changed")
     counts = dict.fromkeys(c.COUNTS, 0)
+    aggregate_details = None
     mark, elapsed = [None] * 3, []
     checkpoint = checked(directory / "checkpoint.sqlite")
     if checkpoint.exists():
@@ -68,6 +69,10 @@ def collect(directory, expected, now=None):
                     "SELECT clock_ns,event_phase,transaction_id FROM checkpoint WHERE singleton=1"
                 ).fetchone()
             )
+            if include_details:
+                from scripts.session_monitoring import details
+
+                aggregate_details = details.collect(db, counts, mark[0], source["alert_policy"])
     heartbeat = checked(directory / "heartbeat.json")
     c.require(
         heartbeat.exists() or counts["events"] == 0, "Missing heartbeat for initialized checkpoint"
@@ -93,4 +98,12 @@ def collect(directory, expected, now=None):
             "maximum": max(elapsed, default=0),
         },
     }
+    if include_details:
+        from scripts.platform import kind_foundation as f
+        from scripts.session_monitoring import details
+
+        c.require(aggregate_details is not None, "Initialize session before detailed observation")
+        pods = json.loads(f.kube("get", "pods", "-o", "json").stdout)["items"]
+        aggregate_details.update(details.pod_snapshot(pods))
+        result["details"] = details.validate(aggregate_details)
     return c.validate(result, expected, now)
