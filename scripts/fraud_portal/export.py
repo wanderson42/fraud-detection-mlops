@@ -25,19 +25,12 @@ def prepare(root, key, flow_id, explanation_id, explanation_sha, no_other_writer
     data.require(no_other_writers, "Declare PRODUCT_NO_OTHER_WRITERS=1")
     source, value = flow.work(flow_id), flow.read(flow_id)
     source_files = explanations.source_files
-    session_source = False
+    legacy = source / "rehearsal.json"
+    session_source = not legacy.exists() and not legacy.is_symlink()
     if explanation_id is None:
         data.require(explanation_sha is None, "Não informe digest sem relatório")
-        # Snapshot verification checks the accepted checkpoint without invoking an explainer.
-        legacy = source / "rehearsal.json"
-        if legacy.exists() or legacy.is_symlink():
-            explanations.snapshot(flow_id, 1)
-        else:
-            from scripts.fraud_portal import session_acceptance
-
-            session_acceptance.snapshot(flow_id, value)
-            source_files = session_acceptance.source_files
-            session_source = True
+        # Both accepted source kinds pass the authoritative explanation snapshot gate.
+        explanations.snapshot(flow_id, 1)
         explained, report_result = {}, {"case_count": 0}
     else:
         report_result = explanations.verify(explanation_id, explanation_sha)

@@ -1,5 +1,12 @@
 # Fraud Detection MLOps
 
+**Portal da VM:** snapshot/sessão de 200 decisões e avaliação de 67.255 linhas
+verificados; saúde HTTP aprovada e revisão visual confirmada pelo autor. O suporte
+SHAP à sessão reconciliada foi executado e verificado: cinco casos no candidato
+`investigation-shap-v1`, com navegação nativa aprovada e captura do gráfico revisada.
+O snapshot anterior sem SHAP permanece preservado. CI/merge da branch ainda não
+constituem aceite nesta nota. [Procedimento](docs/operations/CASE_EXPLANATIONS.md#sessão-reconciliada-na-vm--preparação-em-2026-10-29).
+
 **Estado em 2026-10-29:** a reprodução em VM isolada foi incorporada antes de
 Terraform e já verificou dados, rodada canônica, champion/API/rollback e uma sessão
 HTTP de 200 decisões com cinco dashboards Grafana. O PR #13 foi integrado com CI

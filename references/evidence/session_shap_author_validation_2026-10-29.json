@@ -1,0 +1,131 @@
+{
+  "schema": "fraud_session_shap_author_validation_v1",
+  "date": "2026-10-29",
+  "kind": "documentary_synthesis",
+  "provenance": {
+    "native_source": "Author-provided VM terminal outputs and attached log",
+    "assistant_executed_on_vm": false,
+    "reported_implementation_commit_short": "364f099",
+    "branch": "feat/vm-session-shap",
+    "exact_full_checkout_sha_during_native_execution": null,
+    "terminal_attachment_sha256": "a754b620fb48275f5da204c9179b95f677e339a0dd172a11b789ae396b8463d5",
+    "visual_source": "screencapture-127-0-0-1-18501-2026-10-29-14_31_59.png",
+    "visual_scope": "Session page and selected explained transaction 1610254; performance navigation verified by AppTest",
+    "native_paths_normalized_relative_to_checkout": true
+  },
+  "explanations": {
+    "id": "repro-session-shap-v1",
+    "status": "case_explanations_verified",
+    "case_count": 5,
+    "manifest_sha256": "3ea0243626ced1766c4a11b57eed6639512d24496cf7eb4d250631ea5df9d919"
+  },
+  "portal_id": "investigation-shap-v1",
+  "native_smoke_original": {
+    "HTTP_health": {
+      "status": "portal_HTTP_and_snapshot_verified",
+      "url": "http://127.0.0.1:18501",
+      "summary": {
+        "decisions": 200,
+        "customers": 199,
+        "alerts": 13,
+        "feedback": 200,
+        "explanations": 5
+      },
+      "model_sha256": "401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67",
+      "read_only": true,
+      "champion_modified": false
+    },
+    "session": {
+      "status": "portal_session_readonly_verified",
+      "schema": "fraud_portal_session_access_v1",
+      "portal_id": "investigation-shap-v1",
+      "session_id": "repro-arrival-200-v1",
+      "directory": "data/storage/kind-platform/product-flow/session-repro-arrival-200-v1",
+      "session_sha256": "1a2ddc97d2350d8203234e074500ccec58c7ed5be236208dc235fce4ccc8f525",
+      "input_sha256": "407250d3e1f5f6de7fac895c01d1e2ad899543b8ec660e6e7b4263e9cd954951",
+      "model_sha256": "401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67",
+      "serving_release_id": "308a1a82036a44e49d477a1b16747b6e",
+      "counts": {
+        "events": 269334,
+        "transactions": 134667,
+        "feedback": 134667,
+        "decisions": 200,
+        "alerts": 13
+      },
+      "totals": {
+        "decisions": 200,
+        "customers": 199,
+        "feedback": 200,
+        "alerts": 13
+      },
+      "model_loaded": false,
+      "champion_modified": false
+    },
+    "UI_browser_review_validated": false
+  },
+  "native_unified_original": {
+    "schema": "fraud_unified_portal_native_v1",
+    "status": "success",
+    "session_id": "repro-arrival-200-v1",
+    "session_sha256": "1a2ddc97d2350d8203234e074500ccec58c7ed5be236208dc235fce4ccc8f525",
+    "session_model_sha256": "401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67",
+    "session_release_id": "308a1a82036a44e49d477a1b16747b6e",
+    "session_totals": {
+      "decisions": 200,
+      "customers": 199,
+      "feedback": 200,
+      "alerts": 13
+    },
+    "evidence_decisions": 200,
+    "portal_manifest_sha256": "b04e55c868ba7179a588f2e26761043d872b87c0df81d7ad7348390aeccdbda3",
+    "performance_manifest_sha256": "29453b640e62f921414f5897ed9e8c2f8a798f8271c6b81fbd3be62f692ea31d",
+    "validation_rows": 67255,
+    "isolated_Streamlit_AppTest_navigation_validated": true,
+    "source_files_unchanged": {
+      "data/storage/kind-platform/portal/investigation-shap-v1-session.json": "385121f193082bd4bf1eaa7cbe7a65ad3706289641a9b2c44a4cdc0f49a7a6b9",
+      "data/storage/kind-platform/product-flow/session-repro-arrival-200-v1/session.json": "1a2ddc97d2350d8203234e074500ccec58c7ed5be236208dc235fce4ccc8f525",
+      "data/storage/kind-platform/product-flow/session-repro-arrival-200-v1/input.json": "407250d3e1f5f6de7fac895c01d1e2ad899543b8ec660e6e7b4263e9cd954951",
+      "data/storage/kind-platform/product-flow/session-repro-arrival-200-v1/checkpoint.sqlite": "b5c68af22838ac10c2c630c442b229378e9d6147df2e8bb61403db186a66b830",
+      "data/reports/fraud-portal/investigation-shap-v1/manifest.json": "b04e55c868ba7179a588f2e26761043d872b87c0df81d7ad7348390aeccdbda3",
+      "data/reports/fraud-portal/investigation-shap-v1/snapshot.json": "0221778b9a47d4ba71ca096290c92965678dc080e8918bf8a4d04a32d6a69f98",
+      "data/reports/fraud-portal/performance/repro-shap-validation-v1/manifest.json": "29453b640e62f921414f5897ed9e8c2f8a798f8271c6b81fbd3be62f692ea31d",
+      "data/reports/fraud-portal/performance/repro-shap-validation-v1/performance.json": "55f77fc3a07665098895a67b16b14db0f492b4f8cfe2f42cdfdec12971e6f5dc",
+      "data/storage/kind-platform/portal/investigation-shap-v1.json": "77ef46798cae9ca56d9195ef0807adb83ab1c92f4549aec9ee40b86f42c16e37",
+      "data/storage/kind-platform/portal/investigation-shap-v1-performance.json": "49adcdfcd4a453853d8a7084485a0fa40b7e29e7a0ae37638e2cf5e28b50d9bb"
+    },
+    "browser_visual_review_validated": false,
+    "live_arrivals_validated": false,
+    "model_loaded": false,
+    "champion_modified": false
+  },
+  "visual_review": {
+    "capture_inspected": true,
+    "transaction_id": 1610254,
+    "displayed_score": 0.999225,
+    "shap_chart_visible": true,
+    "score_reconstruction_visible": true,
+    "posterior_feedback_separated": true
+  },
+  "author_tests": {
+    "passed": 104,
+    "skipped": 10,
+    "warnings": 13,
+    "subtests_passed": 12,
+    "pytest_seconds": 46.07,
+    "tox_seconds": 52.47
+  },
+  "native_unified_test": {
+    "passed": 1,
+    "pytest_seconds": 1.09,
+    "tox_seconds": 15.94
+  },
+  "integration_ci_verified_for_this_branch": false,
+  "merge_verified_for_this_branch": false,
+  "scope_limits": [
+    "No new independent model-quality confirmation",
+    "No live arrivals validated",
+    "No full clean installation, backup restore or host loss acceptance",
+    "Original automatic visual flags remain false",
+    "Original native files and previous documentary receipts not rewritten"
+  ]
+}

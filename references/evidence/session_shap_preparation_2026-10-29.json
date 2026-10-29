@@ -1,0 +1,52 @@
+{
+  "schema": "fraud_session_shap_preparation_v1",
+  "date": "2026-10-29",
+  "base_commit": "0762d2c21dbf2bac8011edc2f4f572c5d5de1046",
+  "scope": "Reconciled v1 session accepted by existing ledger verifier; bounded SHAP and separately identified portal snapshot.",
+  "preparation": {
+    "python": "3.14.4",
+    "passed": 104,
+    "skipped": 10,
+    "warnings": 13,
+    "subtests_passed": 12,
+    "elapsed_seconds": 92.14,
+    "selection": [
+      "tests/case_explanations",
+      "tests/fraud_portal",
+      "tests/infra/test_source_compatibility.py",
+      "tests/infra/test_platform_entrypoints.py"
+    ],
+    "ruff_check": true,
+    "ruff_format": true,
+    "notebooks_nbformat_validated": 2,
+    "original_notebook_cells_and_outputs_preserved": true
+  },
+  "tested_invariants": [
+    "19 contributions and score parity with real fixture model",
+    "No additional HTTP scoring requests during SHAP/export",
+    "No fabricated rehearsal.json",
+    "Missing/divergent session, receipt, checkpoint rejected",
+    "Invalid legacy receipt is not bypassed",
+    "Original portal bytes preserved; same-ID enrichment rejected",
+    "Changing feedback labels does not change attribution"
+  ],
+  "author_reported_native_portal_without_shap": {
+    "session_id": "repro-arrival-200-v1",
+    "portal_id": "investigation-v1",
+    "snapshot_manifest_sha256": "ec6a658a32c7f0edb6a0e34dca29659938f5d1b593d2d5e4ec5964babe20578d",
+    "performance_manifest_sha256": "447ee844dc2c841c50852e5fe097cd94e6a620d1ead5c41668621a4c502bc7b0",
+    "decisions": 200,
+    "alerts": 13,
+    "customers": 199,
+    "feedback": 200,
+    "explanations": 0,
+    "validation_rows": 67255,
+    "http_smoke_passed": true,
+    "browser_review_confirmed_by_author": true,
+    "original_UI_browser_review_validated_flag": false
+  },
+  "native_shap_acceptance": false,
+  "native_shap_browser_review": false,
+  "new_independent_quality_estimate": false,
+  "note": "Preparation tests are not an execution on the author VM. Earlier native receipts remain unchanged."
+}
