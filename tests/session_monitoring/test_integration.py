@@ -164,6 +164,11 @@ def test_exact_transition_preserves_receipts_but_rejects_science_change():
         if name in components["changes"]:
             assert components["changes"][name]["before"] == digest
             expected[name] = components["changes"][name]["after"]
+    presentation = json.loads((ROOT / compatibility.PRESENTATION_TRANSITION).read_bytes())
+    for name, digest in expected.items():
+        if name in presentation["changes"]:
+            assert presentation["changes"][name]["before"] == digest
+            expected[name] = presentation["changes"][name]["after"]
     assert all(digest == k.state.sha(ROOT / name) for name, digest in expected.items())
 
 

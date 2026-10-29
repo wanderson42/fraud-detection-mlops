@@ -1,6 +1,7 @@
 """Exercise the real isolated forward; never mock the canonical name guard away."""
 
 import copy
+import hashlib
 import json
 import os
 from types import SimpleNamespace
@@ -8,9 +9,11 @@ from types import SimpleNamespace
 import pytest
 from scripts.platform import runtime_maintenance as m
 from scripts.platform import source_compatibility as compat
+from tests.infra.test_source_compatibility import refactor as source_fixture
 from tests.serving_recovery.test_runtime_maintenance import intent as runtime_intent
 
 intent = runtime_intent
+refactor = source_fixture
 
 
 @pytest.fixture
@@ -183,24 +186,16 @@ def test_interrupted_renewal_resumes_after_pointer_write(intent, monkeypatch):
     assert len(list((folder / "runtime-probe-attempts").glob("*.json"))) == 1
 
 
-def test_fix_transition_accepts_exact_old_draft_sources_without_rewriting_them(tmp_path):
+def test_fix_transition_accepts_exact_old_draft_sources_without_rewriting_them(refactor):
     import subprocess
 
-    root = tmp_path / "reviewed"
-    root.mkdir()
+    root, _ = refactor
     declaration = json.loads((m.f.ROOT / compat.SESSION_BUSY_TRANSITION).read_text())
     old = {"scientific-contract": "same"}
     current = dict(old)
     for name, hashes in declaration["changes"].items():
-        source = m.f.ROOT / name
-        target = root / name
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(source.read_bytes())
         old[name] = hashes["before"]
-        current[name] = hashes["after"]
-    target = root / compat.SESSION_BUSY_TRANSITION
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(json.dumps(declaration))
+        current[name] = hashlib.sha256((root / name).read_bytes()).hexdigest()
     draft = root / "runtime-preparing.json"
     draft.write_text(json.dumps({"source_pins": old, "node_uid": "same-node"}))
     original = draft.read_bytes()
@@ -230,7 +225,7 @@ def test_fix_transition_accepts_exact_old_draft_sources_without_rewriting_them(t
 
 
 def test_reviewed_fix_resumes_original_draft_with_same_node_image_and_unchanged_file(
-    intent, monkeypatch, tmp_path
+    intent, monkeypatch, tmp_path, refactor
 ):
     import subprocess
 
@@ -238,14 +233,7 @@ def test_reviewed_fix_resumes_original_draft_with_same_node_image_and_unchanged_
     folder.chmod(0o700)
     source_root = m.f.ROOT
     declaration = json.loads((source_root / compat.SESSION_BUSY_TRANSITION).read_text())
-    approved_root = tmp_path / "committed-fix"
-    for name in declaration["changes"]:
-        target = approved_root / name
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes((source_root / name).read_bytes())
-    target = approved_root / compat.SESSION_BUSY_TRANSITION
-    target.parent.mkdir(parents=True)
-    target.write_text(json.dumps(declaration))
+    approved_root, _ = refactor
     subprocess.run(["git", "init", "-q", str(approved_root)], check=True)
     subprocess.run(["git", "add", "."], cwd=approved_root, check=True)
     subprocess.run(
@@ -263,7 +251,10 @@ def test_reviewed_fix_resumes_original_draft_with_same_node_image_and_unchanged_
         check=True,
     )
     before = {name: hashes["before"] for name, hashes in declaration["changes"].items()}
-    after = {name: hashes["after"] for name, hashes in declaration["changes"].items()}
+    after = {
+        name: hashlib.sha256((approved_root / name).read_bytes()).hexdigest()
+        for name in declaration["changes"]
+    }
     state = {"pins": before, "failed": False}
     monkeypatch.setattr(m, "committed", lambda: copy.deepcopy(state["pins"]))
     # Baseline checking is an external dependency in this unit test.
