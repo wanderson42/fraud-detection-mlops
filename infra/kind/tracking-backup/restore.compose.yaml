@@ -1,0 +1,140 @@
+services:
+  postgres:
+    pull_policy: never
+    image: postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826
+    environment:
+      MLFLOW_DISABLE_TELEMETRY: "true"
+      MLFLOW_DISABLE_AGENT_HINT: "1"
+      DO_NOT_TRACK: "true"
+      POSTGRES_DB: mlflow_kind
+      POSTGRES_USER: tracking_admin
+      POSTGRES_PASSWORD: ${TARGET_PG_ADMIN_PASSWORD:?Private rehearsal env required}
+      TRACKING_PG_PASSWORD: ${TARGET_PG_PASSWORD:?Private rehearsal env required}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-postgres.sh:/docker-entrypoint-initdb.d/10-mlflow.sh:ro
+    read_only: true
+    tmpfs: [/tmp, /var/run/postgresql]
+    healthcheck:
+      test: [CMD, pg_isready, -U, mlflow_kind, -d, mlflow_kind]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    mem_limit: 512m
+    cpus: 1
+  rustfs:
+    pull_policy: never
+    image: rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c
+    environment:
+      MLFLOW_DISABLE_TELEMETRY: "true"
+      MLFLOW_DISABLE_AGENT_HINT: "1"
+      DO_NOT_TRACK: "true"
+      RUSTFS_ACCESS_KEY: ${TARGET_S3_ACCESS_KEY:?Private rehearsal env required}
+      RUSTFS_SECRET_KEY: ${TARGET_S3_SECRET_KEY:?Private rehearsal env required}
+      RUSTFS_CONSOLE_ENABLE: "false"
+    volumes: [rustfs-data:/data]
+    command: [/data]
+    healthcheck:
+      test: [CMD, curl, -fsS, http://127.0.0.1:9000/health/ready]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    mem_limit: 1g
+    cpus: 1
+  mlflow:
+    pull_policy: never
+    image: ${BACKUP_IMAGE:?Reviewed backup image required}
+    environment:
+      MLFLOW_DISABLE_TELEMETRY: "true"
+      MLFLOW_DISABLE_AGENT_HINT: "1"
+      DO_NOT_TRACK: "true"
+      MLFLOW_BACKEND_STORE_URI: postgresql+psycopg://mlflow_kind:${TARGET_PG_PASSWORD}@postgres:5432/mlflow_kind
+      MLFLOW_S3_ENDPOINT_URL: http://rustfs:9000
+      MLFLOW_BOTO_CLIENT_ADDRESSING_STYLE: path
+      MLFLOW_SERVER_ENABLE_JOB_EXECUTION: "false"
+      MLFLOW_SQL_TRACE_ROLLUPS_ENABLED: "false"
+      AWS_ACCESS_KEY_ID: ${TARGET_S3_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${TARGET_S3_SECRET_KEY}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+    command: [mlflow, server, --host, 0.0.0.0, --port, "5000", --workers, "1", --serve-artifacts, --artifacts-destination, "s3://fraud-kind-mlflow/v1", --allowed-hosts, "mlflow:5000,127.0.0.1:5000"]
+    read_only: true
+    tmpfs: [/tmp]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3)"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+    mem_limit: 1g
+    cpus: 1
+  seed:
+    profiles: [tools]
+    pull_policy: never
+    image: ${BACKUP_IMAGE:?Reviewed backup image required}
+    entrypoint: [python, -m, scripts.platform.tracking_backup.worker]
+    command: [seed]
+    user: "${RESTORE_UID}:${RESTORE_GID}"
+    environment:
+      MLFLOW_DISABLE_TELEMETRY: "true"
+      MLFLOW_DISABLE_AGENT_HINT: "1"
+      DO_NOT_TRACK: "true"
+      BACKUP_PG_PASSWORD: ${TARGET_PG_PASSWORD}
+      BACKUP_PG_HOST: postgres
+      BACKUP_S3_ENDPOINT: http://rustfs:9000
+      AWS_ACCESS_KEY_ID: ${TARGET_S3_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${TARGET_S3_SECRET_KEY}
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_EC2_METADATA_DISABLED: "true"
+      AWS_CONFIG_FILE: /dev/null
+      AWS_SHARED_CREDENTIALS_FILE: /dev/null
+      BACKUP_CAPTURE_PATH: /capture
+      BACKUP_MANIFEST_SHA256: ${BACKUP_MANIFEST_SHA256}
+    volumes:
+      - type: bind
+        source: ${CAPTURE_DIRECTORY}
+        target: /capture
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${PROOF_DIRECTORY}
+        target: /proof
+        bind: {create_host_path: false}
+    read_only: true
+    tmpfs: [/tmp]
+    mem_limit: 512m
+    cpus: 1
+  client:
+    profiles: [tools]
+    pull_policy: never
+    image: ${BACKUP_IMAGE:?Reviewed backup image required}
+    entrypoint: [python, -m, scripts.platform.tracking_backup.worker]
+    command: [client]
+    user: "${RESTORE_UID}:${RESTORE_GID}"
+    environment:
+      MLFLOW_DISABLE_TELEMETRY: "true"
+      MLFLOW_DISABLE_AGENT_HINT: "1"
+      DO_NOT_TRACK: "true"
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MLFLOW_REGISTRY_URI: http://mlflow:5000
+      MLFLOW_ENABLE_PROXY_MULTIPART_DOWNLOAD: "false"
+      MLFLOW_ENABLE_PROXY_MULTIPART_UPLOAD: "false"
+      MLFLOW_HTTP_REQUEST_TIMEOUT: "10"
+      MLFLOW_HTTP_REQUEST_MAX_RETRIES: "0"
+    volumes:
+      - type: bind
+        source: ${PROOF_DIRECTORY}
+        target: /proof
+        read_only: true
+        bind: {create_host_path: false}
+    read_only: true
+    tmpfs: [/tmp]
+    mem_limit: 1g
+    cpus: 1
+volumes:
+  postgres-data:
+  rustfs-data:
+networks:
+  default:
+    internal: true

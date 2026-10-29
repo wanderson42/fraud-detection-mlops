@@ -1,5 +1,15 @@
 # Síntese para stakeholders
 
+## Próxima validação: recuperação do histórico de modelos
+
+Está preparado um backup limitado do PostgreSQL usado pelo MLflow e de seus
+artefatos S3, com teste de restauração em ambiente descartável. Execução nativa
+ainda pendente. O objetivo é demonstrar recuperação do histórico e do champion
+com paridade do smoke, preservando a origem. A captura exige janela sem writers
+e breve indisponibilidade do MLflow. Arquivos no mesmo disco da VM não protegem
+contra perda do host; cópia externa e demais dados seguem como metas abertas.
+[Escopo e critérios](../operations/VM_TRACKING_BACKUP.md).
+
 ## Continuidade operacional da VM — aceite de 2026-10-29
 
 O ciclo planejado parou e retomou a plataforma preservando nó, volumes, modelo,
@@ -8,7 +18,7 @@ conferidos; observador, acesso Grafana e portal voltaram. Esse resultado reduz a
 dependência de uma plataforma que nunca pode ser desligada, com procedimento e
 recibos próprios. Não demonstra operação sem indisponibilidade, recuperação por
 perda do host ou restauração de backup. O portal com SHAP já foi integrado no PR
-#16; CI/PR da correção deste ciclo permanecem separados.
+#16; a correção deste ciclo foi integrada no PR #17.
 [Registro técnico](../operations/VM_REPRODUCTION_PROGRESS.md#aceite-do-ciclo-planejado-na-vm--2026-10-29).
 
 

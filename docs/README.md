@@ -9,6 +9,9 @@ sincronização nas duas máquinas. Os ensaios posteriores confirmaram persistê
 após encerramento de todas as sessões e recuperação automática após reboot,
 com a mesma sessão, hashes preservados e nenhuma nova inferência.
 
+Próxima validação: [backup limitado do tracking da VM](operations/VM_TRACKING_BACKUP.md),
+com restauração isolada; execução nativa e backup integral permanecem pendentes.
+
 O [guia operacional](operations/PRODUCT_OPERATIONS.md) separa ambientes.
 O [histórico](project/ROADMAP_HISTORY.md) preserva decisões e marcos anteriores.
 As entradas datadas abaixo são registros de seus respectivos escopos.

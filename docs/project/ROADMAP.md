@@ -4,8 +4,8 @@
 acessos e requests/limits conferidos; consumo por container indisponível. A
 preparação da baseline encontrou incompatibilidade de retorno entre os perfis de
 observabilidade. Correção commitada e validada nativamente; baseline própria e
-ciclo planejado de parada/subida aceitos, com mesma sessão e volumes. CI/PR da
-correção e backup/restauração continuam pendentes.
+ciclo planejado de parada/subida aceitos, com mesma sessão e volumes. A
+correção foi integrada no PR #17 (`2054c4d`); backup/restauração nativos continuam pendentes.
 [Registro](../operations/VM_REPRODUCTION_PROGRESS.md).
 
 **Incremento do portal da VM:** snapshot, vínculo de sessão, desempenho (67.255
@@ -13,7 +13,7 @@ linhas), saúde HTTP e revisão visual foram confirmados pelo autor. Foram 200
 decisões, 199 clientes, 13 alertas e 200 feedbacks, sem explicações nesse snapshot.
 SHAP da sessão foi publicado e verificado para cinco casos, com navegação nativa
 aprovada e captura de caso explicado revisada. O recorte de portal da sessão
-concluída foi aceito e integrado no PR #16. A correção do ciclo ainda requer CI/PR. Instalação
+concluída foi aceito e integrado no PR #16. A correção do ciclo foi integrada no PR #17. Instalação
 integral e backup/restauração continuam abertos. O ciclo planejado foi aceito em
 ensaio posterior próprio, descrito no registro da VM.
 
@@ -82,7 +82,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Logout controlado | Validado por confirmação do autor de encerramento de todas as sessões/túneis, Linger=yes e check posterior com mesmos PIDs/contadores/hashes |
 | Reboot planejado da VM | Boot ID mudou; observador e acesso Grafana ativos, HTTP saudável e mesma sessão; uma nova tentativa automática por unidade |
 | Ciclo planejado da plataforma na VM | stop/start/verify aceitos, mesmo nó e volumes, green em zero; serviços do host e portal retomados |
-| Backup/restauração na VM | Pendente; parada/subida e reboot não substituem recuperação de backup |
+| Backup/restauração na VM | Tracking PostgreSQL/S3 em preparação, com teste isolado; execução nativa e recuperação integral da plataforma pendentes |
 | Reprodução completa do produto | Pendente |
 
 ## Backlog ordenado
@@ -99,16 +99,16 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-Conferir os processos e acessos restantes após integrar a supervisão no PR #14
-e aceitar logout completo e reboot planejado da VM. O observador e o encaminhamento Grafana já têm unidades de
-usuário, status e journal, com recuperação automática verificada. O túnel SSH
-continua separado, sem reconexão automática neste recorte.
+Executar build e preflight do [backup limitado do tracking da VM](../operations/VM_TRACKING_BACKUP.md),
+depois capturar `mlflow_kind`/`fraud-kind-mlflow` em janela sem writers e restaurar
+em ambiente temporário isolado. A preparação inclui testes offline e recuperação
+da pausa do MLflow. Não há aceite nativo de backup neste incremento, nem proteção
+contra perda do disco da VM; cópia externa verificada e demais dados continuam abertos.
 
-Publicar/integrar o aceite do portal e qualificar o percurso de instalação
-integral a partir de checkout vazio. Publicar o aceite do ciclo planejado e
-preparar backup/restauração como ensaio próprio. Novas chegadas e firing de
-alertas de monitoramento na VM permanecem fora do aceite da sessão concluída.
-Nenhum desses resultados cria um novo holdout ou autoriza substituir o champion.
+O portal com SHAP e a correção do ciclo já foram integrados nos PRs #16 e #17.
+Qualificar instalação integral a partir de checkout vazio. Novas chegadas e firing
+de alertas na VM permanecem fora do aceite da sessão concluída. Nenhum desses
+resultados cria um novo holdout ou autoriza substituir o champion.
 
 Terraform permanece posterior à estabilização desse percurso. A ampliação da
 reprodução tem entregas e gates delimitados; não exige broker, feature store ou
