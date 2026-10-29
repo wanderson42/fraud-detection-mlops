@@ -1,11 +1,23 @@
 # Operação do produto de detecção de fraude
 
-Atualizado em **2026-10-27**, com aceite nativo da jornada diária na branch
-posterior ao PR #11; o CI da main do PR #11 permanece como marco histórico.
-Este é o guia principal de operação. Os runbooks especializados detalham os
-comandos; o [roadmap](../project/ROADMAP.md) registra prioridades e aceites.
+Atualizado em **2026-10-29**. Este guia distingue o laboratório original e a
+reprodução na VM. O [roadmap](../project/ROADMAP.md) registra prioridades;
+o [acompanhamento da VM](VM_REPRODUCTION_PROGRESS.md) registra seus aceites.
 
-## Estado atual
+## Operação da VM reproduzida
+
+A VM tem dados/rodada/API próprios, sessão `repro-arrival-200-v1`, cinco dashboards
+e dois serviços de usuário para observação e acesso Grafana. Usar o
+[runbook da supervisão](VM_USER_SUPERVISION.md) para start/stop/status/journal.
+Não iniciar em paralelo o watch manual ou o acesso Grafana pelo controlador antigo.
+Antes de manutenção que exija watch.lock livre, parar o observador supervisionado.
+
+O ciclo de parada/subida e o baseline do laboratório original abaixo não são
+baselines da VM. O ensaio de recuperação dos dois processos não prova reboot,
+restauração de backup, novas chegadas nem qualidade independente do modelo.
+A supervisão ainda exige integração/CI da branch de trabalho.
+
+## Ambiente original — marcos aceitos
 
 | Entrega | Estado |
 | --- | --- |
@@ -70,7 +82,7 @@ identificados. Parar um acesso não para seu workload. [LOCAL_ACCESS.md](LOCAL_A
 explica portas, logs e encerramento. O portal diário é o mesmo Streamlit em 18501;
 a entrada independente `session-open` é de compatibilidade.
 
-## Iniciar, observar e encerrar
+## Ambiente original — iniciar, observar e encerrar
 
 Com a plataforma já ativa:
 
@@ -122,9 +134,10 @@ A jornada diária foi aceita com produção, UI automatizada e métricas simult�
 seguida de revisão visual final do portal. O relatório automatizado original não
 foi alterado para registrar essa revisão humana.
 
-A próxima entrega é reproduzir instalação e jornada em ambiente limpo, isolado
-do cluster e dos dados aceitos. Depois, sobre esse fluxo validado, Terraform
-consolidará a IaC. O CI e a integração desta branch continuam sendo gates próprios.
+A reprodução na VM já verificou dados, rodada, sessão e Grafana. A entrega atual
+fecha a documentação e supervisão; portal integral, instalação do zero e ensaios
+de recuperação permanecem no [roadmap](../project/ROADMAP.md). Terraform vem após
+a estabilização do percurso e não comprova, sozinho, a reprodução do produto.
 
 Promoção e rollback de sucessor com pesos diferentes permanecem condicionados a
 candidato qualificado e aprovação explícita. Não é necessário buscar um vencedor

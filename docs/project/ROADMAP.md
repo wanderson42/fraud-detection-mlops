@@ -1,14 +1,19 @@
 # Roadmap — Fraud Detection MLOps
 
-Atualizado em **2026-10-28**. A jornada diária foi integrada no PR #12 e o CI
-pós-merge da main foi aprovado. A reprodução limpa está em execução numa VM
-isolada: fundação, tracking, dados e primeira rodada canônica foram verificados;
-a sessão HTTP e o monitoramento em cinco dashboards foram verificados.
-A reprodução integral e os gates de recuperação da VM continuam pendentes.
+Atualizado em **2026-10-29**. A reprodução em outro ambiente entrou antes de
+Terraform para identificar dependências da máquina original antes de declará-las
+como infraestrutura como código (IaC). A VM revelou dependências de estado,
+recibos, perfis e processos que não estavam cobertas pela suíte Python.
+Esse trabalho desdobrou-se em fonte de eventos, sessão HTTP, observabilidade
+identificada e supervisão dos processos do host.
 
-O [guia operacional principal](../operations/PRODUCT_OPERATIONS.md) concentra o
-percurso do ambiente original. O [histórico](ROADMAP_HISTORY.md) preserva os
-incrementos anteriores. Os aceites são específicos de cada ambiente.
+O [PR #13](https://github.com/wanderson42/fraud-detection-mlops/pull/13) foi integrado
+em `66e2bbf`, com os três jobs do CI #70 aprovados. A supervisão foi instalada e
+ensaiada depois na branch `feat/vm-user-supervision`; seu CI e merge ainda são
+pendentes. A reprodução integral continua aberta. O
+[acompanhamento da VM](../operations/VM_REPRODUCTION_PROGRESS.md) é a referência
+dos aceites e limites; o [histórico](ROADMAP_HISTORY.md) registra a decisão.
+Os aceites do ambiente original e da VM permanecem separados.
 
 ## O produto que entregamos
 
@@ -30,10 +35,11 @@ O modelo não assume sozinho a decisão sobre pagamentos.
 | Ciclo de vida original | Parada/subida canônica no mesmo node/volumes; reboot no escopo histórico registrado; [runbook](../operations/KIND_OPERATIONS.md). Não transferir esse aceite para a VM |
 | Simplificação | Entradas Make por finalidade, IO/CRI compartilhados, importador concluído e serving sintético aposentados; [revisão](../operations/CODEBASE_SIMPLIFICATION.md) |
 | Footprint | Reduções e qualificações registradas em [IMAGE_FOOTPRINT.md](../operations/IMAGE_FOOTPRINT.md). Nova rodada de treino executada na VM; nenhuma nova medida de tamanho é inferida disso |
-| Integração | PRs #11 e #12 integrados; main `6c01e44d48f694c7218446f917491e3329029f83`, CI pós-PR #12 aprovado conforme saída do autor |
+| Integração | PRs #11, #12 e #13 integrados; PR #13 em `66e2bbf`; três jobs do CI #70 aprovados. Supervisão ainda na branch própria |
 | Fundação e tracking na VM | KinD criado, PostgreSQL/RustFS prontos, PVCs Bound; artefato S3 e reload HTTP verificados após recriar o pod MLflow |
 | Dados na VM | Bronze adquirido da origem, 183/183 arquivos; Silver/Gold produzidos por Jobs, publicados e restaurados com verificação independente |
 | Sessão e Grafana na VM | 200 decisões/13 alertas; cinco dashboards, métricas e preservação de recibos/PVCs conferidos; [acompanhamento](../operations/VM_REPRODUCTION_PROGRESS.md) |
+| Supervisão no host da VM | Observador e acesso Grafana ativos via systemd de usuário; recuperação após término dos processos verificada, sem novas inferências; [runbook](../operations/VM_USER_SUPERVISION.md) |
 | Rodada canônica na VM | `repro-v1`: três candidatos, gate, alias champion versão 1, API com os pesos esperados, troca blue/green, falha 502 e rollback; `canonical_round_complete` |
 
 O estado original permanece vinculado à baseline `baseline-arrivals-day-v1.json`,
@@ -55,7 +61,9 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Sessão HTTP na VM | Verificada: 200 decisões, 13 alertas, 199 clientes e 200 feedbacks nas decisões |
 | Grafana da VM | Cinco dashboards; métricas verificadas, expiração/retomada ensaiadas e revisão visual recebida |
 | Portal da VM | Exportação da sessão adaptada; desempenho, SHAP e aceite integral do portal ainda precisam de fechamento próprio |
-| Stop/start, reboot e restauração de backup na VM | Pendentes; não cobertos pelos aceites anteriores |
+| Processos de observação/acesso no host | Unidades ativas e recuperação automática de seus processos ensaiada; check posterior manteve PIDs e hashes |
+| Logout controlado | Continuidade observada no check posterior; encerramento de todas as sessões/túneis não está comprovado pela saída isolada |
+| Ciclo completo da plataforma, reboot e restauração de backup na VM | Pendentes; recuperação dos dois processos não substitui esses gates |
 | Reprodução completa do produto | Pendente |
 
 ## Backlog ordenado
@@ -63,7 +71,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
 | 1 — em andamento | Concluir reprodução limpa | Consolidar os marcos já aceitos, fechar o portal e qualificar instalação do zero; recibos próprios e limitações explícitas |
-| 2 | Consolidar operação da VM | Inventário de serviços e tarefas, supervisão, acessos SSH, status/logs, limites de recursos e recuperação; rotina diária sem depender de terminais persistentes |
+| 2 — parcialmente validado | Consolidar operação da VM | Observador/acesso Grafana supervisionados e recuperação ensaiada; fechar integração/CI, inventário restante, SSH, logout controlado e limites de recursos |
 | 3 | Decidir coordenação dos pipelines | Testar fluxo limitado com falha/retomada e invocação duplicada; comparar executor existente e uma alternativa; adotar orquestrador somente se reduzir complexidade total |
 | 4 | Terraform local | Declarar ambiente estabilizado e ownership; providers/locks/state protegidos, apply real e segundo plan sem mudanças; preservação/restauração dos dados explícitas |
 | Opcional, após consolidação local | Aprendizado e POC temporária em nuvem | Confirmar elegibilidade/plano, serviços disponíveis e limite financeiro; escopo mínimo, execução verificável e remoção conferida; sem hospedagem permanente obrigatória |
@@ -72,16 +80,20 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-Consolidar a operação da VM: inventariar processos, supervisionar o observador,
-organizar status/logs e simplificar os acessos após rollout. Preservar os aceites
-da sessão concluída e fechar separadamente as evidências restantes do portal.
-O código da branch `feat/vm-session-portal`, até `0f7f277`, foi enviado ao GitHub
-e recebido no Alienware; isso não atualiza os serviços do ambiente original nem
-comprova CI ou merge dessa branch.
+Registrar e integrar a supervisão da VM com seu CI; conferir os processos e
+acessos restantes. O observador e o encaminhamento Grafana já têm unidades de
+usuário, status e journal, com recuperação automática verificada. O túnel SSH
+continua separado, sem reconexão automática neste recorte.
 
-Instalação completa a partir de checkout vazio, stop/start, reboot e restauração
-de backup precisam de gates próprios. O aceite atual não cobre novas chegadas
-na VM, firing de alertas de monitoramento ou confirmação independente de qualidade.
+Fechar as evidências restantes do portal e qualificar o percurso de instalação
+integral a partir de checkout vazio. Planejar logout controlado, ciclo completo,
+reboot e backup/restauração como ensaios próprios. Novas chegadas e firing de
+alertas de monitoramento na VM permanecem fora do aceite da sessão concluída.
+Nenhum desses resultados cria um novo holdout ou autoriza substituir o champion.
+
+Terraform permanece posterior à estabilização desse percurso. A ampliação da
+reprodução tem entregas e gates delimitados; não exige broker, feature store ou
+orquestrador adicional para ser encerrada.
 
 ## Critérios de arquitetura e custo
 
