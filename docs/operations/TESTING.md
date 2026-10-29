@@ -1,5 +1,31 @@
 # Validação com pytest, Poetry e tox
 
+## Cobertura de reprodução e lições do CI — 2026-10-29
+
+Tox isola o ambiente Python e executa os checks configurados. Não isola por si
+só Docker, Kubernetes, volumes, recibos nem diretórios operacionais do host.
+Uma suíte verde e um ensaio num ambiente já preparado não comprovam instalação
+integral a partir de checkout vazio.
+
+| Verificação | Resultado e alcance |
+| --- | --- |
+| Sessão/Grafana, preparação | Suíte direcionada de 210 testes informada pelo autor, cinco pulados |
+| CI anterior à correção | 15 falhas históricas de compatibilidade nos logs #66/#68; não timeout |
+| Correção de fixtures | Cadeia completa de transições e bytes/hashes coerentes; rejeição de mudança científica preservada |
+| Suíte completa da correção | 1.852 aprovados, 59 pulados, 166 warnings e 12 subtests na preparação Python 3.14.4 |
+| CI #70 / PR #13 | Três jobs aprovados, incluindo qualificação e consumo da imagem em runners separados; PR integrado |
+| Supervisão, VM | Autor informou 15 testes tox e ensaio nativo dos dois serviços |
+| Correção TIME-WAIT | 18 testes da preparação; sockets reais para porta livre, TIME-WAIT e listener ativo |
+
+Não tratar skips como aceites nem misturar os totais da preparação e do runner.
+A supervisão posterior ainda precisa do seu CI; o CI do PR #13 não cobre essa
+nova implementação. O ensaio nativo não substitui testes de instalação do zero,
+logout controlado, reboot ou backup/restauração.
+
+[Resultados e fontes](VM_REPRODUCTION_PROGRESS.md) e
+[comandos da supervisão](VM_USER_SUPERVISION.md). Esta revisão documental não
+executa novamente inferências, treino ou ensaios destrutivos.
+
 A nova rodada tem testes de política, linhagem, MLflow HTTP, recarga, Registry, API real em processo e Helm. Execute `tox -e py314 -- tests/operational_round tests/storage/test_persistence_inventory.py tests/storage/test_managed_paths.py`; a execução nativa dos Jobs/serving permanece no runbook.
 [Guia da rodada operacional](OPERATIONAL_ROUND.md).
 

@@ -1,5 +1,20 @@
 # Acessos locais com nohup e logs
 
+## VM com supervisão de usuário — 2026-10-29
+
+Na VM, observador e acesso Grafana passaram a serviços systemd de usuário,
+com recuperação automática verificada. Os comandos nohup abaixo descrevem o
+modo manual e os demais acessos; não usá-los para iniciar outro Grafana enquanto
+`fraud-grafana-access.service` estiver ativo. O status antigo descreve seu recibo,
+não o estado da unidade. Use o [runbook](VM_USER_SUPERVISION.md) e
+`python -m scripts.platform.host_supervision status`.
+
+O encaminhamento da VM usa loopback 13001; o túnel no Alienware pode usar 13005.
+Recriar um pod pode derrubar o port-forward; o supervisor verifica HTTP para
+recuperá-lo. O túnel SSH permanece separado e não foi automatizado por esta entrega.
+O diagnóstico TIME-WAIT corrigiu o probe de porta; não se mudou sysctl nem se
+encerrou processo desconhecido para liberar uma conexão em encerramento.
+
 ## Uso cotidiano
 
 Os workloads continuam instalados e supervisionados pelo Kubernetes. Os comandos

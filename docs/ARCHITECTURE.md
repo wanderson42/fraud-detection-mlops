@@ -1,5 +1,29 @@
 # Organização e dependências
 
+## Reprodução em VM e responsabilidade dos processos — 2026-10-29
+
+A VM valida dependências do ambiente antes de Terraform. Não é uma camada
+adicional de produto nem um segundo serviço de monitoramento. O perfil somente
+sessão reutiliza a release de observabilidade e não adota o estado do replay legado.
+
+| Camada | Responsabilidade | Persistência/controle |
+| --- | --- | --- |
+| KinD/Helm | API, tracking, PostgreSQL/RustFS, receiver, Prometheus e Grafana | Ownership, imagens, volumes e recibos próprios da VM |
+| Host da VM | Projetar agregados da sessão e encaminhar Grafana ao loopback | Dois serviços systemd de usuário, lock, probe HTTP e journal |
+| Alienware | Acesso do operador à VM | Túnel SSH para loopback; não é disponibilidade da aplicação |
+| Git | Código, configuração e documentação | Não transporta automaticamente bancos, volumes, credenciais ou identidade da instalação |
+
+O observador existente mantém o contrato da projeção. O supervisor do acesso
+Grafana verifica saúde porque um processo pai vivo não garante port-forward
+funcional. Reiniciar um serviço de usuário não recria pods nem treina modelos.
+O teste nativo de recuperação confere novos PIDs, contadores e a mesma sessão.
+A configuração de Linger não substitui o ensaio de logout/reboot.
+
+A supervisão está validada no guest e ainda não integrada à main nesta revisão.
+[Estado e limites](operations/VM_REPRODUCTION_PROGRESS.md) e
+[operação](operations/VM_USER_SUPERVISION.md). Os aceites datados abaixo pertencem
+ao ambiente original, salvo indicação explícita.
+
 A transferência do snapshot histórico usa a API do MLflow existente no KinD.
 Um mapa liga IDs originais e novos, e o Registry vincula o HGB aprovado ao gate
 histórico. [Contrato e aceites](operations/KIND_HISTORY.md). O aceite nativo deste

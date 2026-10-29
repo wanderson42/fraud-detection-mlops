@@ -1,13 +1,23 @@
 # Fraud Detection MLOps
 
-**Operação atual:** [guia principal](docs/operations/PRODUCT_OPERATIONS.md) e
-[roadmap](docs/project/ROADMAP.md). PR #11 integrado e CI aprovado; portal único,
-sessão causal, monitoramento e runtimes otimizados aceitos. A
-[jornada diária com chegadas simultâneas](docs/operations/LIVE_OPERATIONS.md)
-passou no KinD com 9.619 decisões/100 alertas, pausa/retomada e revisão visual
-final do portal; [recibo de aceite](references/evidence/live_operations_author_validation_2026-10-27.json).
-O próximo recorte é a reprodução em ambiente limpo e isolado.
+**Estado em 2026-10-29:** a reprodução em VM isolada foi incorporada antes de
+Terraform e já verificou dados, rodada canônica, champion/API/rollback e uma sessão
+HTTP de 200 decisões com cinco dashboards Grafana. O PR #13 foi integrado com CI
+aprovado. Depois, observador e acesso Grafana foram supervisionados e recuperados
+após falha controlada no host da VM; esse código ainda está em branch própria.
 
+A reprodução integral, o portal completo da VM, logout controlado, reboot e
+backup/restauração continuam com gates próprios. Os resultados do laboratório
+original não são transferidos automaticamente para a VM.
+
+- [Roadmap e critérios de conclusão](docs/project/ROADMAP.md).
+- [Reprodução na VM: decisão, incidentes e aceites](docs/operations/VM_REPRODUCTION_PROGRESS.md).
+- [Operação e supervisão na VM](docs/operations/VM_USER_SUPERVISION.md).
+- [Notebook da etapa de reprodução](notebooks/stages/26_clean_reproduction_and_vm_supervision.ipynb).
+- [Guia do produto e escopos por ambiente](docs/operations/PRODUCT_OPERATIONS.md).
+
+**Registros históricos abaixo:** métricas, baselines e aceites datados continuam
+vinculados às respectivas execuções do ambiente original.
 
 Rodada canônica aceita no KinD: Bronze → Jobs Silver/Gold → três candidatos com datasets registrados → HGB versão 1 em `fraud-detector@champion` → API e rollback verificados.
 [Sucessores com busca opcional e aprovação explícita de tráfego](docs/operations/MODEL_UPDATES.md): retenção nativa de candidatos aceita nas rodadas fixa e de busca; ativação de um sucessor com pesos diferentes ainda pendente.
@@ -33,7 +43,7 @@ para triagem próxima do tempo real é um objetivo central do projeto.
 Com capacidade limitada de investigação, quais clientes priorizar usando apenas
 a informação disponível no momento da decisão?
 
-## Estado do projeto
+## Resultados históricos do laboratório
 
 Atualizado em **2026-10-17**. O laboratório percorre Bronze → Silver → Gold,
 validação temporal, tracking MLflow/skops, serving HTTP/Docker e replay causal com

@@ -1,5 +1,32 @@
 # Síntese para stakeholders
 
+## Síntese atual — reprodução e operação em outro ambiente (2026-10-29)
+
+A prioridade de reprodução foi colocada antes de Terraform porque declarar a
+infraestrutura não elimina dependências de dados, estado e operação do laptop.
+O ensaio em VM transformou essas dependências em entregas explícitas, com fontes
+próprias e verificações. O projeto mantém execução local, sem depender de nuvem paga.
+
+| Resultado | Valor para o projeto | Limite |
+| --- | --- | --- |
+| Dados, treino, Registry e API reproduzidos na VM | Demonstra um percurso independente do estado original | Instalação integral do produto do zero ainda não encerrada |
+| Sessão com 200 decisões, 199 clientes e 13 alertas | Vincula operação ao modelo e release da VM | Pequena coorte; não é medida global de eficácia |
+| Cinco dashboards e coleta verificados | Expõe progresso, saúde das features e qualidade com origem explícita | Drift sem suporte e tempos não medidos ficam indisponíveis |
+| Observador e acesso Grafana supervisionados | Reduz dependência de terminais manuais e recupera processos após falha | Túnel SSH separado; sem aceite de reboot ou perda do host |
+| PR #13 integrado com CI aprovado | Publica a adaptação de sessão e Grafana | Supervisão posterior ainda na branch de trabalho |
+
+A supervisão reiniciou os dois processos e preservou as contagens e fontes da
+sessão, sem repetir inferências ou alterar o champion. O check posterior manteve
+PIDs e hashes; não comprova sozinho o encerramento de todos os logins/túneis.
+A prioridade agora é registrar/integrar esse recorte e fechar os gates restantes.
+O [roadmap](ROADMAP.md) mantém a ordem: concluir reprodução e operação, avaliar
+coordenação dos pipelines e só então consolidar Terraform. Não se acrescentam
+ferramentas apenas por serem usuais em MLOps.
+
+[Marcos e origem das evidências](../operations/VM_REPRODUCTION_PROGRESS.md).
+As seções datadas abaixo preservam os resultados históricos do ambiente original;
+eles não são resultados novos da VM nem demonstram redução de perdas reais.
+
 <!-- kind-operations-acceptance-2026-10-21:start -->
 **Estado em 2026-10-21 — marco KinD/Helm concluído no escopo do laboratório.**
 Parada/subida e reboot planejado aprovados no mesmo node e volumes, com inotify

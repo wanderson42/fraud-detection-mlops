@@ -1,5 +1,22 @@
 # Supervisão do observador e acesso Grafana na VM
 
+## Aceite nativo informado pelo autor — 2026-10-29
+
+Instalação e check da sessão aprovados; ambos os serviços ficaram ativos com
+Grafana HTTP saudável. O ensaio `vm_user_service_recovery_verified` confirmou
+mudança de PID e aumento de NRestarts para cada unidade, seguida de readback da
+mesma sessão, sem novas inferências. O check posterior manteve os PIDs e hashes.
+O [acompanhamento](VM_REPRODUCTION_PROGRESS.md) registra a origem e os limites.
+
+O primeiro preflight encontrou apenas TIME-WAIT na porta 13001, sem listener.
+O probe foi corrigido para reutilização de endereço compatível com port-forward,
+preservando recusa de listener ativo. A revisão teve 18 testes na preparação.
+As unidades não precisaram ser reinstaladas por essa mudança.
+
+`logout_persistence_validated=false` e `reboot_validated=false` foram mantidos nas
+saídas. Não há comprovação de fechamento de todos os logins/túneis na saída
+recebida. CI e merge da supervisão continuam pendentes nesta revisão.
+
 Escopo: dois serviços systemd de usuário no host da VM; nenhum Deployment,
 PVC, modelo, política, imagem, inferência ou recibo aceito é modificado.
 O receiver, Prometheus e Grafana continuam no KinD. O túnel SSH é outro acesso,

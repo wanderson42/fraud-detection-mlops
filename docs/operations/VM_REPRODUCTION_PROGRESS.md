@@ -1,4 +1,4 @@
-# Reprodução limpa na VM — estado em 2026-10-28
+# Reprodução limpa na VM — estado em 2026-10-29
 
 Registro derivado das saídas de terminal fornecidas pelo autor. Não é uma
 execução do assistente no guest nem substitui os recibos originais. O estado
@@ -8,10 +8,12 @@ original do Alienware permanece separado.
 
 - Guest `fraud-repro`, Ubuntu Server 24.04.5 LTS, 6 vCPUs, 8 GiB de RAM configurados,
   disco virtual dinâmico de 120 GB; SSH via host 127.0.0.1:2222.
-- Checkout `/home/wanderson/projetos/fraud-detection-mlops`, revisão
+- Checkout no guest, revisão
   `6c01e44d48f694c7218446f917491e3329029f83` na rodada inicial; implementação
-  posterior na branch `feat/vm-session-portal`, até `0f7f277`. A branch foi enviada
-  ao GitHub e recebida no Alienware; merge e CI desta branch não estão comprovados aqui.
+  posterior na branch `feat/vm-session-portal`, corrigida até `b773479` e integrada
+  no PR #13 em `66e2bbf`. Autor confirmou a main atualizada em ambas as máquinas.
+  A supervisão posterior está na branch `feat/vm-user-supervision`, com commit
+  inicial `22eebf9`; o SHA da correção TIME-WAIT não foi fornecido nesta evidência.
 - Python 3.14.4, Poetry 2.4.3, Docker 29.1.3, kind 0.33.0,
   kubectl 1.35.9, Helm 4.3.1.
 - inotify: 512 instâncias e 524288 watches; configuração persistente instalada.
@@ -93,14 +95,79 @@ não foram reescritos. Este documento registra a revisão humana recebida no cha
 A exportação da sessão para o portal foi adaptada; não se atribui aceite integral
 de desempenho/SHAP do portal da VM a essa adaptação.
 
+## Supervisão dos processos do host — 2026-10-29
+
+A inspeção inicial mostrou systemd e o gerenciador de usuário funcionando,
+um watch manual e o encaminhamento Grafana em segundo plano, com `Linger=no`.
+Os outros acessos `not_started` descreviam encaminhamentos locais, não pods
+indisponíveis. A instalação criou duas unidades sem ativá-las. Após a troca
+explícita dos processos e o comando de configuração de Linger, o check retornou
+`vm_supervision_same_session_verified`.
+
+| Serviço | PID inicial supervisionado | PID após falha controlada | Resultado |
+| --- | ---: | ---: | --- |
+| Observador da sessão | 506569 | 512559 | Ativo; contador de reinícios aumentou |
+| Acesso Grafana | 506570 | 514819 | Ativo; contador de reinícios aumentou e HTTP saudável |
+
+O ensaio `vm_user_service_recovery_verified` encerrou um processo principal por
+vez e verificou reinício automático e métricas da mesma sessão. O check posterior
+manteve os PIDs 512559/514819, ambos com `NRestarts=1`, fonte/modelo/release,
+contagens e hashes dos cinco arquivos aceitos. Recursos protegidos permaneceram
+iguais e nenhuma nova inferência foi executada. PIDs são observações desta
+execução, não identidades para comandos futuros de encerramento.
+
+O procedimento de logout foi orientado, mas o material recebido não inclui prova
+de que todas as conexões SSH e túneis foram fechados, nem uma leitura posterior
+de `Linger=yes`. O check posterior sustenta continuidade entre leituras. Os flags
+`logout_persistence_validated=false` e `reboot_validated=false` foram preservados;
+não converter esse check em aceite automatizado de logout ou reboot.
+
+O [runbook de supervisão](VM_USER_SUPERVISION.md) é a referência dos comandos.
+O diário registra essa entrega na branch; o CI #70 do PR #13 antecede a supervisão
+e não é evidência de aprovação desse novo código.
+
+## Decisões e contratempos da reprodução
+
+| Descoberta | Correção e aprendizado |
+| --- | --- |
+| Checkout versionado não continha os estados/recibos do laboratório | Produzir vínculos e evidências próprios da VM; não copiar ownership nem fabricar recibos legados |
+| Sessão reconciliada não possuía o ensaio histórico exigido pelo portal | Adaptar o aceite/exportação à sessão real, preservando contratos científicos |
+| Dashboards legados dependiam de replay concluído | Criar perfil somente sessão e reaproveitar receiver, Prometheus/Grafana e PVCs |
+| 200 decisões não sustentavam duas janelas independentes de 1.000 | Exibir drift sem suporte; manter saúde das features e qualidade limitada à coorte |
+| Recebimentos HTTP não continham fila/atraso de emissão históricos | Deixar métricas não medidas indisponíveis, sem sintetizar zeros |
+| Rollout substituiu pods dos encaminhamentos | Separar workload, port-forward da VM e túnel SSH do Alienware |
+| Credencial correta na API e login manual inválido | Conferir instância e credencial própria da VM, sem redefinir senha antes do diagnóstico |
+| Segundo observador encontrou lock ocupado | Reutilizar o processo existente; nunca apagar o lock para contornar exclusão |
+| Testes misturaram perfil local da VM e proprietário simulado | Isolar fixtures dos arquivos operacionais do host |
+| CI falhou em 15 testes históricos de transições | Incluir a cadeia de transições nas fixtures e comparar hashes com bytes correspondentes; preservar rejeição de mudanças científicas |
+| Grafana pai continuava vivo após perda do port-forward | Acrescentar health check ao acesso supervisionado, além do reinício por saída do processo |
+| Preflight recusou porta sem listener, apenas em TIME-WAIT | Corrigir o probe de bind com SO_REUSEADDR; teste real preserva recusa de listener ativo, sem alterar sysctl |
+
+## Código, testes e evidências
+
+Os CIs #66, #67 e #68 falharam antes da correção de fixtures; logs de #66 e #68
+consultados mostraram 15 falhas, não encerramento por timeout. O teste direcionado
+corrigido passou com 51 testes. A suíte completa da preparação passou com
+1.852 aprovados, 59 pulados, 166 warnings e 12 subtests, em Python 3.14.4.
+Os skips dependem das ferramentas disponíveis; esse total não é apresentado como
+contagem do runner GitHub. O [CI #70](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/40864553711)
+aprovou qualidade/testes, qualificação da imagem e consumo em outro runner.
+O [PR #13](https://github.com/wanderson42/fraud-detection-mlops/pull/13) foi integrado.
+
+Para supervisão: 15 testes no tox foram informados pelo autor na VM; a revisão
+TIME-WAIT teve 18 testes aprovados na preparação, incluindo sockets reais.
+A recuperação dos dois serviços é evidência nativa fornecida pelo autor, distinta
+desses testes. O [recibo documental](../../references/evidence/vm_reproduction_and_supervision_author_validation_2026-10-29.json)
+reúne a origem e o escopo. Não substitui os recibos e bancos locais.
+
 ## Gates pendentes
 
-1. Consolidar supervisão do observador e acesso operacional após rollout.
+1. Integrar supervisão e esta documentação com CI próprio; concluir inventário e acessos restantes.
 2. Fechar desempenho, SHAP e aceite integral do portal da VM com fontes próprias.
-3. Qualificar instalação completa do produto a partir de checkout vazio.
-4. Definir e verificar baseline própria da VM quando os requisitos existirem.
-5. Ensaiar stop/start, reboot e backup/restauração em gates separados.
-6. Ensaiar novas chegadas e firing de alertas de monitoramento, se incluídos no escopo.
+3. Qualificar instalação integral do produto a partir de checkout vazio.
+4. Definir/verificar baseline própria da VM quando seus pré-requisitos existirem.
+5. Ensaiar logout controlado, ciclo completo, reboot e backup/restauração separadamente.
+6. Ensaiar novas chegadas e firing de alertas de monitoramento se incluídos no escopo.
 
 O relato antigo de 288.172 eventos da fonte em preparação não deve ser confundido
 com os 269.334 eventos efetivamente vinculados à sessão aceita. O recibo específico

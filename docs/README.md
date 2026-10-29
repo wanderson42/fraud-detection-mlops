@@ -1,11 +1,15 @@
 # Índice da documentação
 
-**Percurso atual (2026-10-27):** [operação do produto](operations/PRODUCT_OPERATIONS.md),
-[roadmap corrente](project/ROADMAP.md) e [jornada diária integrada](operations/LIVE_OPERATIONS.md).
-A jornada passou no KinD com 9.619 decisões e 100 alertas; a revisão visual final
-do portal foi confirmada pelo autor. Próximo: reprodução em ambiente limpo.
-O [histórico do roadmap](project/ROADMAP_HISTORY.md) preserva os incrementos anteriores.
+**Percurso atual (2026-10-29):** [roadmap](project/ROADMAP.md),
+[reprodução na VM](operations/VM_REPRODUCTION_PROGRESS.md),
+[supervisão dos processos](operations/VM_USER_SUPERVISION.md) e
+[notebook da etapa](../notebooks/stages/26_clean_reproduction_and_vm_supervision.ipynb).
+O PR #13 integrou sessão/Grafana com CI aprovado; a supervisão foi verificada
+posteriormente no guest e ainda tem integração própria pendente.
 
+O [guia operacional](operations/PRODUCT_OPERATIONS.md) separa ambientes.
+O [histórico](project/ROADMAP_HISTORY.md) preserva decisões e marcos anteriores.
+As entradas datadas abaixo são registros de seus respectivos escopos.
 
 Caminho principal de execução: nova rodada com linhagem dos datasets, comparação, promoção e serving.
 [Guia da rodada operacional](operations/OPERATIONAL_ROUND.md). Rodada inicial aceita pelo autor.

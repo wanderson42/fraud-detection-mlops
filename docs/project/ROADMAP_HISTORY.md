@@ -1,5 +1,32 @@
 # Histórico do roadmap até a integração do PR #11
 
+## Reprodução antes de Terraform — decisão e evolução em 2026-10-28/29
+
+Após a integração da jornada diária, a meta de reproduzir o produto em ambiente
+isolado precedeu Terraform. O objetivo era descobrir o contrato real de instalação
+antes de cristalizar dependências do laptop em infraestrutura como código.
+A ampliação do recorte veio das lacunas observadas, com aceites separados:
+
+| Passo | Decisão e resultado |
+| --- | --- |
+| Auditoria e VM | Preservar o laboratório original e instalar num guest com estados e ownership próprios |
+| Dados e rodada | Aquisição/construção/restauração, novos candidatos, Registry, API e rollback verificados |
+| Sessão e portal | Adaptar a exportação da sessão reconciliada sem exigir recibos históricos inexistentes |
+| Monitoramento | Reaproveitar a stack, adicionar perfil somente sessão e quatro componentes ao Grafana |
+| Limites de dados | Manter drift sem suporte e métricas não medidas ausentes, sem relaxar janelas ou política |
+| Integração | Corrigir fixtures de transições; CI #70 aprovado e PR #13 integrado em `66e2bbf` |
+| Consolidação do host | Supervisionar observador/acesso, corrigir diagnóstico de TIME-WAIT e ensaiar recuperação de processos |
+
+A reprodução tornou-se uma etapa de engenharia com critérios próprios, não apenas
+uma cópia do cluster. Tox e Helm renderizado cobriam partes do contrato; faltava
+qualificar o percurso integral do zero. Terraform continua posterior, sem tornar
+obrigatória a adoção de outro orquestrador, broker ou feature store.
+
+O [estado corrente](ROADMAP.md) e o [registro da VM](../operations/VM_REPRODUCTION_PROGRESS.md)
+concentram pendências e evidências. A continuidade dos processos no check posterior
+não equivale, sozinha, a provar logout de todas as sessões ou reboot. Os marcos
+históricos abaixo permanecem vinculados aos ambientes em que ocorreram.
+
 Registro histórico preservado. Expressões como "próximo", "atual" e "pendente"
 no texto abaixo se referem ao incremento em que foram escritas. O estado
 corrente e as prioridades estão em [ROADMAP.md](ROADMAP.md); os comandos diários

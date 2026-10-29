@@ -1,0 +1,111 @@
+{
+  "schema": "fraud_vm_reproduction_and_supervision_documentary_v1",
+  "recorded_on": "2026-10-29",
+  "status": "partial_native_milestones_recorded_not_complete_reproduction",
+  "provenance": {
+    "vm_native_results": "author_terminal_outputs_and_screenshots_in_project_conversation",
+    "assistant_executed_inside_vm": false,
+    "original_operational_receipts_rewritten": false,
+    "github_state": "queried_through_connected_GitHub_tools"
+  },
+  "rationale": "test_environment_reproduction_before_Terraform_to_expose_host_state_dependencies",
+  "integration": {
+    "pr": 13,
+    "url": "https://github.com/wanderson42/fraud-detection-mlops/pull/13",
+    "head_sha": "b7734798a2635fb4146d7942738db086a2d1f448",
+    "merge_sha": "66e2bbf1aa168206482212975114a58995bedf5c",
+    "ci_run": 40864553711,
+    "ci_jobs_success": [
+      "Lint, formatting and tests",
+      "Build and qualify synthetic serving delivery",
+      "Consume the qualified image in a separate runner"
+    ],
+    "supervision_included_in_pr13": false
+  },
+  "supervision_revision": {
+    "branch": "feat/vm-user-supervision",
+    "initial_commit_from_author": "22eebf9",
+    "timewait_fix_commit_sha": null,
+    "timewait_fix_commit_sha_reason": "not_provided_by_author",
+    "supervision_ci_and_merge_verified": false
+  },
+  "binding": {
+    "session_id": "repro-arrival-200-v1",
+    "session_sha256": "1a2ddc97d2350d8203234e074500ccec58c7ed5be236208dc235fce4ccc8f525",
+    "model_sha256": "401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67",
+    "serving_release_id": "308a1a82036a44e49d477a1b16747b6e"
+  },
+  "counts": {
+    "events": 269334,
+    "transactions": 134667,
+    "feedback": 134667,
+    "decisions": 200,
+    "alerts": 13,
+    "customers": 199,
+    "decision_feedback": 200,
+    "http_attempts": 200
+  },
+  "native_supervision": {
+    "installation_and_check_passed": true,
+    "controlled_process_recovery_passed": true,
+    "service_pid_observations": {
+      "fraud-session-observer.service": {
+        "before": 506569,
+        "after": 512559,
+        "subsequent": 512559,
+        "subsequent_restarts": 1
+      },
+      "fraud-grafana-access.service": {
+        "before": 506570,
+        "after": 514819,
+        "subsequent": 514819,
+        "subsequent_restarts": 1
+      }
+    },
+    "subsequent_grafana_http_healthy": true,
+    "same_session_metrics_verified": true,
+    "new_inferences_executed": false,
+    "protected_resources_unchanged": true
+  },
+  "accepted_source_sha256_from_author": {
+    "input.json": "407250d3e1f5f6de7fac895c01d1e2ad899543b8ec660e6e7b4263e9cd954951",
+    "events.sqlite": "c42237dbce91f536a0134964b9ab3bc77ab1f0d195179eace4b8ba439009db04",
+    "checkpoint.sqlite": "b5c68af22838ac10c2c630c442b229378e9d6147df2e8bb61403db186a66b830",
+    "session.json": "1a2ddc97d2350d8203234e074500ccec58c7ed5be236208dc235fce4ccc8f525",
+    "verification-timing-51a8e09bf6c845608d46fe00df0ca08f.json": "f4cf5b9c92ededc32a2e7f16e9f4671dee10bbb731953566847196a25f9ba9ac"
+  },
+  "coverage_limits": {
+    "complete_clean_installation_verified": false,
+    "vm_complete_portal_verified": false,
+    "vm_full_platform_stop_start_verified": false,
+    "vm_reboot_verified": false,
+    "vm_backup_restore_verified": false,
+    "all_ssh_sessions_and_tunnels_closed_proven": false,
+    "subsequent_linger_yes_output_received": false,
+    "automated_logout_persistence_validated": false,
+    "automated_reboot_validated": false,
+    "vm_new_arrivals_validated": false,
+    "vm_monitoring_alert_firing_validated": false,
+    "new_independent_model_quality_claimed": false
+  },
+  "test_evidence": {
+    "corrected_modules_preparation": {
+      "passed": 51
+    },
+    "full_fixture_fix_preparation": {
+      "passed": 1852,
+      "skipped": 59,
+      "warnings": 166,
+      "subtests_passed": 12,
+      "python": "3.14.4",
+      "seconds": 1308.94
+    },
+    "supervision_tox_author": {
+      "passed": 15
+    },
+    "timewait_preparation": {
+      "passed": 18
+    },
+    "note": "Preparation counts are not GitHub runner counts; supervision postdates PR13 CI."
+  }
+}
