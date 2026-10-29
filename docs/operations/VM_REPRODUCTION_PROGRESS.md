@@ -1,5 +1,33 @@
 # Reprodução limpa na VM — estado em 2026-10-29
 
+## Portal: aceite sem SHAP e preparação do candidato explicado
+
+Saídas fornecidas pelo autor confirmam `portal_snapshot_verified`,
+`portal_session_readonly_verified`, `portal_performance_verified` e smoke HTTP.
+O autor confirmou a conferência visual, incluindo a mensagem correta de SHAP
+indisponível. O flag original `UI_browser_review_validated=false` permanece intacto.
+
+| Artefato | Resultado |
+| --- | --- |
+| Portal `investigation-v1` | 200 decisões, 199 clientes, 13 alertas, 200 feedbacks, 0 explicações |
+| Manifest do snapshot | `ec6a658a32c7f0edb6a0e34dca29659938f5d1b593d2d5e4ec5964babe20578d` |
+| Sessão | `repro-arrival-200-v1`, mesmos SHA/modelo/release registrados abaixo |
+| Desempenho `repro-validation-v1` | 67.255 linhas; rodada `repro-v1`; mesmo modelo do snapshot |
+| Manifest do desempenho | `447ee844dc2c841c50852e5fe097cd94e6a620d1ead5c41668621a4c502bc7b0` |
+| Runtime da interface | Ambiente separado instalado; ambiente científico preservado |
+
+O primeiro prepare usou por engano o ID da sessão como ID do fluxo. A correção
+foi `PRODUCT_FLOW_ID=session-repro-arrival-200-v1`, conservando
+`PORTAL_SESSION_ID=repro-arrival-200-v1`; nenhum arquivo foi copiado ou renomeado.
+O desempenho recalculou a validação já identificada, sem fit ou promoção.
+
+O gerador SHAP exigia `rehearsal.json`, ausente por desenho na sessão reconciliada.
+A adaptação preparada usa a reconciliação existente em memória e os recibos reais,
+sem sintetizar o ensaio legado. O candidato `investigation-shap-v1` preservará o
+snapshot anterior e terá desempenho vinculado ao novo manifest. Geração e revisão
+visual nativas de SHAP ainda pendentes. [Procedimento](CASE_EXPLANATIONS.md#sessão-reconciliada-na-vm--preparação-em-2026-10-29).
+
+
 Registro derivado das saídas de terminal fornecidas pelo autor. Não é uma
 execução do assistente no guest nem substitui os recibos originais. O estado
 original do Alienware permanece separado.

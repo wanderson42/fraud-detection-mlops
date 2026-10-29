@@ -1,5 +1,12 @@
 # Roadmap — Fraud Detection MLOps
 
+**Incremento do portal da VM:** snapshot, vínculo de sessão, desempenho (67.255
+linhas), saúde HTTP e revisão visual foram confirmados pelo autor. Foram 200
+decisões, 199 clientes, 13 alertas e 200 feedbacks, sem explicações nesse snapshot.
+Suporte SHAP à sessão reconciliada preparado nesta branch; geração, verificação e
+revisão visual nativas do candidato com SHAP continuam pendentes. O portal completo
+não é marcado como concluído por esta preparação.
+
 Atualizado em **2026-10-29**. A reprodução em outro ambiente entrou antes de
 Terraform para identificar dependências da máquina original antes de declará-las
 como infraestrutura como código (IaC). A VM revelou dependências de estado,
@@ -60,7 +67,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Fonte de eventos da sessão aceita | Sessão reconciliada com 269.334 eventos; o ledger de contexto não representa inferências |
 | Sessão HTTP na VM | Verificada: 200 decisões, 13 alertas, 199 clientes e 200 feedbacks nas decisões |
 | Grafana da VM | Cinco dashboards; métricas verificadas, expiração/retomada ensaiadas e revisão visual recebida |
-| Portal da VM | Exportação da sessão adaptada; desempenho, SHAP e aceite integral do portal ainda precisam de fechamento próprio |
+| Portal da VM | Snapshot/sessão, desempenho e revisão visual sem SHAP aceitos; suporte SHAP preparado, com aceite nativo e fechamento integral pendentes |
 | Processos de observação/acesso no host | Unidades ativas e recuperação automática de seus processos ensaiada; check posterior manteve PIDs e hashes |
 | Logout controlado | Validado por confirmação do autor de encerramento de todas as sessões/túneis, Linger=yes e check posterior com mesmos PIDs/contadores/hashes |
 | Reboot planejado da VM | Boot ID mudou; observador e acesso Grafana ativos, HTTP saudável e mesma sessão; uma nova tentativa automática por unidade |

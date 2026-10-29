@@ -1,5 +1,15 @@
 # Síntese para stakeholders
 
+## Portal da VM: progresso e próximo aceite — 2026-10-29
+
+O autor confirmou snapshot e sessão com 200 decisões/13 alertas, desempenho sobre
+67.255 transações de validação e conferência visual do portal. A validação reutiliza
+os dados de seleção; não mede novamente a eficácia em uma população independente.
+O snapshot aceito ainda não tem SHAP. Esta revisão prepara explicações da sessão
+com o mesmo modelo e decisões, sem usar rótulos posteriores na atribuição. O aceite
+nativo de SHAP permanece pendente; a versão sem explicações será preservada.
+
+
 ## Síntese atual — reprodução e operação em outro ambiente (2026-10-29)
 
 A prioridade de reprodução foi colocada antes de Terraform porque declarar a

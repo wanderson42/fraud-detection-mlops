@@ -122,3 +122,82 @@ por caminhos relativos; para compartilhar o relatório completo, preserve todo
 o diretório de saída. A manutenção do instalador também está aceita. Promoção
 e rollback de sucessor com pesos diferentes permanecem como aceite independente,
 condicionado a candidato qualificado.
+
+## Sessão reconciliada na VM — preparação em 2026-10-29
+
+O gerador aceita duas fontes: o fluxo com ensaio histórico e a sessão v1 com
+verificação reconciliada. Um rehearsal existente, mesmo inválido, não é contornado
+pelo caminho da sessão. Para sessão, a verificação completa reconstrói o ledger
+em memória e compara o recibo ao checkpoint atual antes de selecionar os casos.
+As explicações usam as features registradas; não alteram o checkpoint nem fazem
+novas chamadas HTTP de pontuação. O código da reconciliação também entra nos pins
+do relatório. Relatórios de revisões anteriores permanecem preservados; seu
+verificador pode recusar pins antigos após esta alteração.
+
+A seleção continua limitada a 1–20 casos, alertas primeiro e score decrescente,
+sem escolher pelo rótulo. SHAP usa os pesos da release identificada e verifica
+aditividade e score. Feedback posterior continua apenas como contexto observado.
+O snapshot `investigation-v1` sem SHAP já foi aceito visualmente pelo autor;
+esta preparação não equivale a aceite nativo das novas explicações.
+
+Depois de aplicar, testar e commitar a implementação, sem produtor, alteração de
+Registry ou rollout concorrente, gere cinco casos (observador e Grafana podem
+continuar ativos):
+
+```bash
+make product-explain \
+  PRODUCT_FLOW_ID=session-repro-arrival-200-v1 \
+  PRODUCT_EXPLANATION_ID=repro-session-shap-v1 \
+  PRODUCT_CASES_LIMIT=5 \
+  PRODUCT_NO_OTHER_WRITERS=1
+```
+
+Conserve o manifest_sha256 impresso. Use-o nos comandos abaixo como SHA_DO_RELATORIO;
+não repita geração sobre relatório existente. Verifique o relatório publicado:
+
+```bash
+make product-explanations-verify \
+  PRODUCT_EXPLANATION_ID=repro-session-shap-v1 \
+  PRODUCT_EXPLANATION_SHA256=SHA_DO_RELATORIO
+```
+
+Preserve o portal anterior: criar outro snapshot é intencional, pois seus bytes e
+sua avaliação já estão fixados por hashes. Os IDs abaixo não criam outro serviço:
+
+```bash
+make portal-prepare \
+  PORTAL_ID=investigation-shap-v1 \
+  PRODUCT_FLOW_ID=session-repro-arrival-200-v1 \
+  PRODUCT_EXPLANATION_ID=repro-session-shap-v1 \
+  PRODUCT_EXPLANATION_SHA256=SHA_DO_RELATORIO \
+  PRODUCT_NO_OTHER_WRITERS=1 &&
+make portal-session-link \
+  PORTAL_ID=investigation-shap-v1 \
+  PORTAL_SESSION_ID=repro-arrival-200-v1 &&
+make portal-performance-prepare \
+  PORTAL_ID=investigation-shap-v1 \
+  PORTAL_PERFORMANCE_ID=repro-shap-validation-v1 \
+  PORTAL_EVALUATION_ROUND=repro-v1 \
+  PRODUCT_NO_OTHER_WRITERS=1 &&
+make portal-verify PORTAL_ID=investigation-shap-v1 &&
+make portal-session-verify PORTAL_ID=investigation-shap-v1 &&
+make portal-performance-verify PORTAL_ID=investigation-shap-v1
+```
+
+A avaliação precisa de outro ID porque se vincula ao manifest do novo snapshot;
+reutiliza a validação da rodada, sem fit nem novo holdout. Depois dos checks,
+troque somente o acesso à interface, na mesma porta 18501:
+
+```bash
+make access-stop ACCESS_SERVICE=portal &&
+make access-start ACCESS_SERVICE=portal PORTAL_ID=investigation-shap-v1 &&
+make portal-session-smoke PORTAL_ID=investigation-shap-v1 &&
+FRAUD_PORTAL_ID=investigation-shap-v1 .venv/bin/python -m tox -e portal-unified
+```
+
+Confira visualmente um dos casos explicados, contribuições das 19 features,
+score/identidade e mensagem sobre feedback posterior. Casos fora dos cinco
+selecionados continuam sem SHAP: a interface não estima contribuições ao abrir.
+O gate funcional e a revisão visual são distintos. Para voltar ao portal anterior,
+pare somente o acesso e inicie-o com PORTAL_ID=investigation-v1; não apague snapshots,
+relatórios, avaliações ou recibos.

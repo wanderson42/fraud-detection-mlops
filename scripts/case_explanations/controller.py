@@ -36,6 +36,7 @@ def work(key):
 def pins():
     paths = list((f.ROOT / "scripts/case_explanations").glob("*.py"))
     paths.append(f.ROOT / "fraud_detection_mlops/evaluation/validation_diagnostics.py")
+    paths.append(f.ROOT / "scripts/fraud_portal/session_acceptance.py")
     return {v.relative_to(f.ROOT).as_posix(): p.sha(v) for v in paths}
 
 
@@ -55,6 +56,11 @@ def committed():
 
 
 def source_files(folder):
+    legacy = folder / "rehearsal.json"
+    if not legacy.exists() and not legacy.is_symlink():
+        from scripts.fraud_portal import session_acceptance
+
+        return session_acceptance.source_files(folder)
     names = ("input.json", "events.sqlite", "checkpoint.sqlite", "rehearsal.json")
     for name in names:
         path = managed_destination(folder / name, "storage")
@@ -64,19 +70,25 @@ def source_files(folder):
 
 
 def snapshot(key, limit):
-    """Reuse the accepted checkpoint, without recalculating features or replaying events."""
+    """Read accepted cases; sessions also undergo in-memory ledger reconciliation."""
     p.require(type(limit) is int and 1 <= limit <= 20, "Choose 1..20 cases")
     value, folder = flow.read(key), flow.work(key)
     before = source_files(folder)
-    acceptance = json.loads((folder / "rehearsal.json").read_bytes())
-    p.require(
-        acceptance["status"] == "product_rehearsal_passed"
-        and acceptance["checkpoint_sha256"] == before["checkpoint.sqlite"]
-        and acceptance["flow_id"] == key
-        and acceptance["model_sha256"] == value["release_manifest"]["model_sha256"]
-        and acceptance["serving_release_id"] == value["release_manifest"]["serving_release_id"],
-        "Accepted product checkpoint or release differs",
-    )
+    if "rehearsal.json" in before:
+        acceptance = json.loads((folder / "rehearsal.json").read_bytes())
+        p.require(
+            acceptance["status"] == "product_rehearsal_passed"
+            and acceptance["checkpoint_sha256"] == before["checkpoint.sqlite"]
+            and acceptance["flow_id"] == key
+            and acceptance["model_sha256"] == value["release_manifest"]["model_sha256"]
+            and acceptance["serving_release_id"]
+            == value["release_manifest"]["serving_release_id"],
+            "Accepted product checkpoint or release differs",
+        )
+    else:
+        from scripts.fraud_portal import session_acceptance
+
+        session_acceptance.snapshot(key, value)
     cases = flow.cases(key, limit)["cases"]
     p.require(bool(cases), "The accepted flow contains no cases")
     manifest = ReleaseManifest.model_validate(value["release_manifest"])
