@@ -19,7 +19,11 @@ funcional. Reiniciar um serviço de usuário não recria pods nem treina modelos
 O teste nativo de recuperação confere novos PIDs, contadores e a mesma sessão.
 A configuração de Linger não substitui o ensaio de logout/reboot.
 
-A supervisão está validada no guest e ainda não integrada à main nesta revisão.
+A supervisão foi integrada no PR #14. Logout completo e reboot planejado da VM
+foram ensaiados: observador e acesso Grafana recuperaram a mesma sessão. Os
+comandos kubectl falharam na primeira tentativa do boot; o systemd repetiu a
+execução e ambos ficaram saudáveis. A causa específica do erro kubectl não foi
+exposta nos logs. Isso não comprova restauração ou tolerância à perda do host.
 [Estado e limites](operations/VM_REPRODUCTION_PROGRESS.md) e
 [operação](operations/VM_USER_SUPERVISION.md). Os aceites datados abaixo pertencem
 ao ambiente original, salvo indicação explícita.

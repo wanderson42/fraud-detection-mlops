@@ -12,13 +12,15 @@ próprias e verificações. O projeto mantém execução local, sem depender de 
 | Dados, treino, Registry e API reproduzidos na VM | Demonstra um percurso independente do estado original | Instalação integral do produto do zero ainda não encerrada |
 | Sessão com 200 decisões, 199 clientes e 13 alertas | Vincula operação ao modelo e release da VM | Pequena coorte; não é medida global de eficácia |
 | Cinco dashboards e coleta verificados | Expõe progresso, saúde das features e qualidade com origem explícita | Drift sem suporte e tempos não medidos ficam indisponíveis |
-| Observador e acesso Grafana supervisionados | Reduz dependência de terminais manuais e recupera processos após falha | Túnel SSH separado; sem aceite de reboot ou perda do host |
-| PR #13 integrado com CI aprovado | Publica a adaptação de sessão e Grafana | Supervisão posterior ainda na branch de trabalho |
+| Observador e acesso Grafana supervisionados | Reduz dependência de terminais manuais e recupera processos após falha | Logout completo e reboot planejado aceitos; túnel SSH separado e perda do host fora do escopo |
+| PRs #13 e #14 integrados | Publicam sessão/Grafana e supervisão; CI de #14 aprovado informado pelo autor | CI e ensaios nativos têm escopos distintos |
 
 A supervisão reiniciou os dois processos e preservou as contagens e fontes da
 sessão, sem repetir inferências ou alterar o champion. O check posterior manteve
-PIDs e hashes; não comprova sozinho o encerramento de todos os logins/túneis.
-A prioridade agora é registrar/integrar esse recorte e fechar os gates restantes.
+PIDs e hashes após logout completo confirmado pelo autor. Após reboot planejado,
+o boot ID mudou e os serviços recuperaram automaticamente a mesma sessão, com
+uma nova tentativa por unidade. O resultado não demonstra restauração de backup
+ou tolerância à perda da VM. A prioridade agora é fechar os gates restantes.
 O [roadmap](ROADMAP.md) mantém a ordem: concluir reprodução e operação, avaliar
 coordenação dos pipelines e só então consolidar Terraform. Não se acrescentam
 ferramentas apenas por serem usuais em MLOps.

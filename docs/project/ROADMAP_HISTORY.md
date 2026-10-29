@@ -1,5 +1,21 @@
 # Histórico do roadmap até a integração do PR #11
 
+## Logout completo e reboot planejado da VM — 2026-10-29
+
+Após integração da supervisão no PR #14 (`9d9c8f2`) e sincronização informadas pelo
+autor, dois gates foram aceitos no escopo da sessão `repro-arrival-200-v1`:
+logout completo confirmado, com mesmos PIDs/contadores no retorno; e reboot com
+boot ID diferente, observador/acesso Grafana ativos e mesma sessão preservada.
+No boot houve falha inicial de kubectl e nova tentativa automática bem-sucedida.
+A causa exata do kubectl não foi exposta. A evidência combina terminal, journal e
+confirmação do autor; os flags false das saídas originais não foram alterados.
+
+[Registro e limites](../operations/VM_REPRODUCTION_PROGRESS.md) e
+[recibo documental](../../references/evidence/vm_logout_reboot_author_validation_2026-10-29.json).
+Continuam abertos portal completo, instalação integral, ciclo de parada/subida e
+backup/restauração na VM. A nota de preparação abaixo preserva o estado anterior.
+
+
 ## Reprodução antes de Terraform — decisão e evolução em 2026-10-28/29
 
 Após a integração da jornada diária, a meta de reproduzir o produto em ambiente
