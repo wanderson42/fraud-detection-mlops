@@ -1,5 +1,22 @@
 # Explicações dos casos do champion
 
+## Aceite da sessão reconciliada na VM — 2026-10-29
+
+O autor publicou/verificou cinco explicações em `repro-session-shap-v1` e preparou
+`investigation-shap-v1`, preservando o snapshot anterior. Smoke e navegação nativa
+passaram: portal-unified teve 1 teste aprovado em 1,09 s (tox 15,94 s), com hashes
+preservados. A captura revisada mostra o caso 1610254, score 0,999225, gráfico SHAP,
+reconstrução do score e feedback posterior separado.
+
+[Identidades, proveniência e limites do aceite](VM_REPRODUCTION_PROGRESS.md#aceite-nativo-de-shap-e-portal-da-sessão--2026-10-29) e
+[recibo documental](../../references/evidence/session_shap_author_validation_2026-10-29.json).
+CI/merge da branch são um gate separado. Os flags visuais originais permanecem
+false; a captura complementa a evidência. O procedimento abaixo preserva a
+sequência de preparação; a pendência nativa descrita naquela nota foi encerrada
+pelo aceite acima no escopo do portal da sessão concluída.
+
+
+
 O analista recebe a transação, seu score, a decisão de triagem e os fatores que
 contribuíram para a saída do modelo. O relatório liga cada explicação ao hash dos
 pesos, à release e à requisição HTTP persistida. A explicação ajuda a investigar;

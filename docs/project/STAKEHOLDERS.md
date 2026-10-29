@@ -1,13 +1,15 @@
 # Síntese para stakeholders
 
-## Portal da VM: progresso e próximo aceite — 2026-10-29
+## Portal da VM: aceite da sessão com SHAP — 2026-10-29
 
 O autor confirmou snapshot e sessão com 200 decisões/13 alertas, desempenho sobre
 67.255 transações de validação e conferência visual do portal. A validação reutiliza
 os dados de seleção; não mede novamente a eficácia em uma população independente.
-O snapshot aceito ainda não tem SHAP. Esta revisão prepara explicações da sessão
-com o mesmo modelo e decisões, sem usar rótulos posteriores na atribuição. O aceite
-nativo de SHAP permanece pendente; a versão sem explicações será preservada.
+O snapshot original sem SHAP foi preservado. O candidato `investigation-shap-v1`
+incorporou cinco explicações verificadas, mantendo modelo/release, decisões e
+feedback. A navegação nativa passou; a captura do caso 1610254 mostra SHAP e
+reconstrução do score 0,999225, com feedback posterior separado. CI e merge desta
+branch seguem como gate de integração; reprodução integral continua aberta.
 
 
 ## Síntese atual — reprodução e operação em outro ambiente (2026-10-29)

@@ -1,6 +1,47 @@
 # Reprodução limpa na VM — estado em 2026-10-29
 
-## Portal: aceite sem SHAP e preparação do candidato explicado
+## Aceite nativo de SHAP e portal da sessão — 2026-10-29
+
+Origem: saídas da VM fornecidas pelo autor e captura revisada no chat. Código
+commitado pelo autor em `364f099` na branch `feat/vm-session-shap`; não foi
+coletado o SHA completo do checkout durante cada comando. A aprovação de CI e o
+merge desta branch não são afirmados por este registro.
+
+| Artefato | Identidade / resultado |
+| --- | --- |
+| Relatório SHAP `repro-session-shap-v1` | Cinco casos publicados e verificados, mesmo modelo/release da sessão |
+| Manifest SHAP | `3ea0243626ced1766c4a11b57eed6639512d24496cf7eb4d250631ea5df9d919` |
+| Portal `investigation-shap-v1` | 200 decisões, 199 clientes, 13 alertas, 200 feedbacks e cinco explicações |
+| Manifest do snapshot | `b04e55c868ba7179a588f2e26761043d872b87c0df81d7ad7348390aeccdbda3` |
+| Desempenho `repro-shap-validation-v1` | 67.255 linhas da validação já observada, vinculadas ao novo snapshot |
+| Manifest do desempenho | `29453b640e62f921414f5897ed9e8c2f8a798f8271c6b81fbd3be62f692ea31d` |
+| Gate funcional | portal-unified: 1 passed em 1,09 s; tox 15,94 s |
+
+O gate nativo de Streamlit navegou pela sessão, paginação, visão geral e desempenho,
+comparando os hashes antes/depois. O smoke confirmou HTTP e fontes. A captura
+mostra sessão concluída 200/200, 13 alertas, 199 clientes, 200 feedbacks e o caso
+1610254 com score 0,999225, gráfico SHAP, origem verificada e reconstrução do score.
+O feedback posterior aparece separado, com aviso de que não participa da explicação.
+A inspeção visual desta captura cobre essa página/caso; a página de desempenho foi
+validada pelo gate, sem atribuir sua revisão visual a uma imagem que não a mostra.
+
+Os testes direcionados do autor passaram com 104 testes, 10 skips, 13 warnings e
+12 subtests em 46,07 s, tox 52,47 s. Não são contagens do CI nem testes pulados
+apresentados como aprovados. O gate nativo não carregou modelos; a geração SHAP
+e a avaliação de desempenho anteriores carregaram os pesos identificados para
+seus cálculos. O champion permaneceu inalterado.
+
+Os flags originais UI_browser_review_validated/browser_visual_review_validated
+permanecem false. A revisão da captura é evidência complementar; o gate não valida
+novas chegadas. Casos fora dos cinco selecionados mantêm SHAP indisponível.
+Este aceite cobre o portal da sessão concluída; não é instalação integral,
+restauração, alta disponibilidade ou nova confirmação independente de qualidade.
+O snapshot investigation-v1 permanece como referência anterior preservada.
+
+[Recibo documental](../../references/evidence/session_shap_author_validation_2026-10-29.json).
+
+
+## Portal: snapshot original e candidato com SHAP aceitos
 
 Saídas fornecidas pelo autor confirmam `portal_snapshot_verified`,
 `portal_session_readonly_verified`, `portal_performance_verified` e smoke HTTP.
@@ -23,9 +64,10 @@ O desempenho recalculou a validação já identificada, sem fit ou promoção.
 
 O gerador SHAP exigia `rehearsal.json`, ausente por desenho na sessão reconciliada.
 A adaptação preparada usa a reconciliação existente em memória e os recibos reais,
-sem sintetizar o ensaio legado. O candidato `investigation-shap-v1` preservará o
-snapshot anterior e terá desempenho vinculado ao novo manifest. Geração e revisão
-visual nativas de SHAP ainda pendentes. [Procedimento](CASE_EXPLANATIONS.md#sessão-reconciliada-na-vm--preparação-em-2026-10-29).
+sem sintetizar o ensaio legado. O candidato `investigation-shap-v1` preservou o
+snapshot anterior e recebeu desempenho vinculado ao novo manifest. Geração,
+verificação, smoke e navegação nativos passaram; a captura do caso explicado foi
+revisada no chat, conforme o aceite complementar abaixo. [Procedimento](CASE_EXPLANATIONS.md#sessão-reconciliada-na-vm--preparação-em-2026-10-29).
 
 
 Registro derivado das saídas de terminal fornecidas pelo autor. Não é uma
@@ -232,7 +274,7 @@ reúne a origem e o escopo. Não substitui os recibos e bancos locais.
 ## Gates pendentes
 
 1. Concluir inventário, acessos restantes e limites de recursos; supervisão já integrada no PR #14.
-2. Fechar desempenho, SHAP e aceite integral do portal da VM com fontes próprias.
+2. Publicar e integrar o aceite do portal da sessão concluída com CI/PR próprios; desempenho, SHAP e navegação nativos já aceitos neste recorte.
 3. Qualificar instalação integral do produto a partir de checkout vazio.
 4. Definir/verificar baseline própria da VM quando seus pré-requisitos existirem.
 5. Ensaiar ciclo completo de parada/subida e backup/restauração separadamente; logout e reboot planejado foram aceitos no escopo acima.

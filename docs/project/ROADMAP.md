@@ -3,9 +3,10 @@
 **Incremento do portal da VM:** snapshot, vínculo de sessão, desempenho (67.255
 linhas), saúde HTTP e revisão visual foram confirmados pelo autor. Foram 200
 decisões, 199 clientes, 13 alertas e 200 feedbacks, sem explicações nesse snapshot.
-Suporte SHAP à sessão reconciliada preparado nesta branch; geração, verificação e
-revisão visual nativas do candidato com SHAP continuam pendentes. O portal completo
-não é marcado como concluído por esta preparação.
+SHAP da sessão foi publicado e verificado para cinco casos, com navegação nativa
+aprovada e captura de caso explicado revisada. O recorte de portal da sessão
+concluída foi aceito; integração da branch via CI/PR permanece separada. Instalação
+integral, ciclo de parada/subida e backup/restauração continuam abertos.
 
 Atualizado em **2026-10-29**. A reprodução em outro ambiente entrou antes de
 Terraform para identificar dependências da máquina original antes de declará-las
@@ -67,7 +68,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Fonte de eventos da sessão aceita | Sessão reconciliada com 269.334 eventos; o ledger de contexto não representa inferências |
 | Sessão HTTP na VM | Verificada: 200 decisões, 13 alertas, 199 clientes e 200 feedbacks nas decisões |
 | Grafana da VM | Cinco dashboards; métricas verificadas, expiração/retomada ensaiadas e revisão visual recebida |
-| Portal da VM | Snapshot/sessão, desempenho e revisão visual sem SHAP aceitos; suporte SHAP preparado, com aceite nativo e fechamento integral pendentes |
+| Portal da VM | Sessão/snapshot, cinco explicações verificadas, desempenho de 67.255 linhas, smoke e navegação nativa aceitos; captura SHAP revisada; integração da branch pendente |
 | Processos de observação/acesso no host | Unidades ativas e recuperação automática de seus processos ensaiada; check posterior manteve PIDs e hashes |
 | Logout controlado | Validado por confirmação do autor de encerramento de todas as sessões/túneis, Linger=yes e check posterior com mesmos PIDs/contadores/hashes |
 | Reboot planejado da VM | Boot ID mudou; observador e acesso Grafana ativos, HTTP saudável e mesma sessão; uma nova tentativa automática por unidade |
@@ -78,7 +79,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — em andamento | Concluir reprodução limpa | Consolidar os marcos já aceitos, fechar o portal e qualificar instalação do zero; recibos próprios e limitações explícitas |
+| 1 — em andamento | Concluir reprodução limpa | Consolidar os marcos já aceitos, integrar o aceite do portal e qualificar instalação do zero; recibos próprios e limitações explícitas |
 | 2 — parcialmente validado | Consolidar operação da VM | Observador/acesso Grafana supervisionados e recuperação ensaiada; logout completo e reboot planejado aceitos; concluir inventário restante, acessos SSH e limites de recursos |
 | 3 | Decidir coordenação dos pipelines | Testar fluxo limitado com falha/retomada e invocação duplicada; comparar executor existente e uma alternativa; adotar orquestrador somente se reduzir complexidade total |
 | 4 | Terraform local | Declarar ambiente estabilizado e ownership; providers/locks/state protegidos, apply real e segundo plan sem mudanças; preservação/restauração dos dados explícitas |
@@ -93,7 +94,7 @@ e aceitar logout completo e reboot planejado da VM. O observador e o encaminhame
 usuário, status e journal, com recuperação automática verificada. O túnel SSH
 continua separado, sem reconexão automática neste recorte.
 
-Fechar as evidências restantes do portal e qualificar o percurso de instalação
+Publicar/integrar o aceite do portal e qualificar o percurso de instalação
 integral a partir de checkout vazio. Planejar ciclo completo de parada/subida
 e backup/restauração como ensaios próprios. Novas chegadas e firing de
 alertas de monitoramento na VM permanecem fora do aceite da sessão concluída.
