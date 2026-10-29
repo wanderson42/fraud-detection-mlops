@@ -13,7 +13,7 @@
   ],
   "uid": "fraud-feature-health",
   "title": "Fraud — saúde das features da sessão",
-  "version": 1,
+  "version": 2,
   "panels": [
     {
       "id": 1,
@@ -450,9 +450,9 @@
     },
     {
       "id": 8,
-      "title": "Jensen–Shannon — TX_AMOUNT",
+      "title": "Drift — valor",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Jensen–Shannon — TX_AMOUNT. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 0,
         "y": 18,
@@ -516,9 +516,9 @@
     },
     {
       "id": 9,
-      "title": "Jensen–Shannon — CUSTOMER_AVG_AMOUNT_7D",
+      "title": "Drift — média do cliente",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Jensen–Shannon — CUSTOMER_AVG_AMOUNT_7D. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 8,
         "y": 18,
@@ -582,9 +582,9 @@
     },
     {
       "id": 10,
-      "title": "Jensen–Shannon — CUSTOMER_TX_COUNT_7D",
+      "title": "Drift — contagem do cliente",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Jensen–Shannon — CUSTOMER_TX_COUNT_7D. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 16,
         "y": 18,
@@ -648,9 +648,9 @@
     },
     {
       "id": 11,
-      "title": "Jensen–Shannon — TERMINAL_KNOWN_FRAUD_RATE_7D",
+      "title": "Drift — fraude no terminal",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Jensen–Shannon — TERMINAL_KNOWN_FRAUD_RATE_7D. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 0,
         "y": 24,
@@ -743,116 +743,8 @@
       },
       "targets": [
         {
-          "refId": "0",
-          "expr": "fraud_session_detail_feature_invalid_TX_AMOUNT and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "1",
-          "expr": "fraud_session_detail_feature_invalid_TX_HOUR and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "2",
-          "expr": "fraud_session_detail_feature_invalid_TX_WEEKDAY and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "3",
-          "expr": "fraud_session_detail_feature_invalid_CUSTOMER_TX_COUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "4",
-          "expr": "fraud_session_detail_feature_invalid_CUSTOMER_AVG_AMOUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "5",
-          "expr": "fraud_session_detail_feature_invalid_CUSTOMER_AMOUNT_RATIO_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "6",
-          "expr": "fraud_session_detail_feature_invalid_CUSTOMER_AMOUNT_RATIO_VALID_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "7",
-          "expr": "fraud_session_detail_feature_invalid_CUSTOMER_TX_COUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "8",
-          "expr": "fraud_session_detail_feature_invalid_CUSTOMER_AVG_AMOUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "9",
-          "expr": "fraud_session_detail_feature_invalid_CUSTOMER_AMOUNT_RATIO_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "10",
-          "expr": "fraud_session_detail_feature_invalid_CUSTOMER_AMOUNT_RATIO_VALID_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "11",
-          "expr": "fraud_session_detail_feature_invalid_TERMINAL_TX_COUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "12",
-          "expr": "fraud_session_detail_feature_invalid_TERMINAL_KNOWN_LABEL_COUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "13",
-          "expr": "fraud_session_detail_feature_invalid_TERMINAL_KNOWN_FRAUD_COUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "14",
-          "expr": "fraud_session_detail_feature_invalid_TERMINAL_KNOWN_FRAUD_RATE_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "15",
-          "expr": "fraud_session_detail_feature_invalid_TERMINAL_TX_COUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "16",
-          "expr": "fraud_session_detail_feature_invalid_TERMINAL_KNOWN_LABEL_COUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "17",
-          "expr": "fraud_session_detail_feature_invalid_TERMINAL_KNOWN_FRAUD_COUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "18",
-          "expr": "fraud_session_detail_feature_invalid_TERMINAL_KNOWN_FRAUD_RATE_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
+          "refId": "A",
+          "expr": "label_replace({__name__=~\"fraud_session_detail_feature_invalid_(TX_AMOUNT|TX_HOUR|TX_WEEKDAY|CUSTOMER_TX_COUNT_1D|CUSTOMER_AVG_AMOUNT_1D|CUSTOMER_AMOUNT_RATIO_1D|CUSTOMER_AMOUNT_RATIO_VALID_1D|CUSTOMER_TX_COUNT_7D|CUSTOMER_AVG_AMOUNT_7D|CUSTOMER_AMOUNT_RATIO_7D|CUSTOMER_AMOUNT_RATIO_VALID_7D|TERMINAL_TX_COUNT_1D|TERMINAL_KNOWN_LABEL_COUNT_1D|TERMINAL_KNOWN_FRAUD_COUNT_1D|TERMINAL_KNOWN_FRAUD_RATE_1D|TERMINAL_TX_COUNT_7D|TERMINAL_KNOWN_LABEL_COUNT_7D|TERMINAL_KNOWN_FRAUD_COUNT_7D|TERMINAL_KNOWN_FRAUD_RATE_7D)\"} and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0), \"feature\", \"$1\", \"__name__\", \"fraud_session_detail_feature_invalid_(.+)\")",
           "instant": true,
           "format": "table"
         }
@@ -862,11 +754,67 @@
           "noValue": "Indisponível",
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Feature"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 530
+              }
+            ]
+          }
+        ]
       },
       "options": {
-        "showHeader": true
-      }
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "feature",
+                "Value"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "feature": 0,
+              "Value": 1
+            },
+            "renameByName": {
+              "feature": "Feature",
+              "Value": "Valor"
+            },
+            "excludeByName": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Feature",
+                "desc": false
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Uma linha por feature; Valor usa a unidade indicada na tabela. Ausência da fonte não é convertida em zero."
     },
     {
       "id": 14,
@@ -884,116 +832,8 @@
       },
       "targets": [
         {
-          "refId": "0",
-          "expr": "fraud_session_detail_feature_missing_TX_AMOUNT and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "1",
-          "expr": "fraud_session_detail_feature_missing_TX_HOUR and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "2",
-          "expr": "fraud_session_detail_feature_missing_TX_WEEKDAY and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "3",
-          "expr": "fraud_session_detail_feature_missing_CUSTOMER_TX_COUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "4",
-          "expr": "fraud_session_detail_feature_missing_CUSTOMER_AVG_AMOUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "5",
-          "expr": "fraud_session_detail_feature_missing_CUSTOMER_AMOUNT_RATIO_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "6",
-          "expr": "fraud_session_detail_feature_missing_CUSTOMER_AMOUNT_RATIO_VALID_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "7",
-          "expr": "fraud_session_detail_feature_missing_CUSTOMER_TX_COUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "8",
-          "expr": "fraud_session_detail_feature_missing_CUSTOMER_AVG_AMOUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "9",
-          "expr": "fraud_session_detail_feature_missing_CUSTOMER_AMOUNT_RATIO_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "10",
-          "expr": "fraud_session_detail_feature_missing_CUSTOMER_AMOUNT_RATIO_VALID_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "11",
-          "expr": "fraud_session_detail_feature_missing_TERMINAL_TX_COUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "12",
-          "expr": "fraud_session_detail_feature_missing_TERMINAL_KNOWN_LABEL_COUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "13",
-          "expr": "fraud_session_detail_feature_missing_TERMINAL_KNOWN_FRAUD_COUNT_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "14",
-          "expr": "fraud_session_detail_feature_missing_TERMINAL_KNOWN_FRAUD_RATE_1D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "15",
-          "expr": "fraud_session_detail_feature_missing_TERMINAL_TX_COUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "16",
-          "expr": "fraud_session_detail_feature_missing_TERMINAL_KNOWN_LABEL_COUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "17",
-          "expr": "fraud_session_detail_feature_missing_TERMINAL_KNOWN_FRAUD_COUNT_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
-          "instant": true,
-          "format": "table"
-        },
-        {
-          "refId": "18",
-          "expr": "fraud_session_detail_feature_missing_TERMINAL_KNOWN_FRAUD_RATE_7D and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0)",
+          "refId": "A",
+          "expr": "label_replace({__name__=~\"fraud_session_detail_feature_missing_(TX_AMOUNT|TX_HOUR|TX_WEEKDAY|CUSTOMER_TX_COUNT_1D|CUSTOMER_AVG_AMOUNT_1D|CUSTOMER_AMOUNT_RATIO_1D|CUSTOMER_AMOUNT_RATIO_VALID_1D|CUSTOMER_TX_COUNT_7D|CUSTOMER_AVG_AMOUNT_7D|CUSTOMER_AMOUNT_RATIO_7D|CUSTOMER_AMOUNT_RATIO_VALID_7D|TERMINAL_TX_COUNT_1D|TERMINAL_KNOWN_LABEL_COUNT_1D|TERMINAL_KNOWN_FRAUD_COUNT_1D|TERMINAL_KNOWN_FRAUD_RATE_1D|TERMINAL_TX_COUNT_7D|TERMINAL_KNOWN_LABEL_COUNT_7D|TERMINAL_KNOWN_FRAUD_COUNT_7D|TERMINAL_KNOWN_FRAUD_RATE_7D)\"} and on(session_id,session_sha256) (fraud_session_source_valid == 1) and on(session_id,session_sha256) (fraud_session_details_available == 1) and on(session_id,session_sha256) (fraud_session_detail_feature_current_rows > 0), \"feature\", \"$1\", \"__name__\", \"fraud_session_detail_feature_missing_(.+)\")",
           "instant": true,
           "format": "table"
         }
@@ -1003,11 +843,67 @@
           "noValue": "Indisponível",
           "unit": "percentunit"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Feature"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 530
+              }
+            ]
+          }
+        ]
       },
       "options": {
-        "showHeader": true
-      }
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false
+        }
+      },
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "feature",
+                "Value"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "feature": 0,
+              "Value": 1
+            },
+            "renameByName": {
+              "feature": "Feature",
+              "Value": "Valor"
+            },
+            "excludeByName": {}
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "field": "Feature",
+                "desc": false
+              }
+            ]
+          }
+        }
+      ],
+      "description": "Uma linha por feature; Valor usa a unidade indicada na tabela. Ausência da fonte não é convertida em zero."
     }
   ]
 }

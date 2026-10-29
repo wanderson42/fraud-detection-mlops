@@ -152,6 +152,16 @@ COMPONENTS_ALLOWED = {
 }
 
 
+PRESENTATION_TRANSITION = "references/session_dashboard_presentation_transition_v1.json"
+PRESENTATION_ALLOWED = {
+    "infra/helm/fraud-observability/files/components/quality.json",
+    "infra/helm/fraud-observability/files/components/features.json",
+    "infra/helm/fraud-observability/files/components/overview.json",
+    "infra/helm/fraud-observability/files/components/operations.json",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -254,6 +264,11 @@ def accept(saved, current, root):
             COMPONENTS_TRANSITION,
             "fraud_session_components_source_transition_v1",
             COMPONENTS_ALLOWED,
+        ),
+        (
+            PRESENTATION_TRANSITION,
+            "fraud_session_dashboard_presentation_transition_v1",
+            PRESENTATION_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

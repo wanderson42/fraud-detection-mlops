@@ -13,7 +13,7 @@
   ],
   "uid": "fraud-replay-ops",
   "title": "Fraud — operação da sessão e feedback",
-  "version": 1,
+  "version": 2,
   "panels": [
     {
       "id": 1,
@@ -626,9 +626,9 @@
     },
     {
       "id": 11,
-      "title": "Feedback pendente nas decisões",
+      "title": "Feedback pendente",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Feedback pendente nas decisões. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 0,
         "y": 23,
@@ -692,9 +692,9 @@
     },
     {
       "id": 12,
-      "title": "Retries em recibos confirmados",
+      "title": "Retries confirmados",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Retries em recibos confirmados. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 8,
         "y": 23,

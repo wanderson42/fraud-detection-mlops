@@ -13,7 +13,7 @@
   ],
   "uid": "fraud-triage-quality",
   "title": "Fraud — triagem com feedback da sessão",
-  "version": 1,
+  "version": 2,
   "panels": [
     {
       "id": 1,
@@ -98,9 +98,9 @@
     },
     {
       "id": 3,
-      "title": "Transações fraudulentas na coorte",
+      "title": "Transações fraudulentas",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Transações fraudulentas na coorte. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 8,
         "y": 6,
@@ -230,9 +230,9 @@
     },
     {
       "id": 5,
-      "title": "Cliente-dias positivos capturados",
+      "title": "Positivos capturados",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Cliente-dias positivos capturados. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 0,
         "y": 12,
@@ -296,9 +296,9 @@
     },
     {
       "id": 6,
-      "title": "Cliente-dias positivos não capturados",
+      "title": "Positivos não capturados",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Cliente-dias positivos não capturados. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 8,
         "y": 12,
@@ -428,9 +428,9 @@
     },
     {
       "id": 8,
-      "title": "precision — coorte da sessão",
+      "title": "Precisão da coorte",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "precision — coorte da sessão. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 0,
         "y": 18,
@@ -494,9 +494,9 @@
     },
     {
       "id": 9,
-      "title": "recall — coorte da sessão",
+      "title": "Recall da coorte",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "recall — coorte da sessão. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 8,
         "y": 18,
@@ -560,9 +560,9 @@
     },
     {
       "id": 10,
-      "title": "average_precision — coorte da sessão",
+      "title": "AP transacional",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "average_precision — coorte da sessão. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 16,
         "y": 18,
@@ -692,9 +692,9 @@
     },
     {
       "id": 12,
-      "title": "Decisões — below_threshold",
+      "title": "Abaixo do limiar",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Decisões — below_threshold. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 8,
         "y": 24,
@@ -758,9 +758,9 @@
     },
     {
       "id": 13,
-      "title": "Decisões — already_alerted",
+      "title": "Já alertados",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Decisões — already_alerted. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 16,
         "y": 24,
@@ -824,9 +824,9 @@
     },
     {
       "id": 14,
-      "title": "Decisões — budget_exhausted",
+      "title": "Orçamento esgotado",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Decisões — budget_exhausted. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 0,
         "y": 30,
@@ -890,9 +890,9 @@
     },
     {
       "id": 15,
-      "title": "Orçamento diário por cliente",
+      "title": "Limite diário de clientes",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Orçamento diário por cliente. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 0,
         "y": 36,
@@ -956,9 +956,9 @@
     },
     {
       "id": 16,
-      "title": "Datas com decisões observadas",
+      "title": "Datas observadas",
       "type": "stat",
-      "description": "Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
+      "description": "Datas com decisões observadas. Agregado da sessão explicitamente vinculada. Sem fonte válida, exibe ausência; zero só quando observado.",
       "gridPos": {
         "x": 8,
         "y": 36,
