@@ -1,11 +1,17 @@
 # Fraud Detection MLOps
 
+**Ciclo planejado da VM aceito:** parada/subida com mesmo nó, volumes e plano de
+réplicas; tracking/S3, API e monitoramento conferidos, com retomada da mesma sessão
+e do portal. Houve inferências de controle, sem novas decisões na sessão. CI/PR da
+correção ainda pendentes; instalação integral e backup/restauração seguem abertos.
+[Recibos e limites](docs/operations/VM_REPRODUCTION_PROGRESS.md#aceite-do-ciclo-planejado-na-vm--2026-10-29).
+
 **Portal da VM:** snapshot/sessão de 200 decisões e avaliação de 67.255 linhas
 verificados; saúde HTTP aprovada e revisão visual confirmada pelo autor. O suporte
 SHAP à sessão reconciliada foi executado e verificado: cinco casos no candidato
 `investigation-shap-v1`, com navegação nativa aprovada e captura do gráfico revisada.
-O snapshot anterior sem SHAP permanece preservado. CI/merge da branch ainda não
-constituem aceite nesta nota. [Procedimento](docs/operations/CASE_EXPLANATIONS.md#sessão-reconciliada-na-vm--preparação-em-2026-10-29).
+O snapshot anterior sem SHAP permanece preservado. O PR #16 integrou esse recorte
+em 13216e3, com CIs #78, #79 e #80 aprovados. [Procedimento](docs/operations/CASE_EXPLANATIONS.md#sessão-reconciliada-na-vm--preparação-em-2026-10-29).
 
 **Estado em 2026-10-29:** a reprodução em VM isolada foi incorporada antes de
 Terraform e já verificou dados, rodada canônica, champion/API/rollback e uma sessão
@@ -14,8 +20,8 @@ aprovado. A supervisão foi integrada no PR #14, com CI aprovado informado pelo
 autor. Recuperação de processos, persistência após logout e recuperação após
 reboot foram verificadas na VM, preservando a mesma sessão.
 
-A reprodução integral, o portal completo da VM, o ciclo completo de parada/subida
-e backup/restauração continuam abertos. O reboot ensaiado recuperou observação
+A reprodução integral e backup/restauração continuam abertos. O portal da sessão
+concluída e o ciclo planejado de parada/subida possuem os aceites próprios acima. O reboot ensaiado recuperou observação
 e acesso Grafana; não equivale a restauração de dados ou tolerância à perda do host. Os resultados do laboratório
 original não são transferidos automaticamente para a VM.
 

@@ -162,6 +162,13 @@ PRESENTATION_ALLOWED = {
 }
 
 
+LIFECYCLE_PROFILE_TRANSITION = "references/lifecycle_profile_source_transition_v1.json"
+LIFECYCLE_PROFILE_ALLOWED = {
+    "scripts/platform/kind_operations.py",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -269,6 +276,11 @@ def accept(saved, current, root):
             PRESENTATION_TRANSITION,
             "fraud_session_dashboard_presentation_transition_v1",
             PRESENTATION_ALLOWED,
+        ),
+        (
+            LIFECYCLE_PROFILE_TRANSITION,
+            "fraud_lifecycle_profile_source_transition_v1",
+            LIFECYCLE_PROFILE_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

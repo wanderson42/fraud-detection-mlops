@@ -1,0 +1,14 @@
+{
+  "schema": "fraud_lifecycle_profile_source_transition_v1",
+  "scope": "lifecycle_readback_profile_dispatch_only_preserve_models_receipts_images_and_runtime",
+  "changes": {
+    "scripts/platform/kind_operations.py": {
+      "before": "50daae56f27668113ae03443811d5bad90ec0fcf78516dc8ca35f310eefa854e",
+      "after": "5518a86cdbecdd8e086e5a46dacc95291c7504d98a5232bcbdbb32602e37018b"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "e551f1da148ea53a6d04ec8fcc407e6b8b50c30eabd014b00edacb40c90f5ff6",
+      "after": "49028c9daf8db55877ee7cb91bff038004f51017e91a20ca0a7f035abc20b801"
+    }
+  }
+}

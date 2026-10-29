@@ -1,5 +1,17 @@
 # Síntese para stakeholders
 
+## Continuidade operacional da VM — aceite de 2026-10-29
+
+O ciclo planejado parou e retomou a plataforma preservando nó, volumes, modelo,
+release e sessão de 200 decisões/13 alertas. Tracking/S3, API e monitoramento foram
+conferidos; observador, acesso Grafana e portal voltaram. Esse resultado reduz a
+dependência de uma plataforma que nunca pode ser desligada, com procedimento e
+recibos próprios. Não demonstra operação sem indisponibilidade, recuperação por
+perda do host ou restauração de backup. O portal com SHAP já foi integrado no PR
+#16; CI/PR da correção deste ciclo permanecem separados.
+[Registro técnico](../operations/VM_REPRODUCTION_PROGRESS.md#aceite-do-ciclo-planejado-na-vm--2026-10-29).
+
+
 ## Portal da VM: aceite da sessão com SHAP — 2026-10-29
 
 O autor confirmou snapshot e sessão com 200 decisões/13 alertas, desempenho sobre
@@ -9,7 +21,8 @@ O snapshot original sem SHAP foi preservado. O candidato `investigation-shap-v1`
 incorporou cinco explicações verificadas, mantendo modelo/release, decisões e
 feedback. A navegação nativa passou; a captura do caso 1610254 mostra SHAP e
 reconstrução do score 0,999225, com feedback posterior separado. CI e merge desta
-branch seguem como gate de integração; reprodução integral continua aberta.
+branch do ciclo seguem como gate de integração; o portal foi integrado no PR #16
+e a reprodução integral continua aberta.
 
 
 ## Síntese atual — reprodução e operação em outro ambiente (2026-10-29)

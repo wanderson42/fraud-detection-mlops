@@ -1,0 +1,76 @@
+{
+  "schema": "fraud_lifecycle_profile_preparation_v1",
+  "date": "2026-10-29",
+  "base_commit": "13216e3fb0357de48ee136382236c24658ca1b25",
+  "reported_native_failure": {
+    "command": "make platform-baseline",
+    "baseline": "data/storage/kind-platform/operations/baseline-vm-session-shap-v1.json",
+    "error": "Operations stopped: 'dashboard_color_policy_verified'",
+    "stage": "probes before new baseline write; no stop/start invoked"
+  },
+  "fix": "Require the confirmations returned by the selected observability profile; preserve legacy color policy checks and exact source transitions.",
+  "runtime_changes": [
+    "scripts/platform/kind_operations.py",
+    "scripts/platform/source_compatibility.py"
+  ],
+  "preparation_tests": {
+    "python": "3.14.4",
+    "targeted_passed": 109,
+    "targeted_skipped": 4,
+    "targeted_seconds": 4.03,
+    "regression_passed": 256,
+    "regression_skipped": 18,
+    "regression_warnings": 43,
+    "regression_seconds": 56.65,
+    "selection": [
+      "tests/serving_recovery",
+      "tests/session_monitoring",
+      "tests/product_flow",
+      "tests/operational_round",
+      "tests/model_updates",
+      "tests/infra/test_kind_operations.py",
+      "tests/infra/test_source_compatibility.py",
+      "tests/infra/test_dashboard_presentation.py",
+      "tests/infra/test_session_only_observability.py"
+    ],
+    "ruff_check": true,
+    "ruff_format": true,
+    "notebook_original_cells_preserved": true,
+    "nbformat_validated": true,
+    "mlflow_telemetry_disabled_for_completed_regression": true
+  },
+  "tested_rejections": [
+    "missing confirmations",
+    "false confirmations",
+    "numeric boolean in session confirmation",
+    "opposite-profile results",
+    "empty session rule set",
+    "uncommitted transition",
+    "scientific source drift",
+    "source byte tampering"
+  ],
+  "native_inventory_author_report": {
+    "controllers": 9,
+    "ready_pods": 8,
+    "inactive_green_replicas": 0,
+    "bound_pvcs": 4,
+    "requests_cpu_millicores_running_app_containers": 825,
+    "requests_memory_mib_running_app_containers": 1216,
+    "container_usage_available": false,
+    "host_available_memory_display": "4.9 GiB",
+    "host_filesystem_used_percent": 27,
+    "host_filesystem_available_display": "81G",
+    "host_supervised_observer_active": true,
+    "host_supervised_grafana_active": true,
+    "grafana_http_healthy": true,
+    "portal_ready": true,
+    "inotify_instances": 512,
+    "inotify_watches": 524288
+  },
+  "native_fix_acceptance": false,
+  "new_baseline_verified": false,
+  "controlled_stop_start_validated": false,
+  "backup_restore_validated": false,
+  "accepted_receipts_rewritten": false,
+  "models_images_policies_changed": false
+}

@@ -59,9 +59,17 @@ class PresentationTests(unittest.TestCase):
         self.assertEqual(set(declaration["changes"]), compat.PRESENTATION_ALLOWED)
         old = {n: h["before"] for n, h in declaration["changes"].items()}
         new = {n: h["after"] for n, h in declaration["changes"].items()}
+        lifecycle = json.loads((ROOT / compat.LIFECYCLE_PROFILE_TRANSITION).read_text())
+        for name in new.keys() & lifecycle["changes"].keys():
+            self.assertEqual(new[name], lifecycle["changes"][name]["before"])
+            new[name] = lifecycle["changes"][name]["after"]
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
-            for name in (*new, compat.PRESENTATION_TRANSITION):
+            for name in (
+                *new,
+                compat.PRESENTATION_TRANSITION,
+                compat.LIFECYCLE_PROFILE_TRANSITION,
+            ):
                 target = root / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((ROOT / name).read_bytes())
