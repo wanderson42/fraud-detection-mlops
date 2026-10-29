@@ -4,8 +4,10 @@
 [reprodução na VM](operations/VM_REPRODUCTION_PROGRESS.md),
 [supervisão dos processos](operations/VM_USER_SUPERVISION.md) e
 [notebook da etapa](../notebooks/stages/26_clean_reproduction_and_vm_supervision.ipynb).
-O PR #13 integrou sessão/Grafana com CI aprovado; a supervisão foi verificada
-posteriormente no guest e ainda tem integração própria pendente.
+O PR #14 integrou a supervisão em `9d9c8f2`; o autor informou CI aprovado e
+sincronização nas duas máquinas. Os ensaios posteriores confirmaram persistência
+após encerramento de todas as sessões e recuperação automática após reboot,
+com a mesma sessão, hashes preservados e nenhuma nova inferência.
 
 O [guia operacional](operations/PRODUCT_OPERATIONS.md) separa ambientes.
 O [histórico](project/ROADMAP_HISTORY.md) preserva decisões e marcos anteriores.

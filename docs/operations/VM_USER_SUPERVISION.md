@@ -13,9 +13,16 @@ O probe foi corrigido para reutilização de endereço compatível com port-forw
 preservando recusa de listener ativo. A revisão teve 18 testes na preparação.
 As unidades não precisaram ser reinstaladas por essa mudança.
 
-`logout_persistence_validated=false` e `reboot_validated=false` foram mantidos nas
-saídas. Não há comprovação de fechamento de todos os logins/túneis na saída
-recebida. CI e merge da supervisão continuam pendentes nesta revisão.
+Logout completo e reboot planejado foram aceitos posteriormente: `Linger=yes`,
+confirmação do autor de fechamento de todas as sessões/túneis, checks e boot IDs
+comparados. Após reboot, uma falha inicial de kubectl foi seguida por reinício
+automático bem-sucedido das duas unidades. A causa específica do kubectl não foi
+exposta. O PR #14 integrou o código em `9d9c8f2`; o autor informou CI aprovado.
+
+Os flags `logout_persistence_validated=false` e `reboot_validated=false` originais
+continuam intactos: o check não observa sozinho logout/reboot. Os aceites externos
+estão no [registro da VM](VM_REPRODUCTION_PROGRESS.md) e no
+[recibo documental](../../references/evidence/vm_logout_reboot_author_validation_2026-10-29.json).
 
 Escopo: dois serviços systemd de usuário no host da VM; nenhum Deployment,
 PVC, modelo, política, imagem, inferência ou recibo aceito é modificado.
@@ -157,3 +164,26 @@ falhas transitórias/permanentes, cleanup, recusa de unidade divergente, instala
 sem ativação, lock ocupado e critérios de recuperação. systemd-analyze verify
 aprova a sintaxe das unidades geradas. Não houve teste de user manager real
 neste ambiente: aceite de instalação, reinício automático e logout ficam na VM.
+
+## Repetir o aceite externo de logout ou reboot
+
+Registre antes `loginctl show-user "$USER" -p Linger`, o boot ID com
+`cat /proc/sys/kernel/random/boot_id` e o check da sessão. Para logout, feche
+todas as sessões SSH, túneis e console do usuário, mantenha a VM ligada e registre
+a confirmação desse procedimento. Após reconectar, compare PIDs, NRestarts,
+identidades, contagens e hashes com o check anterior.
+
+Para reboot planejado, registre o boot ID anterior, execute `sudo reboot`,
+reconecte e consulte o novo boot ID e check sem iniciar serviços manualmente.
+O boot ID precisa mudar; não compare contadores de reinício como se fossem
+cumulativos entre boots. Se ocorrer nova tentativa, consulte o journal do boot:
+
+```bash
+journalctl --user -b \
+  -u fraud-session-observer.service \
+  -u fraud-grafana-access.service --no-pager -n 100
+```
+
+Preserve a saída original, inclusive flags false. Documente separadamente o
+procedimento externo, resultado e limites. Se check falhar, investigue antes de
+iniciar outro observador ou encaminhamento e invalidar o teste de recuperação.

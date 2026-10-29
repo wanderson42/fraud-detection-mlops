@@ -3,11 +3,13 @@
 **Estado em 2026-10-29:** a reprodução em VM isolada foi incorporada antes de
 Terraform e já verificou dados, rodada canônica, champion/API/rollback e uma sessão
 HTTP de 200 decisões com cinco dashboards Grafana. O PR #13 foi integrado com CI
-aprovado. Depois, observador e acesso Grafana foram supervisionados e recuperados
-após falha controlada no host da VM; esse código ainda está em branch própria.
+aprovado. A supervisão foi integrada no PR #14, com CI aprovado informado pelo
+autor. Recuperação de processos, persistência após logout e recuperação após
+reboot foram verificadas na VM, preservando a mesma sessão.
 
-A reprodução integral, o portal completo da VM, logout controlado, reboot e
-backup/restauração continuam com gates próprios. Os resultados do laboratório
+A reprodução integral, o portal completo da VM, o ciclo completo de parada/subida
+e backup/restauração continuam abertos. O reboot ensaiado recuperou observação
+e acesso Grafana; não equivale a restauração de dados ou tolerância à perda do host. Os resultados do laboratório
 original não são transferidos automaticamente para a VM.
 
 - [Roadmap e critérios de conclusão](docs/project/ROADMAP.md).

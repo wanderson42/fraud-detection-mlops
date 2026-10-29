@@ -1,0 +1,100 @@
+{
+  "schema": "vm_logout_reboot_author_validation_v1",
+  "date": "2026-10-29",
+  "kind": "documentary_synthesis",
+  "provenance": {
+    "source": "Author-provided terminal outputs, journal excerpt and explicit logout confirmation in conversation",
+    "assistant_executed_on_vm": false,
+    "reported_synced_main": "9d9c8f25d32747cd406399a45b43d98da06d1c78",
+    "exact_checkout_sha_collected_during_native_check": false,
+    "merge_pr": 14,
+    "merge_verified_via_github": true,
+    "ci_approval": "reported_by_author; not independently rechecked for this receipt"
+  },
+  "binding": {
+    "session_id": "repro-arrival-200-v1",
+    "session_sha256": "1a2ddc97d2350d8203234e074500ccec58c7ed5be236208dc235fce4ccc8f525",
+    "model_sha256": "401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67",
+    "serving_release_id": "308a1a82036a44e49d477a1b16747b6e",
+    "expected_events": 269334,
+    "expected_decisions": 200
+  },
+  "counts": {
+    "events": 269334,
+    "transactions": 134667,
+    "feedback": 134667,
+    "decisions": 200,
+    "alerts": 13,
+    "customers": 199,
+    "decision_feedback": 200,
+    "http_attempts": 200
+  },
+  "logout": {
+    "external_acceptance": true,
+    "linger": "yes",
+    "all_ssh_tunnels_and_console_closed_confirmed_by_author": true,
+    "vm_kept_running": true,
+    "before_and_after": {
+      "observer": {
+        "pid": 512559,
+        "n_restarts": 1
+      },
+      "grafana_access": {
+        "pid": 514819,
+        "n_restarts": 1
+      }
+    },
+    "grafana_http_healthy": true
+  },
+  "reboot": {
+    "external_acceptance": true,
+    "command": "sudo reboot",
+    "boot_id_before": "6aebb2b3-58fc-441e-ad0e-badeecbbb5bb",
+    "boot_id_after": "24524ae4-b9a4-464b-8f1a-a1319ffc2acd",
+    "observer": {
+      "pid": 4455,
+      "n_restarts": 1,
+      "active_state": "active",
+      "sub_state": "running"
+    },
+    "grafana_access": {
+      "pid": 5026,
+      "n_restarts": 1,
+      "active_state": "active",
+      "sub_state": "running"
+    },
+    "grafana_http_healthy": true,
+    "initial_kubectl_exit_code": 1,
+    "exact_kubectl_failure_cause": "not_exposed",
+    "automatic_retry_succeeded": true,
+    "journal_times": {
+      "units_started": "15:33:26",
+      "kubectl_errors": "15:33:32",
+      "grafana_supervisor_exit": "15:33:36",
+      "observer_retry": "15:33:42",
+      "observing_and_grafana_retry": "15:33:46",
+      "grafana_url": "15:33:49",
+      "grafana_ready": "15:33:51"
+    },
+    "journal_timezone": "guest display; UTC offset not supplied"
+  },
+  "accepted_sources_sha256": {
+    "input.json": "407250d3e1f5f6de7fac895c01d1e2ad899543b8ec660e6e7b4263e9cd954951",
+    "events.sqlite": "c42237dbce91f536a0134964b9ab3bc77ab1f0d195179eace4b8ba439009db04",
+    "checkpoint.sqlite": "b5c68af22838ac10c2c630c442b229378e9d6147df2e8bb61403db186a66b830",
+    "session.json": "1a2ddc97d2350d8203234e074500ccec58c7ed5be236208dc235fce4ccc8f525",
+    "verification-timing-51a8e09bf6c845608d46fe00df0ca08f.json": "f4cf5b9c92ededc32a2e7f16e9f4671dee10bbb731953566847196a25f9ba9ac"
+  },
+  "protected_resources_unchanged": true,
+  "new_inferences_executed": false,
+  "original_check_flags_preserved": {
+    "logout_persistence_validated": false,
+    "reboot_validated": false
+  },
+  "limitations": [
+    "External acceptance is distinct from original automatic check flags.",
+    "Native receipts and earlier documentary evidence were not rewritten.",
+    "No backup restore, host-loss recovery, full stop/start cycle, complete portal acceptance or clean full installation is established.",
+    "No SLA or new model-quality evidence."
+  ]
+}

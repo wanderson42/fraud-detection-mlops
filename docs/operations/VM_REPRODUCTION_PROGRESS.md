@@ -12,8 +12,10 @@ original do Alienware permanece separado.
   `6c01e44d48f694c7218446f917491e3329029f83` na rodada inicial; implementação
   posterior na branch `feat/vm-session-portal`, corrigida até `b773479` e integrada
   no PR #13 em `66e2bbf`. Autor confirmou a main atualizada em ambas as máquinas.
-  A supervisão posterior está na branch `feat/vm-user-supervision`, com commit
-  inicial `22eebf9`; o SHA da correção TIME-WAIT não foi fornecido nesta evidência.
+  A supervisão posterior, iniciada em `22eebf9`, foi integrada pelo PR #14 em
+  `9d9c8f25d32747cd406399a45b43d98da06d1c78`. O autor confirmou CI aprovado
+  e sincronização antes dos ensaios abaixo; o SHA exato do checkout durante cada
+  comando nativo não foi coletado separadamente.
 - Python 3.14.4, Poetry 2.4.3, Docker 29.1.3, kind 0.33.0,
   kubectl 1.35.9, Helm 4.3.1.
 - inotify: 512 instâncias e 524288 watches; configuração persistente instalada.
@@ -116,15 +118,54 @@ contagens e hashes dos cinco arquivos aceitos. Recursos protegidos permaneceram
 iguais e nenhuma nova inferência foi executada. PIDs são observações desta
 execução, não identidades para comandos futuros de encerramento.
 
-O procedimento de logout foi orientado, mas o material recebido não inclui prova
-de que todas as conexões SSH e túneis foram fechados, nem uma leitura posterior
-de `Linger=yes`. O check posterior sustenta continuidade entre leituras. Os flags
-`logout_persistence_validated=false` e `reboot_validated=false` foram preservados;
-não converter esse check em aceite automatizado de logout ou reboot.
+### Persistência após logout completo
 
-O [runbook de supervisão](VM_USER_SUPERVISION.md) é a referência dos comandos.
-O diário registra essa entrega na branch; o CI #70 do PR #13 antecede a supervisão
-e não é evidência de aprovação desse novo código.
+O autor forneceu `Linger=yes` e check inicial com os PIDs 512559/514819,
+ambos com `NRestarts=1`. Confirmou explicitamente o encerramento de todas as
+conexões SSH, túnel Grafana e sessão no console, mantendo a VM ligada. Depois da
+reconexão, o check manteve os mesmos PIDs, contadores, hashes e contagens, com
+Grafana saudável. Aceite manual composto: confirmação do procedimento e saídas
+antes/depois; não é detecção automática de ausência de sessões pelo verificador.
+
+### Recuperação após reboot planejado
+
+| Observação | Resultado fornecido pelo autor |
+| --- | --- |
+| Boot ID anterior | `6aebb2b3-58fc-441e-ad0e-badeecbbb5bb` |
+| Boot ID posterior | `24524ae4-b9a4-464b-8f1a-a1319ffc2acd` |
+| Observador | PID 4455, active/running, NRestarts=1 |
+| Acesso Grafana | PID 5026, active/running, NRestarts=1, HTTP saudável |
+| Identidade e contagens | Mesma sessão/modelo/release; 269.334 eventos, 200 decisões e 13 alertas |
+| Preservação | Cinco hashes aceitos e recursos protegidos iguais; nenhuma nova inferência |
+
+O autor executou `sudo reboot`, reconectou e forneceu boot ID/check, sem relatar
+início manual dos serviços. O journal do boot mostra a sequência abaixo. Horários
+são os exibidos pelo guest, sem conversão de fuso; o extrato não informa offset.
+
+| Horário no journal | Observação |
+| --- | --- |
+| 15:33:26 | systemd iniciou as duas unidades |
+| 15:33:32 | Comandos kubectl falharam com exit 1; observador encerrou; detalhes retidos pelo programa |
+| 15:33:36 | Supervisor Grafana encerrou após falha do acesso foreground |
+| 15:33:42 | systemd reiniciou o observador, contador 1 |
+| 15:33:46 | Observador anunciou a mesma sessão; systemd reiniciou acesso Grafana, contador 1 |
+| 15:33:49 | Encaminhamento publicou URL no loopback da VM |
+| 15:33:51 | Supervisor anunciou grafana_access_ready |
+
+A falha inicial de kubectl é compatível com dependências do cluster ainda
+iniciando, mas sua causa específica não foi exposta. O aceite é de recuperação
+automática após reboot com nova tentativa bem-sucedida, não de primeira tentativa
+sem falhas. Não há medida de SLA, restauração de backup ou perda do host.
+
+Os campos `logout_persistence_validated=false` e `reboot_validated=false` nas
+saídas originais foram preservados. O comando verifica o estado corrente; os
+aceites externos dependem da confirmação de logout e da comparação dos boot IDs,
+checks e journal. O novo [recibo documental de logout/reboot](../../references/evidence/vm_logout_reboot_author_validation_2026-10-29.json)
+registra essa composição sem reescrever recibos operacionais nem a evidência anterior.
+
+O [runbook de supervisão](VM_USER_SUPERVISION.md) concentra os comandos.
+O merge do PR #14 foi consultado no GitHub; sua aprovação de CI foi informada
+pelo autor. O CI #70 do PR #13 antecede a supervisão e não valida esse código.
 
 ## Decisões e contratempos da reprodução
 
@@ -162,11 +203,11 @@ reúne a origem e o escopo. Não substitui os recibos e bancos locais.
 
 ## Gates pendentes
 
-1. Integrar supervisão e esta documentação com CI próprio; concluir inventário e acessos restantes.
+1. Concluir inventário, acessos restantes e limites de recursos; supervisão já integrada no PR #14.
 2. Fechar desempenho, SHAP e aceite integral do portal da VM com fontes próprias.
 3. Qualificar instalação integral do produto a partir de checkout vazio.
 4. Definir/verificar baseline própria da VM quando seus pré-requisitos existirem.
-5. Ensaiar logout controlado, ciclo completo, reboot e backup/restauração separadamente.
+5. Ensaiar ciclo completo de parada/subida e backup/restauração separadamente; logout e reboot planejado foram aceitos no escopo acima.
 6. Ensaiar novas chegadas e firing de alertas de monitoramento se incluídos no escopo.
 
 O relato antigo de 288.172 eventos da fonte em preparação não deve ser confundido
