@@ -1,5 +1,12 @@
 # Roadmap — Fraud Detection MLOps
 
+**Inventário operacional da VM coletado em 2026-10-29:** workloads, volumes,
+acessos e requests/limits conferidos; consumo por container indisponível. A
+preparação da baseline encontrou incompatibilidade de retorno entre os perfis de
+observabilidade. Correção preparada com transição exata de fontes; baseline
+funcional, ciclo de parada/subida e backup/restauração continuam pendentes.
+[Registro](../operations/VM_REPRODUCTION_PROGRESS.md).
+
 **Incremento do portal da VM:** snapshot, vínculo de sessão, desempenho (67.255
 linhas), saúde HTTP e revisão visual foram confirmados pelo autor. Foram 200
 decisões, 199 clientes, 13 alertas e 200 feedbacks, sem explicações nesse snapshot.

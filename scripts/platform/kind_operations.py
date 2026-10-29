@@ -311,10 +311,26 @@ def probes(record):
     scored = serving_probe()
     observed = monitor.inventory()
     monitoring = monitor.verify_http()
-    f.require(
-        monitoring["dashboard_color_policy_verified"] == "semantic_colors_v1",
-        "Expected dashboard presentation not verified",
-    )
+    if monitor.session_only():
+        f.require(
+            all(
+                monitoring.get(key) is True
+                for key in (
+                    "scrape_target_verified",
+                    "grafana_datasource_proxy_verified",
+                    "session_dashboard_verified",
+                )
+            )
+            and monitoring.get("legacy_replay_verified") is False
+            and type(monitoring.get("healthy_alert_rules")) is int
+            and monitoring["healthy_alert_rules"] > 0,
+            "Expected session-only observability checks not verified",
+        )
+    else:
+        f.require(
+            monitoring.get("dashboard_color_policy_verified") == "semantic_colors_v1",
+            "Expected dashboard presentation not verified",
+        )
     return {
         "foundation_pvcs": foundation["pvcs"],
         "tracking_deployment_uid": tracked["deployment_uid"],

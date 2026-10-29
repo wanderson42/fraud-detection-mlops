@@ -101,6 +101,7 @@ def refactor(tmp_path):
         compat.SESSION_ONLY_TRANSITION,
         compat.COMPONENTS_TRANSITION,
         compat.PRESENTATION_TRANSITION,
+        compat.LIFECYCLE_PROFILE_TRANSITION,
     ):
         src = ROOT / name
         transitions.append(json.loads(src.read_bytes()))

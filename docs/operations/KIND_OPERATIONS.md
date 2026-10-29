@@ -1,5 +1,52 @@
 # Ciclo operacional do produto no KinD
 
+## Perfil somente sessão na VM — correção preparada em 2026-10-29
+
+O inventário nativo foi aceito como leitura de estado: nove controllers previstos,
+oito pods Ready, green com zero réplicas, quatro PVCs Bound e ownership do nó
+conferido. Isso ainda não é baseline funcional nem aceite de parada/subida.
+
+A primeira preparação da baseline falhou com KeyError
+`dashboard_color_policy_verified`. O perfil de replay retorna essa confirmação de
+cores; o perfil somente sessão retorna confirmações próprias de scrape, regras,
+proxy e dashboard. A correção despacha a exigência conforme o perfil selecionado,
+sem adicionar uma confirmação de cores que o verificador da sessão não emitiu.
+Ausência/false, booleano numérico e resultado do outro perfil são recusados. No
+perfil de sessão também se exige contagem inteira positiva de regras saudáveis
+e confirmação explícita de que replay legado não foi verificado.
+
+A transição de fonte é limitada aos bytes revisados de kind_operations.py e
+source_compatibility.py. Deve estar commitada antes de ler recibos antigos;
+não se reescrevem baseline, sessão, políticas ou pins de imagens. Os testes das
+cadeias históricas incluem a nova transição e conservam rejeição de mudança
+científica. A falha ocorreu em probes, antes da gravação da nova baseline e de
+qualquer etapa de stop/start; nenhum recibo anterior deve ser apagado.
+
+Para atualizar o código do host, pare apenas o observador de usuário antes de
+aplicar/testar/commitar a correção e inicie-o depois. Isso evita manter no processo
+Python a versão anterior do leitor de transições. Durante essa pausa a projeção
+pode expirar; não representa perda da sessão. Grafana e portal podem permanecer
+abertos. Não execute produtor, publicação, mudança de Registry ou rollout em paralelo.
+Depois do commit e do check da mesma sessão, repita somente a preparação:
+
+```bash
+make platform-baseline \
+  PLATFORM_TRACKING_REPORT=data/storage/kind-platform/tracking/rehearsal-3e2dd28916564be0ab16ea39ba6c3db3.json \
+  PLATFORM_BASELINE=data/storage/kind-platform/operations/baseline-vm-session-shap-v1.json
+```
+
+A preparação faz inferências HTTP de controle fora do ledger da sessão e pode
+criar pods temporários de verificação de armazenamento; não faz fit, promoção ou
+parada do nó. Se o caminho já existir, preserve-o e confira sua origem em vez de
+reescrevê-lo. A aprovação nativa da correção e o ciclo completo ainda estão
+pendentes. Não execute stop/start como parte desta correção.
+
+No ciclo posterior, pare explicitamente os serviços de usuário e acessos locais
+antes da parada do cluster. Retome o observador e o Grafana supervisionado após o
+cluster voltar; não use access-up para abrir um segundo Grafana. Reabra o portal
+com PORTAL_ID=investigation-shap-v1. Os comandos históricos abaixo descrevem o
+modo anterior e não autorizam dois supervisores concorrentes.
+
 O ponto de entrada diário é Make. O mesmo controlador para, retoma e verifica a
 fundação PostgreSQL/RustFS, tracking, observabilidade e a API do champion atual.
 Helm continua descrevendo a instalação; o ciclo não faz upgrade, build, treino,

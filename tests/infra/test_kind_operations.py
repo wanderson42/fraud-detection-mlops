@@ -336,6 +336,7 @@ def test_read_probes_use_existing_history_s3_and_http_without_fit(monkeypatch):
         k, "serving_probe", lambda: {"serving_release_id": "release", "model_sha256": "model"}
     )
     monkeypatch.setattr(k.monitor, "inventory", lambda: {"pvcs": {"state": "same"}})
+    monkeypatch.setattr(k.monitor, "session_only", lambda: False)
     monkeypatch.setattr(
         k.monitor, "verify_http", lambda: {"dashboard_color_policy_verified": "semantic_colors_v1"}
     )
@@ -570,3 +571,68 @@ def test_daily_check_rejects_active_pointer_race(rig, monkeypatch):
     with pytest.raises(ValueError, match="Active serving receipt changed"):
         k.check(rig.path)
     assert rig.calls == []
+
+
+@pytest.mark.parametrize("profile", ["legacy", "session"])
+@pytest.mark.parametrize(
+    "change", [None, "missing", "false", "foreign", "numeric_bool", "no_rules"]
+)
+def test_real_probe_dispatch_requires_the_selected_profile_confirmations(
+    monkeypatch, profile, change
+):
+    """Exercise probes(), not the rig's probe stub, against both real result shapes."""
+    monkeypatch.setattr(k.f, "inventory", lambda: {"pvcs": {}})
+    monkeypatch.setattr(k.tracking, "inventory", lambda: {"deployment_uid": "tracking"})
+    monkeypatch.setattr(k.tracking, "port_forward", lambda: nullcontext("uri"))
+    monkeypatch.setattr(
+        k.monitor,
+        "http",
+        lambda uri, path: (
+            {"run": {"info": {"run_id": "run", "status": "FINISHED"}}}
+            if "/runs/get" in path
+            else {"metrics": [{"step": 0, "value": 0.25}, {"step": 1, "value": 0.75}]}
+        ),
+    )
+    monkeypatch.setattr(k.tracking, "storage_pod", lambda *a: {"verified": True})
+    monkeypatch.setattr(
+        k, "serving_probe", lambda: {"model_sha256": "model", "serving_release_id": "release"}
+    )
+    monkeypatch.setattr(k.monitor, "inventory", lambda: {"pvcs": {}})
+    monkeypatch.setattr(k.monitor, "session_only", lambda: profile == "session")
+    session = {
+        "scrape_target_verified": True,
+        "healthy_alert_rules": 2,
+        "grafana_datasource_proxy_verified": True,
+        "session_dashboard_verified": True,
+        "legacy_replay_verified": False,
+        "visual_review_validated": False,
+        "alert_firing_validated": False,
+    }
+    legacy = {"dashboard_color_policy_verified": "semantic_colors_v1"}
+    result = copy.deepcopy(session if profile == "session" else legacy)
+    field = (
+        "session_dashboard_verified" if profile == "session" else "dashboard_color_policy_verified"
+    )
+    if change == "missing":
+        result.pop(field)
+    elif change == "false":
+        result[field] = False
+    elif change == "numeric_bool":
+        result[field] = 1
+    elif change == "foreign":
+        result = legacy if profile == "session" else session
+    elif change == "no_rules":
+        if profile == "session":
+            result["healthy_alert_rules"] = 0
+        else:
+            result[field] = "unknown_policy"
+    monkeypatch.setattr(k.monitor, "verify_http", lambda: result)
+    if change is not None:
+        with pytest.raises(ValueError, match="Expected"):
+            k.probes({"run_id": "run"})
+    else:
+        checked = k.probes({"run_id": "run"})
+        assert checked["monitoring"] == result
+        assert not checked["fit_executed"]
+        if profile == "session":
+            assert "dashboard_color_policy_verified" not in checked["monitoring"]

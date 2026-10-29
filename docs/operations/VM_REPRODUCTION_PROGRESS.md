@@ -1,5 +1,36 @@
 # Reprodução limpa na VM — estado em 2026-10-29
 
+## Inventário operacional e preparação do ciclo — 2026-10-29
+
+Fonte: saídas de terminal fornecidas pelo autor. O inventário distinguiu os
+workloads Kubernetes, serviços do host e acessos locais; não mediu consumo por
+container nem ensaiou parada/subida.
+
+| Camada | Estado observado |
+| --- | --- |
+| Controllers | Sete Deployments e dois StatefulSets; blue/gateway e seis serviços ativos; green em 0 |
+| Pods | Oito Running/Ready; contadores de reinício não atribuem causa por si só |
+| Jobs/CronJobs | Nenhum listado no namespace nesse instante; não significa ausência de execuções históricas |
+| Persistência | PostgreSQL 2 GiB, RustFS 4 GiB, Grafana 512 MiB e Prometheus 1 GiB; quatro PVCs Bound |
+| Requests contínuos | 825m CPU e 1.216 MiB memória; excluem init containers, sistema Kubernetes e processos do host |
+| Nó | Seis CPUs e 8.131.140 Ki de memória alocável informados pelo Kubernetes |
+| Host | 7,8 GiB RAM, 4,9 GiB disponíveis, swap usada 780 KiB; disco 27% ocupado, 81 GiB disponíveis |
+| Host supervisionado | Observador PID 4455 e acesso Grafana PID 5026, ambos active/running e NRestarts=1; HTTP Grafana saudável |
+| Portal | Acesso pronto em 18501, PID 84787; permanece no modo de acesso manual, sem aceite de persistência após reboot desse processo |
+| Demais acessos | Fechados; registro manual antigo do Grafana stale, sem invalidar o serviço systemd atual |
+| Métricas de consumo | Indisponíveis; nenhum metrics server instalado por esta coleta |
+| Ownership/inotify | platform-status inspected, mesmo boot 24524ae4-b9a4-464b-8f1a-a1319ffc2acd; 512 instâncias e 524288 watches suficientes |
+
+A soma de requests não é consumo nem orçamento completo da VM. Capacidade de PVC
+não é ocupação real. A leitura não indica pressão imediata de memória/disco, mas
+não sustenta ajuste de limits ou conclusão sobre picos de treino.
+
+A tentativa de baseline-vm-session-shap-v1 falhou em
+`dashboard_color_policy_verified`, por exigir no perfil somente sessão um campo
+de retorno exclusivo do replay. A correção preparada exige as confirmações do
+perfil real e transição exata de fontes. O comando não chegou a stop/start; o
+aceite funcional da nova baseline continua pendente. [Diagnóstico e procedimento](KIND_OPERATIONS.md#perfil-somente-sessão-na-vm--correção-preparada-em-2026-10-29).
+
 ## Aceite nativo de SHAP e portal da sessão — 2026-10-29
 
 Origem: saídas da VM fornecidas pelo autor e captura revisada no chat. Código

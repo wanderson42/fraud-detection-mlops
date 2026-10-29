@@ -163,6 +163,7 @@ def test_completed_HTTP_flow_receipt_and_ledger_survive_operational_transition(
             source_compatibility.SESSION_ONLY_TRANSITION,
             source_compatibility.COMPONENTS_TRANSITION,
             source_compatibility.PRESENTATION_TRANSITION,
+            source_compatibility.LIFECYCLE_PROFILE_TRANSITION,
         )
     ]
     current_pins = flow.pins()
