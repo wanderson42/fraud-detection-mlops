@@ -271,6 +271,7 @@ def image_record():
 
 
 def prepare(source, no_other_writers):
+    f.require(not session_only(), "Session-only profile cannot adopt a legacy replay snapshot")
     initialize()
     path = work() / "snapshot.json"
     f.require(not path.exists(), "Snapshot already prepared; preserve it")
@@ -363,6 +364,16 @@ def session_telemetry():
     return settings()
 
 
+def session_only():
+    path = work() / "session-only.json"
+    if not path.exists():
+        return False
+    from scripts.platform import session_observability
+
+    session_observability.profile()
+    return True
+
+
 def values(ready):
     result = {
         "ownerId": credentials()["owner_id"],
@@ -370,6 +381,13 @@ def values(ready):
         "images": {role: row["image"] for role, row in image_record()["images"].items()},
     }
     telemetry = session_telemetry()
+    if session_only():
+        f.require(telemetry, "Session-only profile requires a prepared receiver")
+        result["legacyReplay"] = False
+        from scripts.session_monitoring.components import enabled
+
+        if enabled():
+            result["sessionComponents"] = True
     if telemetry:
         result["sessionTelemetry"] = telemetry
     return result
@@ -538,6 +556,10 @@ def seed_pod(record):
 
 
 def _up():
+    if session_only():
+        from scripts.platform import session_observability
+
+        return session_observability.install(session_observability.profile()["session_id"])
     validate()
     record = snapshot_record()
     before = f.inventory()
@@ -655,7 +677,12 @@ def inventory():
         f.require(len(pods) == 1, "Expected one ready pod per component")
         pod = owned(pods[0])
         if role == "exporter":
-            validate_exporter_mount(pod)
+            if session_only():
+                from scripts.platform.session_observability import validate_receiver
+
+                validate_receiver(pod)
+            else:
+                validate_exporter_mount(pod)
         refs = pod["metadata"].get("ownerReferences", [])
         f.require(
             len(refs) == 1 and refs[0].get("controller") and refs[0]["kind"] == "ReplicaSet",
@@ -691,7 +718,7 @@ def inventory():
                 "Session telemetry image/readiness differs",
             )
         f.require(
-            len(statuses) == (2 if telemetry else 1)
+            len(statuses) == (2 if telemetry and not session_only() else 1)
             and statuses[0].get("ready") is True
             and bool(statuses[0].get("state", {}).get("running"))
             and pod.get("status", {}).get("phase") == "Running"
@@ -714,10 +741,13 @@ def inventory():
             ),
         )
         cid = statuses[0]["imageID"]
+        expected_image = images[role]
+        if role == "exporter" and session_only():
+            expected_image = session_image()
         f.require(
-            pod["spec"]["containers"][0]["image"] == images[role]["image"]
+            pod["spec"]["containers"][0]["image"] == expected_image["image"]
             and tracking.image_digest(cid)
-            in {tracking.image_digest(v) for v in images[role]["loaded_identities"]},
+            in {tracking.image_digest(v) for v in expected_image["loaded_identities"]},
             "Pod image identity differs",
         )
         result["pods"][role] = {
@@ -727,7 +757,9 @@ def inventory():
             "service_uid": svc["metadata"]["uid"],
             "image_id": cid,
         }
-    for role in ("state", "prometheus", "grafana"):
+    for role in (
+        ("prometheus", "grafana") if session_only() else ("state", "prometheus", "grafana")
+    ):
         claim = owned(get("pvc", RELEASE + "-" + role))
         f.require(claim["status"]["phase"] == "Bound", "PVC not bound")
         result["pvcs"][role] = {
@@ -741,7 +773,7 @@ def inventory():
 def forward(role, port=None, *, target_port=None):
     f.require(role in ROLES, "Unknown forwarding role")
     pod = inventory()["pods"][role]["pod"]
-    target = PORTS[role]
+    target = 19102 if role == "exporter" and session_only() else PORTS[role]
     if target_port is not None:
         f.require(
             role == "exporter" and target_port == 19102 and session_telemetry(),
@@ -839,6 +871,10 @@ def expected_metrics(summary):
 
 
 def verify_http():
+    if session_only():
+        from scripts.platform import session_observability
+
+        return session_observability.verify_http()
     record = snapshot_record()
     expected = record["expected_summary"]
     inv = inventory()
@@ -1015,6 +1051,9 @@ def panel_contract(dashboard):
 
 
 def rehearse():
+    f.require(
+        not session_only(), "Use the session-only rehearsal; legacy replay was not installed"
+    )
     path = work() / ("rehearsal-" + uuid4().hex + ".json")
     result = {
         "schema": "fraud_kind_observability_rehearsal_v1",

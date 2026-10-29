@@ -1,3 +1,4 @@
+{{- if .Values.legacyReplay }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -13,6 +14,7 @@ spec:
   storageClassName: standard
   resources:
     requests: {storage: 2Gi}
+{{- end }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

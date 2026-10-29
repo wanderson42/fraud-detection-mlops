@@ -1,0 +1,26 @@
+{
+  "schema": "fraud_session_dashboard_presentation_transition_v1",
+  "scope": "dashboard_presentation_only_preserve_runtime_and_accepted_receipts",
+  "changes": {
+    "infra/helm/fraud-observability/files/components/features.json": {
+      "before": "400dcfcc0793b4c1eecb53d00a16dec51e8c914e4976379948b0c6f2d73cd5a6",
+      "after": "28aa587064a581649792f076db37d1b1ac08a32ed155f34702414e1aa4e22a66"
+    },
+    "infra/helm/fraud-observability/files/components/operations.json": {
+      "before": "e9673d85135111af9e73f5fc372f415f6d048847286c0d2516d7b352498a98be",
+      "after": "9744907b8afd4a5961f0d000382963fb9b563839d9ee9c8714d06819af7ed3b2"
+    },
+    "infra/helm/fraud-observability/files/components/overview.json": {
+      "before": "e42f66c73ea53adece099d388d4d186ee7f2a4df0e372a24e782a076613131fa",
+      "after": "fa28253ffdca6c3019105fab0bb5c0e4307d0b1b770dbcea9184097f683ea483"
+    },
+    "infra/helm/fraud-observability/files/components/quality.json": {
+      "before": "114eaca9c5f0819a71c5a639e6ad151880674d11de739421402592e13e6a0b4d",
+      "after": "fe30eadeab9b533a45a9104f06b02bd84fd31476a9ca93679ef4feea9ddac537"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "4338ad479a03f7c76e678417a36b803d1bddef7349da839210634ef30dc28e56",
+      "after": "e551f1da148ea53a6d04ec8fcc407e6b8b50c30eabd014b00edacb40c90f5ff6"
+    }
+  }
+}

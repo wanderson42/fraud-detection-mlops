@@ -1,3 +1,6 @@
+{{- if and (not .Values.legacyReplay) (not .Values.sessionTelemetry.enabled) }}
+{{- fail "Session-only mode requires sessionTelemetry.enabled" }}
+{{- end }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -12,14 +15,18 @@ data:
       scrape_interval: 10s
       evaluation_interval: 10s
     rule_files:
+{{- if .Values.legacyReplay }}
       - /etc/prometheus/alerts.yml
+{{- end }}
 {{- if .Values.sessionTelemetry.enabled }}
       - /etc/prometheus/session-alerts.yml
 {{- end }}
     scrape_configs:
+{{- if .Values.legacyReplay }}
       - job_name: fraud-replay
         static_configs:
           - targets: [{{ .Release.Name }}-exporter:19100]
+{{- end }}
 {{- if .Values.sessionTelemetry.enabled }}
       - job_name: fraud-product-session
         static_configs:
@@ -27,8 +34,10 @@ data:
   session-alerts.yml: |
 {{ .Files.Get "files/session/alerts.yml" | indent 4 }}
 {{- end }}
+{{- if .Values.legacyReplay }}
   alerts.yml: |
 {{ .Files.Get "files/alerts.yml" | indent 4 }}
+{{- end }}
   datasource.yaml: |
     apiVersion: 1
     datasources:
@@ -42,7 +51,7 @@ data:
   provider.yaml: |
     apiVersion: 1
     providers:
-      - name: Fraud KinD completed replay
+      - name: {{ ternary "Fraud KinD completed replay" "Fraud identified session" .Values.legacyReplay }}
         folder: Fraud MLOps
         type: file
         disableDeletion: false
@@ -60,7 +69,12 @@ metadata:
   annotations:
     {{- include "obs.owner" . | nindent 4 }}
 data:
+{{- if .Values.legacyReplay }}
 {{ (.Files.Glob "files/dashboards/*.json").AsConfig | indent 2 }}
+{{- end }}
+{{- if .Values.sessionComponents }}
+{{ (.Files.Glob "files/components/*.json").AsConfig | indent 2 }}
+{{- end }}
 {{- if .Values.sessionTelemetry.enabled }}
   product-session.json: |
 {{ .Files.Get "files/session/dashboard.json" | indent 4 }}

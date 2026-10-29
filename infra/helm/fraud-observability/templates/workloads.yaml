@@ -11,7 +11,9 @@ spec:
   type: ClusterIP
   selector: {app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: exporter}
   ports:
+{{- if .Values.legacyReplay }}
     - {name: http, port: 19100, targetPort: 19100}
+{{- end }}
 {{- if .Values.sessionTelemetry.enabled }}
     - {name: session, port: 19102, targetPort: 19102}
 {{- end }}
@@ -46,6 +48,7 @@ spec:
         fsGroup: 65532
         seccompProfile: {type: RuntimeDefault}
       containers:
+{{- if .Values.legacyReplay }}
         - name: exporter
           image: {{ .Values.images.exporter | quote }}
           imagePullPolicy: Never
@@ -71,6 +74,7 @@ spec:
           volumeMounts:
             - {name: tmp, mountPath: /tmp}
             - {name: state, mountPath: /state, readOnly: true}
+{{- end }}
 {{- if .Values.sessionTelemetry.enabled }}
         - name: session-exporter
           image: {{ .Values.sessionTelemetry.image | quote }}
@@ -102,10 +106,12 @@ spec:
         - name: session-binding
           configMap: {name: {{ .Release.Name }}-session-binding}
 {{- end }}
+{{- if .Values.legacyReplay }}
         - name: tmp
           emptyDir: {sizeLimit: 64Mi}
         - name: state
           persistentVolumeClaim: {claimName: {{ .Release.Name }}-state, readOnly: true}
+{{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -261,7 +267,7 @@ spec:
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef: {name: fraud-observability-credentials, key: password}
-            - {name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH, value: /var/lib/fraud-dashboards/kind-overview.json}
+            - {name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH, value: {{ ternary "/var/lib/fraud-dashboards/kind-overview.json" "/var/lib/fraud-dashboards/product-session.json" .Values.legacyReplay }}}
             - {name: GF_USERS_ALLOW_SIGN_UP, value: 'false'}
             - {name: GF_AUTH_ANONYMOUS_ENABLED, value: 'false'}
             - {name: GF_ANALYTICS_REPORTING_ENABLED, value: 'false'}

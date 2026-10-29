@@ -117,6 +117,11 @@ class Projection:
             + '"} 1'
         )
         value = s["projection"]
+        gauge(
+            "details_available",
+            bool(value and "details" in value),
+            "Aggregate detail contract present",
+        )
         if value:
             gauge(
                 "collection_age_seconds",
@@ -166,6 +171,14 @@ class Projection:
                     value["watermark"][0] / 1e9,
                     "Historical causal event clock",
                 )
+        if value and "details" in value:
+            for name, amount in sorted(value["details"].items()):
+                if amount is not None:
+                    gauge(
+                        "detail_" + name,
+                        amount,
+                        "Session cohort or observed pod aggregate; requires source_valid=1",
+                    )
         return "\n".join(lines) + "\n"
 
 

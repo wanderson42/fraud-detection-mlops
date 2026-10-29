@@ -108,6 +108,75 @@
           }
         }
       ]
+    },
+    "legacyReplay": {
+      "type": "boolean",
+      "default": true
+    },
+    "sessionComponents": {
+      "type": "boolean",
+      "default": false
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "legacyReplay"
+        ],
+        "properties": {
+          "legacyReplay": {
+            "const": false
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "sessionTelemetry"
+        ],
+        "properties": {
+          "sessionTelemetry": {
+            "required": [
+              "enabled"
+            ],
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "sessionComponents"
+        ],
+        "properties": {
+          "sessionComponents": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "legacyReplay",
+          "sessionTelemetry"
+        ],
+        "properties": {
+          "legacyReplay": {
+            "const": false
+          },
+          "sessionTelemetry": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

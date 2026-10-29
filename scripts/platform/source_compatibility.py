@@ -116,6 +116,52 @@ SESSION_BUSY_ALLOWED = {
 }
 
 
+SESSION_ONLY_TRANSITION = "references/session_only_monitoring_source_transition_v1.json"
+SESSION_ONLY_ALLOWED = {
+    "scripts/platform/kind_observability.py",
+    "scripts/platform/source_compatibility.py",
+    "scripts/session_monitoring/controller.py",
+    "infra/helm/fraud-observability/templates/config.yaml",
+    "infra/helm/fraud-observability/templates/storage.yaml",
+    "infra/helm/fraud-observability/templates/workloads.yaml",
+    "infra/helm/fraud-observability/values.yaml",
+    "infra/helm/fraud-observability/values.schema.json",
+}
+
+
+COMPONENTS_TRANSITION = "references/session_components_source_transition_v1.json"
+COMPONENTS_ALLOWED = {
+    "scripts/session_monitoring/controller.py",
+    "infra/kind/session-monitoring/Dockerfile",
+    "infra/kind/session-monitoring/Dockerfile.dockerignore",
+    "scripts/session_monitoring/collector.py",
+    "scripts/session_monitoring/components.py",
+    "scripts/session_monitoring/contract.py",
+    "scripts/platform/kind_observability.py",
+    "infra/helm/fraud-observability/files/components/overview.json",
+    "infra/helm/fraud-observability/templates/config.yaml",
+    "infra/helm/fraud-observability/files/components/quality.json",
+    "infra/helm/fraud-observability/files/components/operations.json",
+    "infra/helm/fraud-observability/values.yaml",
+    "scripts/platform/session_observability.py",
+    "infra/helm/fraud-observability/files/components/features.json",
+    "scripts/session_monitoring/server.py",
+    "scripts/platform/source_compatibility.py",
+    "scripts/session_monitoring/details.py",
+    "infra/helm/fraud-observability/values.schema.json",
+}
+
+
+PRESENTATION_TRANSITION = "references/session_dashboard_presentation_transition_v1.json"
+PRESENTATION_ALLOWED = {
+    "infra/helm/fraud-observability/files/components/quality.json",
+    "infra/helm/fraud-observability/files/components/features.json",
+    "infra/helm/fraud-observability/files/components/overview.json",
+    "infra/helm/fraud-observability/files/components/operations.json",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -208,6 +254,21 @@ def accept(saved, current, root):
             SESSION_BUSY_TRANSITION,
             "fraud_session_busy_operational_source_transition_v1",
             SESSION_BUSY_ALLOWED,
+        ),
+        (
+            SESSION_ONLY_TRANSITION,
+            "fraud_session_only_monitoring_source_transition_v1",
+            SESSION_ONLY_ALLOWED,
+        ),
+        (
+            COMPONENTS_TRANSITION,
+            "fraud_session_components_source_transition_v1",
+            COMPONENTS_ALLOWED,
+        ),
+        (
+            PRESENTATION_TRANSITION,
+            "fraud_session_dashboard_presentation_transition_v1",
+            PRESENTATION_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

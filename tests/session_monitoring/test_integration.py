@@ -14,6 +14,18 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 
 
+@pytest.fixture(autouse=True)
+def isolated_legacy_operational_profile(monkeypatch):
+    # These tests exercise legacy dispatch with synthetic ownership. Never mix it
+    # with a native session-only profile from the developer's checkout.
+    monkeypatch.setattr(k, "session_only", lambda: False)
+
+    def forbidden_native_workspace():
+        pytest.fail("Isolated test attempted to inspect native observability state")
+
+    monkeypatch.setattr(k, "work", forbidden_native_workspace)
+
+
 def render(tmp_path, enabled):
     if not shutil.which("helm"):
         pytest.skip("Helm required for real rendering")
@@ -77,7 +89,19 @@ def test_optional_extension_reuses_owned_release_no_new_workload_or_raw_mount(tm
     )
 
 
-def test_feature_retained_by_future_observability_up_without_changing_old_image_pins(monkeypatch):
+@pytest.mark.parametrize("native_profile_exists", [False, True])
+def test_feature_retained_by_future_observability_up_without_changing_old_image_pins(
+    tmp_path, monkeypatch, native_profile_exists
+):
+    # Reproduce an already-provisioned checkout with deliberately foreign owner
+    # data; dispatch must remain the explicitly selected synthetic legacy path.
+    native = tmp_path / "observability"
+    native.mkdir()
+    path = native / "session-only.json"
+    if native_profile_exists:
+        path.write_text('{"schema":"foreign-profile","owner_id":"foreign"}')
+    before = path.read_bytes() if path.exists() else None
+    monkeypatch.setattr(k, "work", lambda: native)
     monkeypatch.setattr(k, "credentials", lambda: {"owner_id": "a" * 32})
     monkeypatch.setattr(
         k, "image_record", lambda: {"images": {role: {"image": role} for role in k.ROLES}}
@@ -85,6 +109,7 @@ def test_feature_retained_by_future_observability_up_without_changing_old_image_
     feature = {"enabled": True, "image": "fraud-session-monitor:" + "a" * 32, "binding": {}}
     monkeypatch.setattr(k, "session_telemetry", lambda: feature)
     assert k.values(True)["sessionTelemetry"] == feature
+    assert (path.read_bytes() if path.exists() else None) == before
     assert not any(
         "session_monitoring" in v or "/session-monitoring/" in v for v in k.runtime_pins()
     )
@@ -129,6 +154,21 @@ def test_exact_transition_preserves_receipts_but_rejects_science_change():
         if name in busy_fix["changes"]:
             assert busy_fix["changes"][name]["before"] == digest
             expected[name] = busy_fix["changes"][name]["after"]
+    session_only = json.loads((ROOT / compatibility.SESSION_ONLY_TRANSITION).read_bytes())
+    for name, digest in expected.items():
+        if name in session_only["changes"]:
+            assert session_only["changes"][name]["before"] == digest
+            expected[name] = session_only["changes"][name]["after"]
+    components = json.loads((ROOT / compatibility.COMPONENTS_TRANSITION).read_bytes())
+    for name, digest in expected.items():
+        if name in components["changes"]:
+            assert components["changes"][name]["before"] == digest
+            expected[name] = components["changes"][name]["after"]
+    presentation = json.loads((ROOT / compatibility.PRESENTATION_TRANSITION).read_bytes())
+    for name, digest in expected.items():
+        if name in presentation["changes"]:
+            assert presentation["changes"][name]["before"] == digest
+            expected[name] = presentation["changes"][name]["after"]
     assert all(digest == k.state.sha(ROOT / name) for name, digest in expected.items())
 
 

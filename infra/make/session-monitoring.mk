@@ -18,3 +18,8 @@ session-monitor-watch:
 ## Verify completed session -> Prometheus -> Grafana, collection expiry and recovery
 session-monitor-rehearse:
 	$(POETRY) run python -m scripts.session_monitoring.controller rehearse --session-id "$(SESSION_MONITOR_ID)"
+
+.PHONY: session-monitor-bootstrap
+## Install a fresh session-only profile; no historical replay snapshot is required
+session-monitor-bootstrap:
+	$(POETRY) run python -m scripts.platform.session_observability install --session-id "$(SESSION_MONITOR_ID)"
