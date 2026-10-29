@@ -7,6 +7,7 @@ import importlib.util
 import json
 from pathlib import Path
 import shutil
+import socket
 import subprocess
 import sys
 from tempfile import TemporaryDirectory
@@ -171,12 +172,13 @@ class SupervisionTests(unittest.TestCase):
         service.services = SimpleNamespace(free_port=Mock())
         return modules, service
 
-    def test_existing_observer_lock_blocks_handoff_without_signals(self):
+    @patch.object(h, "port_available")
+    def test_existing_observer_lock_blocks_handoff_without_signals(self, probe):
         with TemporaryDirectory() as tmp:
             root, _ = self.fixture(Path(tmp))
             lock = root / "data/storage/kind-platform/observability/session-monitoring/watch.lock"
             lock.touch()
-            modules, service = self.modules()
+            modules, _service = self.modules()
             with (
                 lock.open("r") as stream,
                 patch.object(h, "ROOT", root),
@@ -185,7 +187,7 @@ class SupervisionTests(unittest.TestCase):
                 fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 with self.assertRaises(BlockingIOError):
                     h.preflight("session")
-                service.services.free_port.assert_not_called()
+                probe.assert_not_called()
             with patch.object(h, "ROOT", root), patch.dict(sys.modules, modules):
                 self.assertEqual(h.preflight("session")["status"], "vm_supervision_handoff_ready")
 
@@ -253,6 +255,34 @@ class SupervisionTests(unittest.TestCase):
             self.assertRaisesRegex(ValueError, "accepted sources changed"),
         ):
             h.rehearse("session")
+
+    def test_actual_time_wait_does_not_block_reusable_port_check(self):
+        with socket.socket() as listener:
+            listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            listener.bind(("127.0.0.1", 0))
+            port = listener.getsockname()[1]
+            listener.listen()
+            with socket.create_connection(("127.0.0.1", port)) as client:
+                connection, _ = listener.accept()
+                with connection:
+                    connection.shutdown(socket.SHUT_WR)
+                    self.assertEqual(client.recv(1), b"")
+            # Listener is closed below, but accepted connection leaves TIME_WAIT.
+        with socket.socket() as old_probe, self.assertRaises(OSError):
+            old_probe.bind(("127.0.0.1", port))
+        h.port_available(port)
+
+    def test_actual_listening_socket_remains_blocked(self):
+        for reuse in (0, 1):
+            with self.subTest(reuse=reuse), socket.socket() as listener:
+                listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, reuse)
+                listener.bind(("127.0.0.1", 0))
+                listener.listen()
+                with self.assertRaises(OSError):
+                    h.port_available(listener.getsockname()[1])
+
+    def test_unoccupied_port_is_available(self):
+        h.port_available(0)
 
     def test_actual_loopback_health_accepts_database_ok_only(self):
         class Handler(BaseHTTPRequestHandler):

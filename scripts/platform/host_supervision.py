@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import signal
+import socket
 import subprocess
 import time
 from urllib.request import ProxyHandler, build_opener
@@ -168,6 +169,14 @@ def supervise(command, probe=healthy, startup=90, interval=5, failures=3, popen=
                 child.wait(timeout=5)
 
 
+def port_available(port=PORT):
+    # Match kubectl/Go's reusable listener behavior: TIME_WAIT is not a listener.
+    # The actual port-forward still owns the definitive bind and listen.
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+        probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        probe.bind(("127.0.0.1", port))
+
+
 def grafana():
     # Refuse a manual legacy access rather than create a second port-forward.
     from scripts.platform.local_services import controller, processes
@@ -178,9 +187,7 @@ def grafana():
             not record or not processes.matches(record),
             "Stop the legacy Grafana access with make access-stop ACCESS_SERVICE=grafana",
         )
-        from scripts.platform.local_services import services
-
-        services.free_port("grafana", PORT)
+        port_available()
         command = [
             str(ROOT / ".venv/bin/python"),
             "-u",
@@ -201,11 +208,11 @@ def preflight(key):
     require(lock.is_file() and not lock.is_symlink(), "Existing watch lock required")
     with lock.open("r") as stream:
         fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    from scripts.platform.local_services import controller, processes, services
+    from scripts.platform.local_services import controller, processes
 
     record = controller.read("grafana")
     require(not record or not processes.matches(record), "Stop the legacy Grafana access first")
-    services.free_port("grafana", PORT)
+    port_available()
     return {"status": "vm_supervision_handoff_ready", "binding": item}
 
 
