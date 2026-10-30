@@ -1,5 +1,7 @@
 # Fraud Detection MLOps
 
+**Reprodução — próximo gate (2026-10-30):** o restore da cópia fora da VM foi integrado no PR #19. O [contrato de estado e instalação limpa](docs/operations/VM_STATE_AND_CLEAN_INSTALL.md) separa dados indispensáveis à continuidade de componentes reconstruíveis e define o aceite integral ainda pendente, incluindo a geração da fonte de eventos sem checkpoints do autor.
+
 **Backup do tracking e cópia fora da VM restaurados:** PostgreSQL/S3 conferidos em ambiente
 isolado, com 65 tabelas, 26 objetos, quatro runs e quatro logged models. Champion
 recarregado com erro de score zero, origem/captura preservadas e recursos temporários
@@ -36,7 +38,7 @@ original não são transferidos automaticamente para a VM.
 - [Roadmap e critérios de conclusão](docs/project/ROADMAP.md).
 - [Reprodução na VM: decisão, incidentes e aceites](docs/operations/VM_REPRODUCTION_PROGRESS.md).
 - [Operação e supervisão na VM](docs/operations/VM_USER_SUPERVISION.md).
-- [Backup limitado do tracking da VM](docs/operations/VM_TRACKING_BACKUP.md): captura e restauração isolada aceitas; cópia externa e recuperação integral pendentes.
+- [Backup limitado do tracking da VM](docs/operations/VM_TRACKING_BACKUP.md): captura e restauração isolada aceitas, inclusive da cópia devolvida do Alienware; recuperação integral pendente.
 - [Notebook da etapa de reprodução](notebooks/stages/26_clean_reproduction_and_vm_supervision.ipynb).
 - [Guia do produto e escopos por ambiente](docs/operations/PRODUCT_OPERATIONS.md).
 

@@ -1,5 +1,15 @@
 # Histórico do roadmap até a integração do PR #11
 
+## Classificação do estado para fechamento da reprodução — 2026-10-30
+
+Após o PR #19 (`a0a96f6`), o [contrato de estado](../operations/VM_STATE_AND_CLEAN_INSTALL.md)
+separa continuidade da mesma investigação e instalação de outro usuário. Tracking
+restaurado não cobre sessão, datasets, recibos de governança ou histórico de métricas.
+A revisão identifica a fonte de eventos padrão ausente no checkout como ponto a
+explicitar no percurso inicial. Instalação integral e recuperação do host não
+foram executadas por esta revisão. O próximo gate é a instalação limpa isolada,
+com identidades próprias, sem ampliar serviços nem repetir o restore aceito.
+
 ## Logout completo e reboot planejado da VM — 2026-10-29
 
 Após integração da supervisão no PR #14 (`9d9c8f2`) e sincronização informadas pelo

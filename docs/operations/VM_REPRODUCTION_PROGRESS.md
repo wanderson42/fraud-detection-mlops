@@ -1,5 +1,18 @@
 # Reprodução limpa na VM — estado em 2026-10-29
 
+## Estado indispensável e próximo gate — revisão de 2026-10-30
+
+O PR #19 está integrado em `a0a96f6`; o autor informou sincronização da main no
+Alienware e na VM. O [contrato de estado](VM_STATE_AND_CLEAN_INSTALL.md) classifica
+tracking, datasets, sessão, governança, relatórios, métricas e configuração privada.
+Essa revisão não coletou novo inventário nem executou backup/restore.
+
+O próximo gate é um percurso integral em ambiente novo isolado, com recibos e
+credenciais próprios. A fonte padrão `data/replay/paced-native-v1` não vem no Git:
+seu produtor precisa estar explícito e verificado antes de `session-prepare`.
+Preservar o cluster, os PVCs e a sessão aceitos; não recriá-los para testar instalação.
+Recuperação integral e perda física do host continuam fora do aceite.
+
 ## Aceite do ciclo planejado na VM — 2026-10-29
 
 O autor aplicou a correção em `92ba7b3`, na branch `fix/vm-lifecycle-profile`,

@@ -1,5 +1,16 @@
 # Síntese para stakeholders
 
+## Continuidade e reprodução para outro usuário — 2026-10-30
+
+O [contrato de estado e instalação limpa](../operations/VM_STATE_AND_CLEAN_INSTALL.md)
+define o que cada público pode esperar: operação preserva modelo, ledger e recibos
+para retomar a mesma investigação; outro usuário gera seus próprios dados,
+credenciais, rodada e sessão. A cópia externa do tracking foi restaurada e integrada
+no PR #19; isso não recupera a plataforma inteira. A classificação documental está
+preparada, e o percurso integral de instalação permanece pendente de execução.
+O próximo esforço reduz dependências implícitas, começando pela geração explícita
+da fonte de eventos que não acompanha o checkout; não adiciona novos serviços.
+
 ## Cópia fora da VM restaurada — aceite de 2026-10-30
 
 A cópia do tracking no Alienware foi verificada, enviada de volta à VM e usada em
