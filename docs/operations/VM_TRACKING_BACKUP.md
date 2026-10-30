@@ -218,3 +218,18 @@ permanecem como histórico e não tiveram seus flags reescritos.
 Próximos gates: publicar o incremento com CI/PR, definir cópia externa verificada
 e restaurar a partir dela, além de cobrir os dados excluídos e qualificar a
 recuperação integral. Não há aceite de tolerância à perda do host.
+
+## Revisão dos consumidores do tracking no CI #84
+
+O CI do commit `a1d19216bd12f7e76bfa84bbf795353660f29003` falhou somente em
+`test_project_tracking_review_matches_current_sources`: o catálogo revisado não
+incluía os novos clientes `tracking_backup/controller.py` e `tracking_backup/worker.py`.
+Os outros 1.939 testes passaram. A falha foi reproduzida antes da correção.
+
+Os dois arquivos foram revisados e registrados com hashes exatos, funções e
+escopo de recuperação isolada. O teste e o verificador permanecem iguais; não
+foi criada exclusão ou aprovação automática de novos consumidores. Os bloqueadores
+da migração local e os gates históricos permanecem. Essa revisão de fontes não
+executa backup, não abre bancos/modelos e não substitui o aceite nativo específico.
+A correção altera somente catálogo/documentação/evidência; não exige rebuild da
+imagem auxiliar nem repetição da captura ou do restore aceito. Novo CI pendente.

@@ -1,0 +1,77 @@
+{
+  "schema": "fraud_tracking_backup_consumers_review_fix_v1",
+  "date": "2026-10-29",
+  "status": "review_corrected_ci_rerun_pending",
+  "base_commit": "a1d19216bd12f7e76bfa84bbf795353660f29003",
+  "pull_request": 18,
+  "failed_ci": {
+    "run": 84,
+    "run_id": 40986644255,
+    "job_id": 123839109056,
+    "event": "push",
+    "failed_test": "tests/storage/test_persistence_inventory.py::test_project_tracking_review_matches_current_sources",
+    "passed": 1939,
+    "failed": 1,
+    "skipped": 64,
+    "warnings": 165,
+    "subtests_passed": 14,
+    "pytest_seconds": 539.99
+  },
+  "provenance": "GitHub plugin fetched run metadata, job log, source review implementation, catalogue and failing test; current branch checked out at the failed SHA.",
+  "cause": "New controller and worker use MLflow calls but were omitted from the curated tracking-consumers catalogue.",
+  "reviewed_consumers": [
+    {
+      "id": "kind_tracking_backup_controller",
+      "source": "scripts/platform/tracking_backup/controller.py",
+      "functions": [
+        "model_control",
+        "capture",
+        "restore"
+      ],
+      "kind": "isolated_recovery_operations",
+      "local_migration_blocker": false,
+      "current_behavior": "Leitura HTTP explícita do champion para controle; captura PostgreSQL/S3 do KinD com pausa limitada do MLflow e restore somente em projeto temporário próprio. Sem fit, promoção ou mudança do tracking padrão.",
+      "migration_gate": "Restore limitado aceito pelo autor com origem/captura preservadas, paridade do champion e limpeza; cópia externa e recuperação integral permanecem pendentes. Preservar guardas de propriedade e hash do manifesto.",
+      "source_sha256": "4c167db7f429b8ad85962e01ad5930c3ff0659f1b0e850c16918b50048666e26"
+    },
+    {
+      "id": "kind_tracking_backup_worker",
+      "source": "scripts/platform/tracking_backup/worker.py",
+      "functions": [
+        "metadata",
+        "verify_data",
+        "client_check",
+        "execute"
+      ],
+      "kind": "isolated_recovery_operations",
+      "local_migration_blocker": false,
+      "current_behavior": "Leitura do banco/bucket explícitos na captura; seed/verificação de alvo novo. Cliente MLflow separado sem credenciais diretas PostgreSQL/S3 confere histórico, alias e modelo pelo proxy.",
+      "migration_gate": "Manter captura identificada por UUID/hash, cliente restrito ao alvo, verificação completa de dados/artefatos e smoke; não adaptar consumidores científicos nem declarar migração primária.",
+      "source_sha256": "90b6a25bae97fabe9a73f268a238afc5047764bcf7527617a59bb0c3366f5caf"
+    }
+  ],
+  "correction": "Register the two reviewed files with exact SHA-256, existing function names, isolated-recovery scope and explicit migration gates; preserve all prior records and decisions.",
+  "validation": {
+    "original_failure_reproduced": true,
+    "targeted_tests_passed": 96,
+    "targeted_tests_seconds": 2.42,
+    "test_paths": [
+      "tests/storage/test_persistence_inventory.py",
+      "tests/infra/test_source_compatibility.py",
+      "tests/tracking_backup"
+    ],
+    "ruff_check": "passed",
+    "ruff_format_check": "528 files already formatted",
+    "git_diff_check": "passed",
+    "telemetry_disabled": true
+  },
+  "runtime_sources_changed": false,
+  "tests_changed": false,
+  "unreviewed_source_guard_disabled": false,
+  "old_review_records_and_decisions_preserved": true,
+  "native_backup_reexecuted": false,
+  "auxiliary_image_rebuild_required": false,
+  "capture_and_restore_acceptance_changed": false,
+  "new_remote_ci_pass_confirmed": false,
+  "merge_confirmed": false
+}
