@@ -479,3 +479,84 @@ def test_source_change_during_restore_is_reported_as_failure(
     assert (
         receipt["temporary_resources_removed"] and not receipt["postgres_backup_restore_validated"]
     )
+
+
+@pytest.mark.parametrize("action", ["seed", "verify"])
+def test_restore_worker_uses_uuid_mount_and_archive_keeps_strict_identity(
+    sealed, tmp_path, monkeypatch, action
+):
+    import shutil
+
+    folder, digest = sealed
+    config = yaml.safe_load((c.INFRA / "restore.compose.yaml").read_text())
+    seed = config["services"]["seed"]
+    mount = seed["volumes"][0]["target"]
+    env = seed["environment"]["BACKUP_CAPTURE_PATH"]
+    assert mount == env == "/capture/${BACKUP_CAPTURE_ID:?Explicit capture ID required}"
+    rendered = env.replace("${BACKUP_CAPTURE_ID:?Explicit capture ID required}", folder.name)
+    monkeypatch.setenv("BACKUP_CAPTURE_PATH", rendered)
+    path = w.capture_path(action)
+    assert path == Path("/capture") / folder.name
+    mounted = tmp_path / "container" / path.relative_to("/")
+    shutil.copytree(folder, mounted)
+    assert a.verify(mounted, digest)["capture_id"] == folder.name
+    monkeypatch.setattr(w, "s3", lambda: object())
+    monkeypatch.setattr(
+        w, "verify_data", lambda directory, client: {"status": "restored_data_verified"}
+    )
+    assert w.execute("verify", mounted, tmp_path, digest)["status"] == "restored_data_verified"
+    renamed = mounted.with_name("b" * 32)
+    mounted.rename(renamed)
+    with pytest.raises(ValueError, match="identity"):
+        a.verify(renamed, digest)
+
+
+@pytest.mark.parametrize(
+    "bad",
+    [
+        "",
+        "/capture",
+        "/capture/../" + "a" * 32,
+        "/elsewhere/" + "a" * 32,
+        "/capture/" + "a" * 31,
+        "/capture/" + "A" * 32,
+        "/capture/" + "a" * 32 + "/",
+    ],
+)
+def test_worker_rejects_missing_or_unreviewed_capture_mount(monkeypatch, bad):
+    monkeypatch.setenv("BACKUP_CAPTURE_PATH", bad)
+    with pytest.raises(ValueError, match="UUID capture mount"):
+        w.capture_path("seed")
+    with pytest.raises(ValueError, match="UUID capture mount"):
+        w.capture_path("verify")
+    assert w.capture_path("inventory") == Path("/capture")
+
+
+def test_controller_supplies_explicit_capture_id(restore_harness, monkeypatch):
+    original = c.write_environment
+
+    def check(path, values):
+        assert values["BACKUP_CAPTURE_ID"] == "a" * 32
+        return original(path, values)
+
+    monkeypatch.setattr(c, "write_environment", check)
+    assert c.restore("a" * 32, "e" * 64, True)["status"] == "verified"
+
+
+def test_failure_receipt_identifies_stage_without_private_output(
+    restore_harness, tmp_path, monkeypatch
+):
+    _, command = restore_harness
+
+    def fail(args, **kwargs):
+        if "run" in args and args[-1] == "seed":
+            raise ValueError("must-not-enter-public-receipt")
+        return command(args, **kwargs)
+
+    monkeypatch.setattr(c, "command", fail)
+    with pytest.raises(ValueError):
+        c.restore("a" * 32, "e" * 64, True)
+    receipt = a.document(next(tmp_path.glob("fraud-kind-restore-*.json")))
+    assert receipt["failed_phase"] == "s3_seed_and_data_verification"
+    assert receipt["error_type"] == "ValueError"
+    assert "must-not-enter-public-receipt" not in json.dumps(receipt)

@@ -89,12 +89,12 @@ services:
       AWS_EC2_METADATA_DISABLED: "true"
       AWS_CONFIG_FILE: /dev/null
       AWS_SHARED_CREDENTIALS_FILE: /dev/null
-      BACKUP_CAPTURE_PATH: /capture
+      BACKUP_CAPTURE_PATH: /capture/${BACKUP_CAPTURE_ID:?Explicit capture ID required}
       BACKUP_MANIFEST_SHA256: ${BACKUP_MANIFEST_SHA256}
     volumes:
       - type: bind
         source: ${CAPTURE_DIRECTORY}
-        target: /capture
+        target: /capture/${BACKUP_CAPTURE_ID:?Explicit capture ID required}
         read_only: true
         bind: {create_host_path: false}
       - type: bind

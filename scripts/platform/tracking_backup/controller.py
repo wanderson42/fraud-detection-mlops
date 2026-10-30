@@ -615,6 +615,7 @@ def restore(identity, digest, no_other_writers):
         "CAPTURE_DIRECTORY": str(output),
         "PROOF_DIRECTORY": str(proof),
         "BACKUP_MANIFEST_SHA256": digest,
+        "BACKUP_CAPTURE_ID": identifier(identity),
         "BACKUP_IMAGE": image["image_id"],
         "RESTORE_UID": str(os.getuid()),
         "RESTORE_GID": str(os.getgid()),
@@ -623,6 +624,7 @@ def restore(identity, digest, no_other_writers):
     report = {
         "schema": "fraud_kind_tracking_restore_v1",
         "status": "failed",
+        "phase": "target_absence_check",
         "project": project,
         "capture_id": identity,
         "manifest_sha256": digest,
@@ -651,13 +653,17 @@ def restore(identity, digest, no_other_writers):
                 "Target already exists",
             )
         created = True
+        report["phase"] = "client_runtime_check"
         worker("client", "runtime-check")
+        report["phase"] = "target_storage_start"
         compose("up", "-d", "--wait", "--wait-timeout", "120", "postgres", "rustfs", timeout=180)
+        report["phase"] = "target_storage_identity"
         targets = {s: target_identity(project, env, s) for s in ("postgres", "rustfs")}
         node = before["owner"]["container_id"]
         a.require(
             all(x["container_id"] != node for x in targets.values()), "Target/source overlap"
         )
+        report["phase"] = "postgres_restore"
         command(
             [
                 "docker",
@@ -676,25 +682,30 @@ def restore(identity, digest, no_other_writers):
             input_path=output / "postgres.dump",
             timeout=180,
         )
+        report["phase"] = "s3_seed_and_data_verification"
         report["restore"] = worker("seed", "seed")
         a.require(
             report["restore"]["status"] == "restored_data_verified", "Restored data not verified"
         )
+        report["phase"] = "target_mlflow_start"
         compose("up", "-d", "--wait", "--wait-timeout", "120", "mlflow", timeout=180)
         targets["mlflow"] = target_identity(project, env, "mlflow")
         report["target_resources"] = targets
+        report["phase"] = "model_client_verification"
         report["client"] = worker("client", "client")
         a.require(
             report["client"]["status"] == "target_client_verified"
             and report["client"]["model_reload_validated"],
             "Target model client failed",
         )
+        report["phase"] = "target_final_readback"
         compose("stop", "--timeout", "15", "mlflow")
         report["after_readback"] = worker("seed", "verify")
         a.require(
             report["after_readback"]["status"] == "restored_data_verified",
             "Final target data differs",
         )
+        report["phase"] = "source_and_archive_readback"
         a.verify(output, digest)
         report["source_unchanged"] = snapshot(manifest.get("session_id")) == before
         report["source_modified"] = not report["source_unchanged"]
@@ -706,6 +717,9 @@ def restore(identity, digest, no_other_writers):
             capture_unchanged=True,
         )
         return report
+    except BaseException as exc:
+        report.update(failed_phase=report["phase"], error_type=type(exc).__name__)
+        raise
     finally:
         try:
             if created:
@@ -724,9 +738,12 @@ def restore(identity, digest, no_other_writers):
                         "Disposable target cleanup incomplete",
                     )
                 report["temporary_resources_removed"] = True
+                if report["status"] == "verified":
+                    report["phase"] = "completed"
         except BaseException:
             report.update(
                 status="failed",
+                failed_phase="cleanup",
                 postgres_backup_restore_validated=False,
                 temporary_resources_removed=False,
             )

@@ -149,3 +149,31 @@ role e bucket explícitos, preservando os defaults do laboratório Compose antig
 Se uma imagem antiga desse laboratório for usada para novas capturas, reconstrua
 sua ferramenta para manter o gate de hash do worker; os servidores ativos do
 KinD não são reconstruídos por essa alteração.
+
+## Correção do caminho montado — 2026-10-29
+
+O autor executou build/preflight e capturou o tracking com sucesso. A captura
+`7312832d3d8044999c62d5e556eaf38a`, manifesto
+`16aab86ad5fbe0f577641a57b06593f4acbe4e5f2f97709f1ab393f414e1f80e`,
+reuniu 26 objetos de payload (987.907 bytes), com marcador tratado separadamente,
+e retomou a origem. A verificação de integridade passou; o restore ainda não.
+
+O diagnóstico nativo mostrou falha em `seed`: `Backup identity differs`. O
+verificador exige que o nome do diretório seja o UUID da captura; o Compose
+montava o conteúdo diretamente em `/capture`, e o worker ignorava a variável
+de caminho. Isso era erro de integração do mount, não evidência de dump corrompido.
+
+O mount e `BACKUP_CAPTURE_PATH` agora recebem `/capture/<UUID>` com ID explícito
+fornecido pelo controller. O worker exige esse formato em seed/verify e o
+verificador continua conferindo o UUID contra o manifesto. Os hashes, orçamento,
+cobertura e demais gates permanecem. Os recibos de falha passam a registrar a
+etapa e o tipo de erro, sem stderr ou credenciais. Testes offline incluem o
+conteúdo montado sob outro pai, troca de UUID e caminhos inválidos.
+
+Reconstruir a imagem auxiliar após commit da correção. Antes de substituir seu
+registro, preservar `tracking-backup/image.json` em histórico privado e conferir
+seus pins anteriores. Não apagar a imagem antiga nem alterar o manifesto, dump,
+objetos ou recibos da captura. O pacote corretivo inclui `rebuild.sh`, que faz
+essa preservação com guardas e mantém o lock operacional durante o build.
+Depois executar preflight e repetir restore com o ID/hash originais. Nenhum
+novo aceite de restauração é declarado até os gates nativos passarem.

@@ -382,3 +382,12 @@ substituir o KinD. Os 269.334 eventos/200 decisões são preservados por hashes,
 mas seus SQLite não estão incluídos nesse backup. O [contrato operacional](VM_TRACKING_BACKUP.md)
 separa integridade, restaurabilidade e proteção contra perda do host. Testes
 offline aprovados não fecham esses gates nativos.
+
+### Captura nativa do tracking e bloqueio do restore
+
+O autor confirmou build/preflight, captura `7312832d3d8044999c62d5e556eaf38a`
+com origem retomada e integridade verificada. O restore foi interrompido em seed
+porque o mount `/capture` não preservava o UUID exigido pelo verificador. O recibo
+inspecionado confirmou limpeza do projeto temporário; o preflight posterior
+continuou aprovado. Correção e testes offline do caminho montado preparados;
+novo build e restore nativos pendentes. [Detalhes](VM_TRACKING_BACKUP.md#correção-do-caminho-montado--2026-10-29).

@@ -5,6 +5,7 @@ from contextlib import redirect_stdout
 import json
 import os
 from pathlib import Path
+import re
 from tempfile import TemporaryDirectory
 from urllib.parse import urlsplit
 
@@ -227,6 +228,17 @@ def execute(action, directory, proof, digest=None):
     return verify_data(directory, client)
 
 
+def capture_path(action):
+    """Keep the capture UUID as the mounted directory name for archive verification."""
+    if action not in {"seed", "verify"}:
+        return Path("/capture")
+    value = os.environ.get("BACKUP_CAPTURE_PATH", "")
+    a.require(
+        re.fullmatch(r"/capture/[a-f0-9]{32}", value), "Explicit UUID capture mount required"
+    )
+    return Path(value)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -238,7 +250,7 @@ def main():
         with redirect_stdout(__import__("sys").stderr):
             result = execute(
                 args.action,
-                Path("/capture"),
+                capture_path(args.action),
                 Path("/proof"),
                 os.environ.get("BACKUP_MANIFEST_SHA256"),
             )
