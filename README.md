@@ -1,9 +1,15 @@
 # Fraud Detection MLOps
 
+**Backup do tracking restaurado na VM:** PostgreSQL/S3 conferidos em ambiente
+isolado, com 65 tabelas, 26 objetos, quatro runs e quatro logged models. Champion
+recarregado com erro de score zero, origem/captura preservadas e recursos temporários
+removidos. [Aceite e limites](docs/operations/VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29).
+Recuperação integral da plataforma e proteção contra perda do host permanecem abertas.
+
 **Ciclo planejado da VM aceito:** parada/subida com mesmo nó, volumes e plano de
 réplicas; tracking/S3, API e monitoramento conferidos, com retomada da mesma sessão
 e do portal. Houve inferências de controle, sem novas decisões na sessão. A correção
-foi integrada no PR #17 (`2054c4d`); instalação integral e backup/restauração seguem abertos.
+foi integrada no PR #17 (`2054c4d`); instalação integral e recuperação completa seguem abertas.
 [Recibos e limites](docs/operations/VM_REPRODUCTION_PROGRESS.md#aceite-do-ciclo-planejado-na-vm--2026-10-29).
 
 **Portal da VM:** snapshot/sessão de 200 decisões e avaliação de 67.255 linhas
@@ -28,7 +34,7 @@ original não são transferidos automaticamente para a VM.
 - [Roadmap e critérios de conclusão](docs/project/ROADMAP.md).
 - [Reprodução na VM: decisão, incidentes e aceites](docs/operations/VM_REPRODUCTION_PROGRESS.md).
 - [Operação e supervisão na VM](docs/operations/VM_USER_SUPERVISION.md).
-- [Backup limitado do tracking da VM](docs/operations/VM_TRACKING_BACKUP.md): preparação com testes; captura/restauração nativas pendentes.
+- [Backup limitado do tracking da VM](docs/operations/VM_TRACKING_BACKUP.md): captura e restauração isolada aceitas; cópia externa e recuperação integral pendentes.
 - [Notebook da etapa de reprodução](notebooks/stages/26_clean_reproduction_and_vm_supervision.ipynb).
 - [Guia do produto e escopos por ambiente](docs/operations/PRODUCT_OPERATIONS.md).
 

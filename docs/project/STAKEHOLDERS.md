@@ -1,14 +1,18 @@
 # Síntese para stakeholders
 
-## Próxima validação: recuperação do histórico de modelos
+## Recuperação do histórico de modelos — aceite de 2026-10-29
 
-Está preparado um backup limitado do PostgreSQL usado pelo MLflow e de seus
-artefatos S3, com teste de restauração em ambiente descartável. Execução nativa
-ainda pendente. O objetivo é demonstrar recuperação do histórico e do champion
-com paridade do smoke, preservando a origem. A captura exige janela sem writers
-e breve indisponibilidade do MLflow. Arquivos no mesmo disco da VM não protegem
-contra perda do host; cópia externa e demais dados seguem como metas abertas.
-[Escopo e critérios](../operations/VM_TRACKING_BACKUP.md).
+O backup do PostgreSQL usado pelo MLflow e de seus artefatos S3 foi restaurado
+em ambiente temporário isolado. Foram conferidos 65 tabelas, 26 objetos, quatro
+runs, quatro modelos e 27 registros de histórico de métricas. O champion foi
+recarregado pelo cliente da API, sem credenciais diretas de armazenamento, e
+reproduziu o score de controle com erro zero. A origem e a captura foram
+preservadas; os recursos temporários foram removidos. Não houve treinamento.
+
+Isso demonstra recuperação do tracking neste recorte. Os arquivos continuam no
+disco da VM; cópia externa, recuperação integral e perda do host ainda não foram
+validadas. Publicação, CI e merge deste incremento continuam pendentes.
+[Critérios e recibo](../operations/VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29).
 
 ## Continuidade operacional da VM — aceite de 2026-10-29
 

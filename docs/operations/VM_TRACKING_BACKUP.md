@@ -1,7 +1,8 @@
 # Backup limitado do tracking da VM
 
-Preparação de 2026-10-29, sobre `2054c4d` (PR #17 integrado). Execução nativa
-**pendente**. Os testes offline não demonstram restauração real de PostgreSQL/S3.
+Preparado sobre `2054c4d` (PR #17 integrado). **Captura e restauração isolada
+aceitas pelo autor em 2026-10-29**, após a correção `93bce79`. O resultado nativo
+está registrado abaixo; testes offline são evidência separada.
 
 ## Escopo e limites
 
@@ -177,3 +178,43 @@ objetos ou recibos da captura. O pacote corretivo inclui `rebuild.sh`, que faz
 essa preservação com guardas e mantém o lock operacional durante o build.
 Depois executar preflight e repetir restore com o ID/hash originais. Nenhum
 novo aceite de restauração é declarado até os gates nativos passarem.
+
+## Aceite nativo da restauração — 2026-10-29
+
+Saída de terminal fornecida pelo autor: `status: verified`, `phase: completed` no
+projeto `fraud-kind-restore-9d2d3c07ca6f`, reutilizando a captura e o manifesto
+originais. O commit `93bce79` corrigiu o mount; o registro da imagem anterior foi
+preservado em `image-before-mount-fix-84d12804179caaed.json`. A nova imagem auxiliar
+foi construída e o preflight passou antes do restore. O servidor original não foi
+reconstruído; o MLflow temporário usou a nova imagem auxiliar.
+
+| Gate | Resultado informado pelo autor |
+| --- | --- |
+| PostgreSQL/S3 após restore | 65 tabelas e 26 objetos conferidos |
+| Cliente MLflow | 4 runs, 4 logged models e 27 linhas de histórico de métricas |
+| Registry | Alias champion verificado |
+| Modelo | SHA `401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67` |
+| Paridade | Uma linha de smoke; erro absoluto máximo `0.0` |
+| Credenciais do cliente | Sem acesso direto PostgreSQL/S3 |
+| Readback posterior | 65 tabelas e 26 objetos novamente conferidos |
+| Origem e captura | `source_unchanged: true`, `capture_unchanged: true` |
+| Limpeza | `temporary_resources_removed: true` |
+| Treinamento | `fit_executed: false` |
+
+O gate limitado `postgres_backup_restore_validated` passou. O gate global
+`platform_backup_restore_validated` permanece false. O reload executou uma
+inferência de controle no alvo temporário; não foi novo treinamento nem execução
+do fluxo de decisões da sessão. Os testes da correção na VM tiveram 179 aprovados
+e 28 pulados em 2,81 s (tox 6,45 s). O SDK havia passado separadamente com 60
+aprovados e um pulado; não somar esses totais como uma única execução.
+
+[Registro público do aceite](../../references/evidence/vm_tracking_backup_restore_author_validation_2026-10-29.json).
+O recibo privado original fica em
+`data/storage/kind-platform/tracking-backup/fraud-kind-restore-9d2d3c07ca6f.json`.
+O registro público é síntese do terminal fornecido pelo autor, não uma execução
+nativa independente do assistente. Evidências antigas de preparação e falha
+permanecem como histórico e não tiveram seus flags reescritos.
+
+Próximos gates: publicar o incremento com CI/PR, definir cópia externa verificada
+e restaurar a partir dela, além de cobrir os dados excluídos e qualificar a
+recuperação integral. Não há aceite de tolerância à perda do host.

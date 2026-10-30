@@ -955,3 +955,13 @@ pausa do MLflow, recuperação da origem e restore em projeto descartável. Reut
 os locks e verificadores do laboratório anterior, com identidades explícitas do
 KinD. [Escopo](../operations/VM_TRACKING_BACKUP.md). Testes offline não constituem
 aceite nativo; perda do host, cópia externa e recuperação integral seguem abertas.
+
+### Aceite do restore limitado do tracking na VM — 2026-10-29
+
+A captura inicial passou, mas o restore recusou o mount sem UUID. A correção
+`93bce79` preservou o verificador e montou o backup em `/capture/<UUID>`. Após
+rebuild da ferramenta, o autor confirmou restore completo do recorte: 65 tabelas,
+26 objetos, quatro runs/modelos, 27 linhas de histórico de métricas, champion
+recarregado com erro de smoke zero, origem/captura preservadas e limpeza.
+[Contrato e evidência](../operations/VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29).
+Cópia externa e recuperação integral continuam abertas. CI/PR ainda não confirmados.

@@ -5,7 +5,7 @@ acessos e requests/limits conferidos; consumo por container indisponível. A
 preparação da baseline encontrou incompatibilidade de retorno entre os perfis de
 observabilidade. Correção commitada e validada nativamente; baseline própria e
 ciclo planejado de parada/subida aceitos, com mesma sessão e volumes. A
-correção foi integrada no PR #17 (`2054c4d`); backup/restauração nativos continuam pendentes.
+correção foi integrada no PR #17 (`2054c4d`); backup do tracking restaurado e validado em ensaio nativo isolado; recuperação integral e cópia externa pendentes.
 [Registro](../operations/VM_REPRODUCTION_PROGRESS.md).
 
 **Incremento do portal da VM:** snapshot, vínculo de sessão, desempenho (67.255
@@ -14,7 +14,7 @@ decisões, 199 clientes, 13 alertas e 200 feedbacks, sem explicações nesse sna
 SHAP da sessão foi publicado e verificado para cinco casos, com navegação nativa
 aprovada e captura de caso explicado revisada. O recorte de portal da sessão
 concluída foi aceito e integrado no PR #16. A correção do ciclo foi integrada no PR #17. Instalação
-integral e backup/restauração continuam abertos. O ciclo planejado foi aceito em
+integral e recuperação completa continuam abertas. O ciclo planejado foi aceito em
 ensaio posterior próprio, descrito no registro da VM.
 
 Atualizado em **2026-10-29**. A reprodução em outro ambiente entrou antes de
@@ -82,14 +82,14 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Logout controlado | Validado por confirmação do autor de encerramento de todas as sessões/túneis, Linger=yes e check posterior com mesmos PIDs/contadores/hashes |
 | Reboot planejado da VM | Boot ID mudou; observador e acesso Grafana ativos, HTTP saudável e mesma sessão; uma nova tentativa automática por unidade |
 | Ciclo planejado da plataforma na VM | stop/start/verify aceitos, mesmo nó e volumes, green em zero; serviços do host e portal retomados |
-| Backup/restauração na VM | Tracking PostgreSQL/S3 em preparação, com teste isolado; execução nativa e recuperação integral da plataforma pendentes |
+| Backup/restauração na VM | Tracking PostgreSQL/S3 restaurado nativamente: 65 tabelas/26 objetos, quatro runs/modelos e paridade do champion; origem/captura preservadas e limpeza confirmada. Cópia externa e recuperação integral pendentes |
 | Reprodução completa do produto | Pendente |
 
 ## Backlog ordenado
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — em andamento | Concluir reprodução limpa | Consolidar os marcos já aceitos, portal aceito no PR #16; integrar o ciclo e qualificar instalação do zero; recibos próprios e limitações explícitas |
+| 1 — em andamento | Concluir reprodução limpa | Consolidar os marcos já aceitos, portal/ciclo integrados nos PRs #16/#17 e restore limitado aceito; qualificar instalação do zero; recibos próprios e limitações explícitas |
 | 2 — parcialmente validado | Consolidar operação da VM | Observador/acesso Grafana supervisionados e recuperação ensaiada; logout completo e reboot planejado aceitos; concluir inventário restante, acessos SSH e limites de recursos |
 | 3 | Decidir coordenação dos pipelines | Testar fluxo limitado com falha/retomada e invocação duplicada; comparar executor existente e uma alternativa; adotar orquestrador somente se reduzir complexidade total |
 | 4 | Terraform local | Declarar ambiente estabilizado e ownership; providers/locks/state protegidos, apply real e segundo plan sem mudanças; preservação/restauração dos dados explícitas |
@@ -99,11 +99,13 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-Executar build e preflight do [backup limitado do tracking da VM](../operations/VM_TRACKING_BACKUP.md),
-depois capturar `mlflow_kind`/`fraud-kind-mlflow` em janela sem writers e restaurar
-em ambiente temporário isolado. A preparação inclui testes offline e recuperação
-da pausa do MLflow. Não há aceite nativo de backup neste incremento, nem proteção
-contra perda do disco da VM; cópia externa verificada e demais dados continuam abertos.
+Consolidar em CI/PR o [aceite do backup limitado do tracking](../operations/VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29).
+O restore isolado passou com 65 tabelas e 26 objetos, quatro runs/modelos e score
+idêntico do champion, preservando a origem e removendo os recursos temporários.
+A correção do mount foi commitada em `93bce79`; publicação, CI e merge deste
+incremento ainda não foram confirmados. Não repetir o ensaio apenas para registrar
+seu resultado. Depois definir e verificar cópia fora da VM e restauração a partir
+dela; demais dados e recuperação integral continuam abertos.
 
 O portal com SHAP e a correção do ciclo já foram integrados nos PRs #16 e #17.
 Qualificar instalação integral a partir de checkout vazio. Novas chegadas e firing

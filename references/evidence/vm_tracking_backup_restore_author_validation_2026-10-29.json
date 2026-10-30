@@ -1,0 +1,102 @@
+{
+  "schema": "fraud_kind_tracking_restore_author_validation_v1",
+  "date": "2026-10-29",
+  "status": "native_tracking_restore_accepted",
+  "provenance": "Author-supplied VM terminal output; not an independently executed assistant native restore.",
+  "code_commit": "93bce79",
+  "branch": "feat/vm-tracking-backup",
+  "publication_ci_merge_confirmed": false,
+  "scope": {
+    "database": "mlflow_kind",
+    "role": "mlflow_kind",
+    "bucket": "fraud-kind-mlflow",
+    "prefix": "v1/",
+    "platform_wide": false
+  },
+  "capture": {
+    "capture_id": "7312832d3d8044999c62d5e556eaf38a",
+    "manifest_sha256": "16aab86ad5fbe0f577641a57b06593f4acbe4e5f2f97709f1ab393f414e1f80e",
+    "objects": 26,
+    "payload_bytes": 987907,
+    "owner_marker_separate": true,
+    "original_source_recovered": true
+  },
+  "image": {
+    "name": "fraud-kind-tracking-backup:ae0d23345c7d49b3b9b2fc0240100dd1",
+    "image_id": "sha256:0d64d05e684ff1ee43c836b016498827d9c1fe0013bee71be519d6d6e376bbb1",
+    "worker_sha256": "90b6a25bae97fabe9a73f268a238afc5047764bcf7527617a59bb0c3366f5caf",
+    "previous_receipt_preserved": "image-before-mount-fix-84d12804179caaed.json"
+  },
+  "preflight": {
+    "status": "source_preflight_verified",
+    "database_bytes": 10958515,
+    "objects_including_marker": 27,
+    "object_bytes": 987956,
+    "source_unchanged": true,
+    "capture_executed": false,
+    "restore_executed": false
+  },
+  "native_restore": {
+    "schema": "fraud_kind_tracking_restore_v1",
+    "status": "verified",
+    "phase": "completed",
+    "project": "fraud-kind-restore-9d2d3c07ca6f",
+    "postgres_backup_restore_validated": true,
+    "source_modified": false,
+    "fit_executed": false,
+    "platform_backup_restore_validated": false,
+    "restore": {
+      "status": "restored_data_verified",
+      "objects": 26,
+      "tables": 65
+    },
+    "client": {
+      "status": "target_client_verified",
+      "runs": 4,
+      "logged_models": 4,
+      "metric_history_rows": 27,
+      "model_reload_validated": true,
+      "model_sha256": "401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67",
+      "model_uri": "models:/m-b559424a14a540c7b714cb6531324381",
+      "scored_rows": 1,
+      "max_absolute_score_error": 0.0,
+      "registry_alias_verified": true,
+      "direct_storage_credentials": false
+    },
+    "after_readback": {
+      "status": "restored_data_verified",
+      "objects": 26,
+      "tables": 65
+    },
+    "source_unchanged": true,
+    "capture_unchanged": true,
+    "temporary_resources_removed": true
+  },
+  "private_receipt_path": "data/storage/kind-platform/tracking-backup/fraud-kind-restore-9d2d3c07ca6f.json",
+  "native_test_execution": {
+    "environment": "py314",
+    "passed": 179,
+    "skipped": 28,
+    "pytest_seconds": 2.81,
+    "tox_seconds": 6.45
+  },
+  "prior_separate_sdk_execution": {
+    "passed": 60,
+    "skipped": 1,
+    "pytest_seconds": 1.56,
+    "not_same_execution_as_py314": true
+  },
+  "limits": [
+    "Backup remains on the VM disk; no off-VM copy/restore accepted.",
+    "Only MLflow PostgreSQL database and artifact bucket included; not all platform data.",
+    "Single smoke row demonstrates reload parity, not predictive quality or holdout evaluation.",
+    "Temporary target executed one control inference; no training or accepted-session replay claimed.",
+    "No host-loss/high-availability acceptance."
+  ],
+  "remaining": [
+    "Publish branch and pass CI/PR before merge",
+    "Verified off-VM copy and restoration from it",
+    "Other platform data backup and full recovery",
+    "Full clean product installation"
+  ]
+}

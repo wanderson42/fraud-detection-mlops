@@ -354,7 +354,7 @@ reúne a origem e o escopo. Não substitui os recibos e bancos locais.
 
 1. Concluir inventário dos processos/acessos restantes e medição de consumo; supervisão integrada e logout/reboot aceitos em evidências próprias.
 2. Qualificar instalação integral do produto a partir de checkout vazio; portal/SHAP já integrado no PR #16 e correção do ciclo no PR #17.
-3. Executar o [backup limitado do tracking](VM_TRACKING_BACKUP.md): preparação com testes offline; build/preflight/captura/restauração nativos pendentes. Recuperação integral e cópia externa continuam abertas.
+3. Publicar em CI/PR o [restore limitado do tracking já aceito](VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29); definir cópia externa e testar restauração a partir dela. Recuperação integral continua aberta.
 4. Ensaiar novas chegadas e firing de alertas de monitoramento se incluídos no escopo.
 
 O relato antigo de 288.172 eventos da fonte em preparação não deve ser confundido
@@ -391,3 +391,16 @@ porque o mount `/capture` não preservava o UUID exigido pelo verificador. O rec
 inspecionado confirmou limpeza do projeto temporário; o preflight posterior
 continuou aprovado. Correção e testes offline do caminho montado preparados;
 novo build e restore nativos pendentes. [Detalhes](VM_TRACKING_BACKUP.md#correção-do-caminho-montado--2026-10-29).
+
+### Restauração nativa do tracking aceita
+
+Após o commit `93bce79`, a imagem auxiliar foi reconstruída e a mesma captura
+`7312832d3d8044999c62d5e556eaf38a` restaurada em projeto isolado. Resultado
+`verified/completed`: 65 tabelas, 26 objetos, quatro runs/modelos, 27 linhas de
+histórico de métricas, champion/alias conferidos e uma linha de smoke com erro
+zero. Readback posterior, origem/captura preservadas e limpeza dos recursos
+temporários confirmados. Nenhum fit. [Recibo documental](../../references/evidence/vm_tracking_backup_restore_author_validation_2026-10-29.json).
+
+O aceite fecha a restaurabilidade do tracking neste escopo. Cópia externa,
+perda do host, demais dados e recuperação integral não foram demonstradas.
+A publicação deste incremento e seus gates de CI/PR ainda são pendentes.
