@@ -1,10 +1,12 @@
 # Fraud Detection MLOps
 
-**Backup do tracking restaurado na VM:** PostgreSQL/S3 conferidos em ambiente
+**Backup do tracking e cópia fora da VM restaurados:** PostgreSQL/S3 conferidos em ambiente
 isolado, com 65 tabelas, 26 objetos, quatro runs e quatro logged models. Champion
 recarregado com erro de score zero, origem/captura preservadas e recursos temporários
-removidos. [Aceite e limites](docs/operations/VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29).
-Recuperação integral da plataforma e proteção contra perda do host permanecem abertas.
+removidos. [Aceite e limites](docs/operations/VM_TRACKING_BACKUP.md#restauração-da-cópia-fora-da-vm--2026-10-30).
+A cópia no Alienware foi verificada, devolvida e usada em novo restore isolado em
+2026-10-30; a captura original voltou ao caminho anterior. Recuperação integral e
+proteção contra perda do SSD físico permanecem abertas.
 
 **Ciclo planejado da VM aceito:** parada/subida com mesmo nó, volumes e plano de
 réplicas; tracking/S3, API e monitoramento conferidos, com retomada da mesma sessão

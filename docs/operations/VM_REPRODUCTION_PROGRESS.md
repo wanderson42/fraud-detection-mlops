@@ -354,7 +354,7 @@ reúne a origem e o escopo. Não substitui os recibos e bancos locais.
 
 1. Concluir inventário dos processos/acessos restantes e medição de consumo; supervisão integrada e logout/reboot aceitos em evidências próprias.
 2. Qualificar instalação integral do produto a partir de checkout vazio; portal/SHAP já integrado no PR #16 e correção do ciclo no PR #17.
-3. Publicar em CI/PR o [restore limitado do tracking já aceito](VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29); definir cópia externa e testar restauração a partir dela. Recuperação integral continua aberta.
+3. Registrar o [aceite da cópia fora da VM devolvida/restaurada](VM_TRACKING_BACKUP.md#restauração-da-cópia-fora-da-vm--2026-10-30); delimitar dados indispensáveis à continuidade e o que é reconstruível. Recuperação integral e perda do SSD físico continuam abertas.
 4. Ensaiar novas chegadas e firing de alertas de monitoramento se incluídos no escopo.
 
 O relato antigo de 288.172 eventos da fonte em preparação não deve ser confundido
@@ -404,3 +404,18 @@ temporários confirmados. Nenhum fit. [Recibo documental](../../references/evide
 O aceite fecha a restaurabilidade do tracking neste escopo. Cópia externa,
 perda do host, demais dados e recuperação integral não foram demonstradas.
 A publicação deste incremento e seus gates de CI/PR ainda são pendentes.
+
+### Cópia fora da VM e restauração de retorno aceitas — 2026-10-30
+
+O PR #18 integrou o backup limitado em `a5629db`; CI #87 do PR e #88 da main
+aprovados. Depois o autor verificou a cópia no Alienware, devolveu-a e confirmou
+`external_tracking_backup_restore_verified` no projeto `fraud-kind-restore-237aeb23ed4f`.
+65 tabelas/26 objetos, quatro runs/modelos e 27 linhas de histórico de métricas;
+champion/alias e erro de smoke zero, origem/captura preservadas, limpeza completa.
+A captura original voltou ao caminho anterior e a devolvida foi reverificada.
+[Recibo documental](../../references/evidence/vm_external_tracking_restore_author_validation_2026-10-30.json).
+
+Esse aceite cobre a cópia fora do disco virtual e o restore neste ambiente,
+sem treinamento. Não cobre SSD físico, recuperação integral ou VM vazia.
+O próximo recorte é delimitar os dados críticos e consolidar a instalação limpa;
+não ampliar a infraestrutura nem repetir os ensaios já aceitos.

@@ -11,7 +11,8 @@ com a mesma sessão, hashes preservados e nenhuma nova inferência.
 
 [Backup limitado do tracking da VM](operations/VM_TRACKING_BACKUP.md): captura e
 restauração isolada aceitas pelo autor, com champion recarregado e limpeza confirmada.
-Cópia externa e recuperação integral da plataforma permanecem pendentes.
+A cópia no Alienware também foi verificada, devolvida e restaurada em 2026-10-30;
+recuperação integral e proteção contra perda do SSD físico permanecem pendentes.
 
 O [guia operacional](operations/PRODUCT_OPERATIONS.md) separa ambientes.
 O [histórico](project/ROADMAP_HISTORY.md) preserva decisões e marcos anteriores.

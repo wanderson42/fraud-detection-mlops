@@ -5,7 +5,7 @@ acessos e requests/limits conferidos; consumo por container indisponível. A
 preparação da baseline encontrou incompatibilidade de retorno entre os perfis de
 observabilidade. Correção commitada e validada nativamente; baseline própria e
 ciclo planejado de parada/subida aceitos, com mesma sessão e volumes. A
-correção foi integrada no PR #17 (`2054c4d`); backup do tracking restaurado e validado em ensaio nativo isolado; recuperação integral e cópia externa pendentes.
+correção foi integrada no PR #17 (`2054c4d`); backup do tracking restaurado e validado em ensaio nativo isolado; cópia fora da VM também restaurada em 2026-10-30. Recuperação integral pendente.
 [Registro](../operations/VM_REPRODUCTION_PROGRESS.md).
 
 **Incremento do portal da VM:** snapshot, vínculo de sessão, desempenho (67.255
@@ -17,7 +17,7 @@ concluída foi aceito e integrado no PR #16. A correção do ciclo foi integrada
 integral e recuperação completa continuam abertas. O ciclo planejado foi aceito em
 ensaio posterior próprio, descrito no registro da VM.
 
-Atualizado em **2026-10-29**. A reprodução em outro ambiente entrou antes de
+Atualizado em **2026-10-30**. A reprodução em outro ambiente entrou antes de
 Terraform para identificar dependências da máquina original antes de declará-las
 como infraestrutura como código (IaC). A VM revelou dependências de estado,
 recibos, perfis e processos que não estavam cobertas pela suíte Python.
@@ -82,7 +82,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Logout controlado | Validado por confirmação do autor de encerramento de todas as sessões/túneis, Linger=yes e check posterior com mesmos PIDs/contadores/hashes |
 | Reboot planejado da VM | Boot ID mudou; observador e acesso Grafana ativos, HTTP saudável e mesma sessão; uma nova tentativa automática por unidade |
 | Ciclo planejado da plataforma na VM | stop/start/verify aceitos, mesmo nó e volumes, green em zero; serviços do host e portal retomados |
-| Backup/restauração na VM | Tracking PostgreSQL/S3 restaurado nativamente: 65 tabelas/26 objetos, quatro runs/modelos e paridade do champion; origem/captura preservadas e limpeza confirmada. Cópia externa e recuperação integral pendentes |
+| Backup/restauração na VM | Tracking PostgreSQL/S3 restaurado nativamente: 65 tabelas/26 objetos, quatro runs/modelos e paridade do champion; origem/captura preservadas e limpeza confirmada. Cópia Alienware devolvida/restaurada e original preservado; recuperação integral e perda do SSD físico pendentes |
 | Reprodução completa do produto | Pendente |
 
 ## Backlog ordenado
@@ -99,13 +99,17 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-Consolidar em CI/PR o [aceite do backup limitado do tracking](../operations/VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29).
-O restore isolado passou com 65 tabelas e 26 objetos, quatro runs/modelos e score
-idêntico do champion, preservando a origem e removendo os recursos temporários.
-A correção do mount foi commitada em `93bce79`; publicação, CI e merge deste
-incremento ainda não foram confirmados. Não repetir o ensaio apenas para registrar
-seu resultado. Depois definir e verificar cópia fora da VM e restauração a partir
-dela; demais dados e recuperação integral continuam abertos.
+Consolidar o [aceite da restauração da cópia fora da VM](../operations/VM_TRACKING_BACKUP.md#restauração-da-cópia-fora-da-vm--2026-10-30).
+O PR #18 foi integrado em `a5629db`, com CI #87 do PR e CI #88 da main aprovados.
+Em 2026-10-30, o autor confirmou cópia Alienware verificada, devolvida e usada em
+novo restore isolado, com paridade do champion, origem preservada e limpeza.
+A captura original voltou ao caminho anterior. Não repetir o ensaio para documentá-lo.
+
+Definir o estado indispensável à continuidade: o que precisa de backup e o que
+pode ser reconstruído. Qualificar a instalação integral a partir de checkout
+vazio, com IDs/credenciais próprios do novo usuário e sem depender dos recibos da
+VM do autor. Recuperação integral, perda do SSD físico e dados fora do recorte de
+tracking permanecem abertos; não exigem acrescentar serviços para este fechamento.
 
 O portal com SHAP e a correção do ciclo já foram integrados nos PRs #16 e #17.
 Qualificar instalação integral a partir de checkout vazio. Novas chegadas e firing
