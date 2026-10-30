@@ -1,6 +1,6 @@
 # Fraud Detection MLOps
 
-**Reprodução — próximo gate (2026-10-30):** o restore da cópia fora da VM foi integrado no PR #19. O [contrato de estado e instalação limpa](docs/operations/VM_STATE_AND_CLEAN_INSTALL.md) separa dados indispensáveis à continuidade de componentes reconstruíveis e define o aceite integral ainda pendente, incluindo a geração da fonte de eventos sem checkpoints do autor.
+**Reprodução — próximo gate (2026-10-30):** o contrato de estado foi integrado no PR #20. A [fonte explícita de eventos do Silver](docs/operations/SESSION_EVENT_SOURCE.md) está preparada para uma instalação nova sem replay anterior de scores; execução nativa e instalação integral ainda pendentes. [O que preservar e reconstruir](docs/operations/VM_STATE_AND_CLEAN_INSTALL.md).
 
 **Backup do tracking e cópia fora da VM restaurados:** PostgreSQL/S3 conferidos em ambiente
 isolado, com 65 tabelas, 26 objetos, quatro runs e quatro logged models. Champion

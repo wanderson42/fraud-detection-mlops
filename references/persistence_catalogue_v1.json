@@ -168,7 +168,8 @@
         "fraud_detection_mlops/streaming/replay/numerical_corrective_replay.py",
         "fraud_detection_mlops/streaming/replay/durable_triage_replay.py",
         "scripts/replay/paced_triage_replay.py",
-        "scripts/monitoring/telemetry.py"
+        "scripts/monitoring/telemetry.py",
+        "scripts/product_flow/event_source.py"
       ],
       "review_required": false
     },

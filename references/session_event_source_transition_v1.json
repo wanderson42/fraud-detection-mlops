@@ -1,0 +1,18 @@
+{
+  "schema": "fraud_session_event_source_transition_v1",
+  "scope": "add_verified_model_free_Silver_source_preserve_legacy_checkpoints_models_and_receipts",
+  "changes": {
+    "scripts/product_flow/event_source.py": {
+      "before": null,
+      "after": "7c90defc9e74fb9561171f66c433dcf2e1ff939298e91dd0d2da94377cb9731b"
+    },
+    "scripts/product_flow/inputs.py": {
+      "before": "a63b56bfd2551155a8e4add73fee1c0385cdf2cc153e8ae41be7f75e300209e3",
+      "after": "5811bff972302bb3c7d8d5d571e17ed585bb4d96659eeaf46a02c12f15a8687f"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "49028c9daf8db55877ee7cb91bff038004f51017e91a20ca0a7f035abc20b801",
+      "after": "8cd44883754bdcd8846e2de834aed518de5fbdbc9931367ad1ad652aa6cb5bf1"
+    }
+  }
+}

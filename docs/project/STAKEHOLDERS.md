@@ -1,5 +1,13 @@
 # Síntese para stakeholders
 
+## Retirada de uma dependência implícita — 2026-10-30
+
+A [fonte de eventos do Silver](../operations/SESSION_EVENT_SOURCE.md) permite preparar
+uma sessão nova sem executar previamente o replay de um modelo anterior. Isso
+reduz uma dependência do laboratório original; não altera o champion nem a sessão
+aceita. Código/testes preparados, geração nativa e instalação integral pendentes.
+Não há novo serviço, dado bancário real ou confirmação de qualidade preditiva.
+
 ## Continuidade e reprodução para outro usuário — 2026-10-30
 
 O [contrato de estado e instalação limpa](../operations/VM_STATE_AND_CLEAN_INSTALL.md)

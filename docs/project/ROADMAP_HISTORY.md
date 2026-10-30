@@ -1,5 +1,14 @@
 # Histórico do roadmap até a integração do PR #11
 
+## Fonte explícita para a sessão de outra instalação — 2026-10-30
+
+Após PR #20 (`730a1d2`), a análise confirmou que a sessão só precisava dos eventos
+do checkpoint anterior, não dos scores. Foi preparado um produtor bounded do
+Silver, com schema próprio de eventos e verificação antes/depois da captura.
+As fontes durable replay v2 continuam aceitas; não foram fabricados recibos ou
+editadas evidências antigas. Código e testes não constituem aceite da execução
+nativa nem de instalação integral. [Procedimento](../operations/SESSION_EVENT_SOURCE.md).
+
 ## Classificação do estado para fechamento da reprodução — 2026-10-30
 
 Após o PR #19 (`a0a96f6`), o [contrato de estado](../operations/VM_STATE_AND_CLEAN_INSTALL.md)

@@ -1,5 +1,15 @@
 # Reprodução limpa na VM — estado em 2026-10-29
 
+## Fonte para instalação nova — implementação preparada em 2026-10-30
+
+Após PR #20 (`730a1d2`) e sincronização informada pelo autor, foi preparado o
+[produtor de eventos do Silver](SESSION_EVENT_SOURCE.md). Ele remove a necessidade
+de rodar um modelo antigo apenas para materializar a fonte da sessão, mantendo
+o caminho de checkpoints v2 e os recibos existentes. Testes cobrem captura,
+HTTP local e reconciliação; a geração com dados reais na VM ainda não foi aceita.
+Primeiro gate nativo: `session-source-plan` para conferir o caminho e a cobertura
+do Silver; depois preparar/verificar um ID novo sem alterar a sessão corrente.
+
 ## Estado indispensável e próximo gate — revisão de 2026-10-30
 
 O PR #19 está integrado em `a0a96f6`; o autor informou sincronização da main no

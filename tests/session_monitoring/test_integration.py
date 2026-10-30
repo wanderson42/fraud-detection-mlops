@@ -174,6 +174,11 @@ def test_exact_transition_preserves_receipts_but_rejects_science_change():
         if name in lifecycle["changes"]:
             assert lifecycle["changes"][name]["before"] == digest
             expected[name] = lifecycle["changes"][name]["after"]
+    event_source = json.loads((ROOT / compatibility.EVENT_SOURCE_TRANSITION).read_bytes())
+    for name, digest in expected.items():
+        if name in event_source["changes"]:
+            assert event_source["changes"][name]["before"] == digest
+            expected[name] = event_source["changes"][name]["after"]
     assert all(digest == k.state.sha(ROOT / name) for name, digest in expected.items())
 
 

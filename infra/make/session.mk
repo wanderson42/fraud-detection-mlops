@@ -4,6 +4,25 @@ SESSION_SOURCE_STATE ?= data/replay/paced-native-v1
 SESSION_INTERVAL ?= 1
 SESSION_PORT ?= 18502
 SESSION_NO_OTHER_WRITERS ?= 0
+SESSION_EVENT_SOURCE_ID ?= clean-events-v1
+SESSION_SILVER_ROOT ?= data/interim/handbook
+SESSION_EVENT_SOURCE_SHA256 ?=
+SESSION_SOURCE_START ?= 2018-09-16
+SESSION_SOURCE_END ?= 2018-09-17
+.PHONY: session-source-plan session-source-prepare session-source-verify
+
+## Check Silver metadata coverage before preparing a new source; no partition bytes opened
+session-source-plan:
+	$(POETRY) run python -m scripts.product_flow.event_source plan --source-id "$(SESSION_EVENT_SOURCE_ID)" --silver-root "$(SESSION_SILVER_ROOT)" --start "$(SESSION_SOURCE_START)" --end "$(SESSION_SOURCE_END)"
+
+## Materialize verified Silver events only; no old replay, model or HTTP inference
+session-source-prepare:
+	$(POETRY) run python -m scripts.product_flow.event_source prepare --source-id "$(SESSION_EVENT_SOURCE_ID)" --silver-root "$(SESSION_SILVER_ROOT)" --start "$(SESSION_SOURCE_START)" --end "$(SESSION_SOURCE_END)"
+
+## Verify the closed event source against the preparation's manifest SHA
+session-source-verify:
+	@test -n "$(SESSION_EVENT_SOURCE_SHA256)" || { echo 'Set SESSION_EVENT_SOURCE_SHA256 from preparation'; exit 2; }
+	$(POETRY) run python -m scripts.product_flow.event_source verify --source-id "$(SESSION_EVENT_SOURCE_ID)" --expected-manifest-sha256 "$(SESSION_EVENT_SOURCE_SHA256)"
 .PHONY: session-prepare session-run session-pause session-feedback session-status session-verify session-open
 
 ## Prepare an isolated current-champion session from original source events

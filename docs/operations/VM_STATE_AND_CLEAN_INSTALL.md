@@ -1,5 +1,14 @@
 # Estado persistente e instalação limpa do produto
 
+## Atualização da implementação — 2026-10-30
+
+A classificação foi integrada no PR #20 (`730a1d2`). A lacuna da fonte padrão
+descrita abaixo agora tem um [produtor explícito a partir do Silver](SESSION_EVENT_SOURCE.md),
+com formato de eventos sem decisões, plano por metadados, geração/verificação e
+compatibilidade dos checkpoints antigos. Implementação/testes preparados;
+execução nativa da nova fonte e instalação integral continuam pendentes.
+O diagnóstico original e os aceites anteriores permanecem como referência.
+
 Revisão documental de 2026-10-30, sobre `a0a96f6` (PR #19 integrado).
 Este contrato classifica dependências do produto demonstrado na VM. Não é um
 inventário completo do disco nem comprova um novo backup ou instalação integral.
