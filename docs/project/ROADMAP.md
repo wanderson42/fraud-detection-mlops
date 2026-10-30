@@ -99,26 +99,24 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-O PR #20 integrou o contrato de estado em `730a1d2`. Tracking e cópia devolvida
-já foram restaurados isoladamente; não repetir o ensaio. A classificação dos
-dados indispensáveis à continuidade está documentada, com limites de cobertura.
+A [fonte explícita do Silver e sua sessão](../operations/SESSION_EVENT_SOURCE.md#aceite-nativo-da-fonte-e-de-sua-sessão--2026-10-30)
+foram aceitas nativamente pelo autor em `7642fc5`: fonte com 288.172 eventos,
+sessão limitada com 269.334 eventos, 200 decisões/recibos e 13 alertas, seguida
+de feedback e reconciliação causal. Não houve replay prévio de scores, fit ou
+mudança do champion. Não repetir esse gate para gerar documentação.
 
-A dependência da fonte padrão agora tem um [produtor explícito do Silver](../operations/SESSION_EVENT_SOURCE.md):
-materializar eventos verificados sem carregar modelo nem executar replay de scores.
-Implementação/testes preparados; executar plano de metadados no caminho correto,
-preparar um ID novo e verificar seu manifesto na VM são os próximos gates nativos.
-A sessão aceita e seus vínculos ficam preservados; não trocar o monitoramento
-para a fonte nova como efeito desta preparação.
+Consolidar o aceite nesta branch e integrar por PR/CI. Em seguida, qualificar o
+percurso integral num ambiente novo isolado: checkout, aquisição/cadeia de dados,
+infraestrutura, rodada, champion, sessão, portal e monitoramento com identidades
+e credenciais próprias. O [checklist integral](../operations/VM_STATE_AND_CLEAN_INSTALL.md)
+continua aberto: o ensaio atual reutilizou Silver e plataforma já existentes.
+Preservar a VM e os acervos aceitos; não recriar o cluster para esse teste.
 
-Depois desse aceite, consolidar e qualificar o percurso integral em ambiente
-novo: checkout, aquisição/cadeia de dados, rodada, champion, sessão, portal e
-monitoramento com IDs/credenciais/recibos próprios. O [checklist integral](../operations/VM_STATE_AND_CLEAN_INSTALL.md)
-permanece aberto. Recuperação de toda a instalação e perda física do SSD são
-backlog separado; a captura do tracking não cobre sessão/governança/datasets.
-Os marcos não constituem novo holdout nem autorizam substituir o champion.
-
-Terraform continua posterior à estabilização desse percurso. Não acrescentar
-broker, feature store ou orquestrador para concluir esta etapa.
+Tracking e cópia devolvida já foram restaurados em recortes próprios. Recuperação
+da plataforma inteira e perda física do SSD permanecem backlog separado. Os
+marcos não constituem novo holdout nem autorizam substituir o champion.
+Terraform continua posterior à estabilização desse percurso; não acrescentar
+broker, feature store ou orquestrador para fechar esta etapa.
 
 ## Critérios de arquitetura e custo
 

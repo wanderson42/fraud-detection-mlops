@@ -1,8 +1,60 @@
 # Fonte de eventos para uma instalação nova
 
-Preparação em 2026-10-30, após o PR #20 (`730a1d2`). Implementação e testes
-locais não substituem a execução nativa no Silver da VM nem o gate de instalação
-integral. O estado aceito `repro-arrival-200-v1` permanece preservado.
+## Aceite nativo da fonte e de sua sessão — 2026-10-30
+
+O autor executou o código commitado em `7642fc5` na VM e forneceu as saídas:
+242 testes passaram, com cinco skips e 14 subtests em 58,94 s (tox 64,41 s).
+O plano inicial recusou o Silver ausente em `data/interim/handbook`; a fonte foi
+preparada a partir do Silver já restaurado no ambiente, com caminho explícito.
+Este recorte não adquiriu Bronze nem instalou outra plataforma.
+
+| Identidade | Resultado |
+| --- | --- |
+| Silver selecionado | 15 partições; manifesto `95a4e7ccdc7d0b336b9d7219a5365ff42cbaa0561e86ff89cad1270e2ba125ac` |
+| Fonte `clean-events-v1` | 288.172 eventos: 144.086 transações e 144.086 feedbacks |
+| Manifesto da fonte | `5876c318c773a267edf5bde879bdcf258198f8a2e273c575cee0890c7df56713` |
+| Sessão `clean-arrival-v1` | Captura limitada: 269.334 eventos, 134.667 transações/feedbacks, 200 decisões e 13 alertas |
+| SHA da sessão | `24850bb5522da5bfdc4f68b23b3eba68bc59214c23d4a113f70a3e3310b317ec` |
+| SHA do checkpoint reconciliado | `fd5c27c4a4ef5f9ed51917cc3974996f2e981f8e235cda9361951ea01805bbd5` |
+
+A geração da fonte foi verificada pelo hash declarado, sem fit ou pontuação e
+com Silver preservado segundo a saída do produtor. O plano sozinho só conferia
+metadados (`partition_payloads_verified=false`); a preparação posterior verificou
+os bytes selecionados. A sessão nova chamou a API corrente e o verificador
+reconstruiu requisições causais e triagem a partir dos eventos e recibos HTTP.
+Foram 200 decisões e 200 recibos HTTP, sem reutilização dos scores da fonte.
+O feedback foi concluído sem novas chamadas HTTP.
+
+O modelo permaneceu `401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67`,
+release `308a1a82036a44e49d477a1b16747b6e`; não houve treino ou promoção.
+A diferença entre os 288.172 eventos da fonte e os 269.334 da sessão corresponde
+à captura limitada por contexto e prefixo de pontuação, não a perda de eventos.
+A comparação integral com o ledger da sessão anterior não foi realizada.
+
+O run levou 1.690,68 s: 1.671,16 s de warmup e 19,52 s de chegadas, com 200
+tentativas HTTP. O feedback levou 552,90 s e a verificação 13,81 s. A latência
+HTTP de 200 medições teve p50 28,54 ms, p95 37,69 ms e máximo 50,81 ms; exclui
+warmup, pacing e reconciliação. Esses tempos não são SLA nem duração da instalação.
+RSS de 376.872 KiB no run é máximo do processo, não alocação incremental da sessão.
+
+O resultado é `product_flow_reconciled`, não uma nova avaliação independente de
+qualidade. Um alerta com feedback positivo de transação não estima a precisão
+global da investigação. Não houve aceite de UI, troca do monitoramento para a
+nova sessão ou reexecução nativa da sessão completa para provar idempotência.
+Os testes sintéticos têm cobertura de repetição própria. Não se apresenta uma
+releitura dos hashes da sessão anterior, que não foi fornecida neste gate.
+
+**Aceito:** Silver existente → fonte sem modelo anterior → sessão HTTP nova →
+feedback → reconciliação independente. **Pendente:** instalação integral em
+ambiente vazio, com aquisição/cadeia de dados, infraestrutura e identidades próprias.
+Não repetir o run de aproximadamente 28 minutos apenas para documentar o resultado.
+
+[Recibo documental](../../references/evidence/session_event_source_author_validation_2026-10-30.json).
+Origem: terminal fornecido pelo autor; não é execução do assistente. CI e merge
+desta branch não são afirmados por este registro. Os recibos privados originais
+e os flags dos registros de preparação permanecem intactos.
+
+Implementação preparada após o PR #20 (`730a1d2`) e validada nativamente pelo autor em 2026-10-30 no recorte descrito acima. O guia abaixo conserva o procedimento; instalação integral continua pendente.
 
 ## O problema e a mudança
 
@@ -129,8 +181,7 @@ Testes usam Silver sintético com manifestos próprios, a geração e captura re
 serviço HTTP local, reconciliação causal e reexecução sem rescoring. Exercitam
 corrupção, tabela de decisões indevida, symlinks, mudanças não commitadas,
 destino existente, plano de metadados, Make e compatibilidade dos perfis antigos.
-Não são uma execução do Handbook na VM. O aceite nativo da nova fonte e a
-instalação integral continuam pendentes até as respectivas saídas reais.
+Esses testes não são execução do Handbook na VM. O aceite nativo posterior da fonte e da sessão está registrado acima; a instalação integral permanece pendente.
 
 [Contrato de estado e gate integral](VM_STATE_AND_CLEAN_INSTALL.md) ·
 [Sessão](PRODUCT_SESSION.md) · [Rodada e dados](OPERATIONAL_ROUND.md).

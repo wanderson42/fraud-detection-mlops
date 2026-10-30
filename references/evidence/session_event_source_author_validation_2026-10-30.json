@@ -1,0 +1,104 @@
+{
+  "schema": "fraud_session_event_source_author_validation_v1",
+  "validated_on": "2026-10-30",
+  "evidence_origin": "author_supplied_VM_terminal_outputs_not_assistant_native_execution",
+  "implementation_commit_reported": "7642fc5",
+  "implementation_commit_full_not_collected": true,
+  "branch_reported": "feat/session-event-source",
+  "CI_success_verified": false,
+  "merge_verified": false,
+  "author_tests": {
+    "passed": 242,
+    "skipped": 5,
+    "subtests_passed": 14,
+    "pytest_seconds": 58.94,
+    "tox_seconds": 64.41,
+    "ruff_lint_passed": true,
+    "ruff_formatted_files": 532
+  },
+  "initial_default_plan": {
+    "status": "rejected_missing_default_Silver_manifest",
+    "source_created": false
+  },
+  "Silver": {
+    "root": "data/storage/kind-platform/datasets/restore-770b0d4ffb8e4389b8879dd29cf1a06a/restored/data/interim/handbook",
+    "selected_partitions": 15,
+    "manifest_sha256": "95a4e7ccdc7d0b336b9d7219a5365ff42cbaa0561e86ff89cad1270e2ba125ac",
+    "plan_payloads_verified": false
+  },
+  "source": {
+    "status": "session_event_source_verified",
+    "source_id": "clean-events-v1",
+    "directory": "data/replay/session-sources/clean-events-v1",
+    "manifest_sha256": "5876c318c773a267edf5bde879bdcf258198f8a2e273c575cee0890c7df56713",
+    "events": 288172,
+    "transactions": 144086,
+    "feedback": 144086,
+    "scoring_executed": false,
+    "fit_executed": false,
+    "source_modified": false
+  },
+  "session": {
+    "session_id": "clean-arrival-v1",
+    "flow_id": "session-clean-arrival-v1",
+    "session_sha256": "24850bb5522da5bfdc4f68b23b3eba68bc59214c23d4a113f70a3e3310b317ec",
+    "checkpoint_sha256": "fd5c27c4a4ef5f9ed51917cc3974996f2e981f8e235cda9361951ea01805bbd5",
+    "status": "product_flow_reconciled",
+    "events": 269334,
+    "transactions": 134667,
+    "feedback": 134667,
+    "decisions": 200,
+    "alert_decisions": 200,
+    "alerts": 13,
+    "HTTP_receipts": 200,
+    "causal_requests_and_triage_rebuilt": true,
+    "source_model_scores_reused": false,
+    "alerts_with_positive_transaction_feedback": 1,
+    "model_sha256": "401d7c36fc17bfd4176e506d45da2a559e0e2d44b7305af2f77c4cd8ac04ca67",
+    "serving_release_id": "308a1a82036a44e49d477a1b16747b6e",
+    "fit_executed": false,
+    "champion_modified": false,
+    "production_promotion": false,
+    "new_independent_quality_confirmation": false
+  },
+  "arrivals": {
+    "status": "awaiting_feedback",
+    "interval_seconds": 0.05,
+    "elapsed_seconds": 1690.6793338549978,
+    "warmup_seconds": 1671.1589000099993,
+    "arrivals_seconds": 19.520432877998246,
+    "scoring_HTTP_attempts": 200,
+    "process_lifetime_peak_rss_kib": 376872
+  },
+  "feedback_drain": {
+    "status": "complete",
+    "elapsed_seconds": 552.897218074002,
+    "scoring_HTTP_attempts": 0,
+    "process_lifetime_peak_rss_kib": 376660
+  },
+  "verification": {
+    "elapsed_seconds": 13.805685075996735,
+    "HTTP_latency_ms": {
+      "measurements": 200,
+      "p50": 28.542410500449478,
+      "p95": 37.68538429758336,
+      "maximum": 50.808058000257006,
+      "scope": "client_HTTP_request_including_bounded_retries_excludes_warmup_pacing_and_independent_verification"
+    }
+  },
+  "limits": {
+    "full_clean_installation_validated": false,
+    "new_host_or_cluster_created": false,
+    "source_Silver_acquired_in_this_gate": false,
+    "native_completed_session_rerun_verified": false,
+    "UI_visual_review_validated": false,
+    "monitoring_rebound_to_new_session": false,
+    "prior_session_post_gate_hash_readback_provided": false,
+    "platform_backup_restore_validated": false,
+    "physical_host_loss_validated": false,
+    "source_preparation_duration_measured": false,
+    "RSS_is_incremental_session_allocation": false,
+    "SLA_validated": false
+  },
+  "scope": "existing_VM_existing_verified_Silver_and_champion_new_model_free_event_source_and_independent_new_HTTP_session_reconciliation"
+}

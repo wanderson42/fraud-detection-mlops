@@ -1,5 +1,14 @@
 # Estado persistente e instalação limpa do produto
 
+## Fonte e sessão próprias aceitas — 2026-10-30
+
+O [ensaio nativo da fonte](SESSION_EVENT_SOURCE.md#aceite-nativo-da-fonte-e-de-sua-sessão--2026-10-30)
+passou no Silver existente: `clean-events-v1` com 288.172 eventos, seguida de
+`clean-arrival-v1` reconciliada com 200 decisões/recibos HTTP e 13 alertas.
+Isso encerra a lacuna da geração de eventos sem replay prévio de scores.
+Não comprova aquisição inicial, nova instalação de cluster ou recuperação integral.
+O checklist integral permanece aberto; notas de preparação abaixo são históricas.
+
 ## Atualização da implementação — 2026-10-30
 
 A classificação foi integrada no PR #20 (`730a1d2`). A lacuna da fonte padrão

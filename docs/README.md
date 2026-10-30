@@ -1,6 +1,6 @@
 # Índice da documentação
 
-[Fonte de eventos para instalação nova](operations/SESSION_EVENT_SOURCE.md): Silver verificado → eventos sem scores → sessão própria. Implementação preparada; plano, preparação e verificação nativa ainda pendentes.
+[Fonte de eventos para instalação nova](operations/SESSION_EVENT_SOURCE.md): Silver verificado → eventos sem scores → sessão própria. Fonte e sessão nova reconciliadas nativamente em 2026-10-30; instalação integral ainda pendente.
 
 [Estado persistente e instalação limpa](operations/VM_STATE_AND_CLEAN_INSTALL.md): o que preservar, o que reconstruir e quais evidências faltam para qualificar a instalação integral de outro usuário. Revisão documental sobre a main `a0a96f6`; não declara novo ensaio nativo.
 
