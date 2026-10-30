@@ -965,3 +965,12 @@ rebuild da ferramenta, o autor confirmou restore completo do recorte: 65 tabelas
 recarregado com erro de smoke zero, origem/captura preservadas e limpeza.
 [Contrato e evidência](../operations/VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29).
 Cópia externa e recuperação integral continuam abertas. CI/PR ainda não confirmados.
+
+### Aceite da cópia fora da VM e restore de retorno — 2026-10-30
+
+Após o PR #18 (`a5629db`, CIs #87/#88 aprovados), a captura foi copiada ao Alienware,
+verificada pelo manifesto original, devolvida e usada em novo restore isolado.
+O autor confirmou todos os gates, com captura original recolocada, cópia devolvida
+reverificada, champion com erro zero e limpeza. [Evidência e limites](../operations/VM_TRACKING_BACKUP.md#restauração-da-cópia-fora-da-vm--2026-10-30).
+A recuperação integral e a proteção contra perda do SSD físico permanecem abertas.
+Próximo: delimitar estado crítico/reconstruível e qualificar o percurso de usuário novo.

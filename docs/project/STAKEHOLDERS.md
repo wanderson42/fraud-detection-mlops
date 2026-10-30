@@ -1,5 +1,19 @@
 # Síntese para stakeholders
 
+## Cópia fora da VM restaurada — aceite de 2026-10-30
+
+A cópia do tracking no Alienware foi verificada, enviada de volta à VM e usada em
+novo restore isolado. O autor confirmou 65 tabelas, 26 objetos, quatro runs/modelos
+e 27 registros de histórico de métricas. O champion reproduziu o smoke com erro
+zero. A captura original voltou ao seu caminho, a cópia devolvida foi reverificada,
+a origem permaneceu intacta e os recursos temporários foram removidos. Nenhum fit.
+
+O PR #18 já integrou o incremento anterior com CI aprovado. Este aceite adicional
+ainda precisa de publicação/CI/PR próprios. O teste cobre recuperação da cópia
+fora do disco virtual, usando a plataforma original saudável para as verificações;
+não cobre VM vazia, toda a plataforma ou perda do SSD físico do Alienware.
+[Procedimento e evidência](../operations/VM_TRACKING_BACKUP.md#restauração-da-cópia-fora-da-vm--2026-10-30).
+
 ## Recuperação do histórico de modelos — aceite de 2026-10-29
 
 O backup do PostgreSQL usado pelo MLflow e de seus artefatos S3 foi restaurado
@@ -11,7 +25,8 @@ preservadas; os recursos temporários foram removidos. Não houve treinamento.
 
 Isso demonstra recuperação do tracking neste recorte. Os arquivos continuam no
 disco da VM; cópia externa, recuperação integral e perda do host ainda não foram
-validadas. Publicação, CI e merge deste incremento continuam pendentes.
+validadas naquele primeiro ensaio. Seu incremento foi integrado no PR #18;
+o aceite de 2026-10-30 acima acrescenta a restauração da cópia fora da VM.
 [Critérios e recibo](../operations/VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29).
 
 ## Continuidade operacional da VM — aceite de 2026-10-29

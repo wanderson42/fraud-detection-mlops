@@ -2,7 +2,9 @@
 
 Preparado sobre `2054c4d` (PR #17 integrado). **Captura e restauração isolada
 aceitas pelo autor em 2026-10-29**, após a correção `93bce79`. O resultado nativo
-está registrado abaixo; testes offline são evidência separada.
+está registrado abaixo; testes offline são evidência separada. O PR #18 integrou
+o incremento em `a5629db`, com CI #88 aprovado. Em 2026-10-30, a cópia no Alienware
+foi devolvida e usada em outro restore isolado, também aceito pelo autor.
 
 ## Escopo e limites
 
@@ -215,9 +217,9 @@ O registro público é síntese do terminal fornecido pelo autor, não uma execu
 nativa independente do assistente. Evidências antigas de preparação e falha
 permanecem como histórico e não tiveram seus flags reescritos.
 
-Próximos gates: publicar o incremento com CI/PR, definir cópia externa verificada
-e restaurar a partir dela, além de cobrir os dados excluídos e qualificar a
-recuperação integral. Não há aceite de tolerância à perda do host.
+O incremento foi integrado no PR #18 com CI aprovado. O aceite posterior de
+2026-10-30, abaixo, acrescenta a cópia fora da VM restaurada. Continuam abertos
+os dados excluídos e a recuperação integral; não há aceite de perda do host.
 
 ## Revisão dos consumidores do tracking no CI #84
 
@@ -233,3 +235,54 @@ da migração local e os gates históricos permanecem. Essa revisão de fontes n
 executa backup, não abre bancos/modelos e não substitui o aceite nativo específico.
 A correção altera somente catálogo/documentação/evidência; não exige rebuild da
 imagem auxiliar nem repetição da captura ou do restore aceito. Novo CI pendente.
+
+## Restauração da cópia fora da VM — 2026-10-30
+
+O autor copiou a captura para `~/Backups/fraud-repro/tracking/<UUID>` no Alienware
+e verificou todos os arquivos pelo manifesto original. Depois enviou essa cópia
+para `tracking-backup/returned-copies/<UUID>` na VM. O procedimento de operador
+verificou ambas as cópias, preservou a captura original e colocou temporariamente
+a cópia devolvida no caminho aceito pelo controller revisado. O código e as imagens
+permaneceram iguais. Os gates de restore e limpeza do controller foram reutilizados.
+Ao terminar, a captura original voltou ao seu caminho e a devolvida foi reverificada.
+
+Resultado fornecido pelo autor: `external_tracking_backup_restore_verified`.
+O projeto temporário `fraud-kind-restore-237aeb23ed4f` concluiu `verified/completed`.
+
+| Gate | Resultado |
+| --- | --- |
+| Cópia usada | `returned_copy_used_for_restore: true` |
+| Original preservado | `original_capture_restored_to_original_path: true` |
+| Cópia devolvida | `returned_copy_reverified: true` |
+| Banco e objetos | 65 tabelas e 26 objetos conferidos após restore e no readback final |
+| Cliente MLflow | 4 runs, 4 logged models e 27 linhas de histórico de métricas |
+| Champion | Mesmo modelo/alias; uma linha de smoke com erro máximo `0.0` |
+| Origem e captura | Preservadas |
+| Recursos temporários | Removidos |
+| Treinamento | Não executado |
+| Recuperação integral / perda do host físico | Não validadas |
+
+Captura e manifesto mantidos:
+`7312832d3d8044999c62d5e556eaf38a` /
+`16aab86ad5fbe0f577641a57b06593f4acbe4e5f2f97709f1ab393f414e1f80e`.
+O script externo do operador teve SHA
+`8997d244edd5d40f9c9b119edd7e09609c1aa923e23d96521708aa62b0b833b1`.
+Ele não é instalador genérico nem parte dos pins da imagem auxiliar.
+
+[Registro público do aceite](../../references/evidence/vm_external_tracking_restore_author_validation_2026-10-30.json).
+Recibo privado: `tracking-backup/external-restore-769182cec0854d6a89b4902ea24c3f05.json`;
+plano: `tracking-backup/external-restore-plan-769182cec0854d6a89b4902ea24c3f05.json`.
+Ambos estão sob `data/storage/kind-platform/` e permanecem fora do Git.
+A evidência pública resume a saída do terminal do autor, sem alegar execução
+nativa independente do assistente. A origem externa é declarada pelo operador
+e vinculada ao hash do manifesto; o procedimento não autentica outro host físico.
+
+Este gate fecha a cópia fora do disco virtual e sua restaurabilidade neste
+ambiente existente. A VM e o backup do Alienware podem compartilhar o mesmo SSD.
+`platform_backup_restore_validated` e `physical_host_loss_validated` continuam
+false. Não cobre datasets, SQLite/recibos da sessão, demais bancos/buckets,
+relatórios do portal/SHAP, Grafana/Prometheus ou recuperação a partir de VM vazia.
+
+O próximo recorte é delimitar o estado indispensável à recuperação e qualificar
+o percurso de instalação limpa para outro usuário. Não repetir restore, fit ou
+replay da sessão apenas para registrar este resultado já aceito.
