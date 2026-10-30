@@ -62,7 +62,7 @@ def key_path(uri):
     return PREFIX + path.rstrip("/") + "/"
 
 
-def database_inventory(connection):
+def database_inventory(connection, *, database_name="mlflow_lab", role_name="mlflow"):
     """Hash every public table row, including failed/deleted runs and metric history."""
     from psycopg import sql
 
@@ -75,7 +75,7 @@ def database_inventory(connection):
         )
         database, role, version = cursor.fetchone()
         require(
-            database == "mlflow_lab" and role == "mlflow" and 170000 <= version < 180000,
+            database == database_name and role == role_name and 170000 <= version < 180000,
             "Unexpected PostgreSQL database, role or major version",
         )
         cursor.execute(
@@ -92,7 +92,7 @@ def database_inventory(connection):
         )
         tables, sequences, total = {}, {}, 0
         for namespace, name, kind, owner in relations:
-            require(owner == "mlflow", "Unreviewed relation owner")
+            require(owner == role_name, "Unreviewed relation owner")
             identifier = sql.Identifier(namespace, name)
             if kind == "r":
                 hashes, count = [], 0
@@ -172,19 +172,19 @@ def database_inventory(connection):
     }
 
 
-def object_listing(client):
+def object_listing(client, *, bucket=BUCKET, prefix=PREFIX):
     result, seen = [], set()
     token = None
     tokens = set()
     while True:
-        args = {"Bucket": BUCKET, "Prefix": PREFIX, "MaxKeys": 1000}
+        args = {"Bucket": bucket, "Prefix": prefix, "MaxKeys": 1000}
         if token is not None:
             args["ContinuationToken"] = token
         response = client.list_objects_v2(**args)
         for row in response.get("Contents", []):
             key, size = row["Key"], row["Size"]
             require(
-                isinstance(key, str) and key.startswith(PREFIX) and key not in seen,
+                isinstance(key, str) and key.startswith(prefix) and key not in seen,
                 "Invalid or duplicate S3 key",
             )
             require(type(size) is int and size >= 0, "Invalid S3 size")
@@ -244,8 +244,8 @@ def coverage(metadata, listing):
     )
 
 
-def read_object(client, row, stream=None):
-    response = client.get_object(Bucket=BUCKET, Key=row["key"], IfMatch=row["etag"])
+def read_object(client, row, stream=None, *, bucket=BUCKET):
+    response = client.get_object(Bucket=bucket, Key=row["key"], IfMatch=row["etag"])
     body, size, sha = response["Body"], 0, hashlib.sha256()
     try:
         require(response["ContentLength"] == row["bytes"], "S3 content length changed")
@@ -261,8 +261,8 @@ def read_object(client, row, stream=None):
     return sha.hexdigest()
 
 
-def capture_objects(directory, client, metadata):
-    listing = object_listing(client)
+def capture_objects(directory, client, metadata, *, bucket=BUCKET):
+    listing = object_listing(client, bucket=bucket)
     coverage(metadata, listing)
     objects = directory / "objects"
     objects.mkdir(mode=0o700)
@@ -272,12 +272,19 @@ def capture_objects(directory, client, metadata):
         filename = f"objects/{index:04d}.bin"
         with (directory / filename).open("xb") as stream:
             os.chmod(directory / filename, 0o600)
-            sha = read_object(client, row, stream)
+            sha = read_object(client, row, stream, bucket=bucket)
         records.append({**row, "file": filename, "sha256": sha})
-    require(object_listing(client) == listing, "S3 inventory changed during capture")
+    require(
+        object_listing(client, bucket=bucket) == listing, "S3 inventory changed during capture"
+    )
     for row in records:
-        require(read_object(client, row) == row["sha256"], "S3 bytes changed during capture")
-    require(object_listing(client) == listing, "S3 inventory changed during readback")
+        require(
+            read_object(client, row, bucket=bucket) == row["sha256"],
+            "S3 bytes changed during capture",
+        )
+    require(
+        object_listing(client, bucket=bucket) == listing, "S3 inventory changed during readback"
+    )
     return records
 
 

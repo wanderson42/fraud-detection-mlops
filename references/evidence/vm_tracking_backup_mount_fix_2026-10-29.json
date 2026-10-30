@@ -1,0 +1,42 @@
+{
+  "schema": "fraud_kind_tracking_backup_mount_fix_v1",
+  "date": "2026-10-29",
+  "status": "fix_prepared_native_restore_pending",
+  "capture_id": "7312832d3d8044999c62d5e556eaf38a",
+  "manifest_sha256": "16aab86ad5fbe0f577641a57b06593f4acbe4e5f2f97709f1ab393f414e1f80e",
+  "author_evidence": {
+    "capture_status": "captured_verified",
+    "source_recovered": true,
+    "integrity_verification": "backup_files_verified",
+    "restore_status": "failed",
+    "failing_action": "run --rm --no-deps seed seed",
+    "worker_error": "Backup identity differs",
+    "inspected_failed_project": "fraud-kind-restore-9bff49b3f85b",
+    "inspected_temporary_resources_removed": true,
+    "source_preflight_after_failure": "source_preflight_verified"
+  },
+  "root_cause": "Archive verifier requires directory basename equal capture UUID; Compose mounted at /capture and worker ignored BACKUP_CAPTURE_PATH.",
+  "fix": "Controller supplies capture ID; Compose read-only mount and worker path both /capture/<UUID>; seed/verify require exact UUID mount format; archive verifier unchanged.",
+  "capture_bytes_modified": false,
+  "archive_verification_weakened": false,
+  "original_server_images_modified": false,
+  "validation": {
+    "python": "3.14.4",
+    "passed": 216,
+    "skipped": 25,
+    "seconds": 2.65,
+    "paths": [
+      "tests/tracking_backup",
+      "tests/tracking",
+      "tests/infra/test_source_compatibility.py"
+    ],
+    "telemetry_disabled": true,
+    "docker_native_executed": false
+  },
+  "restore_phase_receipts": "phase and error_type only; no credentials or command output persisted",
+  "auxiliary_image_rebuild_required": true,
+  "old_auxiliary_image_receipt_preserved_by_helper": true,
+  "native_corrected_restore_validated": false,
+  "postgres_backup_restore_validated": false,
+  "platform_backup_restore_validated": false
+}

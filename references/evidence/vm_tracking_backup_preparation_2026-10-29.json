@@ -1,0 +1,103 @@
+{
+  "schema": "fraud_kind_tracking_backup_preparation_v1",
+  "date": "2026-10-29",
+  "status": "prepared_offline_native_execution_pending",
+  "base_commit": "2054c4d653ccf3b7d5bee1472a087cb441c1f87d",
+  "scope": {
+    "database": "mlflow_kind",
+    "role": "mlflow_kind",
+    "bucket": "fraud-kind-mlflow",
+    "prefix": "v1/",
+    "owner_marker": "platform-owner.json"
+  },
+  "author_inventory": {
+    "source": "terminal output supplied by author",
+    "database_bytes": 10958515,
+    "public_tables": 65,
+    "pvc_storage_type": "hostPath",
+    "reclaim_policy": "Delete"
+  },
+  "validation": {
+    "python": "3.14.4",
+    "targeted_regression": {
+      "passed": 297,
+      "skipped": 31,
+      "duration_seconds": 23.11,
+      "paths": [
+        "tests/tracking",
+        "tests/tracking_backup",
+        "tests/infra/test_source_compatibility.py",
+        "tests/infra/test_kind_operations.py",
+        "tests/infra/test_kind_tracking.py",
+        "tests/infra/test_kind_tracking_storage.py",
+        "tests/infra/test_kind_tracking_client.py"
+      ]
+    },
+    "new_failure_isolation_archive_tests": {
+      "passed": 44,
+      "duration_seconds": 0.84
+    },
+    "pinned_sdk_contracts": {
+      "passed": 60,
+      "skipped": 1,
+      "duration_seconds": 2.56,
+      "postgres17_native_fixture_executed": false
+    },
+    "ruff_check": "passed",
+    "ruff_format_check": "passed, 528 Python files",
+    "git_diff_check": "passed",
+    "notebook_json_cell_ids": "passed",
+    "telemetry_disabled": true,
+    "sdk_dependencies": "existing lock hashes, isolated preparation directory"
+  },
+  "native_image_build_validated": false,
+  "native_preflight_validated": false,
+  "native_capture_validated": false,
+  "postgres_backup_restore_validated": false,
+  "platform_backup_restore_validated": false,
+  "off_vm_copy_validated": false,
+  "runtime_limits": {
+    "dump_bytes": 67108864,
+    "s3_objects": 1024,
+    "s3_payload_bytes": 268435456,
+    "control_document_bytes": 2097152,
+    "minimum_free_disk_bytes": 2147483648
+  },
+  "source_operations_implemented": [
+    "save private recovery plan before pause",
+    "pause only owned MLflow Deployment",
+    "dump custom format and inspect TOC",
+    "hash SQL data/schema/sequences and S3 bytes",
+    "resume exact owned Deployment in finally",
+    "verify original resources and optional accepted session files",
+    "seal only after original source recovery"
+  ],
+  "isolated_restore_implemented": [
+    "fresh random Compose project with internal network and no host ports",
+    "pinned images and target identity/mount validation",
+    "fresh credentials and named volumes",
+    "PostgreSQL transactional restore without --clean",
+    "empty RustFS seed and full byte/schema comparison",
+    "separate MLflow API/model client without PG/S3 credentials",
+    "champion alias/run/model SHA and accepted smoke parity",
+    "original source/archive preservation readback",
+    "cleanup failure blocks acceptance"
+  ],
+  "excluded_from_backup": [
+    "other databases and global PostgreSQL roles",
+    "dataset buckets and bundles",
+    "session SQLite and acceptance receipts",
+    "portal/SHAP reports",
+    "Grafana internal database",
+    "Prometheus TSDB",
+    "original credentials",
+    "VM image"
+  ],
+  "limitations": [
+    "No Docker executable in preparation environment; native build and gates require author VM",
+    "Captured files stay on VM disk outside KinD PVCs; not yet host-loss protection",
+    "Hard kill/power loss cannot execute finally; durable plan supports guarded manual recover action",
+    "No platform-wide backup/restore acceptance is claimed",
+    "No real original source service was paused or modified during preparation"
+  ]
+}

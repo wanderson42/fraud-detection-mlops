@@ -352,12 +352,10 @@ reúne a origem e o escopo. Não substitui os recibos e bancos locais.
 
 ## Gates pendentes
 
-1. Concluir inventário, acessos restantes e limites de recursos; supervisão já integrada no PR #14.
-2. Publicar e integrar o aceite do portal da sessão concluída com CI/PR próprios; desempenho, SHAP e navegação nativos já aceitos neste recorte.
-3. Qualificar instalação integral do produto a partir de checkout vazio.
-4. Publicar/integrar a correção e o aceite da baseline própria e do ciclo planejado da VM via CI/PR.
-5. Ensaiar backup/restauração separadamente; parada/subida planejada foi aceita, com logout e reboot em evidências próprias.
-6. Ensaiar novas chegadas e firing de alertas de monitoramento se incluídos no escopo.
+1. Concluir inventário dos processos/acessos restantes e medição de consumo; supervisão integrada e logout/reboot aceitos em evidências próprias.
+2. Qualificar instalação integral do produto a partir de checkout vazio; portal/SHAP já integrado no PR #16 e correção do ciclo no PR #17.
+3. Publicar em CI/PR o [restore limitado do tracking já aceito](VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29); definir cópia externa e testar restauração a partir dela. Recuperação integral continua aberta.
+4. Ensaiar novas chegadas e firing de alertas de monitoramento se incluídos no escopo.
 
 O relato antigo de 288.172 eventos da fonte em preparação não deve ser confundido
 com os 269.334 eventos efetivamente vinculados à sessão aceita. O recibo específico
@@ -373,3 +371,36 @@ cada processo recorrente; não ter dois controladores disputando o mesmo objeto.
 Acesso local deve distinguir portas do Alienware e da VM. O SSH e o port-forward
 são acessos do operador, não mecanismos de alta disponibilidade da aplicação.
 Uma VM com um nó não demonstra tolerância à perda do host.
+
+## Preparação do backup do tracking — 2026-10-29
+
+O autor confirmou `mlflow_kind` com 65 tabelas públicas e 10.958.515 bytes;
+`fraud_platform` vazio é outro banco. Os quatro PVCs são hostPath com política
+Delete. O incremento prepara dump + artefatos MLflow com pausa limitada do
+tracking, guardas da origem e restauração em projeto Compose temporário, sem
+substituir o KinD. Os 269.334 eventos/200 decisões são preservados por hashes,
+mas seus SQLite não estão incluídos nesse backup. O [contrato operacional](VM_TRACKING_BACKUP.md)
+separa integridade, restaurabilidade e proteção contra perda do host. Testes
+offline aprovados não fecham esses gates nativos.
+
+### Captura nativa do tracking e bloqueio do restore
+
+O autor confirmou build/preflight, captura `7312832d3d8044999c62d5e556eaf38a`
+com origem retomada e integridade verificada. O restore foi interrompido em seed
+porque o mount `/capture` não preservava o UUID exigido pelo verificador. O recibo
+inspecionado confirmou limpeza do projeto temporário; o preflight posterior
+continuou aprovado. Correção e testes offline do caminho montado preparados;
+novo build e restore nativos pendentes. [Detalhes](VM_TRACKING_BACKUP.md#correção-do-caminho-montado--2026-10-29).
+
+### Restauração nativa do tracking aceita
+
+Após o commit `93bce79`, a imagem auxiliar foi reconstruída e a mesma captura
+`7312832d3d8044999c62d5e556eaf38a` restaurada em projeto isolado. Resultado
+`verified/completed`: 65 tabelas, 26 objetos, quatro runs/modelos, 27 linhas de
+histórico de métricas, champion/alias conferidos e uma linha de smoke com erro
+zero. Readback posterior, origem/captura preservadas e limpeza dos recursos
+temporários confirmados. Nenhum fit. [Recibo documental](../../references/evidence/vm_tracking_backup_restore_author_validation_2026-10-29.json).
+
+O aceite fecha a restaurabilidade do tracking neste escopo. Cópia externa,
+perda do host, demais dados e recuperação integral não foram demonstradas.
+A publicação deste incremento e seus gates de CI/PR ainda são pendentes.

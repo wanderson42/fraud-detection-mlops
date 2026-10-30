@@ -1,5 +1,19 @@
 # Síntese para stakeholders
 
+## Recuperação do histórico de modelos — aceite de 2026-10-29
+
+O backup do PostgreSQL usado pelo MLflow e de seus artefatos S3 foi restaurado
+em ambiente temporário isolado. Foram conferidos 65 tabelas, 26 objetos, quatro
+runs, quatro modelos e 27 registros de histórico de métricas. O champion foi
+recarregado pelo cliente da API, sem credenciais diretas de armazenamento, e
+reproduziu o score de controle com erro zero. A origem e a captura foram
+preservadas; os recursos temporários foram removidos. Não houve treinamento.
+
+Isso demonstra recuperação do tracking neste recorte. Os arquivos continuam no
+disco da VM; cópia externa, recuperação integral e perda do host ainda não foram
+validadas. Publicação, CI e merge deste incremento continuam pendentes.
+[Critérios e recibo](../operations/VM_TRACKING_BACKUP.md#aceite-nativo-da-restauração--2026-10-29).
+
 ## Continuidade operacional da VM — aceite de 2026-10-29
 
 O ciclo planejado parou e retomou a plataforma preservando nó, volumes, modelo,
@@ -8,7 +22,7 @@ conferidos; observador, acesso Grafana e portal voltaram. Esse resultado reduz a
 dependência de uma plataforma que nunca pode ser desligada, com procedimento e
 recibos próprios. Não demonstra operação sem indisponibilidade, recuperação por
 perda do host ou restauração de backup. O portal com SHAP já foi integrado no PR
-#16; CI/PR da correção deste ciclo permanecem separados.
+#16; a correção deste ciclo foi integrada no PR #17.
 [Registro técnico](../operations/VM_REPRODUCTION_PROGRESS.md#aceite-do-ciclo-planejado-na-vm--2026-10-29).
 
 
