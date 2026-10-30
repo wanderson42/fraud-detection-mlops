@@ -99,26 +99,26 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-Consolidar o [aceite da restauração da cópia fora da VM](../operations/VM_TRACKING_BACKUP.md#restauração-da-cópia-fora-da-vm--2026-10-30).
-O PR #18 foi integrado em `a5629db`, com CI #87 do PR e CI #88 da main aprovados.
-Em 2026-10-30, o autor confirmou cópia Alienware verificada, devolvida e usada em
-novo restore isolado, com paridade do champion, origem preservada e limpeza.
-A captura original voltou ao caminho anterior. Não repetir o ensaio para documentá-lo.
+O PR #19 integrou o aceite da restauração da cópia fora da VM em `a0a96f6`.
+Tracking e cópia devolvida já foram restaurados isoladamente; não repetir o ensaio.
+O [contrato de estado](../operations/VM_STATE_AND_CLEAN_INSTALL.md) classifica os
+dados necessários à mesma investigação e os componentes reconstruíveis. Essa é
+uma revisão documental, sem ampliar a cobertura do backup do tracking.
 
-Definir o estado indispensável à continuidade: o que precisa de backup e o que
-pode ser reconstruído. Qualificar a instalação integral a partir de checkout
-vazio, com IDs/credenciais próprios do novo usuário e sem depender dos recibos da
-VM do autor. Recuperação integral, perda do SSD físico e dados fora do recorte de
-tracking permanecem abertos; não exigem acrescentar serviços para este fechamento.
+Próximo: consolidar e qualificar o percurso integral em ambiente novo, do checkout
+e aquisição dos dados ao champion, sessão, portal e monitoramento. Primeiro,
+explicitar/testar a geração da fonte `SESSION_SOURCE_STATE`: o padrão aponta para
+`data/replay/paced-native-v1`, ausente no checkout. Gerar IDs, credenciais e recibos
+próprios; não copiar ownership ou checkpoints do autor para completar o gate.
 
-O portal com SHAP e a correção do ciclo já foram integrados nos PRs #16 e #17.
-Qualificar instalação integral a partir de checkout vazio. Novas chegadas e firing
-de alertas na VM permanecem fora do aceite da sessão concluída. Nenhum desses
-resultados cria um novo holdout ou autoriza substituir o champion.
+O checklist do contrato define as evidências da instalação limpa. Sua execução
+integral permanece pendente. Recuperação de toda a instalação e perda do SSD
+físico são backlog separado, com dados da sessão/governança/datasets fora da
+captura limitada do tracking. Novas chegadas e firing de alertas permanecem fora
+do aceite da sessão concluída; nenhum marco constitui novo holdout.
 
-Terraform permanece posterior à estabilização desse percurso. A ampliação da
-reprodução tem entregas e gates delimitados; não exige broker, feature store ou
-orquestrador adicional para ser encerrada.
+Terraform continua posterior à estabilização desse percurso. Não é necessário
+acrescentar broker, feature store ou orquestrador para concluir a reprodução.
 
 ## Critérios de arquitetura e custo
 
