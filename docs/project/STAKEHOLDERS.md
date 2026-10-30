@@ -1,5 +1,23 @@
 # Síntese para stakeholders
 
+## Fonte independente e sessão reconciliada — 2026-10-30
+
+O [aceite nativo](../operations/SESSION_EVENT_SOURCE.md#aceite-nativo-da-fonte-e-de-sua-sessão--2026-10-30)
+confirmou que outra sessão pode partir de eventos do Silver sem executar primeiro
+o modelo do replay anterior. A fonte contém 288.172 eventos; a sessão limitada
+selecionou 269.334, persistiu 200 decisões/recibos e 13 alertas e concluiu feedback.
+O champion permaneceu o mesmo, sem fit ou promoção. Essa evidência reduz uma
+dependência de reprodução; não constitui nova validação de eficácia antifraude,
+SLA ou instalação integral. Esta última segue como próximo gate.
+
+## Retirada de uma dependência implícita — 2026-10-30
+
+A [fonte de eventos do Silver](../operations/SESSION_EVENT_SOURCE.md) permite preparar
+uma sessão nova sem executar previamente o replay de um modelo anterior. Isso
+reduz uma dependência do laboratório original; não altera o champion nem a sessão
+aceita. Código/testes preparados, geração nativa e instalação integral pendentes.
+Não há novo serviço, dado bancário real ou confirmação de qualidade preditiva.
+
 ## Continuidade e reprodução para outro usuário — 2026-10-30
 
 O [contrato de estado e instalação limpa](../operations/VM_STATE_AND_CLEAN_INSTALL.md)

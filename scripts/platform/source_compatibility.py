@@ -168,6 +168,13 @@ LIFECYCLE_PROFILE_ALLOWED = {
     "scripts/platform/source_compatibility.py",
 }
 
+EVENT_SOURCE_TRANSITION = "references/session_event_source_transition_v1.json"
+EVENT_SOURCE_ALLOWED = {
+    "scripts/product_flow/event_source.py",
+    "scripts/product_flow/inputs.py",
+    "scripts/platform/source_compatibility.py",
+}
+
 
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
@@ -281,6 +288,11 @@ def accept(saved, current, root):
             LIFECYCLE_PROFILE_TRANSITION,
             "fraud_lifecycle_profile_source_transition_v1",
             LIFECYCLE_PROFILE_ALLOWED,
+        ),
+        (
+            EVENT_SOURCE_TRANSITION,
+            "fraud_session_event_source_transition_v1",
+            EVENT_SOURCE_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)

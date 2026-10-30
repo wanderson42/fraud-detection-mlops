@@ -7,6 +7,7 @@ from pathlib import Path
 import sqlite3
 
 import pandas as pd
+from scripts.product_flow import event_source
 
 from fraud_detection_mlops.data.datasets.native_replay_dataset import readonly_connection
 from fraud_detection_mlops.streaming.contracts.transaction_events import (
@@ -40,6 +41,12 @@ def capture(source, destination, policy):
         if Path(str(source) + suffix).is_symlink():
             raise ValueError("Source SQLite sidecar cannot be redirected")
     before = source_files(source)
+    # An event-only source has its own explicit schema; never fabricate a replay receipt.
+    with closing(readonly_connection(source)) as probe:
+        source_version = probe.execute("PRAGMA user_version").fetchone()[0]
+    if source_version == event_source.USER_VERSION:
+        manifest_digest = sha(source.parent / "source.json")
+        event_source.verify(source.parent, manifest_digest)
     start = clock_ns(policy["scoring_start"])
     context = clock_ns(policy["context_start"])
     if start - context < 2 * LABEL_DELAY_NS:
@@ -47,7 +54,7 @@ def capture(source, destination, policy):
     with closing(readonly_connection(source)) as src:
         src.execute("BEGIN")
         if (
-            src.execute("PRAGMA user_version").fetchone()[0] != 2
+            src.execute("PRAGMA user_version").fetchone()[0] not in (2, event_source.USER_VERSION)
             or src.execute("PRAGMA quick_check").fetchone()[0] != "ok"
         ):
             raise ValueError("Source must be an intact durable replay checkpoint")
@@ -111,6 +118,8 @@ def capture(source, destination, policy):
         src.execute("COMMIT")
     if before != source_files(source):
         raise ValueError("Source changed during capture; preserve it and stop other writers")
+    if source_version == event_source.USER_VERSION:
+        event_source.verify(source.parent, manifest_digest)
     return {
         "source_files_sha256": before,
         "source_identity_sha256": hashlib.sha256(

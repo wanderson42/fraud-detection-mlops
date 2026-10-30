@@ -1,5 +1,25 @@
 # Histórico do roadmap até a integração do PR #11
 
+## Aceite nativo da fonte do Silver e da sessão nova — 2026-10-30
+
+Após 242 testes aprovados na VM e commit `7642fc5`, o autor ajustou o caminho
+explícito do Silver existente, preparou/verificou `clean-events-v1` e completou
+`clean-arrival-v1`. Houve 200 decisões/recibos HTTP, 13 alertas, feedback sem novas
+chamadas e reconciliação causal independente, sem reutilizar scores ou treinar.
+O warmup levou 1.671,16 s; o aceite não estima SLA nem duração da instalação.
+O recorte foi concluído, com aquisição e instalação integral ainda pendentes.
+[Hashes, tempos e limites](../operations/SESSION_EVENT_SOURCE.md#aceite-nativo-da-fonte-e-de-sua-sessão--2026-10-30).
+CI e merge desta implementação não são afirmados neste registro.
+
+## Fonte explícita para a sessão de outra instalação — 2026-10-30
+
+Após PR #20 (`730a1d2`), a análise confirmou que a sessão só precisava dos eventos
+do checkpoint anterior, não dos scores. Foi preparado um produtor bounded do
+Silver, com schema próprio de eventos e verificação antes/depois da captura.
+As fontes durable replay v2 continuam aceitas; não foram fabricados recibos ou
+editadas evidências antigas. Código e testes não constituem aceite da execução
+nativa nem de instalação integral. [Procedimento](../operations/SESSION_EVENT_SOURCE.md).
+
 ## Classificação do estado para fechamento da reprodução — 2026-10-30
 
 Após o PR #19 (`a0a96f6`), o [contrato de estado](../operations/VM_STATE_AND_CLEAN_INSTALL.md)

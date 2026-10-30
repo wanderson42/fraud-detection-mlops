@@ -99,26 +99,24 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-O PR #19 integrou o aceite da restauração da cópia fora da VM em `a0a96f6`.
-Tracking e cópia devolvida já foram restaurados isoladamente; não repetir o ensaio.
-O [contrato de estado](../operations/VM_STATE_AND_CLEAN_INSTALL.md) classifica os
-dados necessários à mesma investigação e os componentes reconstruíveis. Essa é
-uma revisão documental, sem ampliar a cobertura do backup do tracking.
+A [fonte explícita do Silver e sua sessão](../operations/SESSION_EVENT_SOURCE.md#aceite-nativo-da-fonte-e-de-sua-sessão--2026-10-30)
+foram aceitas nativamente pelo autor em `7642fc5`: fonte com 288.172 eventos,
+sessão limitada com 269.334 eventos, 200 decisões/recibos e 13 alertas, seguida
+de feedback e reconciliação causal. Não houve replay prévio de scores, fit ou
+mudança do champion. Não repetir esse gate para gerar documentação.
 
-Próximo: consolidar e qualificar o percurso integral em ambiente novo, do checkout
-e aquisição dos dados ao champion, sessão, portal e monitoramento. Primeiro,
-explicitar/testar a geração da fonte `SESSION_SOURCE_STATE`: o padrão aponta para
-`data/replay/paced-native-v1`, ausente no checkout. Gerar IDs, credenciais e recibos
-próprios; não copiar ownership ou checkpoints do autor para completar o gate.
+Consolidar o aceite nesta branch e integrar por PR/CI. Em seguida, qualificar o
+percurso integral num ambiente novo isolado: checkout, aquisição/cadeia de dados,
+infraestrutura, rodada, champion, sessão, portal e monitoramento com identidades
+e credenciais próprias. O [checklist integral](../operations/VM_STATE_AND_CLEAN_INSTALL.md)
+continua aberto: o ensaio atual reutilizou Silver e plataforma já existentes.
+Preservar a VM e os acervos aceitos; não recriar o cluster para esse teste.
 
-O checklist do contrato define as evidências da instalação limpa. Sua execução
-integral permanece pendente. Recuperação de toda a instalação e perda do SSD
-físico são backlog separado, com dados da sessão/governança/datasets fora da
-captura limitada do tracking. Novas chegadas e firing de alertas permanecem fora
-do aceite da sessão concluída; nenhum marco constitui novo holdout.
-
-Terraform continua posterior à estabilização desse percurso. Não é necessário
-acrescentar broker, feature store ou orquestrador para concluir a reprodução.
+Tracking e cópia devolvida já foram restaurados em recortes próprios. Recuperação
+da plataforma inteira e perda física do SSD permanecem backlog separado. Os
+marcos não constituem novo holdout nem autorizam substituir o champion.
+Terraform continua posterior à estabilização desse percurso; não acrescentar
+broker, feature store ou orquestrador para fechar esta etapa.
 
 ## Critérios de arquitetura e custo
 

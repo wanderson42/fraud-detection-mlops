@@ -1,0 +1,47 @@
+{
+  "schema": "fraud_session_event_source_preparation_v1",
+  "prepared_on": "2026-10-30",
+  "base_commit": "730a1d21137d63fbccc6068eca6e3bb92c0d350e",
+  "scope": "bounded_Silver_event_source_without_prior_model_replay",
+  "assistant_test_environment": "disposable_checkout_synthetic_Silver_and_loopback_HTTP_not_author_VM",
+  "native_VM_source_preparation_validated": false,
+  "clean_installation_validated": false,
+  "existing_session_modified": false,
+  "scientific_package_modified": false,
+  "verification": {
+    "passed": 147,
+    "skipped": 4,
+    "subtests_passed": 12,
+    "seconds": 29.95,
+    "command": "python -m pytest -q tests/product_flow tests/product_session tests/infra/test_source_compatibility.py tests/storage/test_persistence_inventory.py tests/infra/test_platform_entrypoints.py",
+    "global_ruff_lint_passed": true,
+    "global_ruff_format_files": 532
+  },
+  "additional_regressions": [
+    {
+      "command": "pytest -q tests/session_monitoring tests/serving_recovery/test_probe_forward.py tests/infra/test_host_supervision.py",
+      "passed": 73,
+      "skipped": 3,
+      "subtests_passed": 2,
+      "seconds": 3.44
+    },
+    {
+      "command": "pytest -q tests/infra/test_dashboard_presentation.py tests/serving_recovery/test_maintenance.py",
+      "passed": 20,
+      "skipped": 0,
+      "seconds": 0.9
+    }
+  ],
+  "bounds": {
+    "maximum_days_including_context": 21,
+    "maximum_transactions": 500000,
+    "minimum_free_disk_bytes": 1073741824
+  },
+  "format": {
+    "schema": "fraud_session_event_source_v1",
+    "SQLite_user_version": 3,
+    "legacy_durable_replay_user_version": 2
+  },
+  "no_fit_or_model_scoring_in_source_preparation": true,
+  "next_gate": "native metadata plan, bounded source preparation and digest-bound verification; preserve active session"
+}
