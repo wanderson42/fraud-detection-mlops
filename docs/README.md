@@ -2,8 +2,8 @@
 
 [Instalação limpa: roteiro único](operations/CLEAN_INSTALL_RUNBOOK.md) e
 [acesso SSH com portas automáticas](operations/VM_ACCESS.md). O percurso manual
-foi aceito na segunda VM, incluindo visual e reboot; automação nova aguarda
-aceite nativo. As notas datadas abaixo preservam o histórico anterior.
+foi aceito na segunda VM, incluindo visual e reboot; os túneis automáticos também
+passaram no ensaio nativo. Scripts de setup por fases ainda não foram reexecutados. As notas datadas abaixo preservam o histórico anterior.
 
 [Fonte de eventos para instalação nova](operations/SESSION_EVENT_SOURCE.md): Silver verificado → eventos sem scores → sessão própria. Fonte e sessão nova reconciliadas nativamente em 2026-10-30; instalação integral posteriormente aceita em 2026-11-01.
 

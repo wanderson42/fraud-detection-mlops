@@ -11,8 +11,11 @@ recuperação após reboot confirmadas pelo autor, preservando a sessão.
 - [Roadmap](docs/project/ROADMAP.md) e [stakeholders](docs/project/STAKEHOLDERS.md).
 - [Supervisão](docs/operations/VM_USER_SUPERVISION.md) e [backup limitado do tracking](docs/operations/VM_TRACKING_BACKUP.md).
 
-Os novos scripts de setup/acesso têm testes locais; sua execução nativa ainda
-precisa ser aceita. Backup/restauração integral, perda do host e HA permanecem
+**Acesso automático aceito nativamente:** portal/Grafana/MLflow com portas livres,
+reutilização, recusa de porta fixa ocupada e parada dos túneis preservando serviços,
+sessão e hashes na VM. [Registro](docs/operations/VM_ACCESS.md#aceite-nativo-dos-acessos).
+Os scripts de setup por fases mantêm validação local; o percurso de instalação
+aceito foi manual. Backup/restauração integral, perda do host e HA permanecem
 fora do aceite. O projeto local não exige conta paga. Logout completo da VM nova
 aguarda confirmação; o aceite anterior pertence à VM anterior.
 

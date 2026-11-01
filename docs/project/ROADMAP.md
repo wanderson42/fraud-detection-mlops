@@ -1,13 +1,17 @@
 # Roadmap — Fraud Detection MLOps
 
-Atualizado em **2026-11-01**. A reprodução foi priorizada antes de Terraform para
+Fechamento em **2026-10-31 (America/Belem)**; os registros anteriores de boot
+usam 2026-11-01 em UTC. A reprodução foi priorizada antes de Terraform para
 revelar dependências do ambiente do autor. O percurso manual integral foi agora
 aceito numa segunda VM vazia, com dados adquiridos e modelos/recibos próprios,
 portal/SHAP/Grafana aprovados visualmente e recuperação após reboot.
 
-A entrega atual consolida o [roteiro único](../operations/CLEAN_INSTALL_RUNBOOK.md),
-setup por fases e [túneis com portas livres](../operations/VM_ACCESS.md). A nova
-automação ainda exige execução nativa, sem repetir treino ou sessão já aceitos.
+O PR #22 (`c6045f4`) integrou o [roteiro único](../operations/CLEAN_INSTALL_RUNBOOK.md),
+setup por fases e [túneis com portas livres](../operations/VM_ACCESS.md). O autor
+aceitou nativamente abertura/reutilização, recusa de porta ocupada e encerramento
+somente dos túneis. O marco funcional está encerrado no escopo demonstrado;
+este fechamento documental não repete treino ou sessão já aceitos. As fases de
+instalação do script de setup não receberam nova execução nativa.
 Os [aceites e limites](../operations/VM_REPRODUCTION_PROGRESS.md) distinguem as
 duas VMs; o [histórico](ROADMAP_HISTORY.md) preserva a evolução da decisão.
 
@@ -58,14 +62,15 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Monitoramento | Mesma sessão, métricas e quatro componentes; expiração/retomada e visual aceitos |
 | Supervisão e reboot | Recuperação de processos e após reboot aceitas, mesmos dados e hashes; 32 s da partida das unidades à observação |
 | Logout completo na VM nova | Confirmação explícita de encerramento de todas as conexões ainda ausente |
-| Scripts de setup e portas automáticas | Implementação e testes locais nesta entrega; aceite nativo separado pendente |
+| Túneis SSH com portas automáticas | Aceitos nativamente: abertura, reutilização, conflito e stop preservando serviços/sessão |
+| Scripts de setup por fases | Validação local; instalação manual já aceita, sem reexecução das novas fases automatizadas |
 | Backup/restore integral e perda física | Fora do aceite; tracking limitado já tem evidência própria anterior |
 
 ## Backlog ordenado
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — percurso manual aceito | Fechar entrega da reprodução limpa | Integrar roteiro/evidência; validar nativamente nova automação de acessos/setup sem repetir processamento aceito |
+| 1 — aceite funcional concluído | Reprodução limpa e acesso operacional | Percurso completo, visual/reboot e túneis aceitos; finalizar integração deste registro documental, sem novos ensaios |
 | 2 — escopo qualificado | Continuidade operacional | Reboot e processos aceitos na VM nova; confirmar logout completo dela. Medição por container, HA e restore integral são limites separados |
 | 3 | Decidir coordenação dos pipelines | Testar fluxo limitado com falha/retomada e invocação duplicada; comparar executor existente e uma alternativa; adotar orquestrador somente se reduzir complexidade total |
 | 4 | Terraform local | Declarar ambiente estabilizado e ownership; providers/locks/state protegidos, apply real e segundo plan sem mudanças; preservação/restauração dos dados explícitas |
@@ -75,17 +80,19 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-Integrar a consolidação documental e executar o novo `vm-access-up/status/stop`
-com portas automáticas, reutilização e conflito de porta explícita. O roteiro
-inclui o `update-init` encontrado como pré-requisito na VM limpa; não fabricar
-`current.json` nem copiar estado do autor. Scripts de setup são para instalações
-novas; a VM já aceita recebe somente os arquivos e o teste de acesso.
+Integrar este registro final por PR/CI. Os testes funcionais da reprodução e dos
+acessos estão encerrados. O [aceite dos túneis](../operations/VM_ACCESS.md#aceite-nativo-dos-acessos)
+comprovou serviços remotos preservados e a mesma sessão após o stop do cliente.
+Logout completo da segunda VM continua uma ressalva sem confirmação explícita;
+backup/restore integral, perda física, HA e medição por container permanecem
+limites separados. As novas fases de instalação do setup têm validação local,
+sem aceite de reexecução nativa; não criar outra VM apenas para este fechamento.
 
-Não repetir treino, 29 minutos de warmup, SHAP ou reboot apenas para documentar.
-Após o aceite dessa automação, encerrar este recorte operacional e avançar ao
-próximo item do backlog. Recuperação integral e perda física continuam separadas.
-Terraform continua posterior ao percurso estabilizado; novo orquestrador, broker
-e feature store não são condições de fechamento.
+A próxima análise é **coordenação dos pipelines**: identificar o que o executor
+existente já resolve e quais falhas/duplicidades justificariam mudança. Não
+instalar um orquestrador apenas por presença no backlog. Terraform vem após essa
+decisão e a estabilização dos contratos de infraestrutura. Não repetir warmup,
+SHAP, treinamento, reboot ou restore apenas para gerar documentação.
 
 ## Critérios de arquitetura e custo
 

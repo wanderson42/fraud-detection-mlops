@@ -73,7 +73,44 @@ A implementação cliente é Linux por usar identidade de processo/socket em `/p
 macOS/Windows sem Linux não estão qualificados.
 
 Os testes locais exercitam sockets/processos reais com um substituto de SSH;
-a autenticação e os novos comandos na VM aguardam aceite nativo. No percurso
-já aceito, o autor usou túneis OpenSSH manuais e confirmou a revisão visual.
+o aceite nativo abaixo cobre autenticação e os comandos reais no par cliente/VM.
+A revisão visual do produto já tinha confirmação própria anterior.
 
 Referência de opções e encaminhamento: [manual oficial OpenSSH](https://man.openbsd.org/ssh.1).
+
+## Aceite nativo dos acessos
+
+O autor executou a implementação integrada pelo PR #22 (`c6045f4`). O tox da VM
+passou com 100 testes e 14 subtests, em 5,68 s de pytest; lint e formatação passaram.
+No cliente Linux, a chave carregada no agente permitiu autenticação com BatchMode.
+
+| Serviço | Porta local escolhida | Porta de acesso na VM | Abertura e repetição |
+| --- | --- | --- | --- |
+| Portal | 43723 | 18501 | ready; mesma URL reutilizada |
+| Grafana | 48657 | 13001 | ready; mesma URL reutilizada |
+| MLflow | 43071 | 36795 | ready; mesma URL reutilizada |
+
+Essas portas são resultados deste ensaio, não valores a copiar para outra máquina.
+Outro perfil tentou fixar a porta 43723 duas vezes; ambas falharam com
+`Address already in use`. O perfil original manteve os três endpoints prontos.
+Após stop e novo status, os três túneis apareceram como `unreachable_or_stopped`.
+
+O readback no guest confirmou observador/Grafana ativos, portal/MLflow prontos,
+mesma sessão, hashes e contadores, nenhuma nova inferência. O status manual do
+Grafana foi `not_started`, enquanto sua unidade systemd estava saudável. Esse é
+o ownership esperado, não falha do dashboard.
+
+Uma conexão SSH não interativa não encontrou Poetry no PATH. Para esse caso:
+
+```bash
+ssh meu-alias-vm \
+  'cd /caminho/absoluto/do/projeto &&
+   .venv/bin/python -m scripts.platform.host_supervision check \
+     --session-id minha-sessao &&
+   .venv/bin/python -m scripts.platform.local_services.controller status'
+```
+
+[Evidência do autor](../../references/evidence/vm_access_author_validation_2026-10-31.json). O ensaio não
+forçou a corrida entre escolha automática e bind; esse retry tem testes locais.
+Não comprova portabilidade fora do Linux, HA ou sobrevivência dos túneis ao
+reboot do cliente. Nenhum script de instalação foi reexecutado para esse aceite.

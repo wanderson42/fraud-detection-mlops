@@ -5,7 +5,8 @@ recibos próprios. A execução nativa de referência usou Ubuntu 24.04.5 amd64,
 6 vCPUs, 8 GiB RAM, 4 GiB swap e disco de 80 GiB, sem copiar dados privados,
 modelos ou checkpoints do laboratório anterior. As etapas foram executadas pelo
 autor sobre `c734cf3a38a66beae57a1b6671e68043cfe20e94`; a automação de setup e
-acesso desta entrega é posterior e tem seu aceite nativo separado.
+acesso é posterior. Os túneis já têm [aceite nativo próprio](VM_ACCESS.md#aceite-nativo-dos-acessos);
+as fases de instalação do setup não foram reexecutadas.
 
 ## 1. Máquina e checkout
 
@@ -287,3 +288,19 @@ Esta entrega não exige conta paga, Terraform, broker, feature store ou novo
 orquestrador. A disponibilidade futura de repositórios apt/PyPI/imagens e da
 origem dos dados é uma dependência externa. O percurso torna essas entradas
 explícitas e verificáveis; não promete reprodução universal em qualquer SO.
+
+## Fechamento e operação cotidiana
+
+O acesso automático, reutilização, recusa de porta ocupada e encerramento dos
+túneis preservando serviços remotos foram aceitos pelo autor. O PR #22 integrou
+a implementação em `c6045f4`; consulte a [evidência dos acessos](../../references/evidence/vm_access_author_validation_2026-10-31.json). O marco funcional está encerrado no escopo demonstrado,
+com as limitações acima. Não repita treino, sessão, reboot ou restore para abrir
+os relatórios aceitos. Use `vm-access-up/status/stop` no cliente e o vínculo
+correto de portal/sessão. Cada nova abertura pode informar outras portas locais.
+
+A VM nova não precisa de token GitHub: o autor importou a branch por SSH no
+computador cliente e publicou de lá. Configure `git config --local user.name`
+e `user.email` na máquina que cria commits; identidade de autoria não é senha.
+Para chamadas remotas não interativas, use `.venv/bin/python` do checkout.
+O próximo recorte do roadmap é decidir a coordenação dos pipelines, começando
+pelo executor existente; uma nova plataforma só entra se reduzir complexidade.
