@@ -1,0 +1,151 @@
+{
+  "schema": "fraud_vm_access_author_validation_v1",
+  "status": "native_auto_port_access_reuse_collision_and_client_stop_verified",
+  "recorded_date": "2026-10-31",
+  "recorded_timezone": "America/Belem",
+  "source": "Author-provided terminal output in conversation; assistant did not execute commands on user hosts",
+  "implementation": {
+    "author_commit": "24b119c",
+    "merge_commit": "c6045f4f9f6df5f513e5eba9384b99e6172aba1d",
+    "pull_request": 22,
+    "CI_approval_reported_by_author": true
+  },
+  "author_tests": {
+    "runner": "tox py314",
+    "passed": 100,
+    "subtests_passed": 14,
+    "pytest_seconds": 5.68,
+    "tox_seconds": 22.25,
+    "ruff_check_passed": true,
+    "ruff_format_passed": true,
+    "formatted_files": 540
+  },
+  "environment": {
+    "client": "Alienware-16 Linux",
+    "remote": "fraud-clean-install Ubuntu",
+    "ssh_authentication": "public key loaded into agent; BatchMode check succeeded",
+    "private_credentials_included": false
+  },
+  "services": [
+    {
+      "service": "portal",
+      "local_url": "http://127.0.0.1:43723",
+      "remote_port": 18501,
+      "initial_status": "ready",
+      "reused_status": "ready",
+      "after_client_stop_status": "unreachable_or_stopped"
+    },
+    {
+      "service": "grafana",
+      "local_url": "http://127.0.0.1:48657",
+      "remote_port": 13001,
+      "initial_status": "ready",
+      "reused_status": "ready",
+      "after_client_stop_status": "unreachable_or_stopped"
+    },
+    {
+      "service": "mlflow",
+      "local_url": "http://127.0.0.1:43071",
+      "remote_port": 36795,
+      "initial_status": "ready",
+      "reused_status": "ready",
+      "after_client_stop_status": "unreachable_or_stopped"
+    }
+  ],
+  "automatic_local_ports_verified": true,
+  "same_parameter_up_reused_same_URLs": true,
+  "explicit_collision": {
+    "profile": "collision",
+    "service": "portal",
+    "requested_local_port": 43723,
+    "observed_attempts": 2,
+    "error": "[Errno 98] Address already in use",
+    "command_failed_as_expected": true,
+    "original_profile_all_three_services_still_ready_before_stop": true,
+    "silent_port_fallback_observed": false
+  },
+  "client_stop": {
+    "all_three_tunnels_reported_unreachable_or_stopped": true,
+    "subsequent_status_confirmed_same_result": true,
+    "remote_services_preserved_by_after_readback": true
+  },
+  "remote_after_stop": {
+    "status": "vm_supervision_same_session_verified",
+    "session_id": "clean-install-arrival-v1",
+    "session_sha256": "514212906b8e1f861031cb225e32049bcb024b3ae6dd91462e4cfbf3326761f8",
+    "model_sha256": "aeeed21494cba2ea6e05c38c827eee5ef3464797148a579a22bd16d8cc237e42",
+    "serving_release_id": "3afaa491d21d42afa2888c86ff78af7a",
+    "counts": {
+      "events": 269334,
+      "transactions": 134667,
+      "feedback": 134667,
+      "decisions": 200,
+      "alerts": 13,
+      "customers": 199,
+      "decision_feedback": 200,
+      "http_attempts": 200
+    },
+    "systemd": {
+      "observer": {
+        "MainPID": 5416,
+        "NRestarts": 2,
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "grafana_access": {
+        "MainPID": 4882,
+        "NRestarts": 1,
+        "ActiveState": "active",
+        "SubState": "running"
+      }
+    },
+    "grafana_http_healthy": true,
+    "manual_access_controller": {
+      "mlflow": {
+        "status": "ready",
+        "pid": 60029,
+        "port": 36795
+      },
+      "portal": {
+        "status": "ready",
+        "pid": 10396,
+        "port": 18501
+      },
+      "grafana": {
+        "status": "not_started",
+        "reason": "Owned by systemd user unit instead of manual access controller"
+      }
+    },
+    "accepted_sources_unchanged": {
+      "input.json": "1b64815cb6243643b45832ea1c6ee60d9ddd81c17ede63ecbb98a85a5c64f21c",
+      "events.sqlite": "c42237dbce91f536a0134964b9ab3bc77ab1f0d195179eace4b8ba439009db04",
+      "checkpoint.sqlite": "94822a3d1e667388854379b8ab94b542c5d6ae4e437ed2c56be1a5029130d60f",
+      "session.json": "514212906b8e1f861031cb225e32049bcb024b3ae6dd91462e4cfbf3326761f8",
+      "verification-timing-1b0d9d8f48004959bb55f67bd524f0d4.json": "b090d08ac56b7e2e08d8894446f272d49cae94fbc66a7a3d9f8cd14e23e639d0"
+    },
+    "protected_resources_unchanged": true,
+    "new_inferences_executed": false,
+    "original_controller_flags_preserved": {
+      "reboot_validated": false,
+      "logout_persistence_validated": false
+    }
+  },
+  "operator_adjustments": [
+    "Configured repository-local Git author identity in the new VM; no credentials copied from old VM",
+    "Imported VM branch through SSH and pushed from authenticated client; no GitHub token required in new VM",
+    "Configured client SSH key/agent before noninteractive access; no host-key checking bypass",
+    "Noninteractive SSH did not find poetry in PATH; used checkout .venv/bin/python for readback"
+  ],
+  "limits": {
+    "new_setup_install_phases_executed_natively": false,
+    "all_connections_logout_explicitly_confirmed": false,
+    "automatic_bind_race_retry_natively_observed": false,
+    "new_browser_visual_review_claim_for_this_tunnel_test": false,
+    "whole_platform_restore_validated": false,
+    "physical_host_loss_validated": false,
+    "high_availability_validated": false,
+    "test_added_new_training_or_session": false
+  },
+  "related_clean_install_evidence": "clean_install_author_validation_2026-11-01.json",
+  "time_note": "This closure uses the client date in America/Belem; prior VM boot journal/evidence uses November 1 UTC. No historical receipt was rewritten."
+}

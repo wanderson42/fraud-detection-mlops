@@ -1,5 +1,32 @@
 # Reprodução limpa na VM — estado em 2026-10-29
 
+## Fechamento dos acessos da VM — 2026-10-31 (America/Belem)
+
+O PR #22 integrou a entrega em `c6045f4`, com CI aprovado informado pelo autor.
+O tox nativo passou com 100 testes e 14 subtests. No Alienware, portal, Grafana e
+MLflow abriram por SSH com portas locais automáticas e saúde HTTP confirmada.
+Repetir `vm-access-up` preservou as três URLs. Duas tentativas de outro perfil
+usar a porta fixa já ocupada foram recusadas; o perfil original permaneceu pronto.
+`vm-access-stop` encerrou os túneis, sem parar os serviços remotos.
+
+O readback posterior confirmou portal/MLflow prontos e observador/Grafana ativos
+via systemd, com os mesmos PIDs/contadores, sessão e hashes preservados, sem novas
+inferências. Grafana `not_started` no controlador manual significa que seu acesso
+pertence à unidade systemd, onde estava ativo e HTTP saudável. Em SSH não
+interativo, use `.venv/bin/python`: Poetry pode não estar no PATH desse shell.
+
+O marco funcional de reprodução limpa e acesso operacional está encerrado no
+escopo demonstrado. Scripts de instalação por fases continuam com validação local,
+sem nova execução nativa; o percurso de instalação já aceito foi manual. Logout
+completo da VM nova permanece sem confirmação explícita, como ressalva. Restore
+integral, perda física do host, HA, novas chegadas monitoradas e disparo de alertas
+continuam fora deste aceite. Não repetir os ensaios aprovados para documentar.
+
+[Evidência nativa dos acessos](../../references/evidence/vm_access_author_validation_2026-10-31.json).
+As seções datadas anteriores preservam o estado de cada entrega. Esta data é a do
+cliente no Brasil; registros anteriores de boot usam 2026-11-01 em UTC.
+
+
 ## Instalação limpa aceita — 2026-11-01
 
 O autor executou o percurso do zero na segunda VM `fraud-clean-install`, sobre
