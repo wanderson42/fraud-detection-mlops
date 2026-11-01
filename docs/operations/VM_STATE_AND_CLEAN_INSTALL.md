@@ -1,5 +1,32 @@
 # Estado persistente e instalação limpa do produto
 
+## Instalação limpa aceita — 2026-11-01
+
+O autor executou o percurso do zero na segunda VM `fraud-clean-install`, sobre
+`c734cf3`, sem importar modelos, checkpoints, credenciais ou ownership anteriores.
+Bronze foi adquirido da origem; Jobs produziram Silver/Gold; três candidatos
+foram treinados e o novo HGB foi promovido, servido e verificado com rollback.
+A sessão `clean-install-arrival-v1` reconciliou 269334 eventos, 200 decisões HTTP,
+13 alertas e 200 feedbacks nas decisões. Cinco casos SHAP, portal, avaliação de
+67255 linhas e quatro componentes Grafana passaram nos verificadores; o autor
+confirmou a parte visual. O modelo desta VM tem SHA `aeeed214…`, diferente do
+modelo da VM anterior. Identidades completas estão na evidência.
+
+Após reboot, o boot ID mudou e os serviços retomaram a mesma sessão, com hashes
+preservados, Grafana saudável e nenhuma nova inferência. O journal mostrou
+prontidão após 32 s desde a primeira partida das unidades, com duas novas
+tentativas do observador e uma do acesso. Logout completo da VM nova continua
+sem confirmação explícita de encerramento de todas as conexões; não transferir
+o aceite da VM anterior. Recuperação integral, perda física, HA, disparo de
+alertas e chegadas simultâneas ao monitoramento não foram demonstrados.
+
+O [roteiro único](CLEAN_INSTALL_RUNBOOK.md) inclui a dependência descoberta de
+`update-init` antes da primeira sessão. O [acesso portátil](VM_ACCESS.md) usa
+portas locais automáticas. Esses novos scripts têm testes locais e ainda exigem
+aceite nativo próprio; a instalação já demonstrada usou comandos manuais.
+[Evidência do autor](../../references/evidence/clean_install_author_validation_2026-11-01.json).
+
+
 ## Fonte e sessão próprias aceitas — 2026-10-30
 
 O [ensaio nativo da fonte](SESSION_EVENT_SOURCE.md#aceite-nativo-da-fonte-e-de-sua-sessão--2026-10-30)
@@ -75,7 +102,7 @@ limitações explícitas. Recuperação integral da mesma instalação permanece
 backlog separado: inclui sessão, governança, datasets e eventual retenção de
 métricas. Não exige implantar outro banco, broker ou orquestrador para esta etapa.
 
-## Gate de instalação limpa — ainda não executado integralmente
+## Gate de instalação limpa — checklist histórico, execução aceita em 2026-11-01
 
 O [guia KinD](KIND_PLATFORM.md) consolida dependências, mas combina aceites de
 incrementos. O [guia da rodada](OPERATIONAL_ROUND.md) parte de cluster e Bronze

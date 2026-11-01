@@ -1,5 +1,16 @@
 # Fonte de eventos para uma instalação nova
 
+## Instalação do zero posteriormente aceita — 2026-11-01
+
+Na segunda VM `fraud-clean-install`, o autor adquiriu Bronze, produziu Silver/Gold
+e treinou seu champion antes de gerar `clean-install-events-v1`. A fonte foi
+verificada com 288172 eventos e manifesto `f06ad0dc…`; sua sessão própria
+reconciliou 200 decisões HTTP, 13 alertas e feedback sem reutilizar scores antigos.
+O [roteiro único](CLEAN_INSTALL_RUNBOOK.md) lê o Silver do recibo da rodada e
+inclui `update-init` antes da primeira sessão. Não copiar caminhos/UUIDs do ensaio
+anterior descrito abaixo.
+
+
 ## Aceite nativo da fonte e de sua sessão — 2026-10-30
 
 O autor executou o código commitado em `7642fc5` na VM e forneceu as saídas:

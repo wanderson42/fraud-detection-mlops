@@ -1,5 +1,32 @@
 # Reprodução limpa na VM — estado em 2026-10-29
 
+## Instalação limpa aceita — 2026-11-01
+
+O autor executou o percurso do zero na segunda VM `fraud-clean-install`, sobre
+`c734cf3`, sem importar modelos, checkpoints, credenciais ou ownership anteriores.
+Bronze foi adquirido da origem; Jobs produziram Silver/Gold; três candidatos
+foram treinados e o novo HGB foi promovido, servido e verificado com rollback.
+A sessão `clean-install-arrival-v1` reconciliou 269334 eventos, 200 decisões HTTP,
+13 alertas e 200 feedbacks nas decisões. Cinco casos SHAP, portal, avaliação de
+67255 linhas e quatro componentes Grafana passaram nos verificadores; o autor
+confirmou a parte visual. O modelo desta VM tem SHA `aeeed214…`, diferente do
+modelo da VM anterior. Identidades completas estão na evidência.
+
+Após reboot, o boot ID mudou e os serviços retomaram a mesma sessão, com hashes
+preservados, Grafana saudável e nenhuma nova inferência. O journal mostrou
+prontidão após 32 s desde a primeira partida das unidades, com duas novas
+tentativas do observador e uma do acesso. Logout completo da VM nova continua
+sem confirmação explícita de encerramento de todas as conexões; não transferir
+o aceite da VM anterior. Recuperação integral, perda física, HA, disparo de
+alertas e chegadas simultâneas ao monitoramento não foram demonstrados.
+
+O [roteiro único](CLEAN_INSTALL_RUNBOOK.md) inclui a dependência descoberta de
+`update-init` antes da primeira sessão. O [acesso portátil](VM_ACCESS.md) usa
+portas locais automáticas. Esses novos scripts têm testes locais e ainda exigem
+aceite nativo próprio; a instalação já demonstrada usou comandos manuais.
+[Evidência do autor](../../references/evidence/clean_install_author_validation_2026-11-01.json).
+
+
 ## Aceite nativo da fonte e de sua sessão — 2026-10-30
 
 O autor executou o código commitado em `7642fc5` na VM e forneceu as saídas:
@@ -427,7 +454,7 @@ A recuperação dos dois serviços é evidência nativa fornecida pelo autor, di
 desses testes. O [recibo documental](../../references/evidence/vm_reproduction_and_supervision_author_validation_2026-10-29.json)
 reúne a origem e o escopo. Não substitui os recibos e bancos locais.
 
-## Gates pendentes
+## Gates pendentes à época — superados parcialmente pelo aceite de 2026-11-01
 
 1. Concluir inventário dos processos/acessos restantes e medição de consumo; supervisão integrada e logout/reboot aceitos em evidências próprias.
 2. Qualificar instalação integral do produto a partir de checkout vazio; portal/SHAP já integrado no PR #16 e correção do ciclo no PR #17.

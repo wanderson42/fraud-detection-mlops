@@ -1,6 +1,11 @@
 # Índice da documentação
 
-[Fonte de eventos para instalação nova](operations/SESSION_EVENT_SOURCE.md): Silver verificado → eventos sem scores → sessão própria. Fonte e sessão nova reconciliadas nativamente em 2026-10-30; instalação integral ainda pendente.
+[Instalação limpa: roteiro único](operations/CLEAN_INSTALL_RUNBOOK.md) e
+[acesso SSH com portas automáticas](operations/VM_ACCESS.md). O percurso manual
+foi aceito na segunda VM, incluindo visual e reboot; automação nova aguarda
+aceite nativo. As notas datadas abaixo preservam o histórico anterior.
+
+[Fonte de eventos para instalação nova](operations/SESSION_EVENT_SOURCE.md): Silver verificado → eventos sem scores → sessão própria. Fonte e sessão nova reconciliadas nativamente em 2026-10-30; instalação integral posteriormente aceita em 2026-11-01.
 
 [Estado persistente e instalação limpa](operations/VM_STATE_AND_CLEAN_INSTALL.md): o que preservar, o que reconstruir e quais evidências faltam para qualificar a instalação integral de outro usuário. Revisão documental sobre a main `a0a96f6`; não declara novo ensaio nativo.
 
