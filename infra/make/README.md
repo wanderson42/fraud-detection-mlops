@@ -9,6 +9,7 @@ de instalar Poetry e não iniciam serviços.
 | Arquivo | Responsabilidade |
 | --- | --- |
 | `access.mk` | Acessos locais com nohup, logs e parada por serviço |
+| `vm.mk` | Túneis SSH do cliente com portas automáticas e diagnóstico do setup; não provisiona workloads |
 | `platform.mk` | Fundação, serviços e operação do cluster |
 | `round.mk` / `updates.mk` | Primeira rodada e atualização governada |
 | `product.mk` | Eventos pela API e triagem persistida |

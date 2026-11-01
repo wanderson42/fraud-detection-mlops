@@ -1,36 +1,15 @@
 # Roadmap — Fraud Detection MLOps
 
-**Inventário operacional da VM coletado em 2026-10-29:** workloads, volumes,
-acessos e requests/limits conferidos; consumo por container indisponível. A
-preparação da baseline encontrou incompatibilidade de retorno entre os perfis de
-observabilidade. Correção commitada e validada nativamente; baseline própria e
-ciclo planejado de parada/subida aceitos, com mesma sessão e volumes. A
-correção foi integrada no PR #17 (`2054c4d`); backup do tracking restaurado e validado em ensaio nativo isolado; cópia fora da VM também restaurada em 2026-10-30. Recuperação integral pendente.
-[Registro](../operations/VM_REPRODUCTION_PROGRESS.md).
+Atualizado em **2026-11-01**. A reprodução foi priorizada antes de Terraform para
+revelar dependências do ambiente do autor. O percurso manual integral foi agora
+aceito numa segunda VM vazia, com dados adquiridos e modelos/recibos próprios,
+portal/SHAP/Grafana aprovados visualmente e recuperação após reboot.
 
-**Incremento do portal da VM:** snapshot, vínculo de sessão, desempenho (67.255
-linhas), saúde HTTP e revisão visual foram confirmados pelo autor. Foram 200
-decisões, 199 clientes, 13 alertas e 200 feedbacks, sem explicações nesse snapshot.
-SHAP da sessão foi publicado e verificado para cinco casos, com navegação nativa
-aprovada e captura de caso explicado revisada. O recorte de portal da sessão
-concluída foi aceito e integrado no PR #16. A correção do ciclo foi integrada no PR #17. Instalação
-integral e recuperação completa continuam abertas. O ciclo planejado foi aceito em
-ensaio posterior próprio, descrito no registro da VM.
-
-Atualizado em **2026-10-30**. A reprodução em outro ambiente entrou antes de
-Terraform para identificar dependências da máquina original antes de declará-las
-como infraestrutura como código (IaC). A VM revelou dependências de estado,
-recibos, perfis e processos que não estavam cobertas pela suíte Python.
-Esse trabalho desdobrou-se em fonte de eventos, sessão HTTP, observabilidade
-identificada e supervisão dos processos do host.
-
-O [PR #13](https://github.com/wanderson42/fraud-detection-mlops/pull/13) foi integrado
-em `66e2bbf`, com os três jobs do CI #70 aprovados. A supervisão foi integrada depois no PR #14, em `9d9c8f2`, com CI aprovado
-informado pelo autor. Logout completo e reboot planejado da VM foram ensaiados
-com preservação da mesma sessão. A reprodução integral continua aberta. O
-[acompanhamento da VM](../operations/VM_REPRODUCTION_PROGRESS.md) é a referência
-dos aceites e limites; o [histórico](ROADMAP_HISTORY.md) registra a decisão.
-Os aceites do ambiente original e da VM permanecem separados.
+A entrega atual consolida o [roteiro único](../operations/CLEAN_INSTALL_RUNBOOK.md),
+setup por fases e [túneis com portas livres](../operations/VM_ACCESS.md). A nova
+automação ainda exige execução nativa, sem repetir treino ou sessão já aceitos.
+Os [aceites e limites](../operations/VM_REPRODUCTION_PROGRESS.md) distinguem as
+duas VMs; o [histórico](ROADMAP_HISTORY.md) preserva a evolução da decisão.
 
 ## O produto que entregamos
 
@@ -68,29 +47,26 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Reprodução limpa: estado atual
 
-| Etapa na VM `fraud-repro` | Estado |
+| Gate na segunda VM `fraud-clean-install` | Estado |
 | --- | --- |
-| Ubuntu, Docker, Python/Poetry, KinD, kubectl, Helm e inotify | Instalados e verificados |
-| Fundação PostgreSQL/RustFS e tracking | Verificados nativamente |
-| Aquisição Bronze e construção Silver/Gold | Verificadas nativamente |
-| Treinamento, Registry, API e rollback da rodada `repro-v1` | Verificados nativamente |
-| Fonte de eventos da sessão aceita | Sessão reconciliada com 269.334 eventos; o ledger de contexto não representa inferências |
-| Sessão HTTP na VM | Verificada: 200 decisões, 13 alertas, 199 clientes e 200 feedbacks nas decisões |
-| Grafana da VM | Cinco dashboards; métricas verificadas, expiração/retomada ensaiadas e revisão visual recebida |
-| Portal da VM | Sessão/snapshot, cinco explicações verificadas, desempenho de 67.255 linhas, smoke e navegação nativa aceitos; captura SHAP revisada; integrado no PR #16 |
-| Processos de observação/acesso no host | Unidades ativas e recuperação automática de seus processos ensaiada; check posterior manteve PIDs e hashes |
-| Logout controlado | Validado por confirmação do autor de encerramento de todas as sessões/túneis, Linger=yes e check posterior com mesmos PIDs/contadores/hashes |
-| Reboot planejado da VM | Boot ID mudou; observador e acesso Grafana ativos, HTTP saudável e mesma sessão; uma nova tentativa automática por unidade |
-| Ciclo planejado da plataforma na VM | stop/start/verify aceitos, mesmo nó e volumes, green em zero; serviços do host e portal retomados |
-| Backup/restauração na VM | Tracking PostgreSQL/S3 restaurado nativamente: 65 tabelas/26 objetos, quatro runs/modelos e paridade do champion; origem/captura preservadas e limpeza confirmada. Cópia Alienware devolvida/restaurada e original preservado; recuperação integral e perda do SSD físico pendentes |
-| Reprodução completa do produto | Pendente |
+| Ubuntu/ferramentas/checkout identificado | Executados sem acervo privado anterior; revisão `c734cf3` |
+| Fundação, tracking e persistência de pods | Aceitos com ownership, credenciais e volumes próprios |
+| Bronze e Jobs Silver/Gold | Adquiridos/produzidos e verificados na VM nova |
+| Rodada `clean-install-v1` | Novo treino de três candidatos; HGB versão 1; Registry/API/rollback verificados |
+| Fonte e sessão próprias | 288172 eventos na fonte; 269334 na sessão, 200 decisões HTTP e 13 alertas, feedback e reconciliação |
+| SHAP, portal e desempenho | Cinco casos, 67255 linhas de validação, verificações e revisão visual aceitas |
+| Monitoramento | Mesma sessão, métricas e quatro componentes; expiração/retomada e visual aceitos |
+| Supervisão e reboot | Recuperação de processos e após reboot aceitas, mesmos dados e hashes; 32 s da partida das unidades à observação |
+| Logout completo na VM nova | Confirmação explícita de encerramento de todas as conexões ainda ausente |
+| Scripts de setup e portas automáticas | Implementação e testes locais nesta entrega; aceite nativo separado pendente |
+| Backup/restore integral e perda física | Fora do aceite; tracking limitado já tem evidência própria anterior |
 
 ## Backlog ordenado
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — em andamento | Concluir reprodução limpa | Consolidar os marcos já aceitos, portal/ciclo integrados nos PRs #16/#17 e restore limitado aceito; qualificar instalação do zero; recibos próprios e limitações explícitas |
-| 2 — parcialmente validado | Consolidar operação da VM | Observador/acesso Grafana supervisionados e recuperação ensaiada; logout completo e reboot planejado aceitos; concluir inventário restante, acessos SSH e limites de recursos |
+| 1 — percurso manual aceito | Fechar entrega da reprodução limpa | Integrar roteiro/evidência; validar nativamente nova automação de acessos/setup sem repetir processamento aceito |
+| 2 — escopo qualificado | Continuidade operacional | Reboot e processos aceitos na VM nova; confirmar logout completo dela. Medição por container, HA e restore integral são limites separados |
 | 3 | Decidir coordenação dos pipelines | Testar fluxo limitado com falha/retomada e invocação duplicada; comparar executor existente e uma alternativa; adotar orquestrador somente se reduzir complexidade total |
 | 4 | Terraform local | Declarar ambiente estabilizado e ownership; providers/locks/state protegidos, apply real e segundo plan sem mudanças; preservação/restauração dos dados explícitas |
 | Opcional, após consolidação local | Aprendizado e POC temporária em nuvem | Confirmar elegibilidade/plano, serviços disponíveis e limite financeiro; escopo mínimo, execução verificável e remoção conferida; sem hospedagem permanente obrigatória |
@@ -99,24 +75,17 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-A [fonte explícita do Silver e sua sessão](../operations/SESSION_EVENT_SOURCE.md#aceite-nativo-da-fonte-e-de-sua-sessão--2026-10-30)
-foram aceitas nativamente pelo autor em `7642fc5`: fonte com 288.172 eventos,
-sessão limitada com 269.334 eventos, 200 decisões/recibos e 13 alertas, seguida
-de feedback e reconciliação causal. Não houve replay prévio de scores, fit ou
-mudança do champion. Não repetir esse gate para gerar documentação.
+Integrar a consolidação documental e executar o novo `vm-access-up/status/stop`
+com portas automáticas, reutilização e conflito de porta explícita. O roteiro
+inclui o `update-init` encontrado como pré-requisito na VM limpa; não fabricar
+`current.json` nem copiar estado do autor. Scripts de setup são para instalações
+novas; a VM já aceita recebe somente os arquivos e o teste de acesso.
 
-Consolidar o aceite nesta branch e integrar por PR/CI. Em seguida, qualificar o
-percurso integral num ambiente novo isolado: checkout, aquisição/cadeia de dados,
-infraestrutura, rodada, champion, sessão, portal e monitoramento com identidades
-e credenciais próprias. O [checklist integral](../operations/VM_STATE_AND_CLEAN_INSTALL.md)
-continua aberto: o ensaio atual reutilizou Silver e plataforma já existentes.
-Preservar a VM e os acervos aceitos; não recriar o cluster para esse teste.
-
-Tracking e cópia devolvida já foram restaurados em recortes próprios. Recuperação
-da plataforma inteira e perda física do SSD permanecem backlog separado. Os
-marcos não constituem novo holdout nem autorizam substituir o champion.
-Terraform continua posterior à estabilização desse percurso; não acrescentar
-broker, feature store ou orquestrador para fechar esta etapa.
+Não repetir treino, 29 minutos de warmup, SHAP ou reboot apenas para documentar.
+Após o aceite dessa automação, encerrar este recorte operacional e avançar ao
+próximo item do backlog. Recuperação integral e perda física continuam separadas.
+Terraform continua posterior ao percurso estabilizado; novo orquestrador, broker
+e feature store não são condições de fechamento.
 
 ## Critérios de arquitetura e custo
 

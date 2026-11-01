@@ -1,0 +1,180 @@
+{
+  "schema": "fraud_clean_install_author_validation_v1",
+  "status": "clean_install_product_and_reboot_author_verified",
+  "recorded_date": "2026-11-01",
+  "evidence_origin": "operator_terminal_outputs_and_explicit_visual_confirmation_in_conversation",
+  "full_private_receipts_collected_by_assistant": false,
+  "environment": {
+    "hostname": "fraud-clean-install",
+    "source_commit": "c734cf3a38a66beae57a1b6671e68043cfe20e94",
+    "os": "Ubuntu 24.04.5 LTS amd64",
+    "vcpus": 6,
+    "memory_gib": 8,
+    "swap_gib": 4,
+    "disk_gib": 80,
+    "python": "3.14.4",
+    "poetry": "2.4.3",
+    "docker": "29.1.3",
+    "kind": "0.33.0",
+    "kubectl": "1.35.9",
+    "helm": "4.3.1",
+    "historical_private_state_imported": false
+  },
+  "foundation": {
+    "probe_id": "78499bd1099c4498b615dc4cb3085c93",
+    "sql_readback_verified": true,
+    "s3_readback_verified": true,
+    "pod_recreation_validated": true,
+    "pvc_identity_preserved": true
+  },
+  "tracking": {
+    "receipt": "data/storage/kind-platform/tracking/rehearsal-fe7149bf2cf74f63848964db94497928.json",
+    "live_test_passed": true
+  },
+  "data": {
+    "bronze_partitions": 183,
+    "bronze_complete": true,
+    "bronze_bundle_id": "da7f11e26e810cfab425600d9c3b90eaf6352f18b7309dd3bdeb43e684a03f4e",
+    "pipeline_run_id": "e36e4cd763c34319a3f8690a1c3c3e73",
+    "silver_bundle_id": "62e80f77830662d596e9d2ef3aa080de4a78a8a40af74602f256862e02683fda",
+    "gold_bundle_id": "d8be4e386cc1bf00d2ff6239ed58133084cfd529c955cc77c0bfd08f79728872",
+    "features_recomputed": true
+  },
+  "round": {
+    "round_id": "clean-install-v1",
+    "status": "canonical_round_complete",
+    "new_training_performed": true,
+    "registry_version": "1",
+    "selected_model": "hist_gradient_boosting",
+    "model_sha256": "aeeed21494cba2ea6e05c38c827eee5ef3464797148a579a22bd16d8cc237e42",
+    "serving_release_id": "3afaa491d21d42afa2888c86ff78af7a",
+    "validation_rows": 67255,
+    "three_candidates_native_inputs_and_artifacts_verified": true,
+    "rollback_verified": true,
+    "same_weights_operational_repackage": true,
+    "production_promotion": false,
+    "test_evaluated": false
+  },
+  "bootstrap_dependency": {
+    "command": "make update-init UPDATE_ID=clean-install-bootstrap-v1 UPDATE_BASELINE_ROUND=clean-install-v1",
+    "reason": "Initial model-updates/current.json absent after canonical round; use existing controller, never fabricate pointer"
+  },
+  "source": {
+    "source_id": "clean-install-events-v1",
+    "manifest_sha256": "f06ad0dc8f7005db710998f855639e00889fa0b16a9c84b27b43cb9ee87a386c",
+    "events": 288172,
+    "transactions": 144086,
+    "feedback": 144086,
+    "scoring_executed": false,
+    "fit_executed": false
+  },
+  "session": {
+    "session_id": "clean-install-arrival-v1",
+    "session_sha256": "514212906b8e1f861031cb225e32049bcb024b3ae6dd91462e4cfbf3326761f8",
+    "events": 269334,
+    "transactions": 134667,
+    "feedback": 134667,
+    "decisions": 200,
+    "HTTP_receipts": 200,
+    "alerts": 13,
+    "customers": 199,
+    "decision_feedback": 200,
+    "status": "product_flow_reconciled",
+    "causal_requests_and_triage_rebuilt": true,
+    "source_model_scores_reused": false,
+    "run_elapsed_seconds": 1755.272716941,
+    "warmup_seconds": 1734.8021775409998,
+    "arrivals_seconds": 20.47053671499998,
+    "HTTP_latency_ms": {
+      "measurements": 200,
+      "p50": 31.55621300038547,
+      "p95": 42.8820979500415,
+      "maximum": 83.77765000022919
+    },
+    "new_independent_quality_confirmation": false
+  },
+  "portal": {
+    "portal_id": "clean-install-portal-v1",
+    "manifest_sha256": "8ffa3e1f8638d3e282cbd5bfbcee8a17794b3d26fdaf9a17a80be014a6915f13",
+    "explanation_id": "clean-install-shap-v1",
+    "explanation_manifest_sha256": "c2b8f8c119e36589fc374e845973fa5dfbdbc768a0c1f7ba3fc61f53a185ab68",
+    "explanations": 5,
+    "performance_id": "clean-install-validation-v1",
+    "performance_manifest_sha256": "96427a5b85f2159babdb885a177fbce82af544c3654f6aa994cd64ac88911d14",
+    "validation_rows": 67255,
+    "snapshot_session_performance_and_HTTP_verified": true,
+    "visual_review_author_confirmed": true,
+    "visual_review_confirmation": "tudo certo com a parte visual"
+  },
+  "monitoring": {
+    "session_only_bootstrap_verified": true,
+    "stale_collection_and_resume_validated": true,
+    "components_status": "session_components_verified",
+    "component_UIDs": [
+      "fraud-kind-overview",
+      "fraud-replay-ops",
+      "fraud-feature-health",
+      "fraud-triage-quality"
+    ],
+    "metric_values_verified": true,
+    "unsupported_metrics_absent_verified": true,
+    "monitoring_PVCs_preserved": true,
+    "visual_review_author_confirmed": true,
+    "live_arrivals_validated": false,
+    "alert_firing_validated": false
+  },
+  "continuity": {
+    "user_service_process_recovery_verified": true,
+    "linger": "yes",
+    "boot_id_before": "be761619-cd9f-4bdd-b5b1-ec8d275e6ffb",
+    "boot_id_after": "16db0bdb-74c4-4f39-919a-0d8bba13f82b",
+    "reboot_recovery_author_validated": true,
+    "logout_all_connections_closed_author_confirmed": false,
+    "logout_persistence_validated": false,
+    "after_boot_services": {
+      "observer": {
+        "MainPID": 5416,
+        "NRestarts": 2,
+        "state": "active/running"
+      },
+      "grafana_access": {
+        "MainPID": 4882,
+        "NRestarts": 1,
+        "state": "active/running"
+      }
+    },
+    "journal": {
+      "first_start": "2026-11-01T00:05:31Z",
+      "grafana_access_ready": "2026-11-01T00:05:57Z",
+      "observing_session": "2026-11-01T00:06:03Z",
+      "seconds_from_first_unit_start_to_observer_ready": 32,
+      "initial_failures": [
+        "kubectl command failed",
+        "Grafana container not yet ready"
+      ]
+    },
+    "grafana_http_healthy": true,
+    "protected_resources_unchanged": true,
+    "new_inferences_executed": false,
+    "accepted_source_hashes": {
+      "input.json": "1b64815cb6243643b45832ea1c6ee60d9ddd81c17ede63ecbb98a85a5c64f21c",
+      "events.sqlite": "c42237dbce91f536a0134964b9ab3bc77ab1f0d195179eace4b8ba439009db04",
+      "checkpoint.sqlite": "94822a3d1e667388854379b8ab94b542c5d6ae4e437ed2c56be1a5029130d60f",
+      "session.json": "514212906b8e1f861031cb225e32049bcb024b3ae6dd91462e4cfbf3326761f8",
+      "verification-timing-1b0d9d8f48004959bb55f67bd524f0d4.json": "b090d08ac56b7e2e08d8894446f272d49cae94fbc66a7a3d9f8cd14e23e639d0"
+    },
+    "original_controller_flags_preserved": {
+      "reboot_validated": false,
+      "logout_persistence_validated": false
+    }
+  },
+  "scope_limits": {
+    "whole_platform_backup_restore_validated": false,
+    "physical_host_loss_validated": false,
+    "high_availability_validated": false,
+    "zero_downtime_claim": false,
+    "new_setup_script_native_acceptance": false,
+    "new_auto_port_SSH_native_acceptance": false,
+    "new_installation_quality_independent_holdout": false
+  }
+}

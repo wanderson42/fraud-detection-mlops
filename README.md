@@ -1,46 +1,20 @@
 # Fraud Detection MLOps
 
-**Reprodução — aceite de 2026-10-30:** a [fonte de eventos do Silver](docs/operations/SESSION_EVENT_SOURCE.md) e sua sessão HTTP foram verificadas nativamente: 200 decisões/recibos e 13 alertas, sem replay prévio de scores. A instalação integral em ambiente vazio continua pendente.
+**Instalação limpa demonstrada em uma segunda VM:** aquisição dos dados,
+Jobs Silver/Gold, novo treinamento, Registry, API/rollback, sessão HTTP,
+SHAP, portal e Grafana verificados com identidades próprias. Revisão visual e
+recuperação após reboot confirmadas pelo autor, preservando a sessão.
 
-**Backup do tracking e cópia fora da VM restaurados:** PostgreSQL/S3 conferidos em ambiente
-isolado, com 65 tabelas, 26 objetos, quatro runs e quatro logged models. Champion
-recarregado com erro de score zero, origem/captura preservadas e recursos temporários
-removidos. [Aceite e limites](docs/operations/VM_TRACKING_BACKUP.md#restauração-da-cópia-fora-da-vm--2026-10-30).
-A cópia no Alienware foi verificada, devolvida e usada em novo restore isolado em
-2026-10-30; a captura original voltou ao caminho anterior. Recuperação integral e
-proteção contra perda do SSD físico permanecem abertas.
+- [Instalar do zero: roteiro único](docs/operations/CLEAN_INSTALL_RUNBOOK.md).
+- [Acessar a VM com portas locais automáticas](docs/operations/VM_ACCESS.md).
+- [Evidências e limites da reprodução](docs/operations/VM_REPRODUCTION_PROGRESS.md).
+- [Roadmap](docs/project/ROADMAP.md) e [stakeholders](docs/project/STAKEHOLDERS.md).
+- [Supervisão](docs/operations/VM_USER_SUPERVISION.md) e [backup limitado do tracking](docs/operations/VM_TRACKING_BACKUP.md).
 
-**Ciclo planejado da VM aceito:** parada/subida com mesmo nó, volumes e plano de
-réplicas; tracking/S3, API e monitoramento conferidos, com retomada da mesma sessão
-e do portal. Houve inferências de controle, sem novas decisões na sessão. A correção
-foi integrada no PR #17 (`2054c4d`); instalação integral e recuperação completa seguem abertas.
-[Recibos e limites](docs/operations/VM_REPRODUCTION_PROGRESS.md#aceite-do-ciclo-planejado-na-vm--2026-10-29).
-
-**Portal da VM:** snapshot/sessão de 200 decisões e avaliação de 67.255 linhas
-verificados; saúde HTTP aprovada e revisão visual confirmada pelo autor. O suporte
-SHAP à sessão reconciliada foi executado e verificado: cinco casos no candidato
-`investigation-shap-v1`, com navegação nativa aprovada e captura do gráfico revisada.
-O snapshot anterior sem SHAP permanece preservado. O PR #16 integrou esse recorte
-em 13216e3, com CIs #78, #79 e #80 aprovados. [Procedimento](docs/operations/CASE_EXPLANATIONS.md#sessão-reconciliada-na-vm--preparação-em-2026-10-29).
-
-**Estado em 2026-10-29:** a reprodução em VM isolada foi incorporada antes de
-Terraform e já verificou dados, rodada canônica, champion/API/rollback e uma sessão
-HTTP de 200 decisões com cinco dashboards Grafana. O PR #13 foi integrado com CI
-aprovado. A supervisão foi integrada no PR #14, com CI aprovado informado pelo
-autor. Recuperação de processos, persistência após logout e recuperação após
-reboot foram verificadas na VM, preservando a mesma sessão.
-
-A reprodução integral e backup/restauração continuam abertos. O portal da sessão
-concluída e o ciclo planejado de parada/subida possuem os aceites próprios acima. O reboot ensaiado recuperou observação
-e acesso Grafana; não equivale a restauração de dados ou tolerância à perda do host. Os resultados do laboratório
-original não são transferidos automaticamente para a VM.
-
-- [Roadmap e critérios de conclusão](docs/project/ROADMAP.md).
-- [Reprodução na VM: decisão, incidentes e aceites](docs/operations/VM_REPRODUCTION_PROGRESS.md).
-- [Operação e supervisão na VM](docs/operations/VM_USER_SUPERVISION.md).
-- [Backup limitado do tracking da VM](docs/operations/VM_TRACKING_BACKUP.md): captura e restauração isolada aceitas, inclusive da cópia devolvida do Alienware; recuperação integral pendente.
-- [Notebook da etapa de reprodução](notebooks/stages/26_clean_reproduction_and_vm_supervision.ipynb).
-- [Guia do produto e escopos por ambiente](docs/operations/PRODUCT_OPERATIONS.md).
+Os novos scripts de setup/acesso têm testes locais; sua execução nativa ainda
+precisa ser aceita. Backup/restauração integral, perda do host e HA permanecem
+fora do aceite. O projeto local não exige conta paga. Logout completo da VM nova
+aguarda confirmação; o aceite anterior pertence à VM anterior.
 
 **Registros históricos abaixo:** métricas, baselines e aceites datados continuam
 vinculados às respectivas execuções do ambiente original.

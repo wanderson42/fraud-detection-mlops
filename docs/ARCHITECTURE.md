@@ -1,5 +1,10 @@
 # Organização e dependências
 
+O [percurso de instalação limpa](operations/CLEAN_INSTALL_RUNBOOK.md) foi
+executado numa segunda VM com modelos e ownership próprios. A camada de
+[acesso SSH do cliente](operations/VM_ACCESS.md) seleciona portas locais livres;
+ela não altera Services Kubernetes, recursos ou contratos científicos.
+
 ## Reprodução em VM e responsabilidade dos processos — 2026-10-29
 
 A VM valida dependências do ambiente antes de Terraform. Não é uma camada
