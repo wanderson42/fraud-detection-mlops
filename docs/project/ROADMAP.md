@@ -70,35 +70,117 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Túneis SSH com portas automáticas | Aceitos nativamente: abertura, reutilização, conflito e stop preservando serviços/sessão |
 | Scripts de setup por fases | Validação local; instalação manual já aceita, sem reexecução das novas fases automatizadas |
 | Backup/restore integral e perda física | Fora do aceite; tracking limitado já tem evidência própria anterior |
+| Retomada identificada Silver/Gold | Aceite nativo concluído; PR #24 integrado em `730e2d4` e main sincronizada nas duas máquinas, conforme informado pelo autor |
 
 ## Backlog ordenado
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — fechamento da entrega atual | PR #24: retomada identificada | Aceite nativo concluído; revisar CI do último commit, fazer merge e sincronizar main. Não repetir treino ou ensaio nativo para documentar |
-| 2 — próximo desenvolvimento | Terraform local | Primeiro definir fronteira de ownership com Helm/KinD, state e segredos; depois implementação, apply real autorizado e segundo plan sem mudanças, preservando dados |
+| 1 — próxima entrega | Plano de IaC local e portabilidade | Documentar responsabilidades, recursos administrados, proteção de state/dados e correspondência com nuvem; distinguir decisões aprovadas de alternativas e testes futuros |
+| 2 — após definição do plano | Implementação e aceite de Terraform local | Ambiente isolado identificado, providers/locks fixados, plan revisado, apply real e segundo plan sem mudanças; leituras e preservação de dados conferidas |
 | Sob demanda, fora do fechamento | Qualificações operacionais adicionais | Logout completo da segunda VM exigiria outro ensaio sem conexões abertas; setup automatizado, medição por container, HA e restore integral têm critérios próprios e não reabrem a instalação manual aceita |
 | Opcional, após consolidação local | Aprendizado e POC temporária em nuvem | Confirmar elegibilidade/plano, serviços disponíveis e limite financeiro; escopo mínimo, execução verificável e remoção conferida; sem hospedagem permanente obrigatória |
 | Condicionado | Sucessor do champion | Candidato qualificado, autorização, ativação/rollback com pesos diferentes e recuperação coerente; gates preservados |
 | Projeto separado, posteriormente | Retomar portfólio de energia | Revisar pipeline de treinamento e reprodução em VM; usar o resultado para rever o esboço Terraform daquele repositório |
 
-## Próxima entrega concreta
+## Próxima entrega concreta: plano de IaC e portabilidade
 
-O PR #24 está aberto nesta revisão, ainda sem merge. Integrar por PR/CI a implementação e o [aceite nativo da retomada](../operations/PIPELINE_RECOVERY.md#aceite-nativo-da-retomada)
-executado pelo autor em `87c672f`. O teste preservou o mesmo Job Silver após término
-do controlador, recusou outra invocação, retomou as etapas, reutilizou o resultado
-completo e removeu os Jobs temporários, com sessão e champion preservados.
-Não repetir esse ensaio para documentar; os recibos privados ficam preservados.
+O PR #24 foi integrado em `730e2d432f8322098c9b0f6243780f0e327774ae`.
+O autor informou sincronização da main no Alienware e na VM. A
+[retomada identificada](../operations/PIPELINE_RECOVERY.md#aceite-nativo-da-retomada)
+está concluída no escopo aceito; não permanece como desenvolvimento pendente.
+Nenhum novo resultado de CI é inferido deste registro de merge.
 
-A decisão é manter os controladores no escopo atual de uma VM e cadeia limitada.
-Agendamento/eventos, múltiplos hosts e visibilidade central são condições para
-reavaliar a adoção de um orquestrador, sem obrigação de instalar outro serviço.
-O incremento não demonstra coordenação distribuída ou retomada de treino parcial.
+O critério desta etapa é demonstrar boas práticas de MLOps com evidências,
+responsabilidades claras e custo proporcional ao portfólio. A IaC local deve
+reproduzir uma infraestrutura delimitada e explicitar um caminho viável para a
+nuvem. Um apply local, isoladamente, não valida IAM, rede, disponibilidade,
+desempenho ou custo de uma implantação AWS.
 
-Após merge e sincronização, planejar **Terraform local**: definir fronteira de
-ownership com Helm/KinD já existentes, proteger state/segredos e preservar volumes.
-A preparação deve explicitar como evitar adoção ou destruição acidental do ambiente
-aceito. Nenhum apply ou recurso pago faz parte deste fechamento documental.
+### 1. Decisões antes da implementação
+
+A próxima entrega deve resolver e registrar:
+
+- Quais recursos Terraform criará/administrará e quais continuarão sob os
+  controladores existentes. Cada recurso terá um único responsável por alterá-lo;
+  uma release Helm não poderá ser administrada simultaneamente por Terraform e
+  por um controlador imperativo.
+- Se o primeiro ambiente IaC será novo e isolado, com nomes, ownership e state
+  próprios. Este é o caminho preferido para preservar o laboratório aceito.
+  Qualquer adoção de recurso existente exige plano explícito; não se presume
+  importação automática do cluster, releases, volumes ou recibos atuais.
+- Como providers e suas versões serão fixados, como o state será armazenado e
+  protegido e qual será o limite de concorrência. State pode conter dados
+  sensíveis: não entra no Git; a configuração local não equivale a backend
+  compartilhado com lock para uma equipe.
+- Como separar configurações de ambiente dos contratos científicos, mantendo
+  dados, modelos, imagens e recibos identificados. Planos local e cloud podem
+  compartilhar contratos sem compartilhar state ou declarar recursos idênticos.
+- Quais dados precisam ser preservados antes de mudanças e como recuperar o
+  ambiente. Destruição não será usada como prova de reprodução sobre a instalação
+  aceita; eventuais testes de remoção ficam limitados ao ambiente descartável.
+
+### 2. Divisão de responsabilidades a consolidar
+
+| Camada | Responsabilidade prevista | Fronteira a respeitar |
+| --- | --- | --- |
+| Terraform | Declarar infraestrutura e dependências do ambiente escolhido | Não treina modelos nem executa sessões; o plano definirá os recursos sob seu controle |
+| Helm e Kubernetes | Configuração dos workloads, Services e armazenamento do cluster | Definir quem aplica cada release; supervisão dos pods continua com Kubernetes |
+| Controladores de dados/modelos/sessão | Produção, verificação, linhagem, retomada e decisões operacionais | Operação atual qualificada numa VM/checkout; exclusão local não é coordenação distribuída |
+| Host e máquina cliente | Setup, supervisão local e acesso do operador | systemd e túneis SSH atendem ao laboratório; acesso e identidade cloud exigem desenho próprio |
+
+A decisão atual é manter os controladores para a cadeia limitada. Agendamento,
+múltiplos hosts ou visibilidade central justificariam nova avaliação de
+orquestração. Terraform não cria essa capacidade por si só; não há obrigação de
+instalar Prefect, Airflow ou outro serviço para concluir a IaC local.
+
+### 3. Correspondência com nuvem: hipóteses de arquitetura
+
+As opções abaixo orientam a análise; não representam arquitetura contratada,
+implementada ou validada. A escolha final deverá considerar demonstração
+temporária e operação contínua como cenários diferentes.
+
+| Componente atual | Opção AWS a avaliar | O que precisa ser adaptado/verificado |
+| --- | --- | --- |
+| Computação: VM Ubuntu no VirtualBox | Instâncias EC2 como nós de um grupo gerenciado do EKS | Dimensionar CPU/memória, tipo de instância, capacidade e custo; correspondência de computação, sem copiar a VM inteira ou concentrar todos os serviços numa instância |
+| Kubernetes: KinD dentro da VM | Control plane administrado pelo EKS | Rede, identidade, acesso ao cluster e configurações específicas; separar gestão do cluster da computação dos nós |
+| Pods, Jobs e workloads Helm nos nós KinD | Pods e Jobs executados nos nós EC2 do EKS | Publicação das imagens, configuração Helm e armazenamento adequados; preservação dos contratos e testes de execução |
+| API, portal e servidor MLflow em containers | EKS ou ECS, conforme o desenho | Registro de imagens, execução, saúde, identidade e entrada autenticada; ECS exigiria outra definição de implantação |
+| PostgreSQL em StatefulSet | RDS PostgreSQL ou banco operado no cluster | Conexões, migração, permissões, backups e restauração; compatibilidade deve ser testada |
+| RustFS com interface S3 | Amazon S3 | Endpoints, IAM, política de buckets e integridade dos objetos; compatibilidade de API não substitui o ensaio |
+| PVCs locais hostPath | Armazenamento persistente adequado aos workloads escolhidos | Classes de armazenamento, durabilidade, zona, snapshots e recuperação; não transportar hostPath como estratégia de persistência cloud |
+| Prometheus/Grafana | Instalação própria ou serviços gerenciados | Coleta, retenção, alertas, autenticação e custo; gerenciado não é requisito automático |
+| Recibos/checkpoints e locks locais | Persistência e coordenação compatíveis com o executor escolhido | Evitar perda do estado em tarefas efêmeras; uma execução distribuída exige novo contrato e aceite |
+| Túneis SSH de demonstração | Acesso privado ou entrada HTTPS autenticada | Rede, certificados e controle de acesso; não expor automaticamente todos os serviços |
+
+Para a comparação local × AWS, a referência adotada é **VM → computação EC2**
+e **KinD → Kubernetes administrado pelo EKS**. Os grupos de nós gerenciados do
+EKS fornecem instâncias EC2 para executar os pods; o control plane é separado.
+[Referência oficial dos nós gerenciados](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html).
+Essa referência orienta o estudo e não comprova implantação, capacidade, HA ou
+viabilidade financeira. ECS/Fargate continua como alternativa a avaliar, sem
+exigir administrar instâncias EC2 diretamente nesse modelo.
+
+O MLflow documenta uma arquitetura AWS com ECS, RDS PostgreSQL e S3;
+ela demonstra uma correspondência possível, sem obrigar essa combinação no
+projeto. [Referência oficial](https://mlflow.org/docs/latest/self-hosting/deploy-to-cloud/aws/).
+Terraform usa recursos específicos de cada provider; portar o ambiente não é
+apenas trocar o provider. [Contrato de providers](https://developer.hashicorp.com/terraform/language/providers).
+
+### 4. Critérios de aceite e limites
+
+| Etapa | Evidência exigida para concluir |
+| --- | --- |
+| Plano de arquitetura | Inventário de recursos, responsável único por recurso, decisão sobre isolamento/adoção, proteção do state/segredos, preservação dos dados e alternativas cloud com lacunas explícitas |
+| IaC local implementada | Configuração versionada e validada, versões/lock, plan revisado, apply real no escopo escolhido, segundo plan sem mudanças e verificações funcionais dos recursos administrados |
+| Viabilidade cloud documentada | Cenário e região definidos para estimativa, serviços necessários, permissões/rede/armazenamento, custos recorrentes e por uso, estratégia de remoção e limitações dos controladores; sem alegar implantação |
+| Eventual ensaio cloud | Escopo e limite financeiro explicitamente autorizados, implantação real temporária, verificações de acesso/persistência/funcionalidade e remoção conferida; somente então registrar aceite cloud |
+
+Esta atualização documenta o plano de trabalho; ainda não implementa Terraform
+nem executa provisioning. Não transfere ownership dos recursos existentes, não
+altera modelos/sessões e não reabre os ensaios já aceitos. A reprodução local
+continua utilizável sem conta paga; HA, restore integral e operação distribuída
+permanecem qualificações separadas, não promessas implícitas da IaC.
 
 ## Critérios de arquitetura e custo
 
