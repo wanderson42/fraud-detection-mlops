@@ -142,7 +142,9 @@ temporária e operação contínua como cenários diferentes.
 
 | Componente atual | Opção AWS a avaliar | O que precisa ser adaptado/verificado |
 | --- | --- | --- |
-| KinD e workloads Helm | EKS, se Kubernetes continuar justificado | Rede, identidade, acesso ao cluster, imagens, armazenamento e configurações Helm; sem presumir equivalência entre KinD e EKS |
+| Computação: VM Ubuntu no VirtualBox | Instâncias EC2 como nós de um grupo gerenciado do EKS | Dimensionar CPU/memória, tipo de instância, capacidade e custo; correspondência de computação, sem copiar a VM inteira ou concentrar todos os serviços numa instância |
+| Kubernetes: KinD dentro da VM | Control plane administrado pelo EKS | Rede, identidade, acesso ao cluster e configurações específicas; separar gestão do cluster da computação dos nós |
+| Pods, Jobs e workloads Helm nos nós KinD | Pods e Jobs executados nos nós EC2 do EKS | Publicação das imagens, configuração Helm e armazenamento adequados; preservação dos contratos e testes de execução |
 | API, portal e servidor MLflow em containers | EKS ou ECS, conforme o desenho | Registro de imagens, execução, saúde, identidade e entrada autenticada; ECS exigiria outra definição de implantação |
 | PostgreSQL em StatefulSet | RDS PostgreSQL ou banco operado no cluster | Conexões, migração, permissões, backups e restauração; compatibilidade deve ser testada |
 | RustFS com interface S3 | Amazon S3 | Endpoints, IAM, política de buckets e integridade dos objetos; compatibilidade de API não substitui o ensaio |
@@ -150,6 +152,14 @@ temporária e operação contínua como cenários diferentes.
 | Prometheus/Grafana | Instalação própria ou serviços gerenciados | Coleta, retenção, alertas, autenticação e custo; gerenciado não é requisito automático |
 | Recibos/checkpoints e locks locais | Persistência e coordenação compatíveis com o executor escolhido | Evitar perda do estado em tarefas efêmeras; uma execução distribuída exige novo contrato e aceite |
 | Túneis SSH de demonstração | Acesso privado ou entrada HTTPS autenticada | Rede, certificados e controle de acesso; não expor automaticamente todos os serviços |
+
+Para a comparação local × AWS, a referência adotada é **VM → computação EC2**
+e **KinD → Kubernetes administrado pelo EKS**. Os grupos de nós gerenciados do
+EKS fornecem instâncias EC2 para executar os pods; o control plane é separado.
+[Referência oficial dos nós gerenciados](https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html).
+Essa referência orienta o estudo e não comprova implantação, capacidade, HA ou
+viabilidade financeira. ECS/Fargate continua como alternativa a avaliar, sem
+exigir administrar instâncias EC2 diretamente nesse modelo.
 
 O MLflow documenta uma arquitetura AWS com ECS, RDS PostgreSQL e S3;
 ela demonstra uma correspondência possível, sem obrigar essa combinação no
