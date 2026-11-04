@@ -22,7 +22,8 @@ sessão e hashes na VM. [Registro](docs/operations/VM_ACCESS.md#aceite-nativo-do
 Os scripts de setup por fases mantêm validação local; o percurso de instalação
 aceito foi manual. Backup/restauração integral, perda do host e HA permanecem
 fora do aceite. O projeto local não exige conta paga. Logout completo da VM nova
-aguarda confirmação; o aceite anterior pertence à VM anterior.
+não foi validado: o autor confirmou que havia túnel aberto naquele ensaio;
+o aceite anterior pertence à primeira VM.
 
 **Registros históricos abaixo:** métricas, baselines e aceites datados continuam
 vinculados às respectivas execuções do ambiente original.

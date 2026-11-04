@@ -1,6 +1,7 @@
 # Roadmap — Fraud Detection MLOps
 
-Fechamento em **2026-10-31 (America/Belem)**; os registros anteriores de boot
+Revisão em **2026-11-04**. O fechamento funcional ocorreu em
+2026-10-31 (America/Belem); os registros anteriores de boot
 usam 2026-11-01 em UTC. A reprodução foi priorizada antes de Terraform para
 revelar dependências do ambiente do autor. O percurso manual integral foi agora
 aceito numa segunda VM vazia, com dados adquiridos e modelos/recibos próprios,
@@ -23,7 +24,11 @@ posterior. O sistema transacional recebe pontuação; o analista recebe contexto
 a operação acompanha saúde e progresso; ML acompanha linhagem e atualização.
 O modelo não assume sozinho a decisão sobre pagamentos.
 
-## Marcos aceitos
+## Marcos aceitos no ambiente original e na primeira VM
+
+As linhas com “na VM” desta seção referem-se à primeira VM `fraud-repro`.
+Os aceites da segunda VM estão na tabela seguinte; não transferir identidades
+ou a confirmação de logout entre ambientes.
 
 | Entrega | Aceite e fonte |
 | --- | --- |
@@ -61,7 +66,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | SHAP, portal e desempenho | Cinco casos, 67255 linhas de validação, verificações e revisão visual aceitas |
 | Monitoramento | Mesma sessão, métricas e quatro componentes; expiração/retomada e visual aceitos |
 | Supervisão e reboot | Recuperação de processos e após reboot aceitas, mesmos dados e hashes; 32 s da partida das unidades à observação |
-| Logout completo na VM nova | Confirmação explícita de encerramento de todas as conexões ainda ausente |
+| Logout completo na VM nova | Não validado: o autor confirmou que havia túnel aberto; limite deste ensaio, sem invalidar o reboot |
 | Túneis SSH com portas automáticas | Aceitos nativamente: abertura, reutilização, conflito e stop preservando serviços/sessão |
 | Scripts de setup por fases | Validação local; instalação manual já aceita, sem reexecução das novas fases automatizadas |
 | Backup/restore integral e perda física | Fora do aceite; tracking limitado já tem evidência própria anterior |
@@ -70,17 +75,16 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — aceite funcional concluído | Reprodução limpa e acesso operacional | Percurso completo, visual/reboot e túneis aceitos; finalizar integração deste registro documental, sem novos ensaios |
-| 2 — escopo qualificado | Continuidade operacional | Reboot e processos aceitos na VM nova; confirmar logout completo dela. Medição por container, HA e restore integral são limites separados |
-| 3 — aceite nativo concluído | Coordenação da cadeia limitada | Mesmo Job retomado, duplicidade recusada e resultado reutilizado; manter controladores atuais nesse escopo, com revisão futura por requisitos concretos |
-| 4 — próximo após integração | Terraform local | Declarar ambiente estabilizado e ownership; providers/locks/state protegidos, apply real e segundo plan sem mudanças; preservação/restauração dos dados explícitas |
+| 1 — fechamento da entrega atual | PR #24: retomada identificada | Aceite nativo concluído; revisar CI do último commit, fazer merge e sincronizar main. Não repetir treino ou ensaio nativo para documentar |
+| 2 — próximo desenvolvimento | Terraform local | Primeiro definir fronteira de ownership com Helm/KinD, state e segredos; depois implementação, apply real autorizado e segundo plan sem mudanças, preservando dados |
+| Sob demanda, fora do fechamento | Qualificações operacionais adicionais | Logout completo da segunda VM exigiria outro ensaio sem conexões abertas; setup automatizado, medição por container, HA e restore integral têm critérios próprios e não reabrem a instalação manual aceita |
 | Opcional, após consolidação local | Aprendizado e POC temporária em nuvem | Confirmar elegibilidade/plano, serviços disponíveis e limite financeiro; escopo mínimo, execução verificável e remoção conferida; sem hospedagem permanente obrigatória |
 | Condicionado | Sucessor do champion | Candidato qualificado, autorização, ativação/rollback com pesos diferentes e recuperação coerente; gates preservados |
 | Projeto separado, posteriormente | Retomar portfólio de energia | Revisar pipeline de treinamento e reprodução em VM; usar o resultado para rever o esboço Terraform daquele repositório |
 
 ## Próxima entrega concreta
 
-Integrar por PR/CI a implementação e o [aceite nativo da retomada](../operations/PIPELINE_RECOVERY.md#aceite-nativo-da-retomada)
+O PR #24 está aberto nesta revisão, ainda sem merge. Integrar por PR/CI a implementação e o [aceite nativo da retomada](../operations/PIPELINE_RECOVERY.md#aceite-nativo-da-retomada)
 executado pelo autor em `87c672f`. O teste preservou o mesmo Job Silver após término
 do controlador, recusou outra invocação, retomou as etapas, reutilizou o resultado
 completo e removeu os Jobs temporários, com sessão e champion preservados.

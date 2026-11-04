@@ -1,5 +1,9 @@
 # Retomada identificada da cadeia Silver → Gold
 
+**Integração:** aceite nativo concluído; PR #24 aberto, sem merge nesta revisão
+(2026-11-04). Conferir CI do último commit antes de integrar e sincronizar main.
+Os comandos deste guia pertencem à branch do incremento até essa integração.
+
 ## Decisão e escopo
 
 A análise sobre `45fddeb` encontrou retomada de sessão por checkpoint e proteção

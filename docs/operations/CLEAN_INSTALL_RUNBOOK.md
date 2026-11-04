@@ -280,8 +280,8 @@ procedimento de encerramento. Guarde recibos privados e backups fora da VM.
 
 A [evidência pública](../../references/evidence/clean_install_author_validation_2026-11-01.json)
 registra os resultados enviados pelo autor, incluindo revisão visual e reboot.
-Logout completo na VM nova ainda depende de confirmação explícita de que todas
-as conexões foram encerradas; não foi inferido de PIDs iguais. A recuperação
+Logout completo na VM nova não foi validado: o autor confirmou que havia túnel
+aberto naquele ensaio. PIDs iguais não demonstram encerramento das conexões. A recuperação
 integral da mesma instalação e a perda física do host continuam fora do aceite.
 
 Esta entrega não exige conta paga, Terraform, broker, feature store ou novo

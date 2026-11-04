@@ -1,5 +1,22 @@
 # Síntese para stakeholders
 
+## Estado atual — revisão de 2026-11-04
+
+A instalação manual limpa, o acesso portátil e o reboot da segunda VM
+`fraud-clean-install` estão aceitos. A retomada identificada de Silver/Gold também
+passou no ensaio nativo; integra o PR #24, ainda aberto nesta revisão. CI e merge
+não são inferidos do teste local. Após integrar e sincronizar, o próximo trabalho
+é planejar Terraform local, com ownership e preservação dos dados definidos.
+
+O autor confirmou que havia túnel aberto no ensaio de logout da segunda VM:
+**logout completo não foi validado**. Isso não desfaz o aceite de reboot nem
+exige repetir etapas já aceitas para fechar este marco. A instalação das novas
+fases do script de setup não foi reexecutada; o percurso aceito foi manual.
+Restore integral, perda física e HA continuam fora do escopo demonstrado.
+
+As seções datadas abaixo registram o estado à época, inclusive pendências
+posteriormente superadas. O [roadmap](ROADMAP.md) é a referência de prioridades atuais.
+
 ## Aceite nativo da retomada — 2026-11-04
 
 O autor executou a implementação commitada em `87c672f` na VM nova. A regressão

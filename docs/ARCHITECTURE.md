@@ -1,5 +1,16 @@
 # Organização e dependências
 
+## Coordenação da cadeia limitada — 2026-11-04
+
+O [executor identificado](operations/PIPELINE_RECOVERY.md) persiste plano e
+identidade dos Jobs Silver/Gold, verifica saídas e reutiliza etapas concluídas.
+O aceite nativo preservou o mesmo Job após término do controlador e recusou uma
+segunda invocação. A exclusão é local ao checkout; não é lock distribuído nem
+retomada de treinamento parcial. Esta implementação está no PR #24, ainda aberto.
+A decisão atual é manter os controladores para a cadeia limitada e operação
+manual numa VM. Agendamento, múltiplos hosts ou visibilidade central motivariam
+nova revisão de orquestração; nenhuma POC de Prefect foi realizada.
+
 O [percurso de instalação limpa](operations/CLEAN_INSTALL_RUNBOOK.md) foi
 executado numa segunda VM com modelos e ownership próprios. A camada de
 [acesso SSH do cliente](operations/VM_ACCESS.md) seleciona portas locais livres;
@@ -15,7 +26,7 @@ sessão reutiliza a release de observabilidade e não adota o estado do replay l
 | --- | --- | --- |
 | KinD/Helm | API, tracking, PostgreSQL/RustFS, receiver, Prometheus e Grafana | Ownership, imagens, volumes e recibos próprios da VM |
 | Host da VM | Projetar agregados da sessão e encaminhar Grafana ao loopback | Dois serviços systemd de usuário, lock, probe HTTP e journal |
-| Alienware | Acesso do operador à VM | Túnel SSH para loopback; não é disponibilidade da aplicação |
+| Máquina cliente (Alienware no ensaio) | Acesso do operador à VM | Túnel SSH para loopback; não é disponibilidade da aplicação |
 | Git | Código, configuração e documentação | Não transporta automaticamente bancos, volumes, credenciais ou identidade da instalação |
 
 O observador existente mantém o contrato da projeção. O supervisor do acesso
@@ -24,8 +35,8 @@ funcional. Reiniciar um serviço de usuário não recria pods nem treina modelos
 O teste nativo de recuperação confere novos PIDs, contadores e a mesma sessão.
 A configuração de Linger não substitui o ensaio de logout/reboot.
 
-A supervisão foi integrada no PR #14. Logout completo e reboot planejado da VM
-foram ensaiados: observador e acesso Grafana recuperaram a mesma sessão. Os
+A supervisão foi integrada no PR #14. Na primeira VM `fraud-repro`, logout
+completo e reboot planejado foram ensaiados: observador e acesso Grafana recuperaram a mesma sessão. Os
 comandos kubectl falharam na primeira tentativa do boot; o systemd repetiu a
 execução e ambos ficaram saudáveis. A causa específica do erro kubectl não foi
 exposta nos logs. Isso não comprova restauração ou tolerância à perda do host.

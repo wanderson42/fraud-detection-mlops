@@ -11,9 +11,9 @@ passaram no ensaio nativo. Scripts de setup por fases ainda não foram reexecuta
 
 [Fonte de eventos para instalação nova](operations/SESSION_EVENT_SOURCE.md): Silver verificado → eventos sem scores → sessão própria. Fonte e sessão nova reconciliadas nativamente em 2026-10-30; instalação integral posteriormente aceita em 2026-11-01.
 
-[Estado persistente e instalação limpa](operations/VM_STATE_AND_CLEAN_INSTALL.md): o que preservar, o que reconstruir e quais evidências faltam para qualificar a instalação integral de outro usuário. Revisão documental sobre a main `a0a96f6`; não declara novo ensaio nativo.
+[Estado persistente e instalação limpa](operations/VM_STATE_AND_CLEAN_INSTALL.md): o que preservar, o que reconstruir e os limites da recuperação. O percurso manual integral já foi aceito na segunda VM; as seções datadas anteriores conservam o diagnóstico original.
 
-**Percurso atual (2026-10-29):** [roadmap](project/ROADMAP.md),
+**Referência histórica da primeira VM (2026-10-29):** [roadmap](project/ROADMAP.md),
 [reprodução na VM](operations/VM_REPRODUCTION_PROGRESS.md),
 [supervisão dos processos](operations/VM_USER_SUPERVISION.md) e
 [notebook da etapa](../notebooks/stages/26_clean_reproduction_and_vm_supervision.ipynb).

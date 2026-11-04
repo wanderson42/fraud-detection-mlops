@@ -1,5 +1,18 @@
 # Histórico do roadmap até a integração do PR #11
 
+## Revisão documental antes do merge do PR #24 — 2026-11-04
+
+A revisão da branch `feat/identified-pipeline-resume` separou os aceites nativos
+já concluídos da integração ainda pendente. Reprodução manual e acesso portátil
+ficam como marcos concluídos; o backlog começa pela integração da retomada e,
+em seguida, pelo planejamento de Terraform local. A arquitetura e os notebooks
+passam a indicar a coordenação atual e a leitura cronológica dos registros.
+
+O autor confirmou que havia túnel aberto no ensaio de logout da segunda VM.
+Esse ensaio não valida logout completo; reboot permanece aceito por evidência
+separada. Recibos históricos, resultados científicos, código e saídas de notebooks
+foram preservados. Esta revisão não executa infraestrutura nem novo ensaio.
+
 ## Aceite nativo da fonte do Silver e da sessão nova — 2026-10-30
 
 Após 242 testes aprovados na VM e commit `7642fc5`, o autor ajustou o caminho

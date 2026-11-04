@@ -1,5 +1,22 @@
 # Estado persistente e instalação limpa do produto
 
+## Estado atual — revisão de 2026-11-04
+
+A instalação manual limpa, o acesso portátil e o reboot da segunda VM
+`fraud-clean-install` estão aceitos. A retomada identificada de Silver/Gold também
+passou no ensaio nativo; integra o PR #24, ainda aberto nesta revisão. CI e merge
+não são inferidos do teste local. Após integrar e sincronizar, o próximo trabalho
+é planejar Terraform local, com ownership e preservação dos dados definidos.
+
+O autor confirmou que havia túnel aberto no ensaio de logout da segunda VM:
+**logout completo não foi validado**. Isso não desfaz o aceite de reboot nem
+exige repetir etapas já aceitas para fechar este marco. A instalação das novas
+fases do script de setup não foi reexecutada; o percurso aceito foi manual.
+Restore integral, perda física e HA continuam fora do escopo demonstrado.
+
+As seções datadas abaixo registram o estado à época, inclusive pendências
+posteriormente superadas. O [roadmap](../project/ROADMAP.md) é a referência de prioridades atuais.
+
 ## Fechamento dos acessos da VM — 2026-10-31 (America/Belem)
 
 O PR #22 integrou a entrega em `c6045f4`, com CI aprovado informado pelo autor.
@@ -96,7 +113,7 @@ UUIDs, PIDs, ownership, kubeconfig e evidências privadas são de cada ambiente.
 | MLflow: banco `mlflow_kind` e artefatos em `fraud-kind-mlflow` | Preservar metadados e objetos em conjunto: runs, modelos, histórico e aliases | Criar tracking próprio; treinar/registrar sua rodada | Captura `7312832d3d8044999c62d5e556eaf38a` restaurada isoladamente, inclusive a cópia devolvida do Alienware; 65 tabelas/26 objetos e modelo conferidos |
 | Bronze em `data/raw/` e bundles em `data/storage/kind-platform/datasets/` / bucket `fraud-datasets` | Preservar payloads, manifestos e proveniência; disponibilidade futura da origem não é garantia de backup | Adquirir e verificar Bronze; publicar bundle próprio | Não cobertos pela captura do tracking; listar manifestos não verifica todos os payloads S3 |
 | Silver/Gold/desenvolvimento em `data/interim/`, `data/processed/` e bundles S3 | Reconstruíveis somente com Bronze exato, contratos, código e parâmetros disponíveis; guardar saídas aceitas quando necessárias à auditoria | Executar produtores e verificadores de cada camada | Roundtrip de camadas tem aceites próprios; recuperação integral desses dados não é afirmada aqui |
-| Fonte de eventos em `data/replay/<estado>/` | Preservar eventos e procedência que alimentaram a sessão; reconstrução exige produtor explícito e entradas verificadas | Produzir fonte própria antes de preparar a sessão | Não coberta pelo backup do tracking; percurso integral de geração ainda precisa ser qualificado |
+| Fonte de eventos em `data/replay/<estado>/` | Preservar eventos e procedência que alimentaram a sessão; reconstrução exige produtor explícito e entradas verificadas | Produzir fonte própria antes de preparar a sessão | Não coberta pelo backup do tracking; geração e sessão próprias aceitas na segunda VM, conforme seção de instalação limpa |
 | `data/storage/kind-platform/product-flow/session-<ID>/` | Preservar `input.json`, `session.json`, `events.sqlite`, `checkpoint.sqlite` e recibos de verificação como conjunto consistente; ledger inclui decisões, HTTP e feedback | Criar nova sessão vinculada à API/Registry do ambiente | Hashes preservados nos ensaios de ciclo/reboot; backup/restore destes bancos não foi aceito |
 | `rounds/`, `model-updates/`, `serving-maintenance/` sob `data/storage/kind-platform/` | Preservar linhagem, aprovações, transações, identidade ativa e recibos; MLflow sozinho não substitui esses registros | Gerar recibos pelos controladores da nova rodada e entrega | Fora da captura limitada do tracking; não sintetizar aprovações nem reescrever pins |
 | `data/storage/kind-platform/` — ownership, configuração privada, kubeconfig, credenciais e baselines | Manter acesso protegido e contexto da instalação; estes arquivos não bastam para recuperar volumes perdidos | Inicializar ownership e segredos próprios; gerar baseline após instalar a topologia | Privados, fora do Git; não copiar para fazer outro cluster se passar pelo original |
