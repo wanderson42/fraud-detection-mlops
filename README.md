@@ -1,8 +1,9 @@
 # Fraud Detection MLOps
 
-[Coordenação da cadeia de dados](docs/operations/PIPELINE_RECOVERY.md): retomada
-identificada preparada nos controladores existentes, sem novo serviço ou mudança
-científica; teste nativo opt-in ainda pendente.
+[Coordenação da cadeia de dados](docs/operations/PIPELINE_RECOVERY.md#aceite-nativo-da-retomada):
+retomada identificada aceita nativamente na VM: mesmo Job após término do controlador,
+duplicidade recusada, etapas/resultado reutilizados e sessão preservada. A decisão
+para o escopo atual é manter os controladores existentes.
 
 **Instalação limpa demonstrada em uma segunda VM:** aquisição dos dados,
 Jobs Silver/Gold, novo treinamento, Registry, API/rollback, sessão HTTP,

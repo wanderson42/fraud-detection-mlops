@@ -1,5 +1,27 @@
 # Reprodução limpa na VM — estado em 2026-10-29
 
+## Aceite nativo da retomada — 2026-11-04
+
+O autor executou a implementação commitada em `87c672f` na VM nova. A regressão
+teve 290 testes/5 skips/22 avisos e dois subtests aprovados; o ensaio nativo passou
+em 84,67 s (tox 100,37 s). A tentativa `dbf3deebc02d41f99b3e0ddcfd7d0a50`
+preservou o Job Silver após término do controlador, recusou outra invocação,
+retomou as etapas com os mesmos Jobs e reutilizou o resultado completo. Os Jobs
+temporários foram removidos; sessão aceita e champion ficaram preservados,
+sem treinamento nem novas inferências da sessão.
+
+O run ID, plano e hashes das etapas/resultado estão na [evidência do autor](../../references/evidence/pipeline_run_author_validation_2026-11-04.json). Os recibos privados e a evidência de
+preparação permanecem intactos. Não há alegação de lock distribuído, retomada de
+treino parcial, HA ou nova qualidade independente.
+
+A decisão para o escopo atual é manter os controladores existentes. Agendamento,
+operação por múltiplos hosts e visibilidade central passam a ser critérios para
+revisitar um orquestrador, em vez de condições artificiais de fechamento. Após
+PR/CI e sincronização, o próximo recorte é planejar Terraform local com ownership,
+state e preservação de dados explícitos. Não repetir os ensaios já aprovados.
+
+As notas anteriores preservam o estado de preparação de cada incremento.
+
 ## Retomada da cadeia de dados — preparação em 2026-11-03
 
 A revisão sobre `45fddeb` identificou que a cadeia anterior criava outra tentativa

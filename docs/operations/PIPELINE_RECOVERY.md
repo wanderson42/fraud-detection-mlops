@@ -100,8 +100,8 @@ sem nova chamada MLflow no executor de dados.
 
 ## Ensaio nativo opt-in na VM nova
 
-**Ainda não executado pelo assistente.** A evidência de preparação não deve ser
-confundida com aceite da VM. Esse ensaio cria novos Jobs Silver/Gold e novos
+**Executado e aceito pelo autor em 2026-11-04**, conforme o registro abaixo.
+A evidência de preparação permanece separada do aceite da VM. Esse ensaio cria novos Jobs Silver/Gold e novos
 bundles/restores, consumindo CPU, memória e disco, mas não treina nem pontua o
 champion. Use a VM `fraud-clean-install` saudável, Bronze e imagens aceitos,
 sessão concluída e observador supervisionado ativo. Não rode writers de dados,
@@ -136,11 +136,40 @@ Não interrompe o cluster, não recria PVCs, não altera aliases ou tráfego e n
 remove releases fora da tentativa. O gate não demonstra retomada de treino
 parcial, HA, perda física do host ou coordenação distribuída.
 
-## Critério para decidir sobre orquestração
+## Aceite nativo da retomada
 
-Este incremento trata a identidade e a retomada dos efeitos externos. Um
-orquestrador continuaria dependendo desses contratos para repetir comandos com
-segurança. Depois do ensaio nativo, comparar necessidade de agendamento,
-visibilidade entre execuções e operação por múltiplos usuários com o custo de
-manter outro componente. Terraform permanece posterior à estabilização dessa
-decisão. O marco anterior de instalação/acessos continua encerrado.
+A implementação em `87c672f` passou na VM: 290 testes da regressão e um teste
+nativo. O teste opt-in levou 84,67 s (tox 100,37 s) e registrou:
+
+| Verificação | Resultado |
+| --- | --- |
+| Controlador terminado e Job preservado | Mesmo UID Silver `9293c505-c042-40f3-941d-393255771b38` |
+| Invocação concorrente | Recusada |
+| Retomada das etapas | Sem criação de Jobs substitutos |
+| Resultado completo | Reutilizado |
+| Recursos temporários | Jobs da tentativa removidos |
+| Sessão `clean-install-arrival-v1` | Preservada, sem novas inferências |
+| Modelo | Champion preservado; nenhum fit |
+
+Tentativa `dbf3deebc02d41f99b3e0ddcfd7d0a50`, com plano e hashes na
+[evidência pública](../../references/evidence/pipeline_run_author_validation_2026-11-04.json). O recibo privado
+é `pipeline/runs/<run_id>/native-acceptance.json` sob o workspace KinD. Não foram
+recebidos todos os arquivos privados; não atribuímos hash ao recibo nativo em si.
+Os hashes exibidos pertencem ao plano, etapas e resultado indicados no terminal.
+
+## Decisão de coordenação para o escopo atual
+
+Manter os controladores existentes para a cadeia limitada e a operação manual
+qualificada no mesmo checkout da VM. O gate nativo encerra este incremento de
+retomada. A implementação, os testes e a evidência seguem para PR/CI; não se
+reexecuta a cadeia apenas para publicar documentação.
+
+Reavaliar um orquestrador quando houver requisito concreto de agendamento/eventos,
+operação por múltiplos usuários/hosts ou visibilidade central das execuções.
+Uma ferramenta desse tipo continuaria consumindo os contratos de identidade,
+verificação e retomada dos efeitos externos; adotá-la não substitui esses gates.
+Não foi feita POC de Prefect nem afirmada equivalência entre soluções.
+
+Após integração/sincronização, planejar Terraform local sobre a infraestrutura
+estabilizada, protegendo ownership, state, segredos e dados. O aceite não cobre
+coordenação distribuída, treino parcial, HA, restore integral ou perda física.

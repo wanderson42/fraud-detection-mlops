@@ -1,8 +1,8 @@
 # Índice da documentação
 
 [Retomada identificada de Jobs Silver/Gold](operations/PIPELINE_RECOVERY.md):
-implementação e testes preparados; ensaio nativo ainda pendente, sem reabrir o
-marco anterior de instalação/acessos.
+implementação e ensaio nativo aceitos: mesmo Job após término do controlador,
+duplicidade recusada e resultado reutilizado; marco anterior preservado.
 
 [Instalação limpa: roteiro único](operations/CLEAN_INSTALL_RUNBOOK.md) e
 [acesso SSH com portas automáticas](operations/VM_ACCESS.md). O percurso manual
