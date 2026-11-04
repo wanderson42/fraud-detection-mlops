@@ -1,0 +1,18 @@
+{
+  "schema": "fraud_pipeline_run_source_transition_v1",
+  "scope": "host_side_identified_pipeline_recovery_only_no_worker_science_model_or_receipt_rewrite",
+  "changes": {
+    "scripts/platform/pipeline_runs.py": {
+      "before": null,
+      "after": "fa07ea5ce7420a773a90cc28e3662dac8ef190107150847464021c1a93763731"
+    },
+    "scripts/operational_round/controller.py": {
+      "before": "41746ac601256778c5ba27441e84c0673cda59e06e2e6ffeb07eb58650d3648c",
+      "after": "3207ae88b8ad05b9d614ddd6fbfbc0c8709905e33adcb6b28114c77cd1ef18c6"
+    },
+    "scripts/platform/source_compatibility.py": {
+      "before": "8cd44883754bdcd8846e2de834aed518de5fbdbc9931367ad1ad652aa6cb5bf1",
+      "after": "43247b42c8846fe3764d710559921a5834f38aa1c4409fc39d6f4dfed6b7a741"
+    }
+  }
+}

@@ -1,5 +1,9 @@
 # Fraud Detection MLOps
 
+[Coordenação da cadeia de dados](docs/operations/PIPELINE_RECOVERY.md): retomada
+identificada preparada nos controladores existentes, sem novo serviço ou mudança
+científica; teste nativo opt-in ainda pendente.
+
 **Instalação limpa demonstrada em uma segunda VM:** aquisição dos dados,
 Jobs Silver/Gold, novo treinamento, Registry, API/rollback, sessão HTTP,
 SHAP, portal e Grafana verificados com identidades próprias. Revisão visual e

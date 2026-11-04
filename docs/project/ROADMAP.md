@@ -72,7 +72,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | --- | --- | --- |
 | 1 — aceite funcional concluído | Reprodução limpa e acesso operacional | Percurso completo, visual/reboot e túneis aceitos; finalizar integração deste registro documental, sem novos ensaios |
 | 2 — escopo qualificado | Continuidade operacional | Reboot e processos aceitos na VM nova; confirmar logout completo dela. Medição por container, HA e restore integral são limites separados |
-| 3 | Decidir coordenação dos pipelines | Testar fluxo limitado com falha/retomada e invocação duplicada; comparar executor existente e uma alternativa; adotar orquestrador somente se reduzir complexidade total |
+| 3 — preparação | Decidir coordenação dos pipelines | Testar fluxo limitado com falha/retomada e invocação duplicada; comparar executor existente e uma alternativa; adotar orquestrador somente se reduzir complexidade total |
 | 4 | Terraform local | Declarar ambiente estabilizado e ownership; providers/locks/state protegidos, apply real e segundo plan sem mudanças; preservação/restauração dos dados explícitas |
 | Opcional, após consolidação local | Aprendizado e POC temporária em nuvem | Confirmar elegibilidade/plano, serviços disponíveis e limite financeiro; escopo mínimo, execução verificável e remoção conferida; sem hospedagem permanente obrigatória |
 | Condicionado | Sucessor do champion | Candidato qualificado, autorização, ativação/rollback com pesos diferentes e recuperação coerente; gates preservados |
@@ -80,19 +80,23 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 ## Próxima entrega concreta
 
-Integrar este registro final por PR/CI. Os testes funcionais da reprodução e dos
-acessos estão encerrados. O [aceite dos túneis](../operations/VM_ACCESS.md#aceite-nativo-dos-acessos)
-comprovou serviços remotos preservados e a mesma sessão após o stop do cliente.
-Logout completo da segunda VM continua uma ressalva sem confirmação explícita;
-backup/restore integral, perda física, HA e medição por container permanecem
-limites separados. As novas fases de instalação do setup têm validação local,
-sem aceite de reexecução nativa; não criar outra VM apenas para este fechamento.
+A análise de coordenação encontrou uma lacuna específica na cadeia de dados:
+`kind_pipeline.rehearse()` criava outro UUID a cada chamada, enquanto a rodada
+só salvava o vínculo após o sucesso da cadeia completa. A implementação preparada
+em [PIPELINE_RECOVERY.md](../operations/PIPELINE_RECOVERY.md) acrescenta plano
+persistido, reuso dos Jobs identificados e verificação de saídas, sem mudar os
+produtores científicos ou instalar um orquestrador.
 
-A próxima análise é **coordenação dos pipelines**: identificar o que o executor
-existente já resolve e quais falhas/duplicidades justificariam mudança. Não
-instalar um orquestrador apenas por presença no backlog. Terraform vem após essa
-decisão e a estabilização dos contratos de infraestrutura. Não repetir warmup,
-SHAP, treinamento, reboot ou restore apenas para gerar documentação.
+Após testes/commit, executar um ensaio opt-in na VM nova: interrupção apenas do
+controlador, mesmo Job Silver, retomada entre etapas, duplicidade recusada e
+reuso final sem recriar Jobs. Preservar sessão/champion e registrar o aceite
+nativo somente após a saída do autor. O código preparado não é esse aceite.
+Rodadas antigas completas não são reprocessadas; incompletas exigem revisão.
+
+O marco funcional de instalação e acesso permanece encerrado, com as ressalvas
+já registradas. Depois do ensaio de retomada, concluir a decisão sobre coordenação
+com critérios de agendamento/visibilidade/manutenção; não adotar Prefect apenas
+pela existência no backlog. Terraform continua posterior à decisão estabilizada.
 
 ## Critérios de arquitetura e custo
 

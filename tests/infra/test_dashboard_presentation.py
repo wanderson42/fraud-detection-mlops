@@ -67,6 +67,10 @@ class PresentationTests(unittest.TestCase):
         for name in new.keys() & events["changes"].keys():
             self.assertEqual(new[name], events["changes"][name]["before"])
             new[name] = events["changes"][name]["after"]
+        pipeline_run = json.loads((ROOT / compat.PIPELINE_RUN_TRANSITION).read_text())
+        for name in new.keys() & pipeline_run["changes"].keys():
+            self.assertEqual(new[name], pipeline_run["changes"][name]["before"])
+            new[name] = pipeline_run["changes"][name]["after"]
         with TemporaryDirectory() as tmp:
             root = Path(tmp)
             for name in (
@@ -74,6 +78,7 @@ class PresentationTests(unittest.TestCase):
                 compat.PRESENTATION_TRANSITION,
                 compat.LIFECYCLE_PROFILE_TRANSITION,
                 compat.EVENT_SOURCE_TRANSITION,
+                compat.PIPELINE_RUN_TRANSITION,
             ):
                 target = root / name
                 target.parent.mkdir(parents=True, exist_ok=True)

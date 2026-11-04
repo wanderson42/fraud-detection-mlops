@@ -304,3 +304,10 @@ e `user.email` na máquina que cria commits; identidade de autoria não é senha
 Para chamadas remotas não interativas, use `.venv/bin/python` do checkout.
 O próximo recorte do roadmap é decidir a coordenação dos pipelines, começando
 pelo executor existente; uma nova plataforma só entra se reduzir complexidade.
+
+## Evolução da coordenação dos Jobs
+
+Em revisões que contêm [PIPELINE_RECOVERY.md](PIPELINE_RECOVERY.md), rodadas novas
+vinculam `round-data` a uma tentativa persistida, com retomada dos mesmos Jobs.
+O percurso manual acima continua sendo a evidência histórica aceita. A nova
+coordenação tem preparação/testes próprios e não exige refazer rodadas concluídas.

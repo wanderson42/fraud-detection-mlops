@@ -1,0 +1,60 @@
+{
+  "schema": "fraud_pipeline_run_preparation_v1",
+  "status": "implementation_prepared_native_acceptance_pending",
+  "recorded_date": "2026-11-03",
+  "timezone": "America/Belem",
+  "base_commit": "45fddeb139f773fc64fabe807a7aeb7e45fda072",
+  "scope": "host side identified Silver/Gold recovery and exact source compatibility; no native command executed by assistant",
+  "scientific_sources_modified": false,
+  "worker_images_modified": false,
+  "contracts_or_training_policy_modified": false,
+  "native_jobs_executed": false,
+  "native_session_changed": false,
+  "native_acceptance": false,
+  "new_dependencies": false,
+  "tests": [
+    {
+      "scope": "broad regression before final atomic round receipt adjustment",
+      "passed": 278,
+      "skipped": 16,
+      "warnings": 22,
+      "subtests_passed": 2,
+      "seconds": 91.63
+    },
+    {
+      "scope": "final recovery, atomic receipt, compatibility, access entrypoints and persistence review",
+      "passed": 112,
+      "skipped": 1,
+      "subtests_passed": 12,
+      "seconds": 28.87
+    }
+  ],
+  "lint_and_format": "ruff 0.16.10 passed; 544 Python files formatted",
+  "recovery_cases": [
+    "controller interrupted while owned Job continues",
+    "same Silver UID on resume",
+    "Silver/Gold stage boundary",
+    "Gold published before local stage receipt",
+    "Gold verified before final result",
+    "cleanup interrupted",
+    "pipeline completed before round data receipt",
+    "completed attempt reused",
+    "local payload corruption refused",
+    "foreign UID/input/owner refused",
+    "foreign Helm values refuse upgrade and cleanup",
+    "missing dispatched Job refused",
+    "failed Job never recreated",
+    "run lock excludes second process",
+    "atomic receipt publication",
+    "incomplete legacy round refuses new attempt"
+  ],
+  "limits": [
+    "local checkout locks are not distributed coordination",
+    "ambiguous intent/create interval requires inspection",
+    "old incomplete attempts are not adopted",
+    "native opt-in still requires operator output",
+    "no partial training recovery claim",
+    "not exactly-once execution for all failures"
+  ],
+  "native_gate": "FRAUD_PIPELINE_NO_OTHER_WRITERS=1 FRAUD_PIPELINE_SESSION_ID=clean-install-arrival-v1 .venv/bin/python -m tox -e kind-pipeline-resume"
+}

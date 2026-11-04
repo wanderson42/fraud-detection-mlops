@@ -1,5 +1,9 @@
 # Índice da documentação
 
+[Retomada identificada de Jobs Silver/Gold](operations/PIPELINE_RECOVERY.md):
+implementação e testes preparados; ensaio nativo ainda pendente, sem reabrir o
+marco anterior de instalação/acessos.
+
 [Instalação limpa: roteiro único](operations/CLEAN_INSTALL_RUNBOOK.md) e
 [acesso SSH com portas automáticas](operations/VM_ACCESS.md). O percurso manual
 foi aceito na segunda VM, incluindo visual e reboot; os túneis automáticos também

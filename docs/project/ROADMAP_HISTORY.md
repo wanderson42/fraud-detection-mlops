@@ -1056,3 +1056,18 @@ continuam fora deste aceite. Não repetir os ensaios aprovados para documentar.
 [Evidência nativa dos acessos](../../references/evidence/vm_access_author_validation_2026-10-31.json).
 As seções datadas anteriores preservam o estado de cada entrega. Esta data é a do
 cliente no Brasil; registros anteriores de boot usam 2026-11-01 em UTC.
+
+## Retomada da cadeia de dados — preparação em 2026-11-03
+
+A revisão sobre `45fddeb` identificou que a cadeia anterior criava outra tentativa
+a cada chamada, sem vínculo persistido da rodada à tentativa interrompida.
+A implementação preparada usa plano anterior aos Jobs, UIDs conhecidos, recibos
+imutáveis por etapa, restauração independente verificada e exclusão local de
+invocações concorrentes. Rodadas antigas concluídas permanecem preservadas;
+estados ambíguos ou Jobs perdidos/falhados são recusados, sem recriação automática.
+
+Não houve mudança científica, treinamento, promoção, dependência nova ou execução
+na VM pelo assistente. O [runbook](../operations/PIPELINE_RECOVERY.md) define testes
+locais e um ensaio nativo opt-in, ainda pendente. O incremento trata o contrato
+de retomada antes de decidir sobre Prefect; o marco anterior de instalação/acessos
+continua encerrado. Isso não demonstra coordenação distribuída ou HA.

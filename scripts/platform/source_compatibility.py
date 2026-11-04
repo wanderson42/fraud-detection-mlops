@@ -176,6 +176,14 @@ EVENT_SOURCE_ALLOWED = {
 }
 
 
+PIPELINE_RUN_TRANSITION = "references/pipeline_run_source_transition_v1.json"
+PIPELINE_RUN_ALLOWED = {
+    "scripts/platform/pipeline_runs.py",
+    "scripts/operational_round/controller.py",
+    "scripts/platform/source_compatibility.py",
+}
+
+
 def _advance(saved, current, root, path, schema, allowed):
     location = root / path
     if not location.is_file():
@@ -293,6 +301,11 @@ def accept(saved, current, root):
             EVENT_SOURCE_TRANSITION,
             "fraud_session_event_source_transition_v1",
             EVENT_SOURCE_ALLOWED,
+        ),
+        (
+            PIPELINE_RUN_TRANSITION,
+            "fraud_pipeline_run_source_transition_v1",
+            PIPELINE_RUN_ALLOWED,
         ),
     ]:
         expected = _advance(expected, current, root, path, schema, allowed)
