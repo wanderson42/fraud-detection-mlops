@@ -1,0 +1,73 @@
+{
+  "schema": "fraud_pipeline_run_author_validation_v1",
+  "status": "native_pipeline_recovery_verified",
+  "recorded_date": "2026-11-04",
+  "timezone": "America/Belem",
+  "evidence_origin": "Author-provided VM terminal output; full native receipts remain in the guest",
+  "implementation_commit_prefix": "87c672f",
+  "branch": "feat/identified-pipeline-resume",
+  "unit_regression": {
+    "runner": "tox py314",
+    "passed": 290,
+    "skipped": 5,
+    "warnings": 22,
+    "subtests_passed": 2,
+    "pytest_seconds": 102.22,
+    "tox_seconds": 108.08,
+    "source_hash_transition_and_notebook_verification_passed": true
+  },
+  "native_test": {
+    "runner": "tox kind-pipeline-resume",
+    "test": "tests/infra/live/test_pipeline_resume_live.py",
+    "passed": 1,
+    "pytest_seconds": 84.67,
+    "tox_seconds": 100.37
+  },
+  "native_result": {
+    "schema": "fraud_pipeline_run_native_v1",
+    "status": "verified",
+    "run_id": "dbf3deebc02d41f99b3e0ddcfd7d0a50",
+    "plan_sha256": "02a40bd3e19f05d60723844a7945d915dfdfa3bb34c6383756dba924cf283256",
+    "fit_executed": false,
+    "champion_modified": false,
+    "accepted_session_id": "clean-install-arrival-v1",
+    "controller_exit_job_uid_preserved": true,
+    "duplicate_invocation_refused": true,
+    "stages_reused_without_new_jobs": true,
+    "completed_result_reused": true,
+    "temporary_jobs_removed": true,
+    "source_session_unchanged": true,
+    "new_session_inferences": false,
+    "silver_job_uid": "9293c505-c042-40f3-941d-393255771b38",
+    "silver_receipt_sha256": "c3ca757b404025ec32c8e13a1fc6149ec382e8bad6d7518602be3d1ff41a1f0f",
+    "gold_receipt_sha256": "54d28c26d0a3a04168ada294ed75b529a026edacb8e8ddd9cb2006ae224e0519",
+    "result_sha256": "7576c8b9f2f9c346784ad318117fa7e58c1dab20452289bfcddf8a3b209cdbf6"
+  },
+  "private_receipt": "data/storage/kind-platform/pipeline/runs/dbf3deebc02d41f99b3e0ddcfd7d0a50/native-acceptance.json",
+  "private_controller_log": "data/storage/kind-platform/pipeline/runs/dbf3deebc02d41f99b3e0ddcfd7d0a50/native-controller.log",
+  "independent_restores": {
+    "silver": "data/storage/kind-platform/datasets/restore-4667dfb8b0cc4bae9032991cf76f515c/result.json",
+    "gold": "data/storage/kind-platform/datasets/restore-5713ca68d1b94cc6b2758b88d449d827/result.json"
+  },
+  "decision": {
+    "scope": "Current single-VM portfolio and bounded manual data pipeline",
+    "retain_current_controllers": true,
+    "new_orchestrator_adopted": false,
+    "reason": "Identified external effects and local recovery passed the intended native gate; no additional scheduling or multi-host requirement demonstrated",
+    "revisit_when": [
+      "Recurring schedules or event triggers require central operation",
+      "Multiple users/hosts need coordinated execution",
+      "Cross-run workflow visibility has measurable operational value"
+    ],
+    "next_after_integration": "Plan Terraform local with explicit ownership, state and data preservation"
+  },
+  "limits": {
+    "distributed_lock_validated": false,
+    "partial_training_resume_validated": false,
+    "high_availability_validated": false,
+    "physical_host_loss_validated": false,
+    "new_independent_quality_confirmation": false,
+    "CI_or_PR_acceptance_for_this_branch_claimed": false
+  },
+  "historical_preparation_receipt_preserved": true
+}

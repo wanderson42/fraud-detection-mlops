@@ -51,3 +51,8 @@ A jornada diária usa `session-daily-prepare` (captura, sem iniciar chegadas) e
 `session-live-test` (ensaio opt-in depois de vincular portal/monitor e salvar o
 baseline). O ensaio controla produtor e observador; não mantenha outro watcher.
 [Sequência completa](../../docs/operations/LIVE_OPERATIONS.md).
+
+`pipeline-run-prepare`, `pipeline-run` e `pipeline-run-status` operam uma tentativa
+explícita de dados, com `PIPELINE_RUN_ID` de 32 hex. Preparação/status não criam
+Jobs; run pode recomputar camadas em uma tentativa nova, sem treino de modelo.
+Consulte `docs/operations/PIPELINE_RECOVERY.md` para retomada e estados recusados.

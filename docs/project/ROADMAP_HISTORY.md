@@ -1,5 +1,18 @@
 # Histórico do roadmap até a integração do PR #11
 
+## Revisão documental antes do merge do PR #24 — 2026-11-04
+
+A revisão da branch `feat/identified-pipeline-resume` separou os aceites nativos
+já concluídos da integração ainda pendente. Reprodução manual e acesso portátil
+ficam como marcos concluídos; o backlog começa pela integração da retomada e,
+em seguida, pelo planejamento de Terraform local. A arquitetura e os notebooks
+passam a indicar a coordenação atual e a leitura cronológica dos registros.
+
+O autor confirmou que havia túnel aberto no ensaio de logout da segunda VM.
+Esse ensaio não valida logout completo; reboot permanece aceito por evidência
+separada. Recibos históricos, resultados científicos, código e saídas de notebooks
+foram preservados. Esta revisão não executa infraestrutura nem novo ensaio.
+
 ## Aceite nativo da fonte do Silver e da sessão nova — 2026-10-30
 
 Após 242 testes aprovados na VM e commit `7642fc5`, o autor ajustou o caminho
@@ -1056,3 +1069,38 @@ continuam fora deste aceite. Não repetir os ensaios aprovados para documentar.
 [Evidência nativa dos acessos](../../references/evidence/vm_access_author_validation_2026-10-31.json).
 As seções datadas anteriores preservam o estado de cada entrega. Esta data é a do
 cliente no Brasil; registros anteriores de boot usam 2026-11-01 em UTC.
+
+## Retomada da cadeia de dados — preparação em 2026-11-03
+
+A revisão sobre `45fddeb` identificou que a cadeia anterior criava outra tentativa
+a cada chamada, sem vínculo persistido da rodada à tentativa interrompida.
+A implementação preparada usa plano anterior aos Jobs, UIDs conhecidos, recibos
+imutáveis por etapa, restauração independente verificada e exclusão local de
+invocações concorrentes. Rodadas antigas concluídas permanecem preservadas;
+estados ambíguos ou Jobs perdidos/falhados são recusados, sem recriação automática.
+
+Não houve mudança científica, treinamento, promoção, dependência nova ou execução
+na VM pelo assistente. O [runbook](../operations/PIPELINE_RECOVERY.md) define testes
+locais e um ensaio nativo opt-in, ainda pendente. O incremento trata o contrato
+de retomada antes de decidir sobre Prefect; o marco anterior de instalação/acessos
+continua encerrado. Isso não demonstra coordenação distribuída ou HA.
+
+## Aceite nativo da retomada — 2026-11-04
+
+O autor executou a implementação commitada em `87c672f` na VM nova. A regressão
+teve 290 testes/5 skips/22 avisos e dois subtests aprovados; o ensaio nativo passou
+em 84,67 s (tox 100,37 s). A tentativa `dbf3deebc02d41f99b3e0ddcfd7d0a50`
+preservou o Job Silver após término do controlador, recusou outra invocação,
+retomou as etapas com os mesmos Jobs e reutilizou o resultado completo. Os Jobs
+temporários foram removidos; sessão aceita e champion ficaram preservados,
+sem treinamento nem novas inferências da sessão.
+
+O run ID, plano e hashes das etapas/resultado estão na [evidência do autor](../../references/evidence/pipeline_run_author_validation_2026-11-04.json). Os recibos privados e a evidência de
+preparação permanecem intactos. Não há alegação de lock distribuído, retomada de
+treino parcial, HA ou nova qualidade independente.
+
+A decisão para o escopo atual é manter os controladores existentes. Agendamento,
+operação por múltiplos hosts e visibilidade central passam a ser critérios para
+revisitar um orquestrador, em vez de condições artificiais de fechamento. Após
+PR/CI e sincronização, o próximo recorte é planejar Terraform local com ownership,
+state e preservação de dados explícitos. Não repetir os ensaios já aprovados.

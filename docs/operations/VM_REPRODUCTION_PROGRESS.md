@@ -1,4 +1,59 @@
-# Reprodução limpa na VM — estado em 2026-10-29
+# Reprodução limpa na VM — acompanhamento e aceites
+
+## Estado atual — revisão de 2026-11-04
+
+A instalação manual limpa, o acesso portátil e o reboot da segunda VM
+`fraud-clean-install` estão aceitos. A retomada identificada de Silver/Gold também
+passou no ensaio nativo; integra o PR #24, ainda aberto nesta revisão. CI e merge
+não são inferidos do teste local. Após integrar e sincronizar, o próximo trabalho
+é planejar Terraform local, com ownership e preservação dos dados definidos.
+
+O autor confirmou que havia túnel aberto no ensaio de logout da segunda VM:
+**logout completo não foi validado**. Isso não desfaz o aceite de reboot nem
+exige repetir etapas já aceitas para fechar este marco. A instalação das novas
+fases do script de setup não foi reexecutada; o percurso aceito foi manual.
+Restore integral, perda física e HA continuam fora do escopo demonstrado.
+
+As seções datadas abaixo registram o estado à época, inclusive pendências
+posteriormente superadas. O [roadmap](../project/ROADMAP.md) é a referência de prioridades atuais.
+
+## Aceite nativo da retomada — 2026-11-04
+
+O autor executou a implementação commitada em `87c672f` na VM nova. A regressão
+teve 290 testes/5 skips/22 avisos e dois subtests aprovados; o ensaio nativo passou
+em 84,67 s (tox 100,37 s). A tentativa `dbf3deebc02d41f99b3e0ddcfd7d0a50`
+preservou o Job Silver após término do controlador, recusou outra invocação,
+retomou as etapas com os mesmos Jobs e reutilizou o resultado completo. Os Jobs
+temporários foram removidos; sessão aceita e champion ficaram preservados,
+sem treinamento nem novas inferências da sessão.
+
+O run ID, plano e hashes das etapas/resultado estão na [evidência do autor](../../references/evidence/pipeline_run_author_validation_2026-11-04.json). Os recibos privados e a evidência de
+preparação permanecem intactos. Não há alegação de lock distribuído, retomada de
+treino parcial, HA ou nova qualidade independente.
+
+A decisão para o escopo atual é manter os controladores existentes. Agendamento,
+operação por múltiplos hosts e visibilidade central passam a ser critérios para
+revisitar um orquestrador, em vez de condições artificiais de fechamento. Após
+PR/CI e sincronização, o próximo recorte é planejar Terraform local com ownership,
+state e preservação de dados explícitos. Não repetir os ensaios já aprovados.
+
+As notas anteriores preservam o estado de preparação de cada incremento.
+
+## Retomada da cadeia de dados — preparação em 2026-11-03
+
+A revisão sobre `45fddeb` identificou que a cadeia anterior criava outra tentativa
+a cada chamada, sem vínculo persistido da rodada à tentativa interrompida.
+A implementação preparada usa plano anterior aos Jobs, UIDs conhecidos, recibos
+imutáveis por etapa, restauração independente verificada e exclusão local de
+invocações concorrentes. Rodadas antigas concluídas permanecem preservadas;
+estados ambíguos ou Jobs perdidos/falhados são recusados, sem recriação automática.
+
+Não houve mudança científica, treinamento, promoção, dependência nova ou execução
+na VM pelo assistente. O [runbook](PIPELINE_RECOVERY.md) define testes
+locais e um ensaio nativo opt-in, ainda pendente. O incremento trata o contrato
+de retomada antes de decidir sobre Prefect; o marco anterior de instalação/acessos
+continua encerrado. Isso não demonstra coordenação distribuída ou HA.
+
 
 ## Fechamento dos acessos da VM — 2026-10-31 (America/Belem)
 

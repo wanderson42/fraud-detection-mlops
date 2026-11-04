@@ -1,5 +1,10 @@
 # Fraud Detection MLOps
 
+[Coordenação da cadeia de dados](docs/operations/PIPELINE_RECOVERY.md#aceite-nativo-da-retomada):
+retomada identificada aceita nativamente na VM: mesmo Job após término do controlador,
+duplicidade recusada, etapas/resultado reutilizados e sessão preservada. A decisão
+para o escopo atual é manter os controladores existentes.
+
 **Instalação limpa demonstrada em uma segunda VM:** aquisição dos dados,
 Jobs Silver/Gold, novo treinamento, Registry, API/rollback, sessão HTTP,
 SHAP, portal e Grafana verificados com identidades próprias. Revisão visual e
@@ -17,7 +22,8 @@ sessão e hashes na VM. [Registro](docs/operations/VM_ACCESS.md#aceite-nativo-do
 Os scripts de setup por fases mantêm validação local; o percurso de instalação
 aceito foi manual. Backup/restauração integral, perda do host e HA permanecem
 fora do aceite. O projeto local não exige conta paga. Logout completo da VM nova
-aguarda confirmação; o aceite anterior pertence à VM anterior.
+não foi validado: o autor confirmou que havia túnel aberto naquele ensaio;
+o aceite anterior pertence à primeira VM.
 
 **Registros históricos abaixo:** métricas, baselines e aceites datados continuam
 vinculados às respectivas execuções do ambiente original.

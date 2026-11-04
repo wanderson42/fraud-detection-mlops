@@ -6,8 +6,8 @@ O autor confirmou processo/recuperação e reboot da sessão `clean-install-arri
 O journal deste boot mostrou duas novas tentativas do observador e uma do acesso;
 Grafana pronto às 00:05:57 e observação às 00:06:03, 32 s após a primeira partida.
 Os hashes e a sessão foram preservados sem inferências novas. Logout completo
-desta segunda VM ainda aguarda confirmação explícita; os aceites datados abaixo
-pertencem à VM anterior. [Roteiro único](CLEAN_INSTALL_RUNBOOK.md).
+desta segunda VM não foi validado: o autor confirmou posteriormente que havia
+túnel aberto naquele ensaio. Os aceites datados abaixo pertencem à VM anterior. [Roteiro único](CLEAN_INSTALL_RUNBOOK.md).
 
 
 ## Aceite nativo informado pelo autor — 2026-10-29

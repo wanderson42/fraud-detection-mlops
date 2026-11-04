@@ -39,6 +39,7 @@ def pins():
         "scripts/platform/kind_datasets.py",
         "scripts/platform/kind_datasets_worker.py",
         "scripts/platform/kind_pipeline.py",
+        "scripts/platform/pipeline_runs.py",
         "scripts/platform/kind_pipeline_compute.py",
         "scripts/platform/kind_pipeline_transport.py",
         "scripts/serving/delivery_gate.py",
@@ -143,20 +144,31 @@ def save(key, name, value):
         p.require(
             json.loads(path.read_bytes()) == value, "Receipt already exists with another identity"
         )
+    elif name == "data.json":
+        from scripts.platform.pipeline_runs import seal
+
+        seal(path, value)
     else:
         f.private_json(path, value)
     return value
 
 
 def data(key):
-    read(key)
+    info = read(key)
     if (work(key) / "data.json").exists():
         value = json.loads((work(key) / "data.json").read_bytes())
         verified_gold(key)
         return value
+    from scripts.platform import pipeline_runs
+
+    p.require(
+        "scripts/platform/pipeline_runs.py" in info["source_pins"],
+        "Legacy incomplete round needs explicit review; do not replace its pipeline attempt",
+    )
     # The data producers and their pinned images are reused unchanged.
     kind_pipeline.build()
-    result = kind_pipeline.rehearse()
+    pipeline_runs.prepare(info["owner_id"])
+    result = pipeline_runs.execute(info["owner_id"])
     p.require(
         result["status"] == "success"
         and result["features_recomputed"]

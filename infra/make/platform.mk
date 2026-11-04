@@ -125,3 +125,20 @@ platform-operations-test:
 	@: "$${PLATFORM_TRACKING_REPORT:?Set PLATFORM_TRACKING_REPORT}"
 	@test "$${PLATFORM_NO_OTHER_WRITERS}" = 1 || { echo 'Set PLATFORM_NO_OTHER_WRITERS=1 after stopping writers'; exit 2; }
 	$(POETRY) run python -m scripts.platform.kind_operations rehearse --tracking-report "$${PLATFORM_TRACKING_REPORT}" --no-other-writers
+
+PIPELINE_RUN_ID ?=
+PIPELINE_BRONZE_BUNDLE_ID ?=
+PIPELINE_STOP_AFTER ?=
+.PHONY: pipeline-run-prepare pipeline-run pipeline-run-status
+## Persist an explicit pipeline plan before creating any Job; requires PIPELINE_RUN_ID
+pipeline-run-prepare:
+	@test -n "$(PIPELINE_RUN_ID)" || { echo 'Set PIPELINE_RUN_ID (32 hex characters)'; exit 2; }
+	$(POETRY) run python -m scripts.platform.pipeline_runs prepare --run-id "$(PIPELINE_RUN_ID)" $(if $(PIPELINE_BRONZE_BUNDLE_ID),--bronze-bundle-id "$(PIPELINE_BRONZE_BUNDLE_ID)")
+## Execute/resume the same identified Jobs; optional PIPELINE_STOP_AFTER=silver|gold
+pipeline-run:
+	@test -n "$(PIPELINE_RUN_ID)" || { echo 'Set PIPELINE_RUN_ID'; exit 2; }
+	$(POETRY) run python -m scripts.platform.pipeline_runs run --run-id "$(PIPELINE_RUN_ID)" $(if $(PIPELINE_STOP_AFTER),--stop-after "$(PIPELINE_STOP_AFTER)")
+## Inspect local run metadata only; no Job creation, model fit or cluster readback
+pipeline-run-status:
+	@test -n "$(PIPELINE_RUN_ID)" || { echo 'Set PIPELINE_RUN_ID'; exit 2; }
+	$(POETRY) run python -m scripts.platform.pipeline_runs status --run-id "$(PIPELINE_RUN_ID)"

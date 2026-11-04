@@ -280,8 +280,8 @@ procedimento de encerramento. Guarde recibos privados e backups fora da VM.
 
 A [evidência pública](../../references/evidence/clean_install_author_validation_2026-11-01.json)
 registra os resultados enviados pelo autor, incluindo revisão visual e reboot.
-Logout completo na VM nova ainda depende de confirmação explícita de que todas
-as conexões foram encerradas; não foi inferido de PIDs iguais. A recuperação
+Logout completo na VM nova não foi validado: o autor confirmou que havia túnel
+aberto naquele ensaio. PIDs iguais não demonstram encerramento das conexões. A recuperação
 integral da mesma instalação e a perda física do host continuam fora do aceite.
 
 Esta entrega não exige conta paga, Terraform, broker, feature store ou novo
@@ -304,3 +304,10 @@ e `user.email` na máquina que cria commits; identidade de autoria não é senha
 Para chamadas remotas não interativas, use `.venv/bin/python` do checkout.
 O próximo recorte do roadmap é decidir a coordenação dos pipelines, começando
 pelo executor existente; uma nova plataforma só entra se reduzir complexidade.
+
+## Evolução da coordenação dos Jobs
+
+Em revisões que contêm [PIPELINE_RECOVERY.md](PIPELINE_RECOVERY.md), rodadas novas
+vinculam `round-data` a uma tentativa persistida, com retomada dos mesmos Jobs.
+O percurso manual acima continua sendo a evidência histórica aceita. A nova
+coordenação tem preparação/testes próprios e não exige refazer rodadas concluídas.
