@@ -9,6 +9,22 @@ permissions:
   contents: read
 
 jobs:
+  terraform-templates:
+    name: Validate isolated Terraform configuration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install pinned Terraform CLI
+        run: bash scripts/install_terraform.sh
+      - name: Validate locked providers and templates without provisioning
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          bash scripts/check_terraform.sh
+
   quality:
     name: Lint, formatting and tests
     runs-on: ubuntu-24.04

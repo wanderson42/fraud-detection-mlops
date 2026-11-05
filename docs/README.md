@@ -1,5 +1,7 @@
 # Índice da documentação
 
+[IaC local: primeira fundação Terraform](operations/LOCAL_IAC.md): implementação preparada, plano privado revisável e teste opt-in; apply/aceite nativo pendentes.
+
 [Retomada identificada de Jobs Silver/Gold](operations/PIPELINE_RECOVERY.md):
 implementação e ensaio nativo aceitos: mesmo Job após término do controlador,
 duplicidade recusada e resultado reutilizado; marco anterior preservado.

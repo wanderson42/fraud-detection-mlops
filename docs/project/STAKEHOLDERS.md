@@ -1,5 +1,16 @@
 # Síntese para stakeholders
 
+## Primeira fundação Terraform — preparação em 2026-11-04
+
+O [incremento delimitado](../operations/LOCAL_IAC.md) prepara namespace,
+credenciais e release PostgreSQL/RustFS novos no cluster existente. Preserva a
+plataforma aceita, usa state/planos privados e aplica somente plano identificado
+revisado. O teste opt-in verificará SQL/S3, recriação dos pods novos, preservação
+dos volumes e segundo plan sem alterações. Implementação preparada; apply e
+aceite nativo pendentes. Compartilhar o cluster não é isolamento de capacidade
+ou falhas, e este incremento não provisiona computação AWS.
+
+
 ## Estado atual — revisão de 2026-11-04
 
 A instalação manual limpa, o acesso portátil e o reboot da segunda VM

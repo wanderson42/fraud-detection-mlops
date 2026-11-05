@@ -83,7 +83,23 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Condicionado | Sucessor do champion | Candidato qualificado, autorização, ativação/rollback com pesos diferentes e recuperação coerente; gates preservados |
 | Projeto separado, posteriormente | Retomar portfólio de energia | Revisar pipeline de treinamento e reprodução em VM; usar o resultado para rever o esboço Terraform daquele repositório |
 
-## Próxima entrega concreta: plano de IaC e portabilidade
+## Próxima entrega concreta: fundação IaC delimitada
+
+O [primeiro escopo de implementação](../operations/LOCAL_IAC.md) foi definido:
+namespace, credenciais e release PostgreSQL/RustFS próprios, com implementação
+Terraform preparada para o cluster local existente. O cluster/VM e a plataforma aceita ficam
+fora desse state. O namespace compartilha recursos e falhas do mesmo cluster;
+não equivale a isolamento de infraestrutura.
+
+O código inclui comandos Make, plano revisável, state privado e teste nativo
+opt-in. Os próximos gates são validate dos providers na VM/CI, plan/apply, segundo
+plan sem mudanças e persistência de marcadores SQL/S3 após recriação dos pods
+novos, com a sessão aceita preservada. Ainda não houve apply nem aceite nativo
+Terraform.
+O incremento fecha por esses gates; migrar o produto inteiro ou implantar AWS
+não é condição para concluir esta primeira fundação.
+
+### Plano de IaC e portabilidade preservado
 
 O PR #24 foi integrado em `730e2d432f8322098c9b0f6243780f0e327774ae`.
 O autor informou sincronização da main no Alienware e na VM. A
