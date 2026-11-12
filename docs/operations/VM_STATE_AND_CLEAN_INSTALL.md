@@ -1,5 +1,20 @@
 # Estado persistente e instalação limpa do produto
 
+## Fundação Terraform local aceita — 2026-11-12
+
+O autor confirmou o recibo `verification-385eb4701b6249ef93a3050e8cf1758f.json`:
+os pods PostgreSQL/RustFS foram trocados, mantendo os mesmos PVCs; SQL e S3
+passaram nos readbacks, o segundo plano não propôs mudanças e a sessão
+`clean-install-arrival-v1` foi preservada. Uma verificação posterior somente de
+leitura confirmou novamente esses resultados, sem treino ou novas inferências.
+
+O primeiro incremento está concluído no escopo de namespace, Secret e release
+Helm próprios no cluster existente. O root Terraform não provisiona a VM nem o
+cluster e não administra API, MLflow ou monitoramento aceitos. Não demonstra
+backup/restore, HA, perda do host ou implantação AWS. Publicação, checks e merge
+da branch deste incremento ainda precisam ser confirmados; não repetir ensaios
+para documentar. [Runbook](LOCAL_IAC.md#aceite-nativo--2026-11-12) · [Evidência do autor](../../references/evidence/local_iac_author_validation_2026-11-12.json).
+
 ## Estado atual — revisão de 2026-11-04
 
 A instalação manual limpa, o acesso portátil e o reboot da segunda VM
@@ -109,6 +124,7 @@ UUIDs, PIDs, ownership, kubeconfig e evidências privadas são de cada ambiente.
 
 | Estado e localização | Continuidade da mesma instalação | Caminho numa instalação nova | Cobertura de recuperação atual |
 | --- | --- | --- | --- |
+| `data/storage/terraform/local-foundation/v1/` — state, ownership, pins, configuração privada, credenciais e planos | Preservar o conjunto sob controle de acesso; pode conter senhas. Perder state/ownership não autoriza adotar recursos ou refazer init | Criar instalação e state próprios; não copiar ownership para se passar pelo ambiente aceito | Gestão declarativa e persistência entre pods aceitas; backup/restore do state e recuperação integral ainda não validados |
 | Código, Helm, políticas, referências e `poetry.lock` no Git | Fixar commit e contratos usados pelos recibos | Checkout de revisão identificada e ambientes instalados pelo lock | Versionamento; não contém dados privados |
 | MLflow: banco `mlflow_kind` e artefatos em `fraud-kind-mlflow` | Preservar metadados e objetos em conjunto: runs, modelos, histórico e aliases | Criar tracking próprio; treinar/registrar sua rodada | Captura `7312832d3d8044999c62d5e556eaf38a` restaurada isoladamente, inclusive a cópia devolvida do Alienware; 65 tabelas/26 objetos e modelo conferidos |
 | Bronze em `data/raw/` e bundles em `data/storage/kind-platform/datasets/` / bucket `fraud-datasets` | Preservar payloads, manifestos e proveniência; disponibilidade futura da origem não é garantia de backup | Adquirir e verificar Bronze; publicar bundle próprio | Não cobertos pela captura do tracking; listar manifestos não verifica todos os payloads S3 |

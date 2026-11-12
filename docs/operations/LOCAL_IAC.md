@@ -1,8 +1,55 @@
 # IaC local: primeiro incremento de implementação
 
-Decisão preparada em 2026-11-04 sobre main `4f6a9f6`. Esta especificação delimita
-implementação e aceite futuros; não registra Terraform aplicado ou novos recursos
-criados. O CI #112 da integração documental foi consultado e concluiu com sucesso.
+Escopo definido em 2026-11-04 sobre main `4f6a9f6`; primeiro incremento aceito
+nativamente em 2026-11-12, conforme saídas fornecidas pelo autor. O CI #112 foi
+o da integração documental anterior, não o aceite da nova implementação.
+As seções de preparação abaixo preservam seu estado à época; o aceite atual
+está na seção seguinte.
+
+## Aceite nativo — 2026-11-12
+
+**Marco concluído:** fundação PostgreSQL/RustFS administrada por Terraform em
+namespace próprio, no cluster KinD já existente. Implementação `d4fefa0`,
+correção delimitada de labels `2ea1ff5`. Publicação, CI e merge deste incremento
+não são inferidos do aceite nativo; ainda precisam ser confirmados.
+
+| Gate | Resultado fornecido pelo autor |
+| --- | --- |
+| Providers/configuração | Terraform 1.17.1, Kubernetes 3.4.0 e Helm 3.3.0 validados na VM |
+| Recursos novos | Dois StatefulSets 1/1, dois PVCs Bound e Services ClusterIP no namespace `fraud-iac-foundation-v1` |
+| Plano após correção | Zero creates e três no-ops; equivalência de labels vazios confirmada pelo guard |
+| Escrita/leitura SQL e S3 | Readbacks verificados no ambiente próprio |
+| Recriação dos pods novos | PostgreSQL e RustFS com UID trocado no recibo do ensaio |
+| Persistência | Identidades dos PVCs preservadas |
+| Segundo plan | Sem mudanças propostas nos recursos |
+| Sessão aceita | Preservada; sem fit ou novas inferências da sessão |
+
+Recibo privado do ensaio:
+`data/storage/terraform/local-foundation/v1/verification-385eb4701b6249ef93a3050e8cf1758f.json`.
+Recebemos o resumo sanitizado desse recibo, não seus bytes completos; nenhum
+SHA256 do arquivo foi informado. A [evidência pública do autor](../../references/evidence/local_iac_author_validation_2026-11-12.json)
+registra os identificadores e os limites sem copiar state ou segredos.
+
+A verificação posterior `iac-verify` retornou `pod_recreation_validated=false`
+porque não recria pods. Isso não desfaz o recibo anterior do ensaio, que trouxe
+`pod_recreation_validated=true`, troca dos dois UIDs e PVCs preservados. O hash
+`67ab24e16402c8e099eb0cf523462fd51be025a1eac522cbec0d75a97e11d526`
+pertence ao plano sem mudanças dessa verificação posterior, não ao arquivo do
+recibo de recriação.
+
+Os PVCs preservados foram PostgreSQL
+`b4034a3c-f606-44e0-8f2b-ad23e212cdaa` (2 GiB) e RustFS
+`8698b057-0fad-4105-a07f-4fc51ead73cd` (4 GiB), StorageClass `standard`.
+O ownership manteve o digest
+`810a2e390ae42d297ed049346bf3ccd869e2a9e266d8d1d8d4cdc0c34dad5270`.
+Persistência de dados após troca de pods não equivale a backup/restore, recuperação
+de host ou HA. O root consome a VM/cluster existentes e não valida AWS ou gestão
+integral da plataforma por Terraform.
+
+Não repetir apply, init, treino ou ensaio apenas para publicar este registro.
+Preservar state, entradas privadas, ownership e recibos; publicar somente código
+e documentação. Para acompanhamento posterior, usar `iac-preflight`/`iac-verify`
+conforme o procedimento, sem interpretar um check de leitura como novo ensaio.
 
 ## Correção delimitada de labels do Secret — 2026-11-11
 

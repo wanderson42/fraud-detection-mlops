@@ -1,6 +1,6 @@
 # Índice da documentação
 
-[IaC local: primeira fundação Terraform](operations/LOCAL_IAC.md): implementação preparada, plano privado revisável e teste opt-in; apply/aceite nativo pendentes.
+[IaC local: primeira fundação Terraform](operations/LOCAL_IAC.md#aceite-nativo--2026-11-12): aceite nativo confirmado, com SQL/S3, troca dos pods, PVCs preservados e plano sem mudanças. Publicação/CI/merge deste incremento ainda não confirmados.
 
 [Retomada identificada de Jobs Silver/Gold](operations/PIPELINE_RECOVERY.md):
 implementação e ensaio nativo aceitos: mesmo Job após término do controlador,

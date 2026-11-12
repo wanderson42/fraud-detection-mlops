@@ -1,5 +1,21 @@
 # Histórico do roadmap até a integração do PR #11
 
+## Aceite da primeira fundação Terraform local — 2026-11-12
+
+O plano de IaC/cloud foi integrado no PR #25 (`4f6a9f6`). A implementação
+`d4fefa0` criou uma fundação própria no cluster existente. Após reboot, três
+no-ops foram recusados por drift de labels do Secret. A correção `2ea1ff5`
+qualificou apenas labels vazios/null/ausentes, mantendo a recusa de alterações
+materiais e a compatibilidade exata dos dois módulos em memória.
+
+O autor confirmou o ensaio nativo: pods PostgreSQL/RustFS trocados, mesmos PVCs,
+SQL/S3 verificados, plano sem mudanças e sessão aceita preservada. O readback
+posterior confirmou a continuidade, sem recriar pods naquela segunda chamada.
+O marco técnico deixa o backlog; publicação/CI/PR/merge ainda precisam ser
+confirmados. VM/cluster não foram provisionados por esse root; AWS, HA,
+backup/restore e perda física continuam fora do aceite. Os recibos históricos
+não foram reescritos. [Evidência](../../references/evidence/local_iac_author_validation_2026-11-12.json).
+
 ## Revisão documental antes do merge do PR #24 — 2026-11-04
 
 A revisão da branch `feat/identified-pipeline-resume` separou os aceites nativos
