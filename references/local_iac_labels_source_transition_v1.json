@@ -1,0 +1,16 @@
+{
+  "schema": "fraud_local_iac_labels_source_transition_v1",
+  "changes": {
+    "scripts/platform/terraform_foundation/controller.py": {
+      "before": "befd83262bbd8c15739497fbeb8bd2f36f452c4e80a7c97fa86f29c5948a4eca",
+      "after": "c100352148785c0015e98645f4d9da9abde84bb53160ed5d5cb7b6a96436225c"
+    },
+    "scripts/platform/terraform_foundation/policy.py": {
+      "before": "70d45b55859c10693a9063a058b9f6418e46b7b9db9c227f55d362fc57da038a",
+      "after": "a9d8d515c1a121047afe0e4150ae60ab700695756986f810419d2f2b7bbe0c23"
+    }
+  },
+  "scope": "exact_empty_secret_labels_representation_only",
+  "owner_receipt_rewritten": false,
+  "state_rewritten": false
+}

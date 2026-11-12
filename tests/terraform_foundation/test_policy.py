@@ -341,3 +341,189 @@ def test_s3_probe_uses_only_new_namespace_endpoint_and_secret(monkeypatch):
         if "valueFrom" in x
     )
     assert not sent[0]["spec"]["automountServiceAccountToken"]
+
+
+@pytest.fixture
+def labels_plan(plan, inputs):
+    for row in plan["resource_changes"]:
+        row["change"]["actions"] = ["no-op"]
+    before = deepcopy(plan["resource_changes"][1]["change"]["after"])
+    before["metadata"][0].update(uid="stable-secret-uid", labels=None)
+    after = deepcopy(before)
+    after["metadata"][0]["labels"] = {}
+    plan["resource_drift"] = [
+        {
+            "address": "kubernetes_secret_v1.credentials",
+            "mode": "managed",
+            "change": {
+                "actions": ["update"],
+                "before": before,
+                "after": after,
+                "after_unknown": {},
+            },
+        }
+    ]
+    return plan
+
+
+@pytest.mark.parametrize(
+    "before,after", [(None, {}), ({}, None), (None, "absent"), ("absent", {})]
+)
+def test_only_empty_labels_representation_is_accepted(labels_plan, inputs, before, after):
+    change = labels_plan["resource_drift"][0]["change"]
+    for name, value in [("before", before), ("after", after)]:
+        if value == "absent":
+            change[name]["metadata"][0].pop("labels", None)
+        else:
+            change[name]["metadata"][0]["labels"] = value
+    original = deepcopy(labels_plan)
+    assert p.plan_policy(labels_plan, inputs, Path("/work/chart")) == {"create": 0, "no-op": 3}
+    assert labels_plan == original  # No state/plan mutation by normalization.
+
+
+@pytest.mark.parametrize(
+    "before,after",
+    [
+        ({}, {"security": "changed"}),
+        ({"owner": "old"}, {}),
+        ({"tier": "one"}, {"tier": "two"}),
+        ([], {}),
+    ],
+)
+def test_actual_label_changes_and_invalid_types_stay_blocked(labels_plan, inputs, before, after):
+    change = labels_plan["resource_drift"][0]["change"]
+    change["before"]["metadata"][0]["labels"] = before
+    change["after"]["metadata"][0]["labels"] = after
+    with pytest.raises(ValueError, match="Material labels"):
+        p.plan_policy(labels_plan, inputs, Path("/work/chart"))
+
+
+@pytest.mark.parametrize(
+    "field,value",
+    [
+        ("uid", "replaced"),
+        ("name", "other-secret"),
+        ("namespace", "fraud-platform"),
+        ("resource_version", "changed"),
+        ("annotations", {p.ANNOTATION: "other-owner"}),
+    ],
+)
+def test_empty_labels_cannot_mask_other_metadata_drift(labels_plan, inputs, field, value):
+    labels_plan["resource_drift"][0]["change"]["after"]["metadata"][0][field] = value
+    with pytest.raises(ValueError):
+        p.plan_policy(labels_plan, inputs, Path("/work/chart"))
+
+
+@pytest.mark.parametrize(
+    "field,value", [("data", {"password": "rotated"}), ("type", "other"), ("immutable", True)]
+)
+def test_empty_labels_cannot_mask_credentials_or_secret_spec_drift(
+    labels_plan, inputs, field, value
+):
+    labels_plan["resource_drift"][0]["change"]["after"][field] = value
+    with pytest.raises(ValueError):
+        p.plan_policy(labels_plan, inputs, Path("/work/chart"))
+
+
+def test_empty_labels_not_accepted_for_another_resource_or_with_desired_update(
+    labels_plan, inputs
+):
+    row = labels_plan["resource_drift"][0]
+    row["address"] = "kubernetes_namespace_v1.foundation"
+    with pytest.raises(ValueError):
+        p.plan_policy(labels_plan, inputs, Path("/work/chart"))
+    row["address"] = "kubernetes_secret_v1.credentials"
+    labels_plan["resource_changes"][0]["change"]["actions"] = ["update"]
+    with pytest.raises(ValueError):
+        p.plan_policy(labels_plan, inputs, Path("/work/chart"))
+
+
+@pytest.fixture
+def transition():
+    saved = {**p.LEGACY_SOURCE_PINS, "chart/main.yaml": "unchanged"}
+    current = {**dict.fromkeys(p.LEGACY_SOURCE_PINS, "a" * 64), "chart/main.yaml": "unchanged"}
+    spec = {
+        "schema": "fraud_local_iac_labels_source_transition_v1",
+        "changes": {
+            name: {"before": old, "after": current[name]}
+            for name, old in p.LEGACY_SOURCE_PINS.items()
+        },
+    }
+    return saved, current, spec
+
+
+def test_exact_transition_advances_in_memory_without_rewriting_original_pins(transition):
+    saved, current, spec = transition
+    original = deepcopy(saved)
+    assert p.reviewed_source_pins(saved, current, spec)
+    assert saved == original
+
+
+@pytest.mark.parametrize(
+    "case", ["extra_path", "wrong_before", "wrong_after", "unknown_original", "other_chart"]
+)
+def test_source_transition_cannot_cover_unreviewed_changes(transition, case):
+    saved, current, spec = transition
+    name = next(iter(p.LEGACY_SOURCE_PINS))
+    if case == "extra_path":
+        spec["changes"]["chart/main.yaml"] = {"before": "unchanged", "after": "changed"}
+    elif case == "wrong_before":
+        spec["changes"][name]["before"] = "unknown"
+    elif case == "wrong_after":
+        spec["changes"][name]["after"] = "different"
+    elif case == "unknown_original":
+        saved[name] = "unknown-original-code"
+    else:
+        current["chart/main.yaml"] = "changed"
+    with pytest.raises(ValueError):
+        p.reviewed_source_pins(saved, current, spec)
+
+
+def test_uncommitted_transition_is_not_used(tmp_path, monkeypatch, transition):
+    saved, current, spec = transition
+    monkeypatch.setattr(c, "ROOT", tmp_path)
+    path = tmp_path / c.SOURCE_TRANSITION
+    path.parent.mkdir(parents=True)
+    path.write_text(json.dumps(spec))
+    monkeypatch.setattr(c, "files", lambda: current)
+    monkeypatch.setattr(
+        c.subprocess, "run", lambda *a, **kw: SimpleNamespace(returncode=1, stdout=b"")
+    )
+    with pytest.raises(ValueError, match="Commit reviewed"):
+        c.source_pins_match(saved)
+
+
+def test_committed_transition_and_working_sources_must_match(tmp_path, monkeypatch):
+    import hashlib
+
+    saved = {**p.LEGACY_SOURCE_PINS, "chart/main.yaml": "unchanged"}
+    contents = {name: ("reviewed:" + name).encode() for name in p.LEGACY_SOURCE_PINS}
+    current = {
+        **{name: hashlib.sha256(data).hexdigest() for name, data in contents.items()},
+        "chart/main.yaml": "unchanged",
+    }
+    spec = {
+        "schema": "fraud_local_iac_labels_source_transition_v1",
+        "changes": {
+            name: {"before": old, "after": current[name]}
+            for name, old in p.LEGACY_SOURCE_PINS.items()
+        },
+    }
+    raw = json.dumps(spec).encode()
+    path = tmp_path / c.SOURCE_TRANSITION
+    path.parent.mkdir(parents=True)
+    path.write_bytes(raw)
+    monkeypatch.setattr(c, "ROOT", tmp_path)
+    monkeypatch.setattr(c, "files", lambda: current)
+
+    def committed(args, **kwargs):
+        name = args[-1].removeprefix("HEAD:")
+        return SimpleNamespace(
+            returncode=0, stdout=raw if name == c.SOURCE_TRANSITION else contents[name]
+        )
+
+    monkeypatch.setattr(c.subprocess, "run", committed)
+    assert c.source_pins_match(saved)
+    current[next(iter(p.LEGACY_SOURCE_PINS))] = "unknown-worktree-code"
+    with pytest.raises(ValueError, match="committed source"):
+        c.source_pins_match(saved)

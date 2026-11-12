@@ -3,6 +3,7 @@
 import argparse
 from contextlib import contextmanager
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -185,15 +186,50 @@ def locked():
             yield work
 
 
+SOURCE_TRANSITION = "references/local_iac_labels_source_transition_v1.json"
+
+
+def source_pins_match(saved):
+    current = files()
+    if saved == current:
+        return True
+    # Read only committed, exact reviewed code; never rewrite owner/state receipts.
+    path = ROOT / SOURCE_TRANSITION
+    p.sha(path)  # Refuse symlinks before reading.
+    raw = path.read_bytes()
+    transition = json.loads(raw)
+    committed = subprocess.run(
+        ["git", "show", "HEAD:" + SOURCE_TRANSITION], cwd=ROOT, capture_output=True, check=False
+    )
+    p.require(
+        committed.returncode == 0 and committed.stdout == raw,
+        "Commit reviewed source transition before native use",
+    )
+    p.require(
+        set(transition.get("changes", {})) == set(p.LEGACY_SOURCE_PINS),
+        "Unexpected source transition paths",
+    )
+    for name, row in transition["changes"].items():
+        committed_source = subprocess.run(
+            ["git", "show", "HEAD:" + name], cwd=ROOT, capture_output=True, check=False
+        )
+        p.require(
+            committed_source.returncode == 0
+            and hashlib.sha256(committed_source.stdout).hexdigest()
+            == row["after"]
+            == current.get(name),
+            "Reviewed source is not the committed source",
+        )
+    return p.reviewed_source_pins(saved, current, transition)
+
+
 def load(work):
     item = p.read(work / "owner.json")
     p.require(item.get("schema") == "fraud_local_iac_owner_v1", "Unknown IaC ownership schema")
     p.require(
         bool(re.fullmatch(r"[a-f0-9]{32}", item.get("owner_id", ""))), "Invalid IaC owner ID"
     )
-    p.require(
-        item["source_pins"] == files(), "IaC sources changed; inspect, do not refresh ownership"
-    )
+    p.require(source_pins_match(item["source_pins"]), "Unreviewed IaC sources")
     p.require(item["cluster"] == f.owner(), "Cluster identity differs")
     target = work / "root"
     current_names = {
@@ -301,6 +337,7 @@ def plan(work):
         if (work / "root/terraform.tfstate").exists()
         else None,
         "counts": counts,
+        "empty_secret_labels_refresh": bool(value.get("resource_drift")),
         "namespace": p.NAMESPACE,
         "release": p.RELEASE,
     }

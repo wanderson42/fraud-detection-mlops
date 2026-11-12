@@ -4,6 +4,35 @@ Decisão preparada em 2026-11-04 sobre main `4f6a9f6`. Esta especificação deli
 implementação e aceite futuros; não registra Terraform aplicado ou novos recursos
 criados. O CI #112 da integração documental foi consultado e concluiu com sucesso.
 
+## Correção delimitada de labels do Secret — 2026-11-11
+
+Após reboot, a fundação nova foi observada pronta, com dois StatefulSets 1/1 e
+PVCs Bound. O diagnóstico do plano mostrou três no-ops, mas resource_drift no
+Secret, somente em metadata.labels. UID, nome, namespace, ownership e credenciais
+permaneceram iguais. A diferença concreta entre os valores dos labels ainda não
+foi recebida; não assumir que qualquer alteração de labels seja inofensiva.
+
+A correção aceita apenas labels ausentes/null/mapa vazio como representações
+equivalentes, em plano de três no-ops do ambiente exato. Labels reais, outra
+metadata, credenciais, UID, recurso, spec ou alterações desejadas continuam
+recusados. O resumo do plano identifica esse caso com
+`empty_secret_labels_refresh=true`. O plano e o state não são editados para
+suprimir a diferença.
+
+Os dois módulos alterados têm uma transição exata de hashes em
+`references/local_iac_labels_source_transition_v1.json`. Para usar o workspace
+já inicializado, a transição e os dois módulos precisam estar commitados com os
+mesmos bytes revisados. A compatibilidade é calculada em memória: não se regrava
+owner.json, credenciais, state, planos anteriores ou a fundação existente.
+Qualquer outro source continua protegido pelos pins originais.
+
+Sequência da correção: aplicar os arquivos, executar regressão offline, commit
+na mesma branch, depois `make iac-preflight` e `make iac-plan`. Não repetir init
+ou o apply original, que foi gerado com state vazio. Após novo plano aceito, o
+gate nativo SQL/S3/pods ainda será necessário para concluir o incremento.
+Se houver labels materiais, preservar o plano e inspecionar sua origem; não
+ampliar a exceção, remover labels ou sobrescrever state para passar no guard.
+
 ## Implementação preparada — execução nativa pendente
 
 A configuração está em `infra/terraform/local-foundation/`; os comandos ficam

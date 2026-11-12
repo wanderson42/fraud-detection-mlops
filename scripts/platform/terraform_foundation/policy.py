@@ -60,12 +60,89 @@ def read(path):
     return json.loads(path.read_bytes())
 
 
+# Only this delivered code pair may advance a previously initialized owner in memory.
+LEGACY_SOURCE_PINS = {
+    "scripts/platform/terraform_foundation/controller.py": "befd83262bbd8c15739497fbeb8bd2f36f452c4e80a7c97fa86f29c5948a4eca",
+    "scripts/platform/terraform_foundation/policy.py": "70d45b55859c10693a9063a058b9f6418e46b7b9db9c227f55d362fc57da038a",
+}
+
+
+def reviewed_source_pins(saved, current, transition):
+    require(
+        transition.get("schema") == "fraud_local_iac_labels_source_transition_v1",
+        "Unknown source transition",
+    )
+    changes = transition.get("changes", {})
+    require(set(changes) == set(LEGACY_SOURCE_PINS), "Unexpected transition paths")
+    advanced = dict(saved)
+    for name, original in LEGACY_SOURCE_PINS.items():
+        row = changes[name]
+        require(row["before"] == original == saved.get(name), "Unreviewed original IaC source")
+        require(row["after"] == current.get(name), "Transition does not match current source")
+        advanced[name] = row["after"]
+    require(advanced == current, "Source change outside reviewed transition")
+    return True
+
+
+def empty_secret_labels_drift(rows, inputs):
+    """Only absent/null/empty-map label representation; no real metadata changes."""
+    require(isinstance(rows, list) and len(rows) == 1, "Drift requires inspection")
+    row = rows[0]
+    require(isinstance(row, dict), "Drift requires inspection")
+    require(
+        row.get("address") == "kubernetes_secret_v1.credentials" and row.get("mode") == "managed",
+        "Unexpected drift resource",
+    )
+    change = row.get("change", {})
+    require(
+        change.get("actions") == ["update"] and not change.get("importing"),
+        "Unexpected drift action",
+    )
+    require(not change.get("after_unknown"), "Unknown drift values refused")
+    before, after = change.get("before"), change.get("after")
+    require(isinstance(before, dict) and isinstance(after, dict), "Missing drift values")
+    bm, am = before.get("metadata"), after.get("metadata")
+    require(
+        isinstance(bm, list) and isinstance(am, list) and len(bm) == len(am) == 1,
+        "Unexpected metadata shape",
+    )
+    b, a = bm[0], am[0]
+    require(isinstance(b, dict) and isinstance(a, dict), "Unexpected metadata values")
+    require(
+        b.get("labels") in (None, {}) and a.get("labels") in (None, {}),
+        "Material labels drift requires inspection",
+    )
+    require(bool(b.get("uid")) and b.get("uid") == a.get("uid"), "Secret UID drift refused")
+    require(
+        a.get("name") == SECRET and a.get("namespace") == NAMESPACE, "Secret target drift refused"
+    )
+    require(
+        a.get("annotations", {}).get(ANNOTATION) == inputs["owner_id"],
+        "Secret owner drift refused",
+    )
+    require(
+        before.get("data") == after.get("data") == inputs["credentials"],
+        "Secret credential drift refused",
+    )
+    require(
+        {k: v for k, v in b.items() if k != "labels"}
+        == {k: v for k, v in a.items() if k != "labels"},
+        "Other metadata drift requires inspection",
+    )
+    require(
+        {k: v for k, v in before.items() if k != "metadata"}
+        == {k: v for k, v in after.items() if k != "metadata"},
+        "Other Secret drift requires inspection",
+    )
+    return True
+
+
 def plan_policy(plan, inputs, chart):
     """Permit only initial creates and later no-ops of the exact three resources."""
     require(plan.get("format_version") == "1.2", "Unsupported Terraform plan format")
     require(not plan.get("errored") and plan.get("complete", True), "Incomplete plan refused")
     require(not plan.get("deferred_changes"), "Deferred plan refused")
-    require(not plan.get("resource_drift"), "Drift requires inspection")
+    drift = plan.get("resource_drift", [])
     require(not plan.get("output_changes"), "Unexpected outputs in plan")
     changes = plan.get("resource_changes", [])
     require({x.get("address") for x in changes} == ADDRESSES, "Unexpected plan resources")
@@ -98,4 +175,7 @@ def plan_policy(plan, inputs, chart):
                 after["values"] == [f'"existingSecret": "{SECRET}"\n'], "Unexpected chart values"
             )
         counts[actions[0]] += 1
+    if drift:
+        require(counts == {"create": 0, "no-op": 3}, "Drift with infrastructure changes refused")
+        empty_secret_labels_drift(drift, inputs)
     return counts
