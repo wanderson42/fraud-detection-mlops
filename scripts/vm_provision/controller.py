@@ -100,7 +100,7 @@ def prepare(args):
             "--name",
             args.name,
             "--ostype",
-            "Ubuntu24_64",
+            "Ubuntu24_LTS_64",
             "--basefolder",
             str(base),
             "--uuid",

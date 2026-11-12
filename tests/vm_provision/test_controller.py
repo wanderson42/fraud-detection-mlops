@@ -137,3 +137,9 @@ def test_partial_inventory_is_not_treated_as_empty(host, monkeypatch):
     )
     with pytest.raises(ValueError, match="inventory"):
         c.create(args)
+
+
+def test_preview_selects_ubuntu_2404_lts_profile(host):
+    args, _ = host
+    command = c.prepare(args)["commands"][0]
+    assert command[command.index("--ostype") + 1] == "Ubuntu24_LTS_64"
