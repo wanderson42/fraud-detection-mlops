@@ -1,5 +1,17 @@
 # Histórico do roadmap até a integração do PR #11
 
+## 2026-11-12 — Fundação integrada e próximo recorte mínimo
+
+O autor informou merge do PR #26 em `e26ee20`, com main sincronizada no Alienware
+e na VM. O próximo incremento prepara prévia/criação de uma VM nova desligada
+via VBoxManage, sem importar VMs ou state. O provider terra-farm/virtualbox se
+declara experimental e não foi incorporado. A ISO Ubuntu foi identificada, mas
+a detecção retornou `NS_ERROR_NOT_IMPLEMENTED`; instalação automática não foi
+validada. Mantemos Ubuntu manual e `vm_setup.sh`, sem Packer, Ansible ou novo
+hipervisor. O foco é reduzir trabalho repetitivo e demonstrar decisões de MLOps
+com custo proporcional ao portfólio. Criação nativa ainda pendente.
+
+
 ## Aceite da primeira fundação Terraform local — 2026-11-12
 
 O plano de IaC/cloud foi integrado no PR #25 (`4f6a9f6`). A implementação

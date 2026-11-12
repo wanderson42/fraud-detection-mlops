@@ -26,3 +26,22 @@ vm-access-stop:
 ## Read tool versions, host budget and inotify; no package installation or cluster changes
 vm-setup-check:
 	bash scripts/vm_setup.sh check
+
+# New, powered-off host VM only. No OS installation, adoption or deletion.
+VM_NEW_NAME ?= fraud-bootstrap-v1
+VM_NEW_BASE ?= $(HOME)/VirtualBox VMs
+VM_ISO ?=
+VM_ISO_SHA256 ?=
+VM_NEW_CPUS ?= 6
+VM_NEW_MEMORY_MIB ?= 8192
+VM_NEW_DISK_GIB ?= 80
+VM_NEW_SSH_PORT ?= 0
+VM_NEW_ARGS = --name "$(VM_NEW_NAME)" --base "$(VM_NEW_BASE)" --iso "$(VM_ISO)" --iso-sha256 "$(VM_ISO_SHA256)" --cpus "$(VM_NEW_CPUS)" --memory-mib "$(VM_NEW_MEMORY_MIB)" --disk-gib "$(VM_NEW_DISK_GIB)" --ssh-port "$(VM_NEW_SSH_PORT)"
+.PHONY: vm-create-plan vm-create
+## Preview a NEW powered-off VirtualBox VM; verify ISO checksum and conflicts; host only
+vm-create-plan:
+	$(VM_CLIENT_PYTHON) -m scripts.vm_provision.controller plan $(VM_NEW_ARGS)
+
+## Create a NEW powered-off VM; no boot, installation, deletion or existing VM modification
+vm-create:
+	$(VM_CLIENT_PYTHON) -m scripts.vm_provision.controller create $(VM_NEW_ARGS)

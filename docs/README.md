@@ -1,6 +1,10 @@
 # Índice da documentação
 
-[IaC local: primeira fundação Terraform](operations/LOCAL_IAC.md#aceite-nativo--2026-11-12): aceite nativo confirmado, com SQL/S3, troca dos pods, PVCs preservados e plano sem mudanças. Publicação/CI/merge deste incremento ainda não confirmados.
+[IaC local: primeira fundação Terraform](operations/LOCAL_IAC.md#aceite-nativo--2026-11-12): aceite nativo confirmado, com SQL/S3, troca dos pods, PVCs preservados e plano sem mudanças. PR #26 integrado em `e26ee20`, com main sincronizada conforme terminal do autor.
+
+[Criação mínima de VM](operations/VM_PROVISIONING.md): prévia e criação desligada
+pela CLI VirtualBox; instalação Ubuntu manual e bootstrap existente. Testes
+offline preparados; aceite nativo da criação ainda pendente.
 
 [Retomada identificada de Jobs Silver/Gold](operations/PIPELINE_RECOVERY.md):
 implementação e ensaio nativo aceitos: mesmo Job após término do controlador,

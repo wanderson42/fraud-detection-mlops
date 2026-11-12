@@ -10,6 +10,11 @@ as fases de instalação do setup não foram reexecutadas.
 
 ## 1. Máquina e checkout
 
+O [auxiliar de criação de VM](VM_PROVISIONING.md) prepara CPU/RAM/disco/NAT/SSH
+via VBoxManage no cliente. Ele cria somente uma VM nova desligada; não instala
+Ubuntu. O percurso manual aceito abaixo permanece válido. O auxiliar tem testes
+offline; ainda não recebeu aceite nativo de criação.
+
 Use uma VM nova com OpenSSH e rede de saída. No VirtualBox, encaminhe uma porta
 **livre do cliente**, ligada a `127.0.0.1`, para a porta 22 do guest. O ensaio usou
 2223; qualquer outra porta serve. Não copie o disco/ownership da VM anterior.

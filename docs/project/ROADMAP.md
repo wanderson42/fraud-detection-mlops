@@ -78,14 +78,14 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — fechamento da entrega atual | Publicar e integrar a fundação Terraform local | Aceite nativo concluído; registrar evidência, publicar a branch, conferir checks da revisão final e concluir PR/merge/sincronização. Não repetir treino, apply ou ensaio para documentar |
-| 2 — após integração | Revisar o próximo recorte de IaC | Decidir explicitamente se ampliar cobertura para VM/cluster ou outra camada agrega valor, com ownership e dados preservados. O primeiro incremento já está encerrado no escopo aceito; nenhuma implantação cloud é obrigatória |
+| Concluído | Integrar a fundação Terraform local | PR #26 integrado em `e26ee20`; main sincronizada no cliente e na VM, conforme terminal do autor. Não inferir resultado específico de CI deste registro |
+| Próximo — em preparação | Criação mínima de VM local | Prévia, criação desligada com CPU/RAM/disco/NAT/SSH configuráveis e conflitos recusados; Ubuntu manual e bootstrap existente. Sem provider VirtualBox adicional; aceite nativo ainda pendente |
 | Sob demanda, fora do fechamento | Qualificações operacionais adicionais | Logout completo da segunda VM exigiria outro ensaio sem conexões abertas; setup automatizado, medição por container, HA e restore integral têm critérios próprios e não reabrem a instalação manual aceita |
 | Opcional, após consolidação local | Aprendizado e POC temporária em nuvem | Confirmar elegibilidade/plano, serviços disponíveis e limite financeiro; escopo mínimo, execução verificável e remoção conferida; sem hospedagem permanente obrigatória |
 | Condicionado | Sucessor do champion | Candidato qualificado, autorização, ativação/rollback com pesos diferentes e recuperação coerente; gates preservados |
 | Projeto separado, posteriormente | Retomar portfólio de energia | Revisar pipeline de treinamento e reprodução em VM; usar o resultado para rever o esboço Terraform daquele repositório |
 
-## Próxima entrega concreta: integrar o aceite da fundação IaC
+## Próxima entrega concreta: criação mínima de VM local
 
 A [primeira fundação](../operations/LOCAL_IAC.md#aceite-nativo--2026-11-12)
 está aceita nativamente sobre a implementação `d4fefa0` e a correção `2ea1ff5`.
@@ -94,9 +94,18 @@ mudanças e preservação da sessão aceita. O plano revisado após a correção
 zero creates e três no-ops; a normalização de labels vazios foi qualificada pelo
 guard, sem reescrever ownership ou state.
 
-Falta publicar/integrar este incremento e confirmar os checks da revisão final.
-A conclusão nativa não é aprovação automática do CI ou merge. Não repetir os
-ensaios aceitos para escrever este registro.
+O autor confirmou merge do PR #26 em `e26ee20` e main sincronizada nas duas
+máquinas. A fundação está integrada; não repetir os ensaios aceitos. Este registro
+não afirma um resultado de CI que não foi fornecido.
+
+A próxima preparação é [criação de VM](../operations/VM_PROVISIONING.md) pela CLI
+VirtualBox: prévia e criação desligada, sem adotar VMs existentes. O provider
+terra-farm não foi adotado por se declarar experimental; a instalação automática
+da ISO não foi validada e não é requisito deste incremento. Ubuntu permanece
+manual; reaproveitamos o setup e os controladores atuais. A configuração, os
+limites e os testes offline estão preparados; a criação real ainda exige aceite
+nativo. Essa decisão prioriza aprendizado útil e manutenção proporcional ao
+portfólio, sem trocar o virtualizador ou adicionar uma plataforma.
 
 O escopo é namespace, Secret e release Helm novos no cluster existente. VM,
 cluster, API, tracking e observabilidade aceitos ficam fora desse state. O
@@ -198,8 +207,8 @@ apenas trocar o provider. [Contrato de providers](https://developer.hashicorp.co
 | Viabilidade cloud documentada | Cenário e região definidos para estimativa, serviços necessários, permissões/rede/armazenamento, custos recorrentes e por uso, estratégia de remoção e limitações dos controladores; sem alegar implantação |
 | Eventual ensaio cloud | Escopo e limite financeiro explicitamente autorizados, implantação real temporária, verificações de acesso/persistência/funcionalidade e remoção conferida; somente então registrar aceite cloud |
 
-Esta atualização documenta o plano de trabalho; ainda não implementa Terraform
-nem executa provisioning. Não transfere ownership dos recursos existentes, não
+O plano inicial desta seção antecedeu a fundação Terraform posteriormente
+implementada e aceita acima. A comparação cloud continua documental; Não transfere ownership dos recursos existentes, não
 altera modelos/sessões e não reabre os ensaios já aceitos. A reprodução local
 continua utilizável sem conta paga; HA, restore integral e operação distribuída
 permanecem qualificações separadas, não promessas implícitas da IaC.

@@ -17,6 +17,7 @@ SHAP, portal e Grafana verificados com identidades próprias. Revisão visual e
 recuperação após reboot confirmadas pelo autor, preservando a sessão.
 
 - [Instalar do zero: roteiro único](docs/operations/CLEAN_INSTALL_RUNBOOK.md).
+- [Criar uma VM local com prévia](docs/operations/VM_PROVISIONING.md): preparação; criação nativa ainda pendente.
 - [Acessar a VM com portas locais automáticas](docs/operations/VM_ACCESS.md).
 - [Evidências e limites da reprodução](docs/operations/VM_REPRODUCTION_PROGRESS.md).
 - [Roadmap](docs/project/ROADMAP.md) e [stakeholders](docs/project/STAKEHOLDERS.md).
