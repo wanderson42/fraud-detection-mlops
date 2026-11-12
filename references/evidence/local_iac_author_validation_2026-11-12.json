@@ -1,0 +1,101 @@
+{
+  "schema": "fraud_local_iac_author_validation_v1",
+  "recorded_on": "2026-11-12",
+  "status": "local_iac_foundation_native_acceptance_recorded",
+  "evidence_origin": "operator_terminal_outputs_and_sanitized_receipt_summary; private_receipt_bytes_not_received",
+  "source_commits": {
+    "implementation_prefix": "d4fefa0",
+    "empty_labels_fix_prefix": "2ea1ff5"
+  },
+  "scope": "new_namespace_secret_and_Helm_PostgreSQL_RustFS_foundation_on_existing_owned_KinD_cluster",
+  "namespace": "fraud-iac-foundation-v1",
+  "release": "fraud-iac-foundation",
+  "owner_id": "25caafff2efc44709ea8e8dc9f68d862",
+  "versions": {
+    "terraform": "1.17.1",
+    "kubernetes_provider": "3.4.0",
+    "helm_provider": "3.3.0"
+  },
+  "reviewed_post_fix_plan": {
+    "plan_id": "faec23266f584919aef8ee012a6af88a",
+    "plan_sha256": "4baaa32b2368d999d54315b32cd693160ab9078246ead8723710a8e8c56e1018",
+    "owner_sha256": "810a2e390ae42d297ed049346bf3ccd869e2a9e266d8d1d8d4cdc0c34dad5270",
+    "state_sha256_at_plan": "6dc07ca8ef73435940cbf7816f925780d7e8e4967ae05cb1459936f476c036d8",
+    "counts": {
+      "create": 0,
+      "no-op": 3
+    },
+    "empty_secret_labels_refresh": true
+  },
+  "native_rehearsal_summary": {
+    "receipt": "data/storage/terraform/local-foundation/v1/verification-385eb4701b6249ef93a3050e8cf1758f.json",
+    "receipt_sha256": null,
+    "status": "local_iac_foundation_verified",
+    "pod_recreation_validated": true,
+    "pods_changed": {
+      "postgres": true,
+      "rustfs": true
+    },
+    "pvc_identities_preserved": true,
+    "second_plan_no_changes": true,
+    "accepted_session_preserved": true,
+    "native_tox_pass_count_and_duration_received": false
+  },
+  "subsequent_readonly_verification": {
+    "status": "local_iac_foundation_verified",
+    "pod_recreation_validated": false,
+    "sql_readback_verified": true,
+    "s3_readback_verified": true,
+    "pvc_identities_preserved": true,
+    "second_plan_no_changes": true,
+    "accepted_session_preserved": true,
+    "fit_executed": false,
+    "new_session_inferences": false,
+    "noop_plan_sha256": "67ab24e16402c8e099eb0cf523462fd51be025a1eac522cbec0d75a97e11d526"
+  },
+  "observed_resources": {
+    "postgres": {
+      "statefulset_uid": "f6879e8b-6f24-4d0b-96de-81177a19fa08",
+      "pvc_uid": "b4034a3c-f606-44e0-8f2b-ad23e212cdaa",
+      "volume": "pvc-b4034a3c-f606-44e0-8f2b-ad23e212cdaa",
+      "capacity": "2Gi",
+      "storage_class": "standard",
+      "pod_uid_at_later_readonly_check": "ade2cedc-7c5b-4f13-972f-368bffe5094a",
+      "image": "postgres:17.11-bookworm@sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826"
+    },
+    "rustfs": {
+      "statefulset_uid": "7406ed51-b4f7-434b-8bbb-31d95a88f52b",
+      "pvc_uid": "8698b057-0fad-4105-a07f-4fc51ead73cd",
+      "volume": "pvc-8698b057-0fad-4105-a07f-4fc51ead73cd",
+      "capacity": "4Gi",
+      "storage_class": "standard",
+      "pod_uid_at_later_readonly_check": "27b8ae3f-6f7d-4c2c-8313-76192edaf82d",
+      "image": "rustfs/rustfs:1.0.1@sha256:1803faef57627e2d9c2e7d89d655d712ddded5389040054987163043fecb6a3c"
+    }
+  },
+  "accepted_session_reference": {
+    "session_id": "clean-install-arrival-v1",
+    "session_sha256": "514212906b8e1f861031cb225e32049bcb024b3ae6dd91462e4cfbf3326761f8",
+    "model_sha256": "aeeed21494cba2ea6e05c38c827eee5ef3464797148a579a22bd16d8cc237e42",
+    "serving_release_id": "3afaa491d21d42afa2888c86ff78af7a",
+    "binding_origin": "earlier_operator_supervision_output; preservation_confirmed_by_native_and_readonly_checks"
+  },
+  "limits": {
+    "vm_or_cluster_provisioned_by_this_root": false,
+    "full_product_managed_by_Terraform": false,
+    "cloud_validated": false,
+    "backup_restore_validated": false,
+    "physical_host_loss_validated": false,
+    "high_availability_validated": false,
+    "fresh_native_reboot_test_of_this_increment_claimed": false,
+    "new_independent_model_quality_confirmation": false
+  },
+  "integration": {
+    "publication_CI_PR_and_merge_of_increment_confirmed": false
+  },
+  "historical_preparation_receipts_rewritten": false,
+  "original_owner_receipt_rewritten": false,
+  "state_rewritten_for_documentation": false,
+  "private_credentials_included": false,
+  "next_step": "publish final branch, check final revision CI, review PR and integrate; do not repeat native tests for documentation"
+}

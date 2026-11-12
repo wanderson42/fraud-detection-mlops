@@ -56,3 +56,5 @@ baseline). O ensaio controla produtor e observador; não mantenha outro watcher.
 explícita de dados, com `PIPELINE_RUN_ID` de 32 hex. Preparação/status não criam
 Jobs; run pode recomputar camadas em uma tentativa nova, sem treino de modelo.
 Consulte `docs/operations/PIPELINE_RECOVERY.md` para retomada e estados recusados.
+
+`terraform.mk`: isolated Terraform foundation init/preflight/plan/apply/readbacks; never adopts platform resources.

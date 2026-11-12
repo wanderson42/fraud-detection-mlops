@@ -1,5 +1,31 @@
 # Síntese para stakeholders
 
+## Fundação Terraform local aceita — 2026-11-12
+
+O autor confirmou o recibo `verification-385eb4701b6249ef93a3050e8cf1758f.json`:
+os pods PostgreSQL/RustFS foram trocados, mantendo os mesmos PVCs; SQL e S3
+passaram nos readbacks, o segundo plano não propôs mudanças e a sessão
+`clean-install-arrival-v1` foi preservada. Uma verificação posterior somente de
+leitura confirmou novamente esses resultados, sem treino ou novas inferências.
+
+O primeiro incremento está concluído no escopo de namespace, Secret e release
+Helm próprios no cluster existente. O root Terraform não provisiona a VM nem o
+cluster e não administra API, MLflow ou monitoramento aceitos. Não demonstra
+backup/restore, HA, perda do host ou implantação AWS. Publicação, checks e merge
+da branch deste incremento ainda precisam ser confirmados; não repetir ensaios
+para documentar. [Runbook](../operations/LOCAL_IAC.md#aceite-nativo--2026-11-12) · [Evidência do autor](../../references/evidence/local_iac_author_validation_2026-11-12.json).
+
+## Primeira fundação Terraform — preparação em 2026-11-04
+
+O [incremento delimitado](../operations/LOCAL_IAC.md) prepara namespace,
+credenciais e release PostgreSQL/RustFS novos no cluster existente. Preserva a
+plataforma aceita, usa state/planos privados e aplica somente plano identificado
+revisado. O teste opt-in verificará SQL/S3, recriação dos pods novos, preservação
+dos volumes e segundo plan sem alterações. Implementação preparada; apply e
+aceite nativo pendentes. Compartilhar o cluster não é isolamento de capacidade
+ou falhas, e este incremento não provisiona computação AWS.
+
+
 ## Estado atual — revisão de 2026-11-04
 
 A instalação manual limpa, o acesso portátil e o reboot da segunda VM

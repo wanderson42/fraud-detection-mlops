@@ -1,5 +1,11 @@
 # Fraud Detection MLOps
 
+**Fundação Terraform local aceita nativamente:** PostgreSQL/RustFS em namespace
+próprio, readbacks SQL/S3, recriação dos dois pods com PVCs preservados e plano
+sem mudanças, mantendo a sessão aceita. A VM e o cluster continuam como
+pré-requisitos deste root; não é implantação AWS ou backup/restore.
+[Escopo, aceite e operação](docs/operations/LOCAL_IAC.md#aceite-nativo--2026-11-12).
+
 [Coordenação da cadeia de dados](docs/operations/PIPELINE_RECOVERY.md#aceite-nativo-da-retomada):
 retomada identificada aceita nativamente na VM: mesmo Job após término do controlador,
 duplicidade recusada, etapas/resultado reutilizados e sessão preservada. A decisão

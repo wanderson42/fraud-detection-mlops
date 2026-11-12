@@ -202,3 +202,12 @@ cython_debug/
 
 # Private nohup access logs and process receipts (also covered by /data/)
 /data/storage/kind-platform/local-access/
+
+# Terraform state/plans/inputs are private; provider lockfiles remain versioned.
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfplan
+**/*.tfvars
+**/*.tfvars.json
+data/storage/terraform/

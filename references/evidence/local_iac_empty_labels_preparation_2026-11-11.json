@@ -1,0 +1,39 @@
+{
+  "schema": "fraud_local_iac_empty_labels_preparation_v1",
+  "status": "conditional_empty_labels_fix_prepared_VM_confirmation_pending",
+  "operator_implementation_commit_prefix": "d4fefa0",
+  "observed": {
+    "planned_actions": "three_no_ops",
+    "drift_resource": "kubernetes_secret_v1.credentials",
+    "changed_metadata_fields": [
+      "labels"
+    ],
+    "outside_metadata_unchanged": true,
+    "uid_unchanged": true,
+    "name_and_namespace_unchanged": true,
+    "owner_matches": true,
+    "credentials_match": true,
+    "actual_labels_values_received": false
+  },
+  "accepted_exception": "only_absent_null_empty_map_labels_with_all_other_Secret_fields_equal_and_three_planned_no_ops",
+  "material_labels_still_refused": true,
+  "other_metadata_and_spec_drift_still_refused": true,
+  "committed_exact_two_module_source_transition_required_for_existing_owner": true,
+  "original_owner_receipt_rewritten": false,
+  "state_rewritten": false,
+  "private_root_HCL_modified": false,
+  "cluster_resources_modified_by_assistant": false,
+  "verification": {
+    "python": "3.14.4",
+    "ruff": "0.16.10",
+    "targeted_tests_passed": 103,
+    "native_test_skipped": 1,
+    "subtests_passed": 14,
+    "elapsed_seconds": 1.16,
+    "full_Poetry_tox_locked_suite_executed": false
+  },
+  "native_acceptance": false,
+  "fit_executed": false,
+  "new_session_inferences": false,
+  "next_gate": "VM tests, commit patch and exact source transition, preflight and new saved plan; do not repeat initial apply"
+}

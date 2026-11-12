@@ -17,6 +17,7 @@ include infra/make/case-explanations.mk
 include infra/make/portal.mk
 include infra/make/access.mk
 include infra/make/vm.mk
+include infra/make/terraform.mk
 include infra/make/development.mk
 include infra/make/science.mk
 

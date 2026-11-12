@@ -1,6 +1,6 @@
 # Roadmap — Fraud Detection MLOps
 
-Revisão em **2026-11-04**. O fechamento funcional ocorreu em
+Revisão em **2026-11-12**. O fechamento funcional ocorreu em
 2026-10-31 (America/Belem); os registros anteriores de boot
 usam 2026-11-01 em UTC. A reprodução foi priorizada antes de Terraform para
 revelar dependências do ambiente do autor. O percurso manual integral foi agora
@@ -71,19 +71,41 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Scripts de setup por fases | Validação local; instalação manual já aceita, sem reexecução das novas fases automatizadas |
 | Backup/restore integral e perda física | Fora do aceite; tracking limitado já tem evidência própria anterior |
 | Retomada identificada Silver/Gold | Aceite nativo concluído; PR #24 integrado em `730e2d4` e main sincronizada nas duas máquinas, conforme informado pelo autor |
+| Plano inicial de IaC e correspondência cloud | Integrado no PR #25 em `4f6a9f6`; separa computação EC2, control plane EKS e alternativas não provisionadas |
+| Primeira fundação Terraform local | Aceite nativo confirmado: namespace/Secret/release próprios, SQL/S3, pods trocados, PVCs preservados, plano sem mudanças e sessão aceita preservada; [aceite](../operations/LOCAL_IAC.md#aceite-nativo--2026-11-12) |
 
 ## Backlog ordenado
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — próxima entrega | Plano de IaC local e portabilidade | Documentar responsabilidades, recursos administrados, proteção de state/dados e correspondência com nuvem; distinguir decisões aprovadas de alternativas e testes futuros |
-| 2 — após definição do plano | Implementação e aceite de Terraform local | Ambiente isolado identificado, providers/locks fixados, plan revisado, apply real e segundo plan sem mudanças; leituras e preservação de dados conferidas |
+| 1 — fechamento da entrega atual | Publicar e integrar a fundação Terraform local | Aceite nativo concluído; registrar evidência, publicar a branch, conferir checks da revisão final e concluir PR/merge/sincronização. Não repetir treino, apply ou ensaio para documentar |
+| 2 — após integração | Revisar o próximo recorte de IaC | Decidir explicitamente se ampliar cobertura para VM/cluster ou outra camada agrega valor, com ownership e dados preservados. O primeiro incremento já está encerrado no escopo aceito; nenhuma implantação cloud é obrigatória |
 | Sob demanda, fora do fechamento | Qualificações operacionais adicionais | Logout completo da segunda VM exigiria outro ensaio sem conexões abertas; setup automatizado, medição por container, HA e restore integral têm critérios próprios e não reabrem a instalação manual aceita |
 | Opcional, após consolidação local | Aprendizado e POC temporária em nuvem | Confirmar elegibilidade/plano, serviços disponíveis e limite financeiro; escopo mínimo, execução verificável e remoção conferida; sem hospedagem permanente obrigatória |
 | Condicionado | Sucessor do champion | Candidato qualificado, autorização, ativação/rollback com pesos diferentes e recuperação coerente; gates preservados |
 | Projeto separado, posteriormente | Retomar portfólio de energia | Revisar pipeline de treinamento e reprodução em VM; usar o resultado para rever o esboço Terraform daquele repositório |
 
-## Próxima entrega concreta: plano de IaC e portabilidade
+## Próxima entrega concreta: integrar o aceite da fundação IaC
+
+A [primeira fundação](../operations/LOCAL_IAC.md#aceite-nativo--2026-11-12)
+está aceita nativamente sobre a implementação `d4fefa0` e a correção `2ea1ff5`.
+A evidência confirma SQL/S3, troca dos dois pods, os mesmos PVCs, plano sem
+mudanças e preservação da sessão aceita. O plano revisado após a correção tinha
+zero creates e três no-ops; a normalização de labels vazios foi qualificada pelo
+guard, sem reescrever ownership ou state.
+
+Falta publicar/integrar este incremento e confirmar os checks da revisão final.
+A conclusão nativa não é aprovação automática do CI ou merge. Não repetir os
+ensaios aceitos para escrever este registro.
+
+O escopo é namespace, Secret e release Helm novos no cluster existente. VM,
+cluster, API, tracking e observabilidade aceitos ficam fora desse state. O
+namespace compartilha capacidade e falhas do cluster; persistência após troca
+de pods não comprova backup/restore ou recuperação integral. Após integração,
+definir o próximo recorte de IaC por objetivo e custo, sem ampliar o escopo
+implicitamente nem transformar a demonstração AWS em obrigação financeira.
+
+### Plano de IaC e portabilidade preservado
 
 O PR #24 foi integrado em `730e2d432f8322098c9b0f6243780f0e327774ae`.
 O autor informou sincronização da main no Alienware e na VM. A
