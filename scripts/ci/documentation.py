@@ -97,7 +97,7 @@ def classify(event, payload):
                 continue
             return {**result, "reason": "executable_or_unknown_change"}
         return {**result, "full": False, "reason": "documentation_only"}
-    except ValueError, KeyError, TypeError, OSError, subprocess.SubprocessError:
+    except (ValueError, KeyError, TypeError, OSError, subprocess.SubprocessError):  # fmt: skip
         # Unknown history, new/deleted notebooks, malformed JSON: never skip the full gate.
         return result
 
@@ -168,7 +168,7 @@ def main():
         try:
             payload = json.loads(Path(args.event_file).read_text()) if args.event_file else {}
             result = classify(args.event, payload)
-        except ValueError, TypeError, OSError:
+        except (ValueError, TypeError, OSError):  # fmt: skip
             result = {"full": True, "base": "", "head": "", "reason": "event_unavailable"}
         if output := os.environ.get("GITHUB_OUTPUT"):
             with open(output, "a") as stream:

@@ -1,5 +1,6 @@
 """Exercise real Git comparisons, fail-closed selection and notebook preservation."""
 
+import ast
 import copy
 import json
 import os
@@ -222,3 +223,8 @@ def test_workflow_keeps_required_quality_name_and_serving_dependency_guards():
     assert delivery["needs"] == "quality"
     assert delivery["if"] == "needs.quality.outputs.full == 'true'"
     assert workflow["jobs"]["serving-consumer"]["needs"] == "serving-delivery"
+
+
+def test_selector_supports_system_python_312_syntax():
+    source = (ROOT / "scripts/ci/documentation.py").read_text()
+    ast.parse(source, feature_version=(3, 12))
