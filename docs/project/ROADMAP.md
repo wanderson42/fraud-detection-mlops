@@ -34,12 +34,18 @@ foi testada offline, sem nova execução nativa do setup corrigido.
 
 | Prioridade | Recorte | Critério para iniciar ou concluir |
 | --- | --- | --- |
-| Revisão atual | Consolidar leitura e demonstração | README, arquitetura, índice, roteiro, stakeholders e notebooks apontam aos mesmos aceites; revisão apenas documental, sem nova capacidade operacional |
+| Revisão atual | Consolidar leitura e CI proporcional | Leitura aponta aos mesmos aceites; Markdown e células Markdown recebem checks leves. Mudança do workflow mantém validação completa; CI ainda precisa de aceite no GitHub |
 | Uso contínuo | Estudar, apresentar e manter | Demonstrar uma instalação aceita, explicar decisões e registrar falhas reais; corrigir defeitos ou divergências observados |
 | Condicionado | Ativar sucessor com pesos diferentes | Candidato passa gates, aprovação explícita e ensaio de ativação/rollback; retenção atual não é pendência artificial |
 | Sob demanda | Qualificações adicionais | Logout completo da segunda VM, execução nativa do setup corrigido, consumo por container, HA ou restore integral só entram por objetivo próprio |
 | Opcional | Estudo ou POC temporária AWS | Arquitetura/custo/região e limite financeiro definidos; nenhum recurso é contratado por este roadmap |
 | Projeto separado | Retomar portfólio de energia | Revisar aquele pipeline e sua reprodução; sem reabrir marcos de fraude já aceitos |
+
+A [política de CI proporcional](../operations/TESTING.md#ci-proporcional-ao-tipo-de-mudança--preparação-em-2026-11-13)
+está preparada na mesma revisão: PR/main/manual, sem rodada duplicada de push
+em branch de trabalho. Código, contratos e workflow continuam com os gates
+completos; nenhuma execução científica ou de infraestrutura foi repetida localmente
+para essa preparação. O CI dessa mudança executável ainda precisa ser conferido.
 
 Não há obrigação de migrar hipervisor, adotar provider VirtualBox, Packer,
 Ansible, broker, feature store, GPU ou outro orquestrador. A prioridade profissional

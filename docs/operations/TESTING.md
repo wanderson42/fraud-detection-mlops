@@ -1,5 +1,40 @@
 # Validação com pytest, Poetry e tox
 
+## CI proporcional ao tipo de mudança — preparação em 2026-11-13
+
+O workflow passa a executar em PR, push na main e chamada manual. Push numa
+branch de trabalho sem PR não inicia outra rodada; o PR valida a branch inteira
+contra sua base, não somente o último commit. Atualizações do mesmo PR cancelam
+execuções anteriores que já usem a política de concorrência. Uma execução
+anterior à mudança de workflow não recebe essa política retroativamente.
+
+| Mudança | Validação |
+| --- | --- |
+| README.md e Markdown em docs/ | Caminhos de links locais, sem instalar o ambiente científico |
+| Células Markdown dos notebooks | Estrutura JSON e comparação que mantém código, outputs, contadores e metadados não Markdown idênticos |
+| Código, contratos, recibos JSON, dependências, workflows ou caminho desconhecido | Suíte completa, Terraform e qualificação/consumo da imagem como antes |
+| Chamada manual ou histórico indisponível | Suíte completa; falha de classificação não autoriza pular testes |
+
+O check `Lint, formatting and tests` mantém o nome e não é omitido pelo filtro
+de paths do workflow. Em revisão exclusivamente documental, ele executa o gate
+leve e os jobs de Terraform/build/consumo são pulados por condição. A revisão
+manual do PR continua útil, mas não exige repetir a suíte científica a cada
+mudança de texto. CI não realiza deploy permanente nem muda o champion.
+
+A detecção usa Python da imagem Ubuntu, Git e biblioteca padrão, sem serviço
+externo ou nova dependência de produção. O gate verifica caminhos relativos de
+links Markdown e reporta novos links quebrados, preservando débitos históricos;
+não consulta URLs externas nem valida fragmentos/âncoras ou renderização. Não
+executa notebooks. Notebook novo/removido ou alteração executável aciona a
+suíte completa; Markdown que introduza novo link local quebrado falha no gate.
+
+O ajuste do próprio CI **é uma mudança executável**: esse PR misto e seu merge
+recebem a validação completa. A economia vale para revisões só documentais
+posteriores. Não usar `[skip ci]` para contornar checks obrigatórios.
+A configuração ainda precisa passar no GitHub; testes locais não são aceite
+nativo dos runners. Não se altera proteção de branch, acesso, segredo ou
+permissão de escrita do token.
+
 ## Cobertura de reprodução e lições do CI — 2026-10-29
 
 Tox isola o ambiente Python e executa os checks configurados. Não isola por si
