@@ -1,9 +1,10 @@
 # Roadmap — Fraud Detection MLOps
 
-Revisão em **2026-11-13**, após [PR #27](https://github.com/wanderson42/fraud-detection-mlops/pull/27)
-integrado em `b75fa3ad963fba019ec643db19fd5240db7d4238`. CI #117 (PR) e #118
+Revisão em **2026-11-13**, após [PR #28](https://github.com/wanderson42/fraud-detection-mlops/pull/28)
+integrado em `5dd94bbb98dd97d8f904ab08422c74078f3a4ebc`. CI #121 (PR) e #122
 (main) aprovados, conferidos no GitHub. O autor confirmou main sincronizada no
-Alienware; a VM do ensaio conserva `e26ee20` como revisão de execução.
+Alienware; a VM do ensaio de bootstrap conserva `e26ee20`. O PR #27 já integrou
+a criação/setup da VM; o PR #28 consolidou a leitura e o CI proporcional.
 
 ## Estado atual
 
@@ -34,7 +35,7 @@ foi testada offline, sem nova execução nativa do setup corrigido.
 
 | Prioridade | Recorte | Critério para iniciar ou concluir |
 | --- | --- | --- |
-| Revisão atual | Consolidar leitura e CI proporcional | Leitura aponta aos mesmos aceites; Markdown e células Markdown recebem checks leves. Mudança do workflow mantém validação completa; CI ainda precisa de aceite no GitHub |
+| Concluído no PR #28 | Consolidar leitura e CI proporcional | CI #121/#122 completos aprovados e cliente sincronizado. O resumo dos notebooks é alinhado a esse fechamento sem reexecutar células; não confundir esses runs completos com medição do caminho leve |
 | Uso contínuo | Estudar, apresentar e manter | Demonstrar uma instalação aceita, explicar decisões e registrar falhas reais; corrigir defeitos ou divergências observados |
 | Condicionado | Ativar sucessor com pesos diferentes | Candidato passa gates, aprovação explícita e ensaio de ativação/rollback; retenção atual não é pendência artificial |
 | Sob demanda | Qualificações adicionais | Logout completo da segunda VM, execução nativa do setup corrigido, consumo por container, HA ou restore integral só entram por objetivo próprio |
@@ -42,10 +43,12 @@ foi testada offline, sem nova execução nativa do setup corrigido.
 | Projeto separado | Retomar portfólio de energia | Revisar aquele pipeline e sua reprodução; sem reabrir marcos de fraude já aceitos |
 
 A [política de CI proporcional](../operations/TESTING.md#ci-proporcional-ao-tipo-de-mudança--preparação-em-2026-11-13)
-está preparada na mesma revisão: PR/main/manual, sem rodada duplicada de push
-em branch de trabalho. Código, contratos e workflow continuam com os gates
-completos; nenhuma execução científica ou de infraestrutura foi repetida localmente
-para essa preparação. O CI dessa mudança executável ainda precisa ser conferido.
+está integrada no PR #28: PR/main/manual, sem rodada duplicada de push em branch
+de trabalho. Código, contratos e workflow continuam com os gates completos.
+A correção de compatibilidade do seletor passou nos CI #121/#122; essas execuções
+foram completas. A seleção documental foi exercitada localmente; não há medição
+nativa do caminho leve registrada neste fechamento. A narrativa dos notebooks
+preserva as células e os outputs e não cria outra rodada científica.
 
 Não há obrigação de migrar hipervisor, adotar provider VirtualBox, Packer,
 Ansible, broker, feature store, GPU ou outro orquestrador. A prioridade profissional
