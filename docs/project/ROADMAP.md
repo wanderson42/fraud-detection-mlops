@@ -68,7 +68,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Supervisão e reboot | Recuperação de processos e após reboot aceitas, mesmos dados e hashes; 32 s da partida das unidades à observação |
 | Logout completo na VM nova | Não validado: o autor confirmou que havia túnel aberto; limite deste ensaio, sem invalidar o reboot |
 | Túneis SSH com portas automáticas | Aceitos nativamente: abertura, reutilização, conflito e stop preservando serviços/sessão |
-| Scripts de setup por fases | Validação local; instalação manual já aceita, sem reexecução das novas fases automatizadas |
+| Scripts de setup por fases | A segunda VM conserva o aceite manual. Na terceira VM, fases executadas em `e26ee20`, com ajuste manual de PATH; correção automática posterior qualificada apenas offline |
 | Backup/restore integral e perda física | Fora do aceite; tracking limitado já tem evidência própria anterior |
 | Retomada identificada Silver/Gold | Aceite nativo concluído; PR #24 integrado em `730e2d4` e main sincronizada nas duas máquinas, conforme informado pelo autor |
 | Plano inicial de IaC e correspondência cloud | Integrado no PR #25 em `4f6a9f6`; separa computação EC2, control plane EKS e alternativas não provisionadas |
@@ -79,13 +79,13 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
 | Concluído | Integrar a fundação Terraform local | PR #26 integrado em `e26ee20`; main sincronizada no cliente e na VM, conforme terminal do autor. Não inferir resultado específico de CI deste registro |
-| Próximo — em preparação | Criação mínima de VM local | Prévia, criação desligada com CPU/RAM/disco/NAT/SSH configuráveis e conflitos recusados; Ubuntu manual e bootstrap existente. Sem provider VirtualBox adicional; aceite nativo ainda pendente |
+| Fechamento atual | Integrar criação de VM e setup aceitos | Prévia/criação, Ubuntu manual, SSH e fases do setup aceitos na terceira VM; registrar e publicar a revisão final, conferir CI/PR/merge. Correção automática de PATH tem testes offline, sem nova execução nativa |
 | Sob demanda, fora do fechamento | Qualificações operacionais adicionais | Logout completo da segunda VM exigiria outro ensaio sem conexões abertas; setup automatizado, medição por container, HA e restore integral têm critérios próprios e não reabrem a instalação manual aceita |
 | Opcional, após consolidação local | Aprendizado e POC temporária em nuvem | Confirmar elegibilidade/plano, serviços disponíveis e limite financeiro; escopo mínimo, execução verificável e remoção conferida; sem hospedagem permanente obrigatória |
 | Condicionado | Sucessor do champion | Candidato qualificado, autorização, ativação/rollback com pesos diferentes e recuperação coerente; gates preservados |
 | Projeto separado, posteriormente | Retomar portfólio de energia | Revisar pipeline de treinamento e reprodução em VM; usar o resultado para rever o esboço Terraform daquele repositório |
 
-## Próxima entrega concreta: criação mínima de VM local
+## Próxima entrega concreta: integrar criação de VM e setup aceitos
 
 A [primeira fundação](../operations/LOCAL_IAC.md#aceite-nativo--2026-11-12)
 está aceita nativamente sobre a implementação `d4fefa0` e a correção `2ea1ff5`.
@@ -98,14 +98,21 @@ O autor confirmou merge do PR #26 em `e26ee20` e main sincronizada nas duas
 máquinas. A fundação está integrada; não repetir os ensaios aceitos. Este registro
 não afirma um resultado de CI que não foi fornecido.
 
-A próxima preparação é [criação de VM](../operations/VM_PROVISIONING.md) pela CLI
-VirtualBox: prévia e criação desligada, sem adotar VMs existentes. O provider
-terra-farm não foi adotado por se declarar experimental; a instalação automática
-da ISO não foi validada e não é requisito deste incremento. Ubuntu permanece
-manual; reaproveitamos o setup e os controladores atuais. A configuração, os
-limites e os testes offline estão preparados; a criação real ainda exige aceite
-nativo. Essa decisão prioriza aprendizado útil e manutenção proporcional ao
-portfólio, sem trocar o virtualizador ou adicionar uma plataforma.
+A [criação de VM e o setup](../operations/VM_PROVISIONING.md#aceite-do-autor--2026-11-12)
+foram aceitos pelo autor na terceira VM `fraud-bootstrap-v1`. A criação desligada
+veio de `21bbe96`; o perfil LTS foi corrigido em `39d97e3` e ajustado na VM
+existente. Ubuntu, OpenSSH e expansão LVM permaneceram manuais. As fases do
+setup rodaram em `e26ee20`. O PATH inicialmente apontou ao Poetry 1.8.2 do
+sistema; ajuste manual e nova sessão confirmaram Poetry 2.4.3 e uv 0.13.8.
+A correção posterior persiste PATH em `.profile` e tem testes offline; não
+atribuir a ela nova execução nativa. Scripts de setup não ficam mais totalmente
+pendentes, mas essa ressalva precisa permanecer explícita.
+
+Falta publicar e integrar a revisão final, com CI e PR conferidos. Não repetir
+produto/treino/sessão nesta VM apenas para fechar este recorte. Após integração,
+consolidar a leitura do portfólio e só abrir outra implementação diante de uma
+lacuna concreta. Provider VirtualBox, outro hipervisor, novo orquestrador e
+implantação AWS não são obrigações deste marco.
 
 O escopo é namespace, Secret e release Helm novos no cluster existente. VM,
 cluster, API, tracking e observabilidade aceitos ficam fora desse state. O

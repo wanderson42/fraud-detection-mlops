@@ -3,8 +3,9 @@
 [IaC local: primeira fundação Terraform](operations/LOCAL_IAC.md#aceite-nativo--2026-11-12): aceite nativo confirmado, com SQL/S3, troca dos pods, PVCs preservados e plano sem mudanças. PR #26 integrado em `e26ee20`, com main sincronizada conforme terminal do autor.
 
 [Criação mínima de VM](operations/VM_PROVISIONING.md): prévia e criação desligada
-pela CLI VirtualBox; instalação Ubuntu manual e bootstrap existente. Testes
-offline preparados; aceite nativo da criação ainda pendente.
+pela CLI VirtualBox; criação e setup aceitos na terceira VM, Ubuntu manual.
+Correção de persistência de PATH posterior ao ensaio tem testes offline.
+Publicação/CI/merge da revisão final ainda pendentes.
 
 [Retomada identificada de Jobs Silver/Gold](operations/PIPELINE_RECOVERY.md):
 implementação e ensaio nativo aceitos: mesmo Job após término do controlador,
@@ -13,7 +14,9 @@ duplicidade recusada e resultado reutilizado; marco anterior preservado.
 [Instalação limpa: roteiro único](operations/CLEAN_INSTALL_RUNBOOK.md) e
 [acesso SSH com portas automáticas](operations/VM_ACCESS.md). O percurso manual
 foi aceito na segunda VM, incluindo visual e reboot; os túneis automáticos também
-passaram no ensaio nativo. Scripts de setup por fases ainda não foram reexecutados. As notas datadas abaixo preservam o histórico anterior.
+passaram no ensaio nativo. O setup por fases foi posteriormente executado na
+terceira VM, com ajuste manual de PATH e nova sessão confirmada; a correção
+automática posterior não teve reexecução nativa. As notas datadas abaixo preservam o histórico anterior.
 
 [Fonte de eventos para instalação nova](operations/SESSION_EVENT_SOURCE.md): Silver verificado → eventos sem scores → sessão própria. Fonte e sessão nova reconciliadas nativamente em 2026-10-30; instalação integral posteriormente aceita em 2026-11-01.
 

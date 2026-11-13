@@ -1,5 +1,44 @@
 # Criar uma VM local: automação mínima
 
+## Aceite do autor — 2026-11-12
+
+A prévia e a criação desligada foram executadas no Alienware com VirtualBox
+7.2.22r175245. A VM `fraud-bootstrap-v1`, UUID
+`04471b53-42c7-4792-a7b2-fb6d085581a2`, recebeu 6 vCPUs, 8192 MiB e disco de
+80 GiB; SSH em `127.0.0.1:45871`. O checksum da ISO foi comparado à publicação
+Ubuntu. Não foi fornecida validação da assinatura do arquivo de checksums.
+
+O perfil inicial `Ubuntu24_64` descrevia Ubuntu 24.10. O autor corrigiu a VM
+existente para `Ubuntu24_LTS_64` e verificou o readback; o script foi corrigido
+em `39d97e3`, com 13 testes aprovados. A criação inicial veio de `21bbe96`.
+Não foi criada outra VM para repetir o ensaio com o script corrigido.
+
+Ubuntu 24.04.5/OpenSSH foram instalados manualmente. A raiz ext4 foi expandida
+manualmente de 39 para 77 GiB após conferir o espaço no LVM. Autenticação por
+chave pública passou em BatchMode; nenhuma chave ou senha integra esta evidência.
+
+O guest usou `e26ee204053e053421b2cc5eb36ac2f63c5341e8`, HEAD destacado. As fases
+`packages`, `docker`, `python`, `tools`, `inotify` e `check` foram executadas.
+Python 3.14.4, Poetry 2.4.3, uv 0.13.8, Engine 29.1.3, Compose 5.7.1,
+Buildx 0.39.0, KinD 0.33.0, kubectl 1.35.9 e Helm 4.3.1 foram reportados.
+Inotify ficou em 512/524288. O acesso ao Docker passou após reconectar o SSH.
+
+O shell inicialmente encontrou Poetry 1.8.2 do sistema. O autor resolveu o
+PATH com `pipx ensurepath` e reconexão, confirmando Poetry 2.4.3 e uv numa nova
+sessão. A correção posterior do setup fixa o uso do Poetry do usuário e acrescenta
+um bloco idempotente a `~/.profile`, sem remover o Poetry do sistema. Essa
+persistência automática tem testes offline, não nova execução nativa do setup.
+O script suporta o login padrão Ubuntu que lê `.profile`; shells customizados
+ou `.bash_profile` que ignore esse arquivo precisam de configuração própria.
+
+O incremento está aceito no escopo de criação, instalação manual e setup.
+A publicação/CI/merge da revisão final ainda precisam ser confirmados. Não
+repetir treino, sessão ou bootstrap completo apenas para registrar o aceite.
+Novo cluster, produto nesta VM, reboot, HA, backup/restore e AWS não foram
+validados neste ensaio. Consulte a
+[evidência](../../references/evidence/vm_provision_bootstrap_author_validation_2026-11-12.json).
+
+
 Preparação em 2026-11-12, sobre a main integrada `e26ee20` (PR #26).
 Executar **no cliente Linux amd64**, com Python 3.11+ e VirtualBox 7.2.x.
 Nenhum novo provider Terraform, serviço ou dependência Python é necessário.
@@ -81,9 +120,7 @@ a verificação recusa avançar em vez de assumir que não há conflitos.
 
 ## Aceite
 
-Testes offline cobrem prévia sem mutações, conflitos, checksum, limites,
-UUID próprio e preservação após falha parcial. Não comprovam execução real da
-CLI 7.2.22, instalação do guest ou nova reprodução do produto. O próximo gate
-nativo é a prévia no cliente e criação desligada, seguida de inspeção da
-configuração e instalação manual quando houver capacidade. Não repetir treino,
-sessão, backup ou ensaios aceitos para validar apenas a criação da máquina.
+A preparação teve testes offline de conflitos, checksum, limites, UUID e
+preservação após falha parcial. A execução nativa posterior está registrada
+no início deste documento. O produto completo nesta VM permanece fora do
+aceite; não repetir treino, sessão ou backup para fechar criação e setup.

@@ -1,5 +1,23 @@
 # Síntese para stakeholders
 
+## Terceira VM: criação e setup aceitos — 2026-11-12
+
+O autor criou `fraud-bootstrap-v1` pelo auxiliar: 6 vCPUs, 8 GiB, disco de
+80 GiB, SSH local em 45871. O perfil Ubuntu foi corrigido para 24.04 LTS;
+a máquina existente recebeu o ajuste sem recriação. Ubuntu/OpenSSH e expansão
+do LVM foram manuais. O setup em `e26ee20` instalou as ferramentas e conferiu
+checksums e inotify. Docker passou após reconectar; Poetry 2.4.3 e uv 0.13.8
+foram confirmados em nova sessão após ajuste manual do PATH.
+
+O setup agora prepara a persistência de PATH em `.profile` e usa explicitamente
+o Poetry do usuário, preservando o do sistema. Essa correção posterior tem
+testes offline; não foi o código executado no ensaio nativo. Não transferir
+aceites de produto, reboot, backup ou Terraform da VM anterior para esta.
+Criação/instalação/setup estão aceitos no escopo demonstrado; revisão final ainda
+precisa de publicação, checks e merge. Nenhuma nova plataforma é necessária.
+[Aceite e limites](../operations/VM_PROVISIONING.md#aceite-do-autor--2026-11-12).
+
+
 ## Próximo incremento proporcional ao portfólio — 2026-11-12
 
 Preparação de criação parametrizada de uma VM nova, desligada, com prévia e
@@ -7,7 +25,8 @@ recusa de conflitos. A CLI VirtualBox atende a essa tarefa sem novo provider;
 Ubuntu permanece manual e reutilizamos o bootstrap já versionado. A instalação
 automática retornou erro de detecção, apesar do reconhecimento da ISO, e não
 foi aceita. Nenhum serviço adicional ou implantação cloud é necessário.
-Testes offline não equivalem à criação real: aceite nativo ainda pendente.
+Preparação posteriormente aceita no ensaio descrito acima; preservamos o
+escopo mínimo. A correção automática de PATH continua qualificada só offline.
 [Escopo e uso](../operations/VM_PROVISIONING.md).
 
 
