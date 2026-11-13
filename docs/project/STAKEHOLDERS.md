@@ -1,5 +1,35 @@
 # Síntese para stakeholders
 
+## Terceira VM: criação e setup aceitos — 2026-11-12
+
+O autor criou `fraud-bootstrap-v1` pelo auxiliar: 6 vCPUs, 8 GiB, disco de
+80 GiB, SSH local em 45871. O perfil Ubuntu foi corrigido para 24.04 LTS;
+a máquina existente recebeu o ajuste sem recriação. Ubuntu/OpenSSH e expansão
+do LVM foram manuais. O setup em `e26ee20` instalou as ferramentas e conferiu
+checksums e inotify. Docker passou após reconectar; Poetry 2.4.3 e uv 0.13.8
+foram confirmados em nova sessão após ajuste manual do PATH.
+
+O setup agora prepara a persistência de PATH em `.profile` e usa explicitamente
+o Poetry do usuário, preservando o do sistema. Essa correção posterior tem
+testes offline; não foi o código executado no ensaio nativo. Não transferir
+aceites de produto, reboot, backup ou Terraform da VM anterior para esta.
+Criação/instalação/setup estão aceitos no escopo demonstrado; revisão final ainda
+precisa de publicação, checks e merge. Nenhuma nova plataforma é necessária.
+[Aceite e limites](../operations/VM_PROVISIONING.md#aceite-do-autor--2026-11-12).
+
+
+## Próximo incremento proporcional ao portfólio — 2026-11-12
+
+Preparação de criação parametrizada de uma VM nova, desligada, com prévia e
+recusa de conflitos. A CLI VirtualBox atende a essa tarefa sem novo provider;
+Ubuntu permanece manual e reutilizamos o bootstrap já versionado. A instalação
+automática retornou erro de detecção, apesar do reconhecimento da ISO, e não
+foi aceita. Nenhum serviço adicional ou implantação cloud é necessário.
+Preparação posteriormente aceita no ensaio descrito acima; preservamos o
+escopo mínimo. A correção automática de PATH continua qualificada só offline.
+[Escopo e uso](../operations/VM_PROVISIONING.md).
+
+
 ## Fundação Terraform local aceita — 2026-11-12
 
 O autor confirmou o recibo `verification-385eb4701b6249ef93a3050e8cf1758f.json`:
@@ -11,9 +41,9 @@ leitura confirmou novamente esses resultados, sem treino ou novas inferências.
 O primeiro incremento está concluído no escopo de namespace, Secret e release
 Helm próprios no cluster existente. O root Terraform não provisiona a VM nem o
 cluster e não administra API, MLflow ou monitoramento aceitos. Não demonstra
-backup/restore, HA, perda do host ou implantação AWS. Publicação, checks e merge
-da branch deste incremento ainda precisam ser confirmados; não repetir ensaios
-para documentar. [Runbook](../operations/LOCAL_IAC.md#aceite-nativo--2026-11-12) · [Evidência do autor](../../references/evidence/local_iac_author_validation_2026-11-12.json).
+backup/restore, HA, perda do host ou implantação AWS. O autor confirmou merge
+do PR #26 em `e26ee20` e sincronização das duas máquinas. Não inferir checks
+específicos nem repetir ensaios para documentar. [Runbook](../operations/LOCAL_IAC.md#aceite-nativo--2026-11-12) · [Evidência do autor](../../references/evidence/local_iac_author_validation_2026-11-12.json).
 
 ## Primeira fundação Terraform — preparação em 2026-11-04
 

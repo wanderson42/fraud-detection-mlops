@@ -1,5 +1,35 @@
 # Histórico do roadmap até a integração do PR #11
 
+## Terceira VM: criação e setup aceitos — 2026-11-12
+
+O autor criou `fraud-bootstrap-v1` pelo auxiliar: 6 vCPUs, 8 GiB, disco de
+80 GiB, SSH local em 45871. O perfil Ubuntu foi corrigido para 24.04 LTS;
+a máquina existente recebeu o ajuste sem recriação. Ubuntu/OpenSSH e expansão
+do LVM foram manuais. O setup em `e26ee20` instalou as ferramentas e conferiu
+checksums e inotify. Docker passou após reconectar; Poetry 2.4.3 e uv 0.13.8
+foram confirmados em nova sessão após ajuste manual do PATH.
+
+O setup agora prepara a persistência de PATH em `.profile` e usa explicitamente
+o Poetry do usuário, preservando o do sistema. Essa correção posterior tem
+testes offline; não foi o código executado no ensaio nativo. Não transferir
+aceites de produto, reboot, backup ou Terraform da VM anterior para esta.
+Criação/instalação/setup estão aceitos no escopo demonstrado; revisão final ainda
+precisa de publicação, checks e merge. Nenhuma nova plataforma é necessária.
+[Aceite e limites](../operations/VM_PROVISIONING.md#aceite-do-autor--2026-11-12).
+
+
+## 2026-11-12 — Fundação integrada e próximo recorte mínimo
+
+O autor informou merge do PR #26 em `e26ee20`, com main sincronizada no Alienware
+e na VM. O próximo incremento prepara prévia/criação de uma VM nova desligada
+via VBoxManage, sem importar VMs ou state. O provider terra-farm/virtualbox se
+declara experimental e não foi incorporado. A ISO Ubuntu foi identificada, mas
+a detecção retornou `NS_ERROR_NOT_IMPLEMENTED`; instalação automática não foi
+validada. Mantemos Ubuntu manual e `vm_setup.sh`, sem Packer, Ansible ou novo
+hipervisor. O foco é reduzir trabalho repetitivo e demonstrar decisões de MLOps
+com custo proporcional ao portfólio. Criação nativa ainda pendente.
+
+
 ## Aceite da primeira fundação Terraform local — 2026-11-12
 
 O plano de IaC/cloud foi integrado no PR #25 (`4f6a9f6`). A implementação

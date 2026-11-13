@@ -6,9 +6,17 @@ recibos próprios. A execução nativa de referência usou Ubuntu 24.04.5 amd64,
 modelos ou checkpoints do laboratório anterior. As etapas foram executadas pelo
 autor sobre `c734cf3a38a66beae57a1b6671e68043cfe20e94`; a automação de setup e
 acesso é posterior. Os túneis já têm [aceite nativo próprio](VM_ACCESS.md#aceite-nativo-dos-acessos);
-as fases de instalação do setup não foram reexecutadas.
+as fases de instalação do setup foram posteriormente executadas na terceira VM
+`fraud-bootstrap-v1` em `e26ee20`, com ajuste manual de PATH após reconexão;
+consulte [o aceite delimitado](VM_PROVISIONING.md#aceite-do-autor--2026-11-12).
 
 ## 1. Máquina e checkout
+
+O [auxiliar de criação de VM](VM_PROVISIONING.md) prepara CPU/RAM/disco/NAT/SSH
+via VBoxManage no cliente. Ele cria somente uma VM nova desligada; não instala
+Ubuntu. O percurso manual aceito abaixo permanece válido. O auxiliar tem testes
+offline e agora tem [aceite de criação e setup](VM_PROVISIONING.md#aceite-do-autor--2026-11-12)
+na terceira VM `fraud-bootstrap-v1`; isso não transfere o aceite do produto.
 
 Use uma VM nova com OpenSSH e rede de saída. No VirtualBox, encaminhe uma porta
 **livre do cliente**, ligada a `127.0.0.1`, para a porta 22 do guest. O ensaio usou
@@ -56,6 +64,8 @@ Após reconectar:
 ```bash
 cd ~/projetos/fraud-detection-mlops
 bash scripts/vm_setup.sh python
+# Reconecte ao SSH e confira Poetry 2.4.3 antes de continuar.
+# Na revisão e26ee20, foi necessário pipx ensurepath antes de reconectar.
 bash scripts/vm_setup.sh tools
 bash scripts/vm_setup.sh inotify
 make vm-setup-check
@@ -75,7 +85,11 @@ Ferramentas existentes são preservadas: compare suas versões antes de continua
 O setup suporta Ubuntu 24.04 amd64. O diagnóstico `check` é somente leitura.
 A fase `inotify` persiste mínimos de 512 instâncias e 524288 watches, preservando
 valores correntes maiores. O grupo docker concede administração do host; use uma
-VM dedicada. A fase Python exige que o checkout ainda não tenha outra `.venv`
+VM dedicada. A fase Python usa explicitamente `~/.local/bin/poetry` e, na correção posterior
+ao ensaio, persiste sua prioridade em `~/.profile`. Não remove o Poetry do
+sistema. Confira `command -v poetry` e `poetry --version` após reconectar.
+Essa persistência presume o login padrão Ubuntu que lê `.profile`; um shell
+customizado pode exigir ajuste próprio. A fase Python exige que o checkout ainda não tenha outra `.venv`
 ativa para um projeto diferente. Não copie `.venv` entre máquinas.
 
 ## 3. Fundação e tracking próprios

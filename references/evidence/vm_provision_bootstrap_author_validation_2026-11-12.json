@@ -1,0 +1,122 @@
+{
+  "schema": "fraud_vm_provision_bootstrap_author_validation_v1",
+  "status": "vm_creation_manual_guest_install_and_setup_verified",
+  "record_date": "2026-11-12",
+  "record_timezone": "America/Belem",
+  "evidence_source": "author_supplied_terminal_outputs_not_independent_remote_inspection",
+  "scope": "new_VM_creation_manual_Ubuntu_install_and_existing_setup_phases_only",
+  "source": {
+    "host_creation_commit": "21bbe96",
+    "guest_profile_fix_commit": "39d97e3",
+    "guest_checkout": "e26ee204053e053421b2cc5eb36ac2f63c5341e8",
+    "guest_detached_HEAD": true,
+    "profile_fix_applied_to_existing_VM_manually": true,
+    "fresh_creation_with_corrected_profile_script_validated": false
+  },
+  "vm": {
+    "name": "fraud-bootstrap-v1",
+    "uuid": "04471b53-42c7-4792-a7b2-fb6d085581a2",
+    "virtualbox": "7.2.22r175245",
+    "cpus": 6,
+    "memory_mib": 8192,
+    "virtual_disk_gib": 80,
+    "initial_state_verified": "poweroff",
+    "corrected_guest_profile": "Ubuntu24_LTS_64",
+    "initial_wrong_profile": "Ubuntu24_64",
+    "ssh_host": "127.0.0.1",
+    "ssh_port": 45871,
+    "guest_os": "Ubuntu 24.04.5 LTS amd64",
+    "kernel": "6.8.0-149-generic",
+    "iso_name": "ubuntu-24.04.5-live-server-amd64.iso",
+    "iso_sha256": "97f3d7ffb032c3eb3b23d2c8be9cc76e60c2c1f2c0146ba5ba9fe01cafae0fd8",
+    "official_checksum_compared": true,
+    "iso_signature_validation_reported": false,
+    "manual_guest_installation_verified": true,
+    "automatic_guest_installation_validated": false
+  },
+  "guest_storage": {
+    "root_filesystem": "ext4",
+    "logical_volume": "/dev/ubuntu-vg/ubuntu-lv",
+    "root_displayed_size": "77G",
+    "root_displayed_available_after_setup": "64G",
+    "volume_group_free_after_expansion": "0g",
+    "manual_LVM_expansion_verified": true
+  },
+  "access": {
+    "public_key_only_installed": true,
+    "batch_mode_hostname_verified": true,
+    "passwordless_key_unlocked_session_verified": true,
+    "fresh_login_user_PATH_verified": true,
+    "private_keys_included": false,
+    "credentials_included": false
+  },
+  "setup": {
+    "phases_executed": [
+      "packages",
+      "docker",
+      "python",
+      "tools",
+      "inotify",
+      "check"
+    ],
+    "scientific_environment": "/home/wanderson/projetos/fraud-detection-mlops/.venv",
+    "versions": {
+      "python": "3.14.4",
+      "poetry_user": "2.4.3",
+      "poetry_system_observed": "1.8.2",
+      "uv": "0.13.8",
+      "docker_engine": "29.1.3",
+      "docker_storage_driver": "overlayfs",
+      "docker_compose": "5.7.1",
+      "docker_buildx": "0.39.0",
+      "kind": "0.33.0",
+      "kubectl": "1.35.9",
+      "helm": "4.3.1+gc0d08d0"
+    },
+    "download_checksums_verified": [
+      "kind",
+      "kubectl",
+      "helm"
+    ],
+    "docker_group_after_reconnect_verified": true,
+    "inotify": {
+      "max_user_instances": 512,
+      "max_user_watches": 524288
+    },
+    "PATH_issue": "default shell found system Poetry 1.8.2; script had user Poetry 2.4.3",
+    "manual_PATH_resolution": "pipx ensurepath then SSH reconnect; user Poetry and uv resolved",
+    "automatic_profile_persistence_fix_prepared_after_native_run": true,
+    "automatic_profile_fix_native_execution_validated": false,
+    "uv_version_recorded_not_pinned": true
+  },
+  "tests_reported_by_author": {
+    "initial_selection": {
+      "passed": 112,
+      "subtests_passed": 14,
+      "pytest_seconds": 5.22,
+      "tox_seconds": 9.39
+    },
+    "guest_profile_fix": {
+      "passed": 13,
+      "pytest_seconds": 0.03,
+      "tox_seconds": 3.0
+    },
+    "ruff_check_passed": true,
+    "ruff_format_passed": true
+  },
+  "limits": {
+    "new_cluster_created": false,
+    "new_model_training_executed": false,
+    "new_product_session_executed": false,
+    "automated_OS_installation_validated": false,
+    "automatic_root_expansion_validated": false,
+    "new_VM_reboot_recovery_validated": false,
+    "cloud_validated": false,
+    "HA_validated": false,
+    "backup_restore_validated": false,
+    "physical_host_loss_validated": false,
+    "post_closure_CI_confirmed": false,
+    "post_closure_merge_confirmed": false,
+    "native_receipt_file_sha256_provided": false
+  }
+}

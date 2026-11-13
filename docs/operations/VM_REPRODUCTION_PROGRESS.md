@@ -1,5 +1,23 @@
 # Reprodução limpa na VM — acompanhamento e aceites
 
+## Terceira VM: criação e setup aceitos — 2026-11-12
+
+O autor criou `fraud-bootstrap-v1` pelo auxiliar: 6 vCPUs, 8 GiB, disco de
+80 GiB, SSH local em 45871. O perfil Ubuntu foi corrigido para 24.04 LTS;
+a máquina existente recebeu o ajuste sem recriação. Ubuntu/OpenSSH e expansão
+do LVM foram manuais. O setup em `e26ee20` instalou as ferramentas e conferiu
+checksums e inotify. Docker passou após reconectar; Poetry 2.4.3 e uv 0.13.8
+foram confirmados em nova sessão após ajuste manual do PATH.
+
+O setup agora prepara a persistência de PATH em `.profile` e usa explicitamente
+o Poetry do usuário, preservando o do sistema. Essa correção posterior tem
+testes offline; não foi o código executado no ensaio nativo. Não transferir
+aceites de produto, reboot, backup ou Terraform da VM anterior para esta.
+Criação/instalação/setup estão aceitos no escopo demonstrado; revisão final ainda
+precisa de publicação, checks e merge. Nenhuma nova plataforma é necessária.
+[Aceite e limites](VM_PROVISIONING.md#aceite-do-autor--2026-11-12).
+
+
 ## Fundação Terraform local aceita — 2026-11-12
 
 O autor confirmou o recibo `verification-385eb4701b6249ef93a3050e8cf1758f.json`:
@@ -26,7 +44,9 @@ não são inferidos do teste local. Após integrar e sincronizar, o próximo tra
 O autor confirmou que havia túnel aberto no ensaio de logout da segunda VM:
 **logout completo não foi validado**. Isso não desfaz o aceite de reboot nem
 exige repetir etapas já aceitas para fechar este marco. A instalação das novas
-fases do script de setup não foi reexecutada; o percurso aceito foi manual.
+fases do script de setup não foi reexecutada nessa segunda VM; o percurso
+aceito nela foi manual. A execução posterior das fases na terceira VM está
+registrada no início deste documento, com a ressalva de PATH.
 Restore integral, perda física e HA continuam fora do escopo demonstrado.
 
 As seções datadas abaixo registram o estado à época, inclusive pendências

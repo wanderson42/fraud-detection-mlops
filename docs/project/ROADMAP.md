@@ -68,7 +68,7 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 | Supervisão e reboot | Recuperação de processos e após reboot aceitas, mesmos dados e hashes; 32 s da partida das unidades à observação |
 | Logout completo na VM nova | Não validado: o autor confirmou que havia túnel aberto; limite deste ensaio, sem invalidar o reboot |
 | Túneis SSH com portas automáticas | Aceitos nativamente: abertura, reutilização, conflito e stop preservando serviços/sessão |
-| Scripts de setup por fases | Validação local; instalação manual já aceita, sem reexecução das novas fases automatizadas |
+| Scripts de setup por fases | A segunda VM conserva o aceite manual. Na terceira VM, fases executadas em `e26ee20`, com ajuste manual de PATH; correção automática posterior qualificada apenas offline |
 | Backup/restore integral e perda física | Fora do aceite; tracking limitado já tem evidência própria anterior |
 | Retomada identificada Silver/Gold | Aceite nativo concluído; PR #24 integrado em `730e2d4` e main sincronizada nas duas máquinas, conforme informado pelo autor |
 | Plano inicial de IaC e correspondência cloud | Integrado no PR #25 em `4f6a9f6`; separa computação EC2, control plane EKS e alternativas não provisionadas |
@@ -78,14 +78,14 @@ continuam no guest. Não atribuímos hashes a arquivos que não foram recebidos.
 
 | Ordem | Recorte | Critério de conclusão |
 | --- | --- | --- |
-| 1 — fechamento da entrega atual | Publicar e integrar a fundação Terraform local | Aceite nativo concluído; registrar evidência, publicar a branch, conferir checks da revisão final e concluir PR/merge/sincronização. Não repetir treino, apply ou ensaio para documentar |
-| 2 — após integração | Revisar o próximo recorte de IaC | Decidir explicitamente se ampliar cobertura para VM/cluster ou outra camada agrega valor, com ownership e dados preservados. O primeiro incremento já está encerrado no escopo aceito; nenhuma implantação cloud é obrigatória |
+| Concluído | Integrar a fundação Terraform local | PR #26 integrado em `e26ee20`; main sincronizada no cliente e na VM, conforme terminal do autor. Não inferir resultado específico de CI deste registro |
+| Fechamento atual | Integrar criação de VM e setup aceitos | Prévia/criação, Ubuntu manual, SSH e fases do setup aceitos na terceira VM; registrar e publicar a revisão final, conferir CI/PR/merge. Correção automática de PATH tem testes offline, sem nova execução nativa |
 | Sob demanda, fora do fechamento | Qualificações operacionais adicionais | Logout completo da segunda VM exigiria outro ensaio sem conexões abertas; setup automatizado, medição por container, HA e restore integral têm critérios próprios e não reabrem a instalação manual aceita |
 | Opcional, após consolidação local | Aprendizado e POC temporária em nuvem | Confirmar elegibilidade/plano, serviços disponíveis e limite financeiro; escopo mínimo, execução verificável e remoção conferida; sem hospedagem permanente obrigatória |
 | Condicionado | Sucessor do champion | Candidato qualificado, autorização, ativação/rollback com pesos diferentes e recuperação coerente; gates preservados |
 | Projeto separado, posteriormente | Retomar portfólio de energia | Revisar pipeline de treinamento e reprodução em VM; usar o resultado para rever o esboço Terraform daquele repositório |
 
-## Próxima entrega concreta: integrar o aceite da fundação IaC
+## Próxima entrega concreta: integrar criação de VM e setup aceitos
 
 A [primeira fundação](../operations/LOCAL_IAC.md#aceite-nativo--2026-11-12)
 está aceita nativamente sobre a implementação `d4fefa0` e a correção `2ea1ff5`.
@@ -94,9 +94,25 @@ mudanças e preservação da sessão aceita. O plano revisado após a correção
 zero creates e três no-ops; a normalização de labels vazios foi qualificada pelo
 guard, sem reescrever ownership ou state.
 
-Falta publicar/integrar este incremento e confirmar os checks da revisão final.
-A conclusão nativa não é aprovação automática do CI ou merge. Não repetir os
-ensaios aceitos para escrever este registro.
+O autor confirmou merge do PR #26 em `e26ee20` e main sincronizada nas duas
+máquinas. A fundação está integrada; não repetir os ensaios aceitos. Este registro
+não afirma um resultado de CI que não foi fornecido.
+
+A [criação de VM e o setup](../operations/VM_PROVISIONING.md#aceite-do-autor--2026-11-12)
+foram aceitos pelo autor na terceira VM `fraud-bootstrap-v1`. A criação desligada
+veio de `21bbe96`; o perfil LTS foi corrigido em `39d97e3` e ajustado na VM
+existente. Ubuntu, OpenSSH e expansão LVM permaneceram manuais. As fases do
+setup rodaram em `e26ee20`. O PATH inicialmente apontou ao Poetry 1.8.2 do
+sistema; ajuste manual e nova sessão confirmaram Poetry 2.4.3 e uv 0.13.8.
+A correção posterior persiste PATH em `.profile` e tem testes offline; não
+atribuir a ela nova execução nativa. Scripts de setup não ficam mais totalmente
+pendentes, mas essa ressalva precisa permanecer explícita.
+
+Falta publicar e integrar a revisão final, com CI e PR conferidos. Não repetir
+produto/treino/sessão nesta VM apenas para fechar este recorte. Após integração,
+consolidar a leitura do portfólio e só abrir outra implementação diante de uma
+lacuna concreta. Provider VirtualBox, outro hipervisor, novo orquestrador e
+implantação AWS não são obrigações deste marco.
 
 O escopo é namespace, Secret e release Helm novos no cluster existente. VM,
 cluster, API, tracking e observabilidade aceitos ficam fora desse state. O
@@ -198,8 +214,8 @@ apenas trocar o provider. [Contrato de providers](https://developer.hashicorp.co
 | Viabilidade cloud documentada | Cenário e região definidos para estimativa, serviços necessários, permissões/rede/armazenamento, custos recorrentes e por uso, estratégia de remoção e limitações dos controladores; sem alegar implantação |
 | Eventual ensaio cloud | Escopo e limite financeiro explicitamente autorizados, implantação real temporária, verificações de acesso/persistência/funcionalidade e remoção conferida; somente então registrar aceite cloud |
 
-Esta atualização documenta o plano de trabalho; ainda não implementa Terraform
-nem executa provisioning. Não transfere ownership dos recursos existentes, não
+O plano inicial desta seção antecedeu a fundação Terraform posteriormente
+implementada e aceita acima. A comparação cloud continua documental; Não transfere ownership dos recursos existentes, não
 altera modelos/sessões e não reabre os ensaios já aceitos. A reprodução local
 continua utilizável sem conta paga; HA, restore integral e operação distribuída
 permanecem qualificações separadas, não promessas implícitas da IaC.

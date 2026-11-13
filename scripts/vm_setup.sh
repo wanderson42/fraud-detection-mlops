@@ -60,17 +60,24 @@ case "$phase" in
     ;;
   python)
     command -v uv >/dev/null || pipx install uv
-    command -v poetry >/dev/null || pipx install 'poetry==2.4.3'
-    [[ "$(poetry --version)" == 'Poetry (version 2.4.3)' ]] || {
+    poetry_bin="$HOME/.local/bin/poetry"
+    [[ -x "$poetry_bin" ]] || pipx install 'poetry==2.4.3'
+    [[ "$("$poetry_bin" --version)" == 'Poetry (version 2.4.3)' ]] || {
       echo 'Use Poetry 2.4.3; existing installation was preserved.' >&2; exit 2;
     }
+    # Fresh Ubuntu login shells read ~/.profile. Keep the system Poetry intact.
+    marker='# fraud-vm-setup: prefer user-installed tools'
+    if ! grep -Fqx "$marker" "$HOME/.profile" 2>/dev/null; then
+      printf '\n%s\n%s\n' "$marker" 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.profile"
+    fi
     uv python install 3.14.4
     cd "$repo_root"
-    poetry config virtualenvs.in-project true --local
-    poetry env use "$(uv python find 3.14.4)"
-    poetry check --lock
-    poetry sync --only main,pipeline,dev
-    poetry run python --version
+    "$poetry_bin" config virtualenvs.in-project true --local
+    "$poetry_bin" env use "$(uv python find 3.14.4)"
+    "$poetry_bin" check --lock
+    "$poetry_bin" sync --only main,pipeline,dev
+    "$poetry_bin" run python --version
+    echo 'Reconnect SSH, then check command -v poetry and poetry --version.'
     ;;
   tools)
     stage="$(mktemp -d)"

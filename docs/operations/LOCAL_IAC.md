@@ -10,8 +10,9 @@ está na seção seguinte.
 
 **Marco concluído:** fundação PostgreSQL/RustFS administrada por Terraform em
 namespace próprio, no cluster KinD já existente. Implementação `d4fefa0`,
-correção delimitada de labels `2ea1ff5`. Publicação, CI e merge deste incremento
-não são inferidos do aceite nativo; ainda precisam ser confirmados.
+correção delimitada de labels `2ea1ff5`. O autor confirmou merge do PR #26 em
+`e26ee20` e main sincronizada no cliente e na VM. Nenhum resultado específico
+de CI é inferido do registro de sincronização.
 
 | Gate | Resultado fornecido pelo autor |
 | --- | --- |
