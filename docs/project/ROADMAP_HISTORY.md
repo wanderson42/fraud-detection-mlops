@@ -1,4 +1,19 @@
-# Histórico do roadmap até a integração do PR #11
+# Histórico de decisões e aceites do roadmap
+
+## 2026-11-13 — PR #27 integrado e apresentação consolidada
+
+O PR #27 foi integrado em `b75fa3ad963fba019ec643db19fd5240db7d4238`.
+CI #117 do PR e #118 da main terminaram com sucesso, conferidos no GitHub;
+o autor confirmou o Alienware sincronizado. O checkout do ensaio na terceira
+VM conserva `e26ee20`. Criação e setup não permanecem como integração pendente.
+
+A revisão documental separa estado atual de registros históricos no README,
+índice, arquitetura, roteiro, roadmap e stakeholders. Corrige referências
+superadas a serving apenas sintético, backend MLflow SQLite e ausência da
+ligação eventos → HTTP. Os textos anteriores continuam em seções recolhíveis,
+evidências permanecem intactas e células antigas dos notebooks são preservadas.
+Não há código novo, infraestrutura, treino, sessão, promoção ou teste nativo.
+O foco passa à apresentação e manutenção proporcionais ao portfólio.
 
 ## Terceira VM: criação e setup aceitos — 2026-11-12
 

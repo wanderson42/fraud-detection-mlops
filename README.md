@@ -1,5 +1,134 @@
 # Fraud Detection MLOps
 
+Laboratório de MLOps desenvolvido por **Wanderson Ferreira** para priorizar uma
+fila de investigação de fraude usando apenas a informação disponível no momento
+da decisão. Usa dados simulados do Fraud Detection Handbook, features causais,
+validação temporal e feedback posterior.
+
+O projeto conecta dados → treinamento rastreado → Registry → API HTTP → triagem
+→ investigação e monitoramento. O score ordena risco; não é uma probabilidade
+calibrada nem uma autorização de bloqueio de pagamentos.
+
+**Estado em 2026-11-13:** produto e reprodução limpa aceitos no laboratório;
+fundação Terraform isolada e auxiliar de criação/setup de VM integrados.
+O [PR #27](https://github.com/wanderson42/fraud-detection-mlops/pull/27) entrou em
+`b75fa3a`, com CI #117/#118 aprovados. O cliente foi sincronizado; a VM do ensaio
+de bootstrap conserva `e26ee20` como revisão de execução.
+
+## Começar
+
+| Seu objetivo | Caminho |
+| --- | --- |
+| Entender o estudo de caso | [Problema e decisões](docs/project/PROBLEM_CONTEXT.md) → [arquitetura](docs/ARCHITECTURE.md) |
+| Avaliar o portfólio e suas evidências | [Roteiro de demonstração](docs/operations/PORTFOLIO_WALKTHROUGH.md) |
+| Reproduzir numa VM nova | [Runbook de instalação limpa](docs/operations/CLEAN_INSTALL_RUNBOOK.md) |
+| Criar a VM opcionalmente pela CLI | [Criação com prévia e bootstrap](docs/operations/VM_PROVISIONING.md) |
+| Abrir portal, Grafana e MLflow de uma VM pronta | [Acesso SSH com portas locais livres](docs/operations/VM_ACCESS.md) |
+| Inspecionar ciência, código e decisões | [Notebook principal](notebooks/fraud_detection_mlops.ipynb), [Model Card](docs/modeling/MODEL_CARD.md) e [roadmap](docs/project/ROADMAP.md) |
+
+## O que foi demonstrado
+
+| Competência | Evidência e limite |
+| --- | --- |
+| Engenharia de dados e causalidade | Bronze/Silver/Gold identificados; features calculadas somente com o passado e rótulos disponíveis; [pipeline](docs/data/DATA_PIPELINE.md) |
+| Experimentos e avaliação | Três candidatos, Inputs no MLflow, validação temporal e gates explícitos; [rodada canônica](docs/operations/OPERATIONAL_ROUND.md) |
+| Entrega e recuperação | Modelo identificado no Registry e na API; troca de release, falha injetada e rollback verificados; [entrega](docs/operations/MODEL_UPDATES.md) |
+| Operação via HTTP e investigação | Na reprodução limpa: 200 decisões, 13 alertas, 199 clientes e feedback reconciliado; cinco explicações SHAP preparadas; [sessão](docs/operations/PRODUCT_SESSION.md) e [portal](docs/operations/UNIFIED_PORTAL.md) |
+| Observabilidade | Mesma sessão no Prometheus/Grafana, saúde e expiração/retomada da coleta; [monitoramento](docs/operations/SESSION_MONITORING.md) |
+| Reprodutibilidade e IaC | Produto refeito numa segunda VM; criação/setup numa terceira; Terraform aceito para namespace/Secret/release próprios; [aceites por ambiente](docs/operations/VM_REPRODUCTION_PROGRESS.md) |
+| Testes e CI | Ruff, pytest e tox, testes offline separados dos ensaios nativos; [estratégia de testes](docs/operations/TESTING.md) |
+
+Uma referência histórica, distinta da reprodução limpa, avaliou o replay de
+16–30/09/2018: AP transacional **0,578783**; precisão **52,86%** e recall
+**68,21%** da fila de cliente-dia. População, comparação com Top-100 e limites
+estão na [evidência da correção numérica](docs/operations/NUMERICAL_CORRECTIVE_REPLAY.md#resultado-nativo-informado-pelo-autor--2026-10-13).
+Essa janela já foi observada; sua repetição operacional não é nova confirmação
+independente de qualidade. As contagens de 200 decisões acima são de integração,
+não outra estimativa da mesma qualidade nem perdas financeiras evitadas.
+
+## Arquitetura em uma página
+
+```mermaid
+flowchart TD
+    D["Handbook simulado"] --> ETL["Bronze, Silver e Gold"]
+    ETL --> T["Treino e validação temporal"]
+    T --> M["MLflow e Registry"]
+    M --> A["API e gateway"]
+    E["Eventos históricos"] --> C["Features causais"]
+    C --> A
+    A --> S["Sessão e triagem"]
+    F["Feedback posterior"] --> S
+    S --> P["Portal e SHAP preparado"]
+    S --> O["Prometheus e Grafana"]
+```
+
+Python/Poetry sustentam o código; DuckDB/Parquet atendem ao processamento
+analítico; PostgreSQL/RustFS dão suporte ao tracking e artefatos; SQLite mantém
+ledgers/checkpoints locais. Docker, KinD e Helm executam a plataforma. Terraform
+administra uma fundação isolada no cluster existente; a VM é criada pelo auxiliar
+VBoxManage e o Ubuntu é instalado manualmente. A [arquitetura detalhada](docs/ARCHITECTURE.md)
+explica ownership, persistência e a comparação documental com AWS.
+
+## Reprodução e desenvolvimento
+
+O percurso de referência usa Ubuntu 24.04 amd64, Python 3.14.4, Poetry 2.4.3,
+6 vCPUs, 8 GiB de RAM e disco de 80 GiB. As dependências principais seguem
+`poetry.lock`; o runbook discrimina versões fixadas e dependências externas.
+Há instalação, aquisição de dados e preparação de artefatos: clonar o Git não
+copia modelos, bancos, credenciais ou uma sessão pronta.
+
+Com o ambiente Python já preparado, execute na raiz:
+
+```bash
+make validate
+```
+
+Esse comando executa os checks definidos em tox, Ruff e pytest; não substitui
+aceite nativo de VM/Kubernetes. Para instalar, use o runbook completo. Para
+apresentar resultados aceitos, abra seus acessos: não repita treinamento, replay,
+reboot ou falhas apenas para exibir o laboratório.
+
+## Decisões e limites
+
+O escopo é um portfólio reproduzível sem contratação obrigatória de nuvem.
+Não foram demonstrados produção bancária, HA, SLA, recuperação integral por
+perda física ou implantação AWS. O backup/restore de tracking tem aceite
+limitado próprio; isso não é backup integral da plataforma.
+
+Cada VM tem seu aceite: a segunda recebeu o produto completo e ensaio de reboot;
+a terceira recebeu criação, Ubuntu manual e setup. O ajuste manual de PATH foi
+verificado após reconexão; a correção automática posterior tem testes offline.
+Logout completo da segunda VM não foi validado. Veja [evidências e limites](docs/operations/VM_REPRODUCTION_PROGRESS.md).
+
+Novas ferramentas entram por necessidade demonstrada. Broker, feature store,
+GPU e novo orquestrador não são requisitos para fechar este estudo de caso.
+As [hipóteses AWS](docs/project/ROADMAP.md) são um caminho de estudo, não uma
+implantação validada nem a simples troca de um provider.
+
+## Organização e contribuição
+
+O pacote `fraud_detection_mlops/` reúne contratos, dados, features, algoritmos,
+avaliação, integrações, streaming e serving. `scripts/` contém controladores;
+`infra/` concentra Make, Helm, imagens e Terraform; `tests/` acompanha essas
+responsabilidades. `references/` guarda protocolos e evidências públicas.
+Volumes, recibos privados, bancos e segredos permanecem fora do Git.
+
+Para acrescentar um algoritmo, siga o [contrato de contribuição de modelos](docs/modeling/CONTRIBUTING_MODELS.md)
+e o [exemplo executável](examples/model_contribution.py). Compatibilidade não
+autoriza abrir holdout, alterar um gate ou promover outro champion.
+O [índice da documentação](docs/README.md) organiza os demais caminhos.
+
+## Registros históricos preservados
+
+As notas abaixo conservam o texto anterior à revisão de 2026-11-13. Datas,
+pendências e próximos passos nelas pertencem aos respectivos recortes; para o
+estado atual, use a parte principal deste documento e o roadmap.
+
+<details>
+<summary>Abrir registros anteriores à consolidação do portfólio</summary>
+
+# Fraud Detection MLOps
+
 **Fundação Terraform local aceita nativamente:** PostgreSQL/RustFS em namespace
 próprio, readbacks SQL/S3, recriação dos dois pods com PVCs preservados e plano
 sem mudanças, mantendo a sessão aceita. A VM e o cluster continuam como
@@ -662,3 +791,5 @@ registra os testes e a revisão visual, preservando as fontes de sessão e avali
 A [revisão de footprint das imagens](docs/operations/IMAGE_FOOTPRINT.md) distingue
 as otimizações de build existentes das medições ainda necessárias para o conjunto
 da infraestrutura.
+
+</details>

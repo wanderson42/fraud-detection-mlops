@@ -1,5 +1,53 @@
 # Síntese para stakeholders
 
+Estado em **2026-11-13**. O projeto apoia a priorização de investigação de fraude
+com dados simulados: pontua transações, organiza uma fila limitada e oferece
+contexto verificável ao analista. Não bloqueia pagamentos nem estima perdas
+financeiras evitadas.
+
+## O que está entregue
+
+| Público | Entrega verificável |
+| --- | --- |
+| Analista | Portal com sessão, fila, caso, feedback posterior e explicações SHAP quando preparadas |
+| Equipe de ML | Validação temporal, comparação rastreada de candidatos, Registry e gates de promoção |
+| Operação | API identificada, métricas da mesma sessão, supervisão e recuperação no escopo dos ensaios |
+| Outra pessoa que reproduz | Runbook integral, dependências explícitas, ownership próprio, criação de VM opcional e acesso com portas livres |
+| Avaliador técnico | Código, contratos, CI, notebooks e evidências com populações e limitações identificadas |
+
+A segunda VM recebeu o produto completo com dados/modelos próprios, revisão
+visual e reboot. A terceira recebeu criação, Ubuntu manual, SSH e setup; não
+recebeu novo cluster ou produto. O PATH foi ajustado manualmente e confirmado
+em nova sessão; a correção automática posterior tem testes offline.
+
+A fundação Terraform isolada está integrada pelo PR #26. O [PR #27](https://github.com/wanderson42/fraud-detection-mlops/pull/27)
+integrou criação/setup em `b75fa3a`, com CI #117/#118 aprovados e cliente
+sincronizado. Essa integração não permanece pendente.
+
+## Valor e próximos passos
+
+O portfólio demonstra competências de dados, avaliação temporal, entrega,
+observabilidade, recuperação e reprodução. A revisão atual torna a apresentação
+mais direta e preserva o histórico. O próximo trabalho deve surgir de uso,
+estudo ou lacuna concreta; não há ferramenta adicional obrigatória.
+
+A comparação AWS é documental. Produção, HA, SLA, backup integral e perda física
+não foram demonstrados. Os dados são simulados; integração funcional não mede
+eficácia em fraude bancária real. Consulte o [roadmap atual](ROADMAP.md), o
+[roteiro de apresentação](../operations/PORTFOLIO_WALKTHROUGH.md) e os
+[aceites por ambiente](../operations/VM_REPRODUCTION_PROGRESS.md).
+
+## Registros históricos preservados
+
+As notas abaixo conservam o texto anterior à revisão de 2026-11-13. Datas,
+pendências e próximos passos nelas pertencem aos respectivos recortes; para o
+estado atual, use a parte principal deste documento e o roadmap.
+
+<details>
+<summary>Abrir registros anteriores à consolidação do portfólio</summary>
+
+# Síntese para stakeholders
+
 ## Terceira VM: criação e setup aceitos — 2026-11-12
 
 O autor criou `fraud-bootstrap-v1` pelo auxiliar: 6 vCPUs, 8 GiB, disco de
@@ -1096,3 +1144,5 @@ operação, ML e gestão de risco. Os ensaios sintéticos da CI continuam qualif
 a imagem sem alterar o champion. A retirada não representa uma nova promoção de
 modelo nem um novo ensaio de parada/subida.
 [Evidência](../../references/evidence/synthetic_serving_retirement_author_validation_2026-10-23.json).
+
+</details>

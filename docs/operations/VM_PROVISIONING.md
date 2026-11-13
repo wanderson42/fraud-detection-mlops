@@ -32,7 +32,9 @@ O script suporta o login padrão Ubuntu que lê `.profile`; shells customizados
 ou `.bash_profile` que ignore esse arquivo precisam de configuração própria.
 
 O incremento está aceito no escopo de criação, instalação manual e setup.
-A publicação/CI/merge da revisão final ainda precisam ser confirmados. Não
+O PR #27 foi integrado em `b75fa3a`, com CI #117/#118 aprovados; o autor
+confirmou o cliente sincronizado em 2026-11-13. A terceira VM conserva `e26ee20`
+como revisão do ensaio. Não
 repetir treino, sessão ou bootstrap completo apenas para registrar o aceite.
 Novo cluster, produto nesta VM, reboot, HA, backup/restore e AWS não foram
 validados neste ensaio. Consulte a

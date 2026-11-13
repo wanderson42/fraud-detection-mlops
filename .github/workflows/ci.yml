@@ -2,14 +2,40 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
+# Superseded PR runs can be cancelled; main validations remain independent.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
+  changes:
+    name: Select CI checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      full: ${{ steps.scope.outputs.full }}
+      base: ${{ steps.scope.outputs.base }}
+      head: ${{ steps.scope.outputs.head }}
+    steps:
+      - name: Checkout comparison history
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Select complete or documentation checks
+        id: scope
+        run: python3 -m scripts.ci.documentation scope
+
   terraform-templates:
+    needs: changes
+    if: ${{ !cancelled() && needs.changes.outputs.full != 'false' }}
     name: Validate isolated Terraform configuration
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -26,6 +52,10 @@ jobs:
           bash scripts/check_terraform.sh
 
   quality:
+    needs: changes
+    if: ${{ !cancelled() }}
+    outputs:
+      full: ${{ needs.changes.outputs.full != 'false' }}
     name: Lint, formatting and tests
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -39,25 +69,39 @@ jobs:
         uses: actions/checkout@v7
         with:
           persist-credentials: false
+          fetch-depth: 0
+
+      - name: Check documentation paths and notebook structure
+        if: needs.changes.outputs.base != ''
+        env:
+          BASE_SHA: ${{ needs.changes.outputs.base }}
+          HEAD_SHA: ${{ needs.changes.outputs.head }}
+        run: python3 -m scripts.ci.documentation check --base "$BASE_SHA" --head "$HEAD_SHA"
 
       - name: Set up Python
+        if: needs.changes.outputs.full != 'false'
         uses: actions/setup-python@v7
         with:
           python-version: "3.14.4"
 
       - name: Install Poetry
+        if: needs.changes.outputs.full != 'false'
         run: python -m pip install "poetry==2.4.3"
 
       - name: Validate project and lockfile
+        if: needs.changes.outputs.full != 'false'
         run: poetry check --lock
 
       - name: Install dependencies and project
+        if: needs.changes.outputs.full != 'false'
         run: poetry install
 
       - name: Run isolated quality checks with tox
+        if: needs.changes.outputs.full != 'false'
         run: .venv/bin/python -m tox -e py314 -- tests --durations=25
 
   serving-delivery:
+    if: needs.quality.outputs.full == 'true'
     name: Build and qualify synthetic serving delivery
     needs: quality
     outputs:

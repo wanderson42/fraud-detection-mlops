@@ -316,8 +316,10 @@ A VM nova não precisa de token GitHub: o autor importou a branch por SSH no
 computador cliente e publicou de lá. Configure `git config --local user.name`
 e `user.email` na máquina que cria commits; identidade de autoria não é senha.
 Para chamadas remotas não interativas, use `.venv/bin/python` do checkout.
-O próximo recorte do roadmap é decidir a coordenação dos pipelines, começando
-pelo executor existente; uma nova plataforma só entra se reduzir complexidade.
+A retomada identificada dos pipelines está aceita e integrada no PR #24.
+Criação/setup estão integrados no PR #27 (`b75fa3a`), com CI #117/#118 aprovados.
+O próximo trabalho é consolidar a apresentação e manter o sistema a partir de
+necessidades concretas; nenhuma nova plataforma é necessária para esse marco.
 
 ## Evolução da coordenação dos Jobs
 
