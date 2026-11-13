@@ -1,5 +1,113 @@
 # Guia de execução e demonstração do portfólio
 
+Roteiro atual em 2026-11-13, após PR #27 (`b75fa3a`) e CI #117/#118 aprovados.
+A apresentação usa uma instalação já aceita; a reprodução integral tem
+[runbook próprio](CLEAN_INSTALL_RUNBOOK.md). Não execute treino, replay, falha
+ou reboot apenas para mostrar resultados existentes.
+
+## 1. Escolher a instalação certa
+
+| Ambiente do autor | O que pode demonstrar |
+| --- | --- |
+| `fraud-clean-install` | Produto completo, rodada/sessão próprias, portal, SHAP, Grafana e reboot no escopo aceito |
+| `fraud-bootstrap-v1` | Criação de VM, Ubuntu manual, SSH e setup; não há produto/cluster novo aceito nela |
+| Ambiente original e `fraud-repro` | Ensaios históricos próprios, com modelos, sessões, baselines e limites identificados |
+
+No exemplo da segunda VM: sessão `clean-install-arrival-v1`, portal
+`clean-install-portal-v1`, rodada `clean-install-v1`. Em outra instalação, use os
+IDs que ela produziu; os valores do autor não são templates de ownership.
+Uma VM com estado salvo precisa ser retomada antes dos acessos. Planeje memória
+para a instalação escolhida; não inicie outra VM apenas para abrir um relatório.
+
+## 2. Abrir o ambiente existente — caminho curto
+
+Prepare autenticação SSH por chave e confira a identidade do host conforme
+[VM_ACCESS.md](VM_ACCESS.md). Execute no cliente, usando os valores da VM pronta.
+O exemplo do autor é a porta SSH **2223**; a **45871** pertence ao ensaio de
+bootstrap e não tem esses snapshots preparados.
+
+```bash
+make vm-access-up \
+  VM_HOST=127.0.0.1 \
+  VM_USER=wanderson \
+  VM_SSH_PORT=2223 \
+  VM_ROOT=/home/wanderson/projetos/fraud-detection-mlops \
+  PORTAL_ID=clean-install-portal-v1
+make vm-access-status
+```
+
+Substitua host, usuário, porta, caminho e portal em outro ambiente. O comando
+reutiliza controladores e imprime URLs locais de portal/Grafana/MLflow; portas
+livres são escolhidas no cliente. Use as URLs retornadas, não números copiados
+de screenshots anteriores. Fechar túneis não encerra os serviços da VM.
+
+Grafana usa `admin`; a senha fica no arquivo privado
+`data/storage/kind-platform/observability/credentials.json` do guest. Não mostre
+senha, chave privada, kubeconfig ou state Terraform durante a demonstração.
+
+## 3. Roteiro para uma avaliação técnica
+
+| Ordem | O que mostrar | O que explicar |
+| --- | --- | --- |
+| 1 | Problema e protocolo temporal | Dados simulados, capacidade de investigação e informação disponível na decisão; score não calibrado |
+| 2 | MLflow da rodada aceita | Candidatos, Inputs, parâmetros, métricas, Registry e vínculo entre modelo/release e API |
+| 3 | Portal da mesma sessão | 200 decisões/13 alertas no ensaio limpo, contexto do caso, feedback posterior e cinco explicações SHAP preparadas |
+| 4 | Prometheus/Grafana | Saúde e agregados da mesma sessão, atraso de feedback e indisponibilidade explícita de comparações sem janela suficiente |
+| 5 | Recibos de operação | Reconciliação, rollback, retomada Silver/Gold e reboot, cada um no ambiente e escopo em que foi executado |
+| 6 | Reprodução e IaC | Runbook, VM/setup, ownership e fundação Terraform isolada; limites da comparação AWS |
+
+Os 200 casos são um ensaio de integração, não a população global de avaliação.
+A área de desempenho usa 67.255 linhas de validação; as métricas históricas de
+replay têm outra janela. Não comparar números de populações diferentes como
+se fossem o mesmo experimento, nem converter alertas em perdas financeiras
+evitadas. Resultados de laboratório não comprovam desempenho em fraude real.
+
+A sessão aceita **chamou a API por HTTP**. Os antigos gates sintéticos e a cópia
+de replay concluído continuam registros próprios; não são a origem presumida
+de toda tela atual. Confira sessão, modelo e release antes de apresentar.
+
+## 4. Ler evidências e limites
+
+- [Reprodução por ambiente](VM_REPRODUCTION_PROGRESS.md): produto completo na segunda VM, criação/setup na terceira e limites de logout/reboot.
+- [Rodada rastreada](OPERATIONAL_ROUND.md) e [sessão](PRODUCT_SESSION.md): identidade dos inputs, do modelo e das decisões HTTP.
+- [Retomada de Jobs](PIPELINE_RECOVERY.md): mesmo Job após término do controlador; exclusão local, sem coordenação distribuída.
+- [Fundação Terraform](LOCAL_IAC.md): plano/apply/readbacks/recriação de pods, sem provisionar VM ou cluster neste root.
+- [Backup de tracking](VM_TRACKING_BACKUP.md): restauração delimitada, sem alegação de recuperação integral ou perda física.
+
+Os aceites vieram das saídas e da revisão visual fornecidas pelo autor. Não
+atribua a um recibo privado um hash que não foi recebido. CI verifica fontes e
+testes; não substitui execução nativa nem confere estado atual de uma VM salva.
+
+## 5. Encerrar ou reproduzir
+
+Para encerrar apenas os acessos no cliente:
+
+```bash
+make vm-access-stop
+make vm-access-status
+```
+
+Parada/subida do cluster, retomada após reboot e falhas deliberadas exigem os
+[procedimentos e baselines próprios](KIND_OPERATIONS.md). Não use exclusão de
+cluster/PVC ou limpeza global do Docker como encerramento de apresentação.
+
+Para reprodução integral nova, siga [CLEAN_INSTALL_RUNBOOK.md](CLEAN_INSTALL_RUNBOOK.md):
+instalação, dados, treino, entrega, sessão, portal e observabilidade. Para outra
+criação/setup, use [VM_PROVISIONING.md](VM_PROVISIONING.md), preservando os
+ambientes existentes. Esse percurso não obriga broker, feature store, GPU,
+outro orquestrador ou nuvem. Uma extensão entra quando resolve uma lacuna real.
+
+## Registros históricos preservados
+
+As notas abaixo conservam o texto anterior à revisão de 2026-11-13. Datas,
+pendências e próximos passos nelas pertencem aos respectivos recortes; para o
+estado atual, use a parte principal deste documento e o roadmap.
+
+<details>
+<summary>Abrir registros anteriores à consolidação do portfólio</summary>
+
+# Guia de execução e demonstração do portfólio
+
 O caminho principal para o novo ciclo é a [rodada operacional canônica](OPERATIONAL_ROUND.md):
 `make round-init`, dados, treino com Inputs, promoção e API. O aceite nativo dessa
 rodada está pendente; as seções seguintes conservam os recortes anteriores.
@@ -245,3 +353,5 @@ A simplificação deve escolher um caminho canônico de demonstração, resolver
 distribuição das fixtures/artefatos necessários e reduzir instruções duplicadas.
 Broker, feature store, CT e novo orquestrador não são requisitos automáticos para
 essa conexão. Terraform permanece após estabilizar o fluxo escolhido.
+
+</details>

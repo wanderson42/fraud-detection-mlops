@@ -1,5 +1,47 @@
 # Índice da documentação
 
+Revisão de leitura em 2026-11-13, após o PR #27 (`b75fa3a`), com CI #117/#118
+aprovados e cliente sincronizado. As evidências continuam vinculadas às suas
+execuções; esta revisão não repete ensaios nem amplia seus aceites.
+
+## Leitura recomendada
+
+| Pergunta | Referência |
+| --- | --- |
+| Que problema o projeto resolve? | [Contexto](project/PROBLEM_CONTEXT.md) e [síntese para stakeholders](project/STAKEHOLDERS.md) |
+| Como os componentes se conectam? | [Arquitetura](ARCHITECTURE.md) |
+| O que mostrar numa avaliação técnica? | [Roteiro do portfólio](operations/PORTFOLIO_WALKTHROUGH.md) |
+| Como reproduzir o produto? | [Instalação limpa](operations/CLEAN_INSTALL_RUNBOOK.md) |
+| Como criar a VM e abrir os serviços? | [Criação/setup](operations/VM_PROVISIONING.md) e [túneis SSH](operations/VM_ACCESS.md) |
+| Como avaliar modelos e contribuir? | [Protocolo temporal](modeling/EVALUATION_PROTOCOL.md), [Model Card](modeling/MODEL_CARD.md) e [contrato de modelos](modeling/CONTRIBUTING_MODELS.md) |
+| Como verificar dados e causalidade? | [Pipeline](data/DATA_PIPELINE.md), [dicionário](data/DATA_DICTIONARY.md) e [contrato Gold](data/GOLD_CONTRACT.md) |
+| Como funciona a entrega? | [Rodada operacional](operations/OPERATIONAL_ROUND.md), [atualizações](operations/MODEL_UPDATES.md) e [retomada de Jobs](operations/PIPELINE_RECOVERY.md) |
+| Como investigar casos e acompanhar a sessão? | [Portal](operations/UNIFIED_PORTAL.md), [SHAP](operations/CASE_EXPLANATIONS.md) e [monitoramento](operations/SESSION_MONITORING.md) |
+| Como conferir persistência e recuperação? | [Supervisão](operations/VM_USER_SUPERVISION.md), [backup limitado](operations/VM_TRACKING_BACKUP.md) e [IaC local](operations/LOCAL_IAC.md) |
+| Onde estão prioridades e história? | [Roadmap atual](project/ROADMAP.md), [histórico](project/ROADMAP_HISTORY.md) e [notebook principal](../notebooks/fraud_detection_mlops.ipynb) |
+
+## Como interpretar os registros
+
+O [acompanhamento da reprodução](operations/VM_REPRODUCTION_PROGRESS.md) distingue
+ambiente original, primeira VM, segunda VM com produto completo e terceira VM
+com criação/setup. Não transportar recibos, modelos ou identidades de um ambiente
+para assumir ownership de outro.
+
+Instalação manual, script corrigido, teste offline, execução nativa e CI são
+verificações diferentes. Notas datadas e registros recolhidos abaixo permanecem
+como história; pendências superadas ali não reabrem o roadmap atual.
+
+## Registros históricos preservados
+
+As notas abaixo conservam o texto anterior à revisão de 2026-11-13. Datas,
+pendências e próximos passos nelas pertencem aos respectivos recortes; para o
+estado atual, use a parte principal deste documento e o roadmap.
+
+<details>
+<summary>Abrir registros anteriores à consolidação do portfólio</summary>
+
+# Índice da documentação
+
 [IaC local: primeira fundação Terraform](operations/LOCAL_IAC.md#aceite-nativo--2026-11-12): aceite nativo confirmado, com SQL/S3, troca dos pods, PVCs preservados e plano sem mudanças. PR #26 integrado em `e26ee20`, com main sincronizada conforme terminal do autor.
 
 [Criação mínima de VM](operations/VM_PROVISIONING.md): prévia e criação desligada
@@ -387,3 +429,5 @@ parada/subida nem promoção de sucessor. [Evidência](../references/evidence/sy
 
 - [Footprint das imagens](operations/IMAGE_FOOTPRINT.md): revisão de builds existentes,
   medidas históricas e inventário atual ainda necessário.
+
+</details>

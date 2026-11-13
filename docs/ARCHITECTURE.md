@@ -1,5 +1,97 @@
 # Organização e dependências
 
+Estado de referência: `b75fa3a`, revisão documental em 2026-11-13. Os
+[aceites por ambiente](operations/VM_REPRODUCTION_PROGRESS.md) delimitam o que
+foi executado; esta síntese não valida uma implantação diferente.
+
+## Fluxo atual do produto
+
+Dados simulados do Handbook passam por Bronze/Silver/Gold identificados. A
+rodada operacional treina e avalia candidatos em janelas temporais, registra
+Inputs/artefatos no MLflow e aplica gates antes de atribuir o alias champion.
+A implantação exporta o modelo identificado para a API atrás do gateway;
+atribuir alias no Registry, sozinho, não atualiza a API.
+
+A sessão consome eventos históricos como chegadas, aquece contexto causal e
+consulta a API por HTTP. Guarda decisões, triagem e feedback posterior para
+reconciliação independente. O portal lê snapshots/estado identificado e
+explicações previamente preparadas; não inventa SHAP para casos ausentes.
+O observador projeta agregados da mesma sessão no Prometheus/Grafana.
+[Rodada](operations/OPERATIONAL_ROUND.md) · [sessão](operations/PRODUCT_SESSION.md) ·
+[monitoramento](operations/SESSION_MONITORING.md).
+
+## Persistência e armazenamento
+
+| Componente | Responsabilidade atual |
+| --- | --- |
+| DuckDB e Parquet | Produção/consulta analítica e verificação dos datasets materializados |
+| PostgreSQL | Backend do MLflow da plataforma KinD aceita |
+| RustFS com API S3 | Objetos/datasets e artefatos publicados segundo contratos e manifestos |
+| SQLite | Ledgers/checkpoints locais do replay/sessão; arquivos históricos de tracking permanecem históricos |
+| Prometheus e Grafana | Métricas/retensão e configuração de painéis em volumes próprios |
+| Git | Código, contratos, configurações e evidências públicas; não bancos, credenciais ou volumes privados |
+
+Restores/materializações locais continuam necessários para leitores que os
+exigem. Não existe migração universal de toda persistência só por publicar
+objetos em S3. O [backup do tracking](operations/VM_TRACKING_BACKUP.md) cobre
+banco/artefatos delimitados; continuidade dos PVCs não comprova restauração
+integral ou proteção contra perda física do host.
+
+## Um responsável por recurso
+
+| Camada | Responsabilidade e fronteira |
+| --- | --- |
+| VBoxManage e setup | Criar VM nova desligada e preparar ferramentas; Ubuntu/OpenSSH/LVM permanecem manuais |
+| Docker e KinD | Executar o cluster dedicado dentro da VM, com kubeconfig próprio |
+| Kubernetes e Helm | Reconciliar workloads e configurações; cada release tem um único responsável por aplicá-la |
+| Terraform local | Administrar namespace, Secret e release da fundação isolada; não adota a plataforma aceita |
+| Controladores da cadeia | Manter planos, recibos, linhagem e retomada; não são agendador ou lock distribuído |
+| systemd do usuário | Supervisionar observação da sessão e acesso Grafana no host da VM |
+| Cliente SSH | Abrir túneis em loopback com portas livres; não altera disponibilidade dos workloads |
+
+O [executor Silver/Gold](operations/PIPELINE_RECOVERY.md), integrado no PR #24,
+retoma Jobs identificados, recusa invocação duplicada e reutiliza resultados.
+Não retoma fits parciais nem coordena múltiplos hosts. Agendamento e operação
+por vários operadores seriam razões para rever a orquestração; não há obrigação
+de instalar uma plataforma adicional para o laboratório atual.
+
+## Reprodução e IaC
+
+O produto completo foi reproduzido em `fraud-clean-install` com dados e modelos
+próprios. `fraud-bootstrap-v1` valida criação, Ubuntu manual e setup, sem novo
+cluster ou produto. O perfil da terceira VM foi corrigido manualmente para
+Ubuntu 24.04 LTS. O ajuste manual de PATH passou em nova sessão; a persistência
+automática posterior tem testes offline. [Criação e limites](operations/VM_PROVISIONING.md).
+
+A [fundação Terraform](operations/LOCAL_IAC.md) tem aceite SQL/S3, recriação dos
+pods, PVCs preservados e segundo plano sem mudanças. Compartilha o cluster:
+isolamento de namespace não é isolamento de capacidade ou falhas. Terraform
+não cria a VM nem o KinD neste root. State/planos privados podem conter segredos.
+
+A correspondência [local × AWS](project/ROADMAP.md#correspondência-com-aws-estudo-sem-implantação)
+usa EC2 como referência de computação e EKS como control plane. Rede, IAM,
+armazenamento, identidade e custos precisam de desenho e ensaio próprios.
+Não há aceite cloud, HA ou promessa de portabilidade por troca de provider.
+
+## Interfaces, testes e contribuições
+
+O [contrato dos modelos](modeling/CONTRIBUTING_MODELS.md) permite algoritmos
+compatíveis sem misturar preparação, treinamento e apresentação. Gates de
+dados/qualidade não são relaxados para facilitar uma demonstração.
+A [estratégia de testes](operations/TESTING.md) separa fixtures offline de gates
+nativos. Documentos e notebooks guardam as evidências das execuções já aceitas.
+
+## Registros históricos preservados
+
+As notas abaixo conservam o texto anterior à revisão de 2026-11-13. Datas,
+pendências e próximos passos nelas pertencem aos respectivos recortes; para o
+estado atual, use a parte principal deste documento e o roadmap.
+
+<details>
+<summary>Abrir registros anteriores à consolidação do portfólio</summary>
+
+# Organização e dependências
+
 ## Coordenação da cadeia limitada — 2026-11-04
 
 O [executor identificado](operations/PIPELINE_RECOVERY.md) persiste plano e
@@ -746,3 +838,5 @@ sessão atual. Usa o leitor causal aceito e uma apresentação compartilhada de
 investigação. Snapshot e avaliação continuam com manifests próprios. A UI
 permanece isolada do runtime científico; não carrega modelos, publica feedback
 ou comanda ingestão/promoção. [Operação](operations/UNIFIED_PORTAL.md).
+
+</details>

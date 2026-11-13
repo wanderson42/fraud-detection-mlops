@@ -1,5 +1,92 @@
 # Roadmap — Fraud Detection MLOps
 
+Revisão em **2026-11-13**, após [PR #27](https://github.com/wanderson42/fraud-detection-mlops/pull/27)
+integrado em `b75fa3ad963fba019ec643db19fd5240db7d4238`. CI #117 (PR) e #118
+(main) aprovados, conferidos no GitHub. O autor confirmou main sincronizada no
+Alienware; a VM do ensaio conserva `e26ee20` como revisão de execução.
+
+## Estado atual
+
+O produto, a reprodução limpa e os incrementos operacionais abaixo estão
+concluídos **nos escopos demonstrados**. A integração da criação/setup de VM
+não permanece no backlog. Esta revisão organiza a apresentação e os limites;
+não reexecuta ciência, infraestrutura, sessões ou aceites.
+
+| Marco concluído | Evidência e fronteira |
+| --- | --- |
+| Produto e rodada canônica | Dados identificados, três candidatos rastreados, champion/API e rollback; [rodada](../operations/OPERATIONAL_ROUND.md) |
+| Sessão HTTP e investigação | Features causais, decisões/triagem/feedback reconciliados, portal e SHAP; [sessão](../operations/PRODUCT_SESSION.md) e [portal](../operations/UNIFIED_PORTAL.md) |
+| Monitoramento e recuperação | Mesma sessão no Grafana/Prometheus, recuperação de processos e reboot no escopo de cada VM; [aceites](../operations/VM_REPRODUCTION_PROGRESS.md) |
+| Reprodução limpa | Produto integral na segunda VM com dados, modelos e ownership próprios; [runbook](../operations/CLEAN_INSTALL_RUNBOOK.md) |
+| Retomada Silver/Gold | Jobs identificados e resultados reutilizados; PR #24 `730e2d4`; [contrato](../operations/PIPELINE_RECOVERY.md) |
+| Fundação Terraform isolada | Namespace/Secret/release próprios, SQL/S3, pods trocados, PVCs preservados e plano sem mudanças; PR #26 `e26ee20`; [IaC](../operations/LOCAL_IAC.md) |
+| VM e setup | Prévia/criação desligada, Ubuntu/OpenSSH/LVM manuais, fases de setup na terceira VM; PR #27 `b75fa3a`; [aceite](../operations/VM_PROVISIONING.md) |
+| Acesso portátil | Túneis com portas livres, conflito recusado, reutilização e encerramento só do acesso; [guia](../operations/VM_ACCESS.md) |
+| Backup limitado de tracking | Captura, cópia externa e restauração isolada delimitadas; [escopo](../operations/VM_TRACKING_BACKUP.md) |
+
+Os mesmos aceites não se aplicam automaticamente a todas as máquinas. A terceira
+VM não recebeu novo cluster/produto; não repetir treinamento para fechar seu
+setup. O perfil LTS foi ajustado manualmente na VM criada. O PATH foi resolvido
+manualmente e confirmado em nova sessão; a persistência automática posterior
+foi testada offline, sem nova execução nativa do setup corrigido.
+
+## Próximos passos proporcionais ao portfólio
+
+| Prioridade | Recorte | Critério para iniciar ou concluir |
+| --- | --- | --- |
+| Revisão atual | Consolidar leitura e demonstração | README, arquitetura, índice, roteiro, stakeholders e notebooks apontam aos mesmos aceites; revisão apenas documental, sem nova capacidade operacional |
+| Uso contínuo | Estudar, apresentar e manter | Demonstrar uma instalação aceita, explicar decisões e registrar falhas reais; corrigir defeitos ou divergências observados |
+| Condicionado | Ativar sucessor com pesos diferentes | Candidato passa gates, aprovação explícita e ensaio de ativação/rollback; retenção atual não é pendência artificial |
+| Sob demanda | Qualificações adicionais | Logout completo da segunda VM, execução nativa do setup corrigido, consumo por container, HA ou restore integral só entram por objetivo próprio |
+| Opcional | Estudo ou POC temporária AWS | Arquitetura/custo/região e limite financeiro definidos; nenhum recurso é contratado por este roadmap |
+| Projeto separado | Retomar portfólio de energia | Revisar aquele pipeline e sua reprodução; sem reabrir marcos de fraude já aceitos |
+
+Não há obrigação de migrar hipervisor, adotar provider VirtualBox, Packer,
+Ansible, broker, feature store, GPU ou outro orquestrador. A prioridade profissional
+é saber reproduzir, avaliar e explicar o sistema. Cada novo componente precisa
+resolver uma necessidade concreta e justificar seu custo de manutenção.
+
+## Correspondência com AWS: estudo sem implantação
+
+| Papel local | Referência AWS | Lacunas para uma implantação real |
+| --- | --- | --- |
+| VM Ubuntu | EC2 como computação de nós | Capacidade, imagem, bootstrap e custo; não copiar a VM inteira |
+| KinD | Control plane EKS e grupo de nós | Rede, IAM, acesso e disponibilidade; cluster e workloads têm etapas distintas |
+| PostgreSQL | RDS PostgreSQL ou banco operado no cluster | Conexões, consistência, backup e restauração |
+| RustFS com API S3 | Amazon S3 | Identidade, políticas, endpoints e integridade |
+| Workloads e observabilidade | Containers/Jobs e serviços escolhidos | Imagens, saúde, acesso autenticado, persistência e retenção |
+
+São hipóteses de arquitetura; ECS/Fargate é alternativa de estudo, não decisão
+implementada. Portabilidade exige adaptar identidade, rede, armazenamento,
+coordenação e operação; trocar um provider não faz isso. Terraform administra
+somente recursos com ownership definido. Persistência após recriar pod não é
+backup; guard de destruição não é recuperação de desastres. O projeto local
+continua utilizável sem conta paga. [Plano de aprendizado cloud](../operations/CLOUD_LEARNING.md).
+
+## Critérios de evidência e encerramento
+
+Preservamos dados, modelos, protocolos, recibos e células anteriores. Teste
+sintético, execução nativa, revisão visual e CI são verificações distintas.
+Repetir uma janela observada não confirma qualidade independente nem autoriza
+abrir outra reserva de avaliação. Não foram demonstrados produção bancária,
+HA, SLA, restore integral ou perda física do host.
+
+Use o [roteiro de demonstração](../operations/PORTFOLIO_WALKTHROUGH.md), a
+[arquitetura](../ARCHITECTURE.md) e o [histórico de decisões](ROADMAP_HISTORY.md)
+para apresentar e aprofundar o trabalho. Novas implementações dependem de lacuna
+concreta; o encerramento de um marco não exige inventar outro requisito.
+
+## Registros históricos preservados
+
+As notas abaixo conservam o texto anterior à revisão de 2026-11-13. Datas,
+pendências e próximos passos nelas pertencem aos respectivos recortes; para o
+estado atual, use a parte principal deste documento e o roadmap.
+
+<details>
+<summary>Abrir registros anteriores à consolidação do portfólio</summary>
+
+# Roadmap — Fraud Detection MLOps
+
 Revisão em **2026-11-12**. O fechamento funcional ocorreu em
 2026-10-31 (America/Belem); os registros anteriores de boot
 usam 2026-11-01 em UTC. A reprodução foi priorizada antes de Terraform para
@@ -259,3 +346,5 @@ O procedimento histórico está em `make reproduction-audit` e
 a evolução posterior. Quando presente na branch, o guia
 `docs/operations/CLEAN_REPRODUCTION.md` permanece preservado como fonte do
 preflight e das lacunas originalmente encontradas.
+
+</details>

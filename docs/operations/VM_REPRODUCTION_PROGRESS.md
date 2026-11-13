@@ -13,8 +13,9 @@ O setup agora prepara a persistência de PATH em `.profile` e usa explicitamente
 o Poetry do usuário, preservando o do sistema. Essa correção posterior tem
 testes offline; não foi o código executado no ensaio nativo. Não transferir
 aceites de produto, reboot, backup ou Terraform da VM anterior para esta.
-Criação/instalação/setup estão aceitos no escopo demonstrado; revisão final ainda
-precisa de publicação, checks e merge. Nenhuma nova plataforma é necessária.
+Criação/instalação/setup estão aceitos no escopo demonstrado. O PR #27 entrou
+em `b75fa3a`, com CI #117/#118 aprovados e cliente sincronizado em 2026-11-13;
+a VM do ensaio conserva `e26ee20`. Nenhuma nova plataforma é necessária.
 [Aceite e limites](VM_PROVISIONING.md#aceite-do-autor--2026-11-12).
 
 
