@@ -1,5 +1,25 @@
 # Validação com pytest, Poetry e tox
 
+## Integração do CI proporcional confirmada — 2026-11-13
+
+O PR #28 entrou em `5dd94bb`, com [CI #121](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/43427393547)
+e [CI #122](https://github.com/wanderson42/fraud-detection-mlops/actions/runs/43436964899)
+aprovados. A main executou todos os cinco jobs: seleção, Terraform, qualidade,
+qualificação da imagem e consumo em outro runner. O autor sincronizou o cliente.
+O seletor foi corrigido em `1375484` para sintaxe compatível com Python 3.12,
+com regressão de gramática e 21 testes locais aprovados. Não presumir que o
+Python científico 3.14 já está ativo no job que roda antes de setup-python.
+
+Essas execuções foram completas, pois o workflow mudou. A seleção do caminho
+documental tem testes e comparação local; não se atribui a elas um tempo nativo
+de execução leve que não foi medido. Uma revisão só de Markdown/células Markdown
+preservadas deve usar o caminho leve, mantendo o gate de qualidade.
+
+O fechamento está explicado no [notebook principal](../../notebooks/fraud_detection_mlops.ipynb)
+e na [etapa 26](../../notebooks/stages/26_clean_reproduction_and_vm_supervision.ipynb).
+A seção de preparação abaixo é histórica; sua pendência de aceite no GitHub
+foi superada pelas execuções citadas. Os limites de cada verificação permanecem.
+
 ## CI proporcional ao tipo de mudança — preparação em 2026-11-13
 
 O workflow passa a executar em PR, push na main e chamada manual. Push numa
